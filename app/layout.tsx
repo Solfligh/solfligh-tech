@@ -1,8 +1,11 @@
+// app/layout.tsx
 import type { Metadata } from "next";
-import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import { Inter } from "next/font/google";
+import "./globals.css";
+
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import Analytics from "@/app/components/Analytics";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,49 +13,36 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-// Uses env in production, falls back to localhost in dev.
-// On Vercel you can set NEXT_PUBLIC_SITE_URL to your domain later.
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL("https://solflightech.org"),
   title: {
-    default: "SOLFLIGH TECH — Innovative Software Solutions",
+    default: "SOLFLIGH TECH — Technology · Innovation · Getting you back your time",
     template: "%s — SOLFLIGH TECH",
   },
   description:
-    "SOLFLIGH TECH builds intelligent, scalable, future-ready technology — from modern web and mobile products to AI automation and agent-driven systems.",
+    "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
   icons: {
-    icon: "/favicon-32.png",
-    apple: "/favicon-192.png",
+    icon: [
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/favicon-192.png", sizes: "192x192", type: "image/png" }],
   },
   openGraph: {
-    type: "website",
-    url: siteUrl,
+    title: "SOLFLIGH TECH",
+    description: "Technology · Innovation · Getting you back your time",
+    url: "https://solflightech.org",
     siteName: "SOLFLIGH TECH",
-    title: "SOLFLIGH TECH — Innovative Software Solutions",
-    description:
-      "We build intelligent, scalable, future-ready technology — software, automation, and AI systems.",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "SOLFLIGH TECH",
-      },
-    ],
+    type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "SOLFLIGH TECH — Innovative Software Solutions",
-    description:
-      "We build intelligent, scalable, future-ready technology — software, automation, and AI systems.",
-    images: ["/og.png"],
+  robots: {
+    index: true,
+    follow: true,
   },
-  alternates: {
-    canonical: "/",
-  },
+};
+
+export const viewport = {
+  themeColor: "#0284c7",
 };
 
 export default function RootLayout({
@@ -64,8 +54,9 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen bg-white font-sans text-slate-900 antialiased">
         <Navbar />
-        <main>{children}</main>
+        {children}
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
