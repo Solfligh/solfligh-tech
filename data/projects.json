@@ -1,0 +1,147 @@
+{
+  "projects": [
+    {
+      "slug": "profitpilot",
+      "name": "ProfitPilot",
+      "status": "Live / Near Launch",
+      "statusColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+      "description": "A modern business management platform for SMEs to track income, expenses, inventory, and insights in one clean dashboard.",
+      "highlights": [
+        "Multi-tenant SaaS architecture",
+        "Roles & permissions",
+        "Inventory & transactions",
+        "Smart insights dashboard"
+      ],
+      "ctaLabel": "View ProfitPilot",
+      "href": "/projects/profitpilot",
+      "published": true,
+      "media": [
+        {
+          "type": "video",
+          "src": "/projects/profitpilot/demo.mp4",
+          "thumbnail": "/projects/profitpilot/thumb.jpg"
+        },
+        {
+          "type": "image",
+          "src": "/projects/profitpilot/1.jpg",
+          "alt": "ProfitPilot dashboard"
+        },
+        {
+          "type": "image",
+          "src": "/projects/profitpilot/2.jpg",
+          "alt": "ProfitPilot transactions"
+        }
+      ],
+      "problem": "Small and medium businesses struggle with fragmented tools, manual tracking, and poor visibility into finances.",
+      "solution": "ProfitPilot unifies income, expenses, inventory, and insights into a single, easy-to-use dashboard that provides clarity and control.",
+      "keyFeatures": [
+        "Unified financial dashboard",
+        "Role-based access control",
+        "Inventory and transaction tracking",
+        "Smart business insights"
+      ],
+      "roadmap": [
+        "Finalize core flows",
+        "Public demo launch",
+        "Advanced automation features"
+      ],
+      "techStack": [
+        "Next.js",
+        "Tailwind",
+        "Supabase",
+        "PostgreSQL"
+      ],
+      "updatedAt": "2026-01-12T00:00:00.000Z"
+    },
+    {
+      "slug": "profitfx",
+      "name": "ProfitFX",
+      "status": "In Development",
+      "statusColor": "bg-sky-100 text-sky-700 border-sky-200",
+      "description": "An FX-focused platform designed for decision support, clarity, and workflow automation for traders and teams.",
+      "highlights": [
+        "Workflow-first UX",
+        "Decision-support tooling",
+        "Automation-ready design"
+      ],
+      "ctaLabel": "View ProfitFX",
+      "href": "/projects/profitfx",
+      "published": true,
+      "media": [
+        {
+          "type": "video",
+          "src": "/projects/profitfx/demo.mp4",
+          "thumbnail": "/projects/profitfx/thumb.jpg"
+        },
+        {
+          "type": "image",
+          "src": "/projects/profitfx/1.jpg",
+          "alt": "ProfitFX interface"
+        }
+      ],
+      "problem": "FX traders rely on scattered tools for analysis, notes, and execution, slowing down decisions.",
+      "solution": "ProfitFX centralizes trading workflows and decision support into a clean, focused interface.",
+      "keyFeatures": [
+        "Workflow organization",
+        "Decision journaling",
+        "Fast navigation"
+      ],
+      "roadmap": [
+        "UI refinement",
+        "Demo-ready build",
+        "Automation modules"
+      ],
+      "techStack": [
+        "Next.js",
+        "Tailwind",
+        "APIs"
+      ],
+      "updatedAt": "2026-01-12T00:00:00.000Z"
+    },
+    {
+      "slug": "rebirthagro",
+      "name": "RebirthAgro",
+      "status": "Upcoming",
+      "statusColor": "bg-amber-100 text-amber-700 border-amber-200",
+      "description": "A digital agriculture platform connecting farmers, buyers, and logistics for better access and transparency.",
+      "highlights": [
+        "Farmer-to-market access",
+        "Produce listings",
+        "Logistics coordination"
+      ],
+      "ctaLabel": "View RebirthAgro",
+      "href": "/projects/rebirthagro",
+      "published": true,
+      "media": [
+        {
+          "type": "image",
+          "src": "/projects/rebirthagro/1.jpg",
+          "alt": "RebirthAgro marketplace"
+        },
+        {
+          "type": "image",
+          "src": "/projects/rebirthagro/2.jpg",
+          "alt": "RebirthAgro listings"
+        }
+      ],
+      "problem": "Farmers often lack direct access to buyers and transparent pricing.",
+      "solution": "RebirthAgro bridges farmers, buyers, and logistics through a mobile-first digital platform.",
+      "keyFeatures": [
+        "Marketplace listings",
+        "Buyer connections",
+        "Logistics coordination"
+      ],
+      "roadmap": [
+        "Mobile-first MVP",
+        "Farmer onboarding",
+        "Logistics partnerships"
+      ],
+      "techStack": [
+        "Flutter",
+        "APIs",
+        "Cloud services"
+      ],
+      "updatedAt": "2026-01-12T00:00:00.000Z"
+    }
+  ]
+}
