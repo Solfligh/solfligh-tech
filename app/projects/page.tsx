@@ -2,90 +2,64 @@
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import Link from "next/link";
-import ProjectGallery from "@/app/components/ProjectGallery";
-import { type MediaItem } from "@/app/components/ProjectMediaCarousel";
+import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
+import { listProjects } from "@/app/lib/projectsStore";
 
-type Project = {
-  name: string;
-  slug: string;
-  status: string;
-  statusColor: string;
-  description: string;
-  highlights: string[];
-  ctaLabel: string;
-  href: string;
-  media: MediaItem[];
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+type AnyProject = {
+  slug?: string;
+  name?: string;
+  status?: string;
+  statusColor?: string;
+  description?: string;
+  highlights?: string[];
+  ctaLabel?: string;
+  href?: string;
+  published?: boolean;
+  media?: any[];
 };
 
-const projects: Project[] = [
-  {
-    name: "ProfitPilot",
-    slug: "profitpilot",
-    status: "Live / Near Launch",
-    statusColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    description:
-      "A modern business management platform for SMEs. Track income & expenses, manage inventory, control access with roles, and view insights — all in one clean dashboard.",
-    highlights: [
-      "Multi-tenant SaaS architecture",
-      "Roles & permissions (Enterprise)",
-      "Inventory & transactions",
-      "Smart insights & dashboards",
-    ],
-    ctaLabel: "View ProfitPilot",
-    href: "/projects/profitpilot",
-    media: [
-      {
-        type: "video",
-        src: "/projects/profitpilot/demo.mp4",
-        poster: "/projects/profitpilot/demo-poster.jpg",
-      },
-      { type: "image", src: "/projects/profitpilot/1.png", alt: "ProfitPilot dashboard" },
-      { type: "image", src: "/projects/profitpilot/2.png", alt: "ProfitPilot transactions" },
-    ],
-  },
-  {
-    name: "ProfitFX",
-    slug: "profitfx",
-    status: "In Development",
-    statusColor: "bg-sky-100 text-sky-700 border-sky-200",
-    description:
-      "An FX-focused platform designed for clarity, decision support, and workflow automation for traders and teams.",
-    highlights: ["Trading workflow automation", "Decision-support tooling", "Clean, focused UX"],
-    ctaLabel: "View ProfitFX",
-    href: "/projects/profitfx",
-    media: [
-      {
-        type: "video",
-        src: "/projects/profitfx/demo.mp4",
-        poster: "/projects/profitfx/demo-poster.jpg",
-      },
-      { type: "image", src: "/projects/profitfx/1.png", alt: "ProfitFX screen" },
-      { type: "image", src: "/projects/profitfx/2.png", alt: "ProfitFX workflow" },
-    ],
-  },
-  {
-    name: "RebirthAgro",
-    slug: "rebirthagro",
-    status: "Upcoming",
-    statusColor: "bg-amber-100 text-amber-700 border-amber-200",
-    description:
-      "A digital agriculture platform connecting farmers, buyers, and logistics — improving transparency, access, and efficiency in the agri-value chain.",
-    highlights: ["Farmer-to-market access", "Produce listings & logistics", "Mobile-first experience"],
-    ctaLabel: "View RebirthAgro",
-    href: "/projects/rebirthagro",
-    media: [
-      {
-        type: "video",
-        src: "/projects/rebirthagro/demo.mp4",
-        poster: "/projects/rebirthagro/demo-poster.jpg",
-      },
-      { type: "image", src: "/projects/rebirthagro/1.png", alt: "RebirthAgro marketplace" },
-      { type: "image", src: "/projects/rebirthagro/2.png", alt: "RebirthAgro listing" },
-    ],
-  },
-];
+function normalizeMedia(projectName: string, media: any[]) {
+  const safe = Array.isArray(media) ? media : [];
+  const out = safe
+    .filter((m) => m && typeof m.src === "string" && (m.type === "image" || m.type === "video"))
+    .map((m) => {
+      if (m.type === "video") {
+        return {
+          type: "video" as const,
+          src: String(m.src),
+          thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
+        };
+      }
+      return {
+        type: "image" as const,
+        src: String(m.src),
+        alt: m.alt ? String(m.alt) : `${projectName} image`,
+        thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
+      };
+    });
 
-export default function ProjectsPage() {
+  // Fallback placeholder if empty
+  if (out.length === 0) {
+    return [{ type: "image" as const, src: "/images/placeholder.png", alt: "Placeholder" }];
+  }
+
+  return out;
+}
+
+export default async function ProjectsPage() {
+  let projects: AnyProject[] = [];
+
+  try {
+    const all = await listProjects();
+    projects = (all as AnyProject[]).filter((p) => p?.published);
+  } catch {
+    projects = [];
+  }
+
   return (
     <main className="bg-white text-slate-900">
       <section className="py-16 sm:py-20">
@@ -97,67 +71,91 @@ export default function ProjectsPage() {
             subtitle="A selection of platforms designed to solve real operational and business problems."
           />
 
-          <div className="mt-12 grid gap-8 lg:grid-cols-3">
-            {projects.map((project) => (
-              <article
-                key={project.slug}
-                className="group overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
-              >
-                {/* ✅ Full gallery (modal + thumbnails) */}
-                <div className="rounded-t-3xl overflow-hidden">
-                  <ProjectGallery title={project.name} items={project.media} />
-                </div>
+          {projects.length === 0 ? (
+            <div className="mt-12 rounded-3xl border border-slate-200 bg-slate-50 p-8 text-center">
+              <p className="text-sm text-slate-600">No projects published yet.</p>
+              <p className="mt-2 text-xs text-slate-500">
+                Go to <span className="font-semibold">/admin</span> and publish a project.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-12 grid gap-8 lg:grid-cols-3">
+              {projects.map((project) => {
+                const slug = project.slug || "project";
+                const href = project.href || `/projects/${slug}`;
+                const name = project.name || "Untitled project";
+                const status = project.status || "Upcoming";
+                const statusColor =
+                  project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
+                const description = project.description || "";
+                const highlights = Array.isArray(project.highlights) ? project.highlights : [];
+                const ctaLabel = project.ctaLabel || "View project";
 
-                <div className="p-6">
-                  <div className="flex items-center justify-between gap-3">
-                    <Link
-                      href={project.href}
-                      className="text-lg font-semibold tracking-tight text-slate-900 hover:underline"
-                    >
-                      {project.name}
+                const mediaItems = normalizeMedia(name, project.media || []);
+
+                return (
+                  <article
+                    key={slug}
+                    className="group overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
+                  >
+                    {/* Media clickable */}
+                    <Link href={href} className="block" aria-label={`Open ${name}`}>
+                      <ProjectMediaCarousel
+                        items={mediaItems}
+                        ariaLabel={`${name} media`}
+                        autoPlay
+                        intervalMs={3500}
+                        className="h-48"
+                        roundedClassName="rounded-t-3xl"
+                      />
                     </Link>
 
-                    <span
-                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${project.statusColor}`}
-                    >
-                      {project.status}
-                    </span>
-                  </div>
+                    <div className="p-6">
+                      <div className="flex items-center justify-between gap-3">
+                        <Link
+                          href={href}
+                          className="text-lg font-semibold tracking-tight text-slate-900 hover:underline"
+                        >
+                          {name}
+                        </Link>
 
-                  <Link href={project.href} className="block">
-                    <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                      {project.description}
-                    </p>
+                        <span
+                          className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${statusColor}`}
+                        >
+                          {status}
+                        </span>
+                      </div>
 
-                    <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                      {project.highlights.map((item) => (
-                        <li key={item} className="flex items-start gap-2">
-                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </Link>
+                      {/* Description + highlights clickable */}
+                      <Link href={href} className="block">
+                        <p className="mt-4 text-sm leading-relaxed text-slate-600">{description}</p>
 
-                  <div className="mt-6 flex items-center justify-between gap-3">
-                    <Link
-                      href={project.href}
-                      className="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                    >
-                      {project.ctaLabel}
-                    </Link>
+                        {highlights.length > 0 ? (
+                          <ul className="mt-4 space-y-2 text-sm text-slate-600">
+                            {highlights.map((item) => (
+                              <li key={item} className="flex items-start gap-2">
+                                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : null}
+                      </Link>
 
-                    <Link
-                      href={project.href}
-                      className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                    >
-                      View details →
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+                      <div className="mt-6">
+                        <Link
+                          href={href}
+                          className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                        >
+                          {ctaLabel}
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </Container>
       </section>
     </main>

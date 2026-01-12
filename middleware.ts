@@ -7,8 +7,10 @@ export function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  // Allow the maintenance page itself
-  if (pathname === "/maintenance") return NextResponse.next();
+  // ✅ Allow maintenance + admin while site is locked
+  if (pathname === "/maintenance" || pathname.startsWith("/admin")) {
+    return NextResponse.next();
+  }
 
   // Allow Next.js internals + static assets
   if (
@@ -26,7 +28,11 @@ export function middleware(req: NextRequest) {
   }
 
   // Allow common static file extensions (images/fonts/css/js)
-  if (/\.(png|jpg|jpeg|webp|svg|gif|ico|css|js|map|txt|xml|json|woff|woff2|ttf|eot)$/.test(pathname)) {
+  if (
+    /\.(png|jpg|jpeg|webp|svg|gif|ico|css|js|map|txt|xml|json|woff|woff2|ttf|eot)$/.test(
+      pathname
+    )
+  ) {
     return NextResponse.next();
   }
 

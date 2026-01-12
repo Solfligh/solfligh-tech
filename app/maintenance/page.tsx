@@ -21,7 +21,7 @@ export default function MaintenancePage() {
 
         <div className="mt-8 rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
           <p className="text-sm font-semibold text-slate-900">Estimated downtime</p>
-          <p className="mt-1 text-sm text-slate-600">Short we’re applying fixes now.</p>
+          <p className="mt-1 text-sm text-slate-600">We’re applying fixes now.</p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <a
               href="mailto:support@solflightech.com"

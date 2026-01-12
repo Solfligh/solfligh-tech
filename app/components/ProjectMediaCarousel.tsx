@@ -2,319 +2,617 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export type MediaItem = {
-  type: "image" | "video";
-  src: string;
-  alt?: string;
-  poster?: string; // e.g. "/projects/profitfx/demo-poster.jpg"
-};
+export type MediaItem =
+  | {
+      type: "image";
+      src: string;
+      alt?: string;
+      /** Optional explicit thumbnail (jpg/png/webp) */
+      thumb?: string;
+    }
+  | {
+      type: "video";
+      src: string;
+      /** IMPORTANT: real thumbnail image (jpg/png/webp). Used for thumbnail strip + poster preview. */
+      poster?: string;
+      /** Optional explicit thumbnail (if you want different from poster). */
+      thumb?: string;
+      alt?: string;
+    };
 
-export default function ProjectMediaCarousel({
-  items,
-  ariaLabel,
-  autoPlay = true,
-  intervalMs = 3500,
-  className = "h-48",
-  roundedClassName = "rounded-t-3xl",
-  showDots = true,
-
-  index: controlledIndex,
-  onIndexChange,
-}: {
+type Props = {
   items: MediaItem[];
-  ariaLabel: string;
-  autoPlay?: boolean;
-  intervalMs?: number;
+  ariaLabel?: string;
   className?: string;
   roundedClassName?: string;
-  showDots?: boolean;
+  autoPlay?: boolean; // autoplay SLIDES only (NOT video)
+  intervalMs?: number;
+};
 
-  index?: number;
-  onIndexChange?: (i: number) => void;
-}) {
-  const safeItems = useMemo(() => items.filter(Boolean), [items]);
+/**
+ * ProjectMediaCarousel
+ * - Slides for images/videos
+ * - Video shows poster + play button (no auto-play)
+ * - Pause video on hover
+ * - Swipe support on mobile
+ * - Modal uses same items and same thumbnail logic
+ */
+export default function ProjectMediaCarousel({
+  items,
+  ariaLabel = "Project media carousel",
+  className = "h-48",
+  roundedClassName = "rounded-2xl",
+  autoPlay = true,
+  intervalMs = 3500,
+}: Props) {
+  const safeItems = Array.isArray(items) ? items : [];
+  const [index, setIndex] = useState(0);
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  const [internalIndex, setInternalIndex] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  // Per-slide video play state (only one can play at a time)
+  const [playing, setPlaying] = useState<Record<number, boolean>>({});
 
-  // ✅ whether our <img> poster overlay should be shown (Chrome-proof)
-  const [showPosterOverlay, setShowPosterOverlay] = useState(true);
+  // Refs to control videos
+  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
 
-  const videoRef = useRef<HTMLVideoElement>(null);
+  // ---------- Helpers ----------
+  const clampIndex = (n: number) => {
+    const len = safeItems.length;
+    if (len === 0) return 0;
+    return ((n % len) + len) % len;
+  };
 
-  const count = safeItems.length;
+  const go = (n: number) => {
+    const next = clampIndex(n);
+    // stop any playing video when slide changes
+    stopAllVideos();
+    setIndex(next);
+  };
 
-  const index =
-    typeof controlledIndex === "number"
-      ? Math.max(0, Math.min(controlledIndex, Math.max(0, count - 1)))
-      : internalIndex;
+  const next = () => go(index + 1);
+  const prev = () => go(index - 1);
+
+  const stopAllVideos = () => {
+    setPlaying({});
+    Object.values(videoRefs.current).forEach((v) => {
+      try {
+        v?.pause();
+        if (v) v.currentTime = 0;
+      } catch {}
+    });
+  };
+
+  // "Real thumbnail" logic — ensures video always has a visible preview
+  const getThumbSrc = (item: MediaItem): string => {
+    if (item.type === "image") return item.thumb ?? item.src;
+
+    // video:
+    // 1) thumb
+    // 2) poster
+    // 3) fallback: replace demo.mp4 -> poster.jpg (common convention)
+    // 4) fallback: a generic placeholder in /public/projects/video-poster.jpg (you can add it)
+    const src = item.src;
+    const fallbackPoster =
+      src
+        .replace(/\.mp4$/i, ".jpg")
+        .replace(/\/demo\.mp4$/i, "/poster.jpg") || "/projects/video-poster.jpg";
+
+    return item.thumb ?? item.poster ?? fallbackPoster ?? "/projects/video-poster.jpg";
+  };
 
   const current = safeItems[index];
 
-  useEffect(() => {
-    if (typeof controlledIndex === "number") {
-      setInternalIndex(controlledIndex);
-    }
-  }, [controlledIndex]);
-
-  const setIndex = (next: number) => {
-    const clamped = count <= 0 ? 0 : ((next % count) + count) % count;
-    setInternalIndex(clamped);
-    onIndexChange?.(clamped);
-  };
-
-  // On slide change: stop video, show poster overlay again
-  useEffect(() => {
-    setIsVideoPlaying(false);
-    setShowPosterOverlay(true);
-
-    const v = videoRef.current;
-    if (v) {
-      try {
-        v.pause();
-      } catch {}
-    }
-  }, [index]);
-
-  // Autoplay slideshow (paused on hover or while video is playing)
+  // ---------- Autoplay slides (not video) ----------
   useEffect(() => {
     if (!autoPlay) return;
-    if (count <= 1) return;
-    if (isHovering) return;
-    if (isVideoPlaying) return;
+    if (safeItems.length <= 1) return;
+
+    // Don't auto-advance while modal open
+    if (isModalOpen) return;
 
     const t = window.setInterval(() => {
-      setIndex(index + 1);
+      // only advance if no video is playing
+      if (playing[index]) return;
+      next();
     }, intervalMs);
 
     return () => window.clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoPlay, intervalMs, count, isHovering, isVideoPlaying, index]);
+  }, [autoPlay, intervalMs, index, isModalOpen, safeItems.length, playing]);
 
-  // Clamp if items change
+  // Keep index valid if items change
   useEffect(() => {
-    if (count <= 0) return;
-    if (index >= count) setIndex(0);
+    if (index >= safeItems.length) setIndex(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count]);
+  }, [safeItems.length]);
 
-  const goPrev = (e?: React.SyntheticEvent) => {
-    e?.preventDefault?.();
-    e?.stopPropagation?.();
-    if (count <= 1) return;
-    setIndex(index - 1);
-  };
-
-  const goNext = (e?: React.SyntheticEvent) => {
-    e?.preventDefault?.();
-    e?.stopPropagation?.();
-    if (count <= 1) return;
-    setIndex(index + 1);
-  };
-
-  const goTo = (e: React.SyntheticEvent, i: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIndex(i);
-  };
-
-  // Swipe support
-  const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
+  // ---------- Swipe support ----------
+  const swipe = useRef<{ x: number; y: number; t: number } | null>(null);
 
   const onTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length !== 1) return;
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
+    const touch = e.touches[0];
+    swipe.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
   };
-
   const onTouchEnd = (e: React.TouchEvent) => {
-    const sx = touchStartX.current;
-    const sy = touchStartY.current;
-    touchStartX.current = null;
-    touchStartY.current = null;
+    const s = swipe.current;
+    swipe.current = null;
+    if (!s) return;
 
-    if (sx == null || sy == null) return;
-    if (e.changedTouches.length !== 1) return;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - s.x;
+    const dy = touch.clientY - s.y;
+    const dt = Date.now() - s.t;
 
-    const dx = e.changedTouches[0].clientX - sx;
-    const dy = e.changedTouches[0].clientY - sy;
+    // horizontal swipe only
+    if (Math.abs(dx) < 40) return;
+    if (Math.abs(dy) > Math.abs(dx)) return;
+    if (dt > 1200) return;
 
-    if (Math.abs(dx) < 45) return;
-    if (Math.abs(dy) > 60) return;
-
-    if (dx < 0) goNext(e);
-    else goPrev(e);
+    if (dx < 0) next();
+    else prev();
   };
 
-  const onPlayClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  // ---------- Video controls ----------
+  const toggleVideo = async (i: number) => {
+    const item = safeItems[i];
+    if (!item || item.type !== "video") return;
 
-    const v = videoRef.current;
+    // stop other videos
+    Object.keys(videoRefs.current).forEach((k) => {
+      const idx = Number(k);
+      if (idx !== i) {
+        const v = videoRefs.current[idx];
+        try {
+          v?.pause();
+          if (v) v.currentTime = 0;
+        } catch {}
+      }
+    });
+
+    const v = videoRefs.current[i];
     if (!v) return;
 
-    if (v.paused) {
-      v.play()
-        .then(() => {
-          setIsVideoPlaying(true);
-          setShowPosterOverlay(false); // ✅ hide poster overlay once playing
-        })
-        .catch(() => {});
-    } else {
+    const isPlaying = !!playing[i];
+    if (isPlaying) {
       v.pause();
-      setIsVideoPlaying(false);
-      setShowPosterOverlay(true);
+      setPlaying((p) => ({ ...p, [i]: false }));
+    } else {
+      try {
+        await v.play();
+        setPlaying((p) => ({ ...p, [i]: true }));
+      } catch {
+        // autoplay restrictions / user gesture issues — keep it paused
+        setPlaying((p) => ({ ...p, [i]: false }));
+      }
     }
   };
 
-  if (count === 0) {
+  const pauseVideo = (i: number) => {
+    if (!playing[i]) return;
+    const v = videoRefs.current[i];
+    try {
+      v?.pause();
+    } catch {}
+  };
+
+  const resumeVideo = async (i: number) => {
+    if (!playing[i]) return;
+    const v = videoRefs.current[i];
+    if (!v) return;
+    try {
+      await v.play();
+    } catch {}
+  };
+
+  // ---------- UI ----------
+  if (safeItems.length === 0) {
     return (
-      <div
-        className={`relative w-full ${className} ${roundedClassName} border-b border-slate-200/70 bg-slate-100`}
-      />
+      <div className={`relative overflow-hidden bg-slate-100 ${roundedClassName} ${className}`}>
+        <div className="absolute inset-0 grid place-items-center text-xs font-semibold text-slate-500">
+          No media
+        </div>
+      </div>
     );
   }
 
   return (
-    <div
-      className={`relative w-full overflow-hidden ${className} ${roundedClassName} border-b border-slate-200/70 bg-slate-100`}
-      aria-label={ariaLabel}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      {current.type === "image" ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={current.src}
-          alt={current.alt ?? ariaLabel}
-          className="h-full w-full object-cover"
-          loading="lazy"
-          draggable={false}
-        />
-      ) : (
-        <div className="relative h-full w-full">
-          {/* Video element */}
-          <video
-            ref={videoRef}
-            className="h-full w-full object-cover"
-            src={current.src}
-            poster={current.poster}
-            muted
-            playsInline
-            preload="metadata"
-            onPlay={() => {
-              setIsVideoPlaying(true);
-              setShowPosterOverlay(false);
-            }}
-            onPause={() => {
-              setIsVideoPlaying(false);
-              setShowPosterOverlay(true);
-            }}
-            onEnded={() => {
-              setIsVideoPlaying(false);
-              setShowPosterOverlay(true);
-            }}
-          />
-
-          {/* ✅ Poster overlay image (fixes Chrome blank poster in modal) */}
-          {current.poster && showPosterOverlay ? (
-            // eslint-disable-next-line @next/next/no-img-element
+    <>
+      <div
+        className={`relative overflow-hidden border border-slate-200/70 bg-slate-50 shadow-sm ${roundedClassName} ${className}`}
+        aria-label={ariaLabel}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* Slide */}
+        <div className="absolute inset-0">
+          {current.type === "image" ? (
+            // Use plain img to avoid any Next/Image config headaches
             <img
-              src={current.poster}
-              alt={current.alt ?? `${ariaLabel} video poster`}
-              className="absolute inset-0 h-full w-full object-cover"
+              src={current.src}
+              alt={current.alt ?? "Project image"}
+              className="h-full w-full object-cover"
               draggable={false}
             />
-          ) : null}
+          ) : (
+            <div
+              className="relative h-full w-full"
+              onMouseEnter={() => pauseVideo(index)}
+              onMouseLeave={() => resumeVideo(index)}
+            >
+              {/* Poster preview (real thumbnail) */}
+              {!playing[index] && (
+                <img
+                  src={getThumbSrc(current)}
+                  alt={current.alt ?? "Project demo video poster"}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  draggable={false}
+                />
+              )}
 
-          <button
-            onClick={onPlayClick}
-            className="absolute inset-0 flex items-center justify-center"
-            aria-label={isVideoPlaying ? "Pause video" : "Play video"}
-          >
-            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/75 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white">
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
-                {isVideoPlaying ? (
-                  <path
-                    d="M8 6v12M16 6v12"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                ) : (
-                  <path
-                    d="M10 8l8 4-8 4V8z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinejoin="round"
-                  />
-                )}
-              </svg>
-              {isVideoPlaying ? "Pause" : "Play"}
-            </span>
-          </button>
+              <video
+                ref={(el) => {
+                  videoRefs.current[index] = el;
+                }}
+                className="absolute inset-0 h-full w-full object-cover"
+                src={current.src}
+                poster={getThumbSrc(current)}
+                playsInline
+                controls={false}
+                preload="metadata"
+                onEnded={() => setPlaying((p) => ({ ...p, [index]: false }))}
+              />
 
-          <div className="absolute left-3 top-3 rounded-full border border-slate-200/70 bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur">
-            Demo
-          </div>
+              {/* Play button */}
+              <div className="absolute inset-0 grid place-items-center">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleVideo(index);
+                  }}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  aria-label={playing[index] ? "Pause video" : "Play video"}
+                >
+                  <span className="text-xs">{playing[index] ? "Pause" : "Play"}</span>
+                </button>
+              </div>
+
+              {/* Demo badge */}
+              <div className="absolute left-3 top-3 rounded-full border border-slate-200 bg-white/80 px-2 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur">
+                Demo
+              </div>
+            </div>
+          )}
         </div>
-      )}
 
-      {count > 1 ? (
-        <>
-          <button
-            onClick={(e) => goPrev(e)}
-            aria-label="Previous"
-            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-slate-200/70 bg-white/75 p-2 text-slate-800 shadow-sm backdrop-blur transition hover:bg-white"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+        {/* Arrows */}
+        {safeItems.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                prev();
+              }}
+              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-slate-200 bg-white/90 p-2 shadow-sm backdrop-blur transition hover:bg-white"
+              aria-label="Previous"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                next();
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-slate-200 bg-white/90 p-2 shadow-sm backdrop-blur transition hover:bg-white"
+              aria-label="Next"
+            >
+              ›
+            </button>
+          </>
+        )}
 
-          <button
-            onClick={(e) => goNext(e)}
-            aria-label="Next"
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-slate-200/70 bg-white/75 p-2 text-slate-800 shadow-sm backdrop-blur transition hover:bg-white"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
-              <path
-                d="M9 6l6 6-6 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-
-          {showDots ? (
-            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5 rounded-full border border-slate-200/70 bg-white/70 px-2.5 py-1.5 shadow-sm backdrop-blur">
+        {/* Dots */}
+        {safeItems.length > 1 && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 shadow-sm backdrop-blur">
+            <div className="flex items-center gap-1.5">
               {safeItems.map((_, i) => (
                 <button
                   key={i}
-                  onClick={(e) => goTo(e, i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                  className={[
-                    "h-1.5 w-1.5 rounded-full transition",
-                    i === index ? "bg-sky-600" : "bg-slate-300 hover:bg-slate-400",
-                  ].join(" ")}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    go(i);
+                  }}
+                  className={`h-1.5 w-1.5 rounded-full transition ${
+                    i === index ? "bg-sky-600" : "bg-slate-300"
+                  }`}
+                  aria-label={`Go to item ${i + 1}`}
                 />
               ))}
             </div>
-          ) : null}
-        </>
-      ) : null}
+          </div>
+        )}
+
+        {/* Expand */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setModalOpen(true);
+          }}
+          className="absolute right-3 top-3 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur transition hover:bg-white"
+        >
+          Click to expand
+        </button>
+      </div>
+
+      {/* Thumbnail strip */}
+      {safeItems.length > 1 && (
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+          {safeItems.map((item, i) => {
+            const thumb = getThumbSrc(item);
+            return (
+              <button
+                key={i}
+                type="button"
+                onClick={() => go(i)}
+                className={`relative h-12 w-20 flex-none overflow-hidden rounded-xl border shadow-sm transition ${
+                  i === index ? "border-sky-500" : "border-slate-200"
+                }`}
+                aria-label={`Select media ${i + 1}`}
+              >
+                <img
+                  src={thumb}
+                  alt={item.type === "video" ? "Video thumbnail" : item.alt ?? "Image thumbnail"}
+                  className="h-full w-full object-cover"
+                  draggable={false}
+                />
+                {item.type === "video" && (
+                  <div className="absolute inset-0 grid place-items-center">
+                    <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-900 shadow-sm">
+                      ▶
+                    </span>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Modal */}
+      {isModalOpen && (
+        <MediaModal
+          items={safeItems}
+          startIndex={index}
+          getThumbSrc={getThumbSrc}
+          onClose={() => {
+            stopAllVideos();
+            setModalOpen(false);
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+function MediaModal({
+  items,
+  startIndex,
+  getThumbSrc,
+  onClose,
+}: {
+  items: MediaItem[];
+  startIndex: number;
+  getThumbSrc: (item: MediaItem) => string;
+  onClose: () => void;
+}) {
+  const [index, setIndex] = useState(startIndex);
+  const [playing, setPlaying] = useState<Record<number, boolean>>({});
+  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
+
+  const clamp = (n: number) => {
+    const len = items.length;
+    if (len === 0) return 0;
+    return ((n % len) + len) % len;
+  };
+
+  const stopAll = () => {
+    setPlaying({});
+    Object.values(videoRefs.current).forEach((v) => {
+      try {
+        v?.pause();
+        if (v) v.currentTime = 0;
+      } catch {}
+    });
+  };
+
+  const go = (n: number) => {
+    stopAll();
+    setIndex(clamp(n));
+  };
+
+  const toggleVideo = async (i: number) => {
+    const item = items[i];
+    if (!item || item.type !== "video") return;
+
+    // stop others
+    Object.keys(videoRefs.current).forEach((k) => {
+      const idx = Number(k);
+      if (idx !== i) {
+        const v = videoRefs.current[idx];
+        try {
+          v?.pause();
+          if (v) v.currentTime = 0;
+        } catch {}
+      }
+    });
+
+    const v = videoRefs.current[i];
+    if (!v) return;
+
+    const isPlaying = !!playing[i];
+    if (isPlaying) {
+      v.pause();
+      setPlaying((p) => ({ ...p, [i]: false }));
+    } else {
+      try {
+        await v.play();
+        setPlaying((p) => ({ ...p, [i]: true }));
+      } catch {
+        setPlaying((p) => ({ ...p, [i]: false }));
+      }
+    }
+  };
+
+  // ESC closes
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") go(index + 1);
+      if (e.key === "ArrowLeft") go(index - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  const current = items[index];
+
+  return (
+    <div className="fixed inset-0 z-[9999]">
+      <div className="absolute inset-0 bg-black/70" onClick={onClose} />
+
+      <div className="absolute inset-0 flex items-center justify-center p-4">
+        <div className="w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+          {/* Header (no counter) */}
+          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+            <div className="text-sm font-semibold text-slate-900">Media</div>
+            <button
+              type="button"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+              onClick={onClose}
+            >
+              Close
+            </button>
+          </div>
+
+          {/* Body */}
+          <div className="relative bg-slate-950">
+            <div className="relative aspect-[16/9] w-full">
+              {current.type === "image" ? (
+                <img
+                  src={current.src}
+                  alt={current.alt ?? "Project image"}
+                  className="h-full w-full object-contain"
+                  draggable={false}
+                />
+              ) : (
+                <div className="relative h-full w-full">
+                  {!playing[index] && (
+                    <img
+                      src={getThumbSrc(current)}
+                      alt={current.alt ?? "Project demo poster"}
+                      className="absolute inset-0 h-full w-full object-contain"
+                      draggable={false}
+                    />
+                  )}
+
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[index] = el;
+                    }}
+                    className="absolute inset-0 h-full w-full object-contain"
+                    src={current.src}
+                    poster={getThumbSrc(current)}
+                    playsInline
+                    controls
+                    preload="metadata"
+                    onPlay={() => setPlaying((p) => ({ ...p, [index]: true }))}
+                    onPause={() => setPlaying((p) => ({ ...p, [index]: false }))}
+                    onEnded={() => setPlaying((p) => ({ ...p, [index]: false }))}
+                  />
+
+                  {/* play overlay when paused */}
+                  {!playing[index] && (
+                    <div className="absolute inset-0 grid place-items-center">
+                      <button
+                        type="button"
+                        onClick={() => toggleVideo(index)}
+                        className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                      >
+                        Play
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Modal arrows */}
+              {items.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => go(index - 1)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 px-3 py-2 text-xl font-bold text-white hover:bg-white/20"
+                    aria-label="Previous"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => go(index + 1)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 px-3 py-2 text-xl font-bold text-white hover:bg-white/20"
+                    aria-label="Next"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Modal thumbnail strip */}
+            {items.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto border-t border-white/10 bg-slate-900 px-3 py-3">
+                {items.map((item, i) => {
+                  const thumb = getThumbSrc(item);
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => go(i)}
+                      className={`relative h-14 w-24 flex-none overflow-hidden rounded-xl border transition ${
+                        i === index ? "border-sky-400" : "border-white/10"
+                      }`}
+                    >
+                      <img
+                        src={thumb}
+                        alt={item.type === "video" ? "Video thumbnail" : item.alt ?? "Image thumbnail"}
+                        className="h-full w-full object-cover"
+                        draggable={false}
+                      />
+                      {item.type === "video" && (
+                        <div className="absolute inset-0 grid place-items-center">
+                          <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-900">
+                            ▶
+                          </span>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -54,33 +54,33 @@
       "updatedAt": "2026-01-12T00:00:00.000Z"
     },
     {
-      "slug": "profitfx",
-      "name": "ProfitFX",
+      "slug": "fxco-pilot",
+      "name": "FXCO-PILOT",
       "status": "In Development",
       "statusColor": "bg-sky-100 text-sky-700 border-sky-200",
-      "description": "An FX-focused platform designed for decision support, clarity, and workflow automation for traders and teams.",
+      "description": "An FX co-pilot platform focused on decision support, clarity, and workflow automation for traders and teams.",
       "highlights": [
         "Workflow-first UX",
         "Decision-support tooling",
         "Automation-ready design"
       ],
-      "ctaLabel": "View ProfitFX",
-      "href": "/projects/profitfx",
+      "ctaLabel": "View FXCO-PILOT",
+      "href": "/projects/fxco-pilot",
       "published": true,
       "media": [
         {
           "type": "video",
-          "src": "/projects/profitfx/demo.mp4",
-          "thumbnail": "/projects/profitfx/thumb.jpg"
+          "src": "/projects/fxco-pilot/demo.mp4",
+          "thumbnail": "/projects/fxco-pilot/thumb.jpg"
         },
         {
           "type": "image",
-          "src": "/projects/profitfx/1.jpg",
-          "alt": "ProfitFX interface"
+          "src": "/projects/fxco-pilot/1.jpg",
+          "alt": "FXCO-PILOT interface"
         }
       ],
       "problem": "FX traders rely on scattered tools for analysis, notes, and execution, slowing down decisions.",
-      "solution": "ProfitFX centralizes trading workflows and decision support into a clean, focused interface.",
+      "solution": "FXCO-PILOT centralizes trading workflows and decision support into a clean, focused interface.",
       "keyFeatures": [
         "Workflow organization",
         "Decision journaling",
@@ -92,9 +92,9 @@
         "Automation modules"
       ],
       "techStack": [
-        "Next.js",
-        "Tailwind",
-        "APIs"
+        "HTML",
+        "CSS",
+        "JavaScript"
       ],
       "updatedAt": "2026-01-12T00:00:00.000Z"
     },
