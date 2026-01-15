@@ -56,7 +56,7 @@
     {
       "slug": "fxco-pilot",
       "name": "FXCO-PILOT",
-      "status": "In Development",
+      "status": "Live",
       "statusColor": "bg-sky-100 text-sky-700 border-sky-200",
       "description": "An FX co-pilot platform focused on decision support, clarity, and workflow automation for traders and teams.",
       "highlights": [

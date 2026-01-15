@@ -1,47 +1,62 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+// middleware.ts
+import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(req: NextRequest) {
-  const isMaintenance = process.env.MAINTENANCE_MODE === "true";
-  if (!isMaintenance) return NextResponse.next();
+/**
+ * SOLFLIGH TECH — Maintenance Mode Middleware
+ *
+ * IMPORTANT:
+ * - Only the literal string "true" enables maintenance mode.
+ * - "false", "0", empty, or unset will NOT enable maintenance mode.
+ *
+ * Env:
+ * - MAINTENANCE_MODE=true|false
+ */
 
-  const { pathname } = req.nextUrl;
+const ALLOW_PREFIXES = [
+  "/maintenance",
+  "/admin",
+  "/_next", // next internals (static, image optimizer, etc.)
+];
 
-  // ✅ Allow maintenance + admin while site is locked
-  if (pathname === "/maintenance" || pathname.startsWith("/admin")) {
-    return NextResponse.next();
-  }
+const ALLOW_EXACT = new Set([
+  "/favicon.ico",
+  "/robots.txt",
+  "/sitemap.xml",
+]);
 
-  // Allow Next.js internals + static assets
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon") ||
-    pathname.startsWith("/icon") ||
-    pathname.startsWith("/apple-touch-icon") ||
-    pathname.startsWith("/manifest") ||
-    pathname.startsWith("/robots.txt") ||
-    pathname.startsWith("/sitemap") ||
-    pathname.startsWith("/images") ||
-    pathname.startsWith("/pwa-assets")
-  ) {
-    return NextResponse.next();
-  }
-
-  // Allow common static file extensions (images/fonts/css/js)
-  if (
-    /\.(png|jpg|jpeg|webp|svg|gif|ico|css|js|map|txt|xml|json|woff|woff2|ttf|eot)$/.test(
-      pathname
-    )
-  ) {
-    return NextResponse.next();
-  }
-
-  // Redirect everything else to /maintenance
-  const url = req.nextUrl.clone();
-  url.pathname = "/maintenance";
-  return NextResponse.redirect(url);
+function isStaticAsset(pathname: string) {
+  return /\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|map|txt|xml|json|woff2?|ttf|eot)$/i.test(
+    pathname
+  );
 }
 
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // Always allow Next internals, admin, maintenance page, and static assets
+  if (
+    ALLOW_EXACT.has(pathname) ||
+    ALLOW_PREFIXES.some((p) => pathname === p || pathname.startsWith(p)) ||
+    isStaticAsset(pathname)
+  ) {
+    return NextResponse.next();
+  }
+
+  // ONLY "true" turns maintenance on (prevents "false" being treated as truthy)
+  const maintenanceOn =
+    (process.env.MAINTENANCE_MODE || "").trim().toLowerCase() === "true";
+
+  if (maintenanceOn) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/maintenance";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
+}
+
+// Apply middleware to all non-API routes
 export const config = {
   matcher: ["/((?!api).*)"],
 };
