@@ -7,21 +7,26 @@ export type MediaItem =
       type: "image";
       src: string;
       alt?: string;
+
       /** Optional explicit thumbnail (jpg/png/webp) */
       thumb?: string;
+
       /** Accepts "thumbnail" from JSON data */
       thumbnail?: string;
     }
   | {
       type: "video";
       src: string;
+      alt?: string;
+
       /** IMPORTANT: real thumbnail image (jpg/png/webp). Used for thumbnail strip + poster preview. */
       poster?: string;
+
       /** Optional explicit thumbnail (if you want different from poster). */
       thumb?: string;
+
       /** Accepts "thumbnail" from JSON data */
       thumbnail?: string;
-      alt?: string;
     };
 
 type Props = {
@@ -31,6 +36,17 @@ type Props = {
   roundedClassName?: string;
   autoPlay?: boolean; // autoplay SLIDES only (NOT video)
   intervalMs?: number;
+
+  /** Optional: show/hide dots UI */
+  showDots?: boolean;
+
+  /**
+   * Optional controlled mode:
+   * If index is provided, carousel uses it as the active slide.
+   * If onIndexChange is provided, carousel calls it when slide changes.
+   */
+  index?: number;
+  onIndexChange?: (nextIndex: number) => void;
 };
 
 /**
@@ -39,7 +55,8 @@ type Props = {
  * - Video shows poster + play button (no auto-play)
  * - Pause video on hover
  * - Swipe support on mobile
- * - Modal uses same items and same thumbnail logic
+ * - Optional controlled mode (index + onIndexChange)
+ * - Supports thumb/thumbnail/poster for video thumbnails
  */
 export default function ProjectMediaCarousel({
   items,
@@ -48,9 +65,22 @@ export default function ProjectMediaCarousel({
   roundedClassName = "rounded-2xl",
   autoPlay = true,
   intervalMs = 3500,
+  showDots = true,
+  index: controlledIndex,
+  onIndexChange,
 }: Props) {
   const safeItems = Array.isArray(items) ? items : [];
-  const [index, setIndex] = useState(0);
+
+  const isControlled = typeof controlledIndex === "number";
+  const [uncontrolledIndex, setUncontrolledIndex] = useState(0);
+
+  const activeIndex = isControlled ? (controlledIndex as number) : uncontrolledIndex;
+
+  const setIndex = (n: number) => {
+    if (onIndexChange) onIndexChange(n);
+    if (!isControlled) setUncontrolledIndex(n);
+  };
+
   const [isModalOpen, setModalOpen] = useState(false);
 
   // Per-slide video play state (only one can play at a time)
@@ -66,16 +96,6 @@ export default function ProjectMediaCarousel({
     return ((n % len) + len) % len;
   };
 
-  const go = (n: number) => {
-    const next = clampIndex(n);
-    // stop any playing video when slide changes
-    stopAllVideos();
-    setIndex(next);
-  };
-
-  const next = () => go(index + 1);
-  const prev = () => go(index - 1);
-
   const stopAllVideos = () => {
     setPlaying({});
     Object.values(videoRefs.current).forEach((v) => {
@@ -86,21 +106,30 @@ export default function ProjectMediaCarousel({
     });
   };
 
+  const go = (n: number) => {
+    const next = clampIndex(n);
+    stopAllVideos();
+    setIndex(next);
+  };
+
+  const next = () => go(activeIndex + 1);
+  const prev = () => go(activeIndex - 1);
+
   // "Real thumbnail" logic — ensures video always has a visible preview
   const getThumbSrc = (item: MediaItem): string => {
     if (item.type === "image") return item.thumb ?? item.thumbnail ?? item.src;
 
     // video:
     // 1) thumb
-    // 2) thumbnail  ✅ supports your projects.json
+    // 2) thumbnail ✅ supports your projects.json
     // 3) poster
     // 4) fallback: replace demo.mp4 -> poster.jpg (common convention)
-    // 5) fallback: a generic placeholder in /public/projects/video-poster.jpg (you can add it)
+    // 5) fallback: /projects/video-poster.jpg
     const src = item.src;
+
     const fallbackPoster =
-      src
-        .replace(/\.mp4$/i, ".jpg")
-        .replace(/\/demo\.mp4$/i, "/poster.jpg") || "/projects/video-poster.jpg";
+      src.replace(/\/demo\.mp4$/i, "/poster.jpg").replace(/\.mp4$/i, ".jpg") ||
+      "/projects/video-poster.jpg";
 
     return (
       item.thumb ??
@@ -111,29 +140,29 @@ export default function ProjectMediaCarousel({
     );
   };
 
-  const current = safeItems[index];
+  const current = safeItems[activeIndex];
 
   // ---------- Autoplay slides (not video) ----------
   useEffect(() => {
     if (!autoPlay) return;
     if (safeItems.length <= 1) return;
 
-    // Don't auto-advance while modal open
+    // Don't auto-advance while internal modal open
     if (isModalOpen) return;
 
     const t = window.setInterval(() => {
       // only advance if no video is playing
-      if (playing[index]) return;
+      if (playing[activeIndex]) return;
       next();
     }, intervalMs);
 
     return () => window.clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoPlay, intervalMs, index, isModalOpen, safeItems.length, playing]);
+  }, [autoPlay, intervalMs, activeIndex, isModalOpen, safeItems.length, playing]);
 
   // Keep index valid if items change
   useEffect(() => {
-    if (index >= safeItems.length) setIndex(0);
+    if (activeIndex >= safeItems.length) setIndex(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [safeItems.length]);
 
@@ -144,6 +173,7 @@ export default function ProjectMediaCarousel({
     const touch = e.touches[0];
     swipe.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
   };
+
   const onTouchEnd = (e: React.TouchEvent) => {
     const s = swipe.current;
     swipe.current = null;
@@ -192,7 +222,6 @@ export default function ProjectMediaCarousel({
         await v.play();
         setPlaying((p) => ({ ...p, [i]: true }));
       } catch {
-        // autoplay restrictions / user gesture issues — keep it paused
         setPlaying((p) => ({ ...p, [i]: false }));
       }
     }
@@ -237,7 +266,6 @@ export default function ProjectMediaCarousel({
         {/* Slide */}
         <div className="absolute inset-0">
           {current.type === "image" ? (
-            // Use plain img to avoid any Next/Image config headaches
             <img
               src={current.src}
               alt={current.alt ?? "Project image"}
@@ -247,11 +275,11 @@ export default function ProjectMediaCarousel({
           ) : (
             <div
               className="relative h-full w-full"
-              onMouseEnter={() => pauseVideo(index)}
-              onMouseLeave={() => resumeVideo(index)}
+              onMouseEnter={() => pauseVideo(activeIndex)}
+              onMouseLeave={() => resumeVideo(activeIndex)}
             >
-              {/* Poster preview (real thumbnail) */}
-              {!playing[index] && (
+              {/* Poster preview */}
+              {!playing[activeIndex] && (
                 <img
                   src={getThumbSrc(current)}
                   alt={current.alt ?? "Project demo video poster"}
@@ -262,7 +290,7 @@ export default function ProjectMediaCarousel({
 
               <video
                 ref={(el) => {
-                  videoRefs.current[index] = el;
+                  videoRefs.current[activeIndex] = el;
                 }}
                 className="absolute inset-0 h-full w-full object-cover"
                 src={current.src}
@@ -270,7 +298,7 @@ export default function ProjectMediaCarousel({
                 playsInline
                 controls={false}
                 preload="metadata"
-                onEnded={() => setPlaying((p) => ({ ...p, [index]: false }))}
+                onEnded={() => setPlaying((p) => ({ ...p, [activeIndex]: false }))}
               />
 
               {/* Play button */}
@@ -280,12 +308,12 @@ export default function ProjectMediaCarousel({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    toggleVideo(index);
+                    toggleVideo(activeIndex);
                   }}
                   className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                  aria-label={playing[index] ? "Pause video" : "Play video"}
+                  aria-label={playing[activeIndex] ? "Pause video" : "Play video"}
                 >
-                  <span className="text-xs">{playing[index] ? "Pause" : "Play"}</span>
+                  <span className="text-xs">{playing[activeIndex] ? "Pause" : "Play"}</span>
                 </button>
               </div>
 
@@ -328,7 +356,7 @@ export default function ProjectMediaCarousel({
         )}
 
         {/* Dots */}
-        {safeItems.length > 1 && (
+        {showDots && safeItems.length > 1 && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 shadow-sm backdrop-blur">
             <div className="flex items-center gap-1.5">
               {safeItems.map((_, i) => (
@@ -341,7 +369,7 @@ export default function ProjectMediaCarousel({
                     go(i);
                   }}
                   className={`h-1.5 w-1.5 rounded-full transition ${
-                    i === index ? "bg-sky-600" : "bg-slate-300"
+                    i === activeIndex ? "bg-sky-600" : "bg-slate-300"
                   }`}
                   aria-label={`Go to item ${i + 1}`}
                 />
@@ -350,7 +378,7 @@ export default function ProjectMediaCarousel({
           </div>
         )}
 
-        {/* Expand */}
+        {/* Expand (internal modal) */}
         <button
           type="button"
           onClick={(e) => {
@@ -375,7 +403,7 @@ export default function ProjectMediaCarousel({
                 type="button"
                 onClick={() => go(i)}
                 className={`relative h-12 w-20 flex-none overflow-hidden rounded-xl border shadow-sm transition ${
-                  i === index ? "border-sky-500" : "border-slate-200"
+                  i === activeIndex ? "border-sky-500" : "border-slate-200"
                 }`}
                 aria-label={`Select media ${i + 1}`}
               >
@@ -398,11 +426,11 @@ export default function ProjectMediaCarousel({
         </div>
       )}
 
-      {/* Modal */}
+      {/* Internal Modal */}
       {isModalOpen && (
         <MediaModal
           items={safeItems}
-          startIndex={index}
+          startIndex={activeIndex}
           getThumbSrc={getThumbSrc}
           onClose={() => {
             stopAllVideos();
@@ -483,7 +511,7 @@ function MediaModal({
     }
   };
 
-  // ESC closes
+  // ESC closes + arrows
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -503,7 +531,6 @@ function MediaModal({
 
       <div className="absolute inset-0 flex items-center justify-center p-4">
         <div className="w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
-          {/* Header (no counter) */}
           <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
             <div className="text-sm font-semibold text-slate-900">Media</div>
             <button
@@ -515,7 +542,6 @@ function MediaModal({
             </button>
           </div>
 
-          {/* Body */}
           <div className="relative bg-slate-950">
             <div className="relative aspect-[16/9] w-full">
               {current.type === "image" ? (
@@ -551,7 +577,6 @@ function MediaModal({
                     onEnded={() => setPlaying((p) => ({ ...p, [index]: false }))}
                   />
 
-                  {/* play overlay when paused */}
                   {!playing[index] && (
                     <div className="absolute inset-0 grid place-items-center">
                       <button
@@ -566,7 +591,6 @@ function MediaModal({
                 </div>
               )}
 
-              {/* Modal arrows */}
               {items.length > 1 && (
                 <>
                   <button
@@ -589,7 +613,6 @@ function MediaModal({
               )}
             </div>
 
-            {/* Modal thumbnail strip */}
             {items.length > 1 && (
               <div className="flex gap-2 overflow-x-auto border-t border-white/10 bg-slate-900 px-3 py-3">
                 {items.map((item, i) => {
