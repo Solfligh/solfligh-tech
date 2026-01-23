@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type MediaItem =
   | {
@@ -9,6 +9,8 @@ export type MediaItem =
       alt?: string;
       /** Optional explicit thumbnail (jpg/png/webp) */
       thumb?: string;
+      /** Accepts "thumbnail" from JSON data */
+      thumbnail?: string;
     }
   | {
       type: "video";
@@ -17,6 +19,8 @@ export type MediaItem =
       poster?: string;
       /** Optional explicit thumbnail (if you want different from poster). */
       thumb?: string;
+      /** Accepts "thumbnail" from JSON data */
+      thumbnail?: string;
       alt?: string;
     };
 
@@ -84,20 +88,27 @@ export default function ProjectMediaCarousel({
 
   // "Real thumbnail" logic — ensures video always has a visible preview
   const getThumbSrc = (item: MediaItem): string => {
-    if (item.type === "image") return item.thumb ?? item.src;
+    if (item.type === "image") return item.thumb ?? item.thumbnail ?? item.src;
 
     // video:
     // 1) thumb
-    // 2) poster
-    // 3) fallback: replace demo.mp4 -> poster.jpg (common convention)
-    // 4) fallback: a generic placeholder in /public/projects/video-poster.jpg (you can add it)
+    // 2) thumbnail  ✅ supports your projects.json
+    // 3) poster
+    // 4) fallback: replace demo.mp4 -> poster.jpg (common convention)
+    // 5) fallback: a generic placeholder in /public/projects/video-poster.jpg (you can add it)
     const src = item.src;
     const fallbackPoster =
       src
         .replace(/\.mp4$/i, ".jpg")
         .replace(/\/demo\.mp4$/i, "/poster.jpg") || "/projects/video-poster.jpg";
 
-    return item.thumb ?? item.poster ?? fallbackPoster ?? "/projects/video-poster.jpg";
+    return (
+      item.thumb ??
+      item.thumbnail ??
+      item.poster ??
+      fallbackPoster ??
+      "/projects/video-poster.jpg"
+    );
   };
 
   const current = safeItems[index];
