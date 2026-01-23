@@ -24,6 +24,7 @@ type AnyProject = {
 
 function normalizeMedia(projectName: string, media: any[]) {
   const safe = Array.isArray(media) ? media : [];
+
   const out = safe
     .filter((m) => m && typeof m.src === "string" && (m.type === "image" || m.type === "video"))
     .map((m) => {
@@ -31,19 +32,30 @@ function normalizeMedia(projectName: string, media: any[]) {
         return {
           type: "video" as const,
           src: String(m.src),
+          // ✅ supports your projects.json "thumbnail"
           thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
+          alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
       }
+
       return {
         type: "image" as const,
         src: String(m.src),
         alt: m.alt ? String(m.alt) : `${projectName} image`,
+        // ✅ supports optional "thumbnail" for images too
         thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
       };
     });
 
+  // ✅ Better fallback: use the same global poster image standard
   if (out.length === 0) {
-    return [{ type: "image" as const, src: "/images/placeholder.png", alt: "Placeholder" }];
+    return [
+      {
+        type: "image" as const,
+        src: "/projects/video-poster.jpg",
+        alt: "Media coming soon",
+      },
+    ];
   }
 
   return out;
@@ -85,18 +97,14 @@ export default async function ProjectsPage() {
                 const isFxcoPilot = slug === "fxco-pilot";
                 const externalFxcoUrl = "https://fxco-pilot.solflightech.org";
 
-                const href = isFxcoPilot
-                  ? externalFxcoUrl
-                  : project.href || `/projects/${slug}`;
+                const href = isFxcoPilot ? externalFxcoUrl : project.href || `/projects/${slug}`;
 
                 const status = isFxcoPilot ? "Live" : project.status || "Upcoming";
                 const statusColor = isFxcoPilot
                   ? "bg-emerald-100 text-emerald-700 border-emerald-200"
                   : project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
 
-                const ctaLabel = isFxcoPilot
-                  ? "Open FXCO-PILOT"
-                  : project.ctaLabel || "View project";
+                const ctaLabel = isFxcoPilot ? "Open FXCO-PILOT" : project.ctaLabel || "View project";
 
                 const mediaItems = normalizeMedia(name, project.media || []);
 
@@ -140,9 +148,7 @@ export default async function ProjectsPage() {
                       </div>
 
                       <Link href={href} {...linkProps} className="block">
-                        <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                          {description}
-                        </p>
+                        <p className="mt-4 text-sm leading-relaxed text-slate-600">{description}</p>
 
                         {highlights.length > 0 && (
                           <ul className="mt-4 space-y-2 text-sm text-slate-600">
@@ -159,9 +165,9 @@ export default async function ProjectsPage() {
                       {/* ✅ DISCLAIMER (FXCO-PILOT ONLY) */}
                       {isFxcoPilot && (
                         <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-                          <strong>Disclaimer:</strong> FXCO-PILOT provides AI-assisted
-                          analysis for educational purposes only. It is not financial
-                          or investment advice. Trading involves risk.
+                          <strong>Disclaimer:</strong> FXCO-PILOT provides AI-assisted analysis for
+                          educational purposes only. It is not financial or investment advice.
+                          Trading involves risk.
                         </div>
                       )}
 
