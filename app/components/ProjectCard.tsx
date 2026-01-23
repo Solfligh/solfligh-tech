@@ -26,6 +26,7 @@ function normalizeMedia(projectName: string, media: any[]) {
         return {
           type: "video" as const,
           src: String(m.src),
+          // supports projects.json "thumbnail"
           thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
           alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
@@ -121,7 +122,6 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
           )}
         </Link>
 
-        {/* ✅ DISCLAIMER (FXCO-PILOT ONLY) */}
         {isFxcoPilot && (
           <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
             <strong>Disclaimer:</strong> FXCO-PILOT provides AI-assisted analysis for educational purposes only.
