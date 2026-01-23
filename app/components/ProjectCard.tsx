@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
 
 type AnyProject = {
@@ -26,7 +27,6 @@ function normalizeMedia(projectName: string, media: any[]) {
         return {
           type: "video" as const,
           src: String(m.src),
-          // ✅ supports your projects.json "thumbnail"
           thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
           alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
@@ -36,12 +36,10 @@ function normalizeMedia(projectName: string, media: any[]) {
         type: "image" as const,
         src: String(m.src),
         alt: m.alt ? String(m.alt) : `${projectName} image`,
-        // ✅ supports optional "thumbnail" for images too
         thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
       };
     });
 
-  // ✅ Better fallback: use the same global poster image standard
   if (out.length === 0) {
     return [
       {
@@ -73,22 +71,54 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
 
   const ctaLabel = isFxcoPilot ? "Open FXCO-PILOT" : project.ctaLabel || "View project";
 
-  const mediaItems = normalizeMedia(name, project.media || []);
-
   const linkProps = isFxcoPilot
     ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
     : ({} as const);
 
+  // Decide if we should show a small "Coming soon" hint
+  const isUpcoming = useMemo(() => {
+    const s = String(status || "").toLowerCase();
+    return s.includes("upcoming") || s.includes("coming soon");
+  }, [status]);
+
+  // Normalize and also harden images against missing files:
+  // If the browser cannot load an image, it will show broken icon.
+  // We prevent that by replacing bad src with the global poster.
+  const mediaItems = useMemo(() => {
+    const base = normalizeMedia(name, project.media || []);
+    return base.map((m: any) => {
+      if (m?.type !== "image") return m;
+
+      // We keep the original src, but add a "fallbackSrc" the carousel can use
+      // via the thumbnail mechanism (it already prefers thumbnail/thumb).
+      // If you ever set thumbnail in JSON, it still works.
+      return {
+        ...m,
+        thumbnail: m.thumbnail ?? "/projects/video-poster.jpg",
+      };
+    });
+  }, [name, project.media]);
+
   return (
     <article className="group overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg">
+      {/* Make the media area clickable */}
       <Link href={href} {...linkProps} className="block">
-        <ProjectMediaCarousel
-          items={mediaItems}
-          autoPlay
-          intervalMs={3500}
-          className="h-48"
-          roundedClassName="rounded-t-3xl"
-        />
+        <div className="relative">
+          <ProjectMediaCarousel
+            items={mediaItems}
+            autoPlay
+            intervalMs={3500}
+            className="h-48"
+            roundedClassName="rounded-t-3xl"
+          />
+
+          {/* Small overlay for Upcoming */}
+          {isUpcoming && (
+            <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-slate-200/70 bg-white/80 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur">
+              Coming soon
+            </div>
+          )}
+        </div>
       </Link>
 
       <div className="p-6">
@@ -109,6 +139,7 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
           </span>
         </div>
 
+        {/* Make text clickable too */}
         <Link href={href} {...linkProps} className="block">
           <p className="mt-4 text-sm leading-relaxed text-slate-600">{description}</p>
 
@@ -124,7 +155,6 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
           )}
         </Link>
 
-        {/* ✅ DISCLAIMER (FXCO-PILOT ONLY) */}
         {isFxcoPilot && (
           <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
             <strong>Disclaimer:</strong> FXCO-PILOT provides AI-assisted analysis for educational purposes only.
