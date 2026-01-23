@@ -26,7 +26,7 @@ function normalizeMedia(projectName: string, media: any[]) {
         return {
           type: "video" as const,
           src: String(m.src),
-          // supports projects.json "thumbnail"
+          // ✅ supports your projects.json "thumbnail"
           thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
           alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
@@ -36,10 +36,12 @@ function normalizeMedia(projectName: string, media: any[]) {
         type: "image" as const,
         src: String(m.src),
         alt: m.alt ? String(m.alt) : `${projectName} image`,
+        // ✅ supports optional "thumbnail" for images too
         thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
       };
     });
 
+  // ✅ Better fallback: use the same global poster image standard
   if (out.length === 0) {
     return [
       {
@@ -122,6 +124,7 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
           )}
         </Link>
 
+        {/* ✅ DISCLAIMER (FXCO-PILOT ONLY) */}
         {isFxcoPilot && (
           <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
             <strong>Disclaimer:</strong> FXCO-PILOT provides AI-assisted analysis for educational purposes only.
