@@ -17,11 +17,6 @@
       "published": true,
       "media": [
         {
-          "type": "video",
-          "src": "/projects/profitpilot/demo.mp4",
-          "thumbnail": "/projects/profitpilot/thumb.jpg"
-        },
-        {
           "type": "image",
           "src": "/projects/profitpilot/1.jpg",
           "alt": "ProfitPilot dashboard"
@@ -68,11 +63,6 @@
       "href": "/projects/fxco-pilot",
       "published": true,
       "media": [
-        {
-          "type": "video",
-          "src": "/projects/fxco-pilot/demo.mp4",
-          "thumbnail": "/projects/fxco-pilot/thumb.jpg"
-        },
         {
           "type": "image",
           "src": "/projects/fxco-pilot/1.jpg",
