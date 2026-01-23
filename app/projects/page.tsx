@@ -78,7 +78,7 @@ export default async function ProjectsPage() {
           <PageHeader
             level={1}
             badge="Projects"
-            title="Products we are building"
+            title="Products By Us"
             subtitle="A selection of platforms designed to solve real operational and business problems."
           />
 
