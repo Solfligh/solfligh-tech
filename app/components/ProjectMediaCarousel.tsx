@@ -100,6 +100,10 @@ export default function ProjectMediaCarousel({
     return cleaned;
   }, [items]);
 
+  // ✅ KEY FIX: do we have at least one REAL video in this carousel?
+  // If not, we hide the thumbnail strip (removes the 3 Solfligh "tabs")
+  const hasAnyRealVideo = useMemo(() => safeItems.some(isRealVideo), [safeItems]);
+
   const isControlled = typeof controlledIndex === "number";
   const [uncontrolledIndex, setUncontrolledIndex] = useState(0);
   const activeIndex = isControlled ? (controlledIndex as number) : uncontrolledIndex;
@@ -427,7 +431,8 @@ export default function ProjectMediaCarousel({
         </button>
       </div>
 
-      {safeItems.length > 1 && (
+      {/* ✅ FIX: thumbnail strip ONLY if at least one REAL video exists */}
+      {safeItems.length > 1 && hasAnyRealVideo && (
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           {safeItems.map((item, i) => {
             const thumb = getThumbSrc(item);
@@ -649,7 +654,6 @@ function MediaModal({
                   )}
                 </div>
               ) : (
-                // ✅ Coming soon placeholder inside modal
                 <div className="relative h-full w-full">
                   <img
                     src={getThumbSrc(current)}
