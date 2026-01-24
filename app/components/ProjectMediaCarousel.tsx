@@ -46,15 +46,21 @@ type Props = {
 
 const FALLBACK_POSTER = "/projects/video-poster.jpg";
 
+/** Ensure local asset paths start with "/" so they don't become relative like /projects/rebirthagro/projects/... */
+function normalizeSrc(src: string | undefined | null): string {
+  const s = String(src || "").trim();
+  if (!s) return "";
+  if (s.startsWith("http://") || s.startsWith("https://") || s.startsWith("data:")) return s;
+  return s.startsWith("/") ? s : `/${s}`;
+}
+
 /**
  * ProjectMediaCarousel
  * - Slides for images/videos
  * - Video shows poster + play button (no auto-play)
- * - If video missing/unsupported -> poster-only mode (no play)
- * - IMPORTANT: video element stays hidden until it can play (prevents gray error screen)
  * - Pause video on hover
  * - Swipe support on mobile
- * - Modal uses same items and same thumbnail logic
+ * - Optional internal modal (fullscreen)
  */
 export default function ProjectMediaCarousel({
   items,
@@ -83,12 +89,6 @@ export default function ProjectMediaCarousel({
 
   // Per-slide video play state (only one can play at a time)
   const [playing, setPlaying] = useState<Record<number, boolean>>({});
-
-  // Track broken videos (missing / unsupported mime / etc.)
-  const [brokenVideo, setBrokenVideo] = useState<Record<number, boolean>>({});
-
-  // Track which videos are actually playable (prevents gray error UI flash)
-  const [videoReady, setVideoReady] = useState<Record<number, boolean>>({});
 
   // Refs to control videos
   const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
@@ -119,16 +119,23 @@ export default function ProjectMediaCarousel({
   const next = () => go(activeIndex + 1);
   const prev = () => go(activeIndex - 1);
 
+  // "Real thumbnail" logic
   const getThumbSrc = (item: MediaItem): string => {
-    if (item.type === "image") return item.thumb ?? item.thumbnail ?? item.src;
+    if (item.type === "image") {
+      return normalizeSrc(item.thumb ?? item.thumbnail ?? item.src) || FALLBACK_POSTER;
+    }
 
-    const src = item.src;
-    const fallbackPoster =
+    const src = normalizeSrc(item.src);
+    const fallbackFromVideo =
       src
         .replace(/\.mp4$/i, ".jpg")
         .replace(/\/demo\.mp4$/i, "/poster.jpg") || FALLBACK_POSTER;
 
-    return item.thumb ?? item.thumbnail ?? item.poster ?? fallbackPoster ?? FALLBACK_POSTER;
+    return (
+      normalizeSrc(item.thumb ?? item.thumbnail ?? item.poster) ||
+      normalizeSrc(fallbackFromVideo) ||
+      FALLBACK_POSTER
+    );
   };
 
   const current = safeItems[activeIndex];
@@ -183,7 +190,6 @@ export default function ProjectMediaCarousel({
   const toggleVideo = async (i: number) => {
     const item = safeItems[i];
     if (!item || item.type !== "video") return;
-    if (brokenVideo[i]) return;
 
     // stop other videos
     Object.keys(videoRefs.current).forEach((k) => {
@@ -204,14 +210,13 @@ export default function ProjectMediaCarousel({
     if (isPlaying) {
       v.pause();
       setPlaying((p) => ({ ...p, [i]: false }));
-      return;
-    }
-
-    try {
-      await v.play();
-      setPlaying((p) => ({ ...p, [i]: true }));
-    } catch {
-      setPlaying((p) => ({ ...p, [i]: false }));
+    } else {
+      try {
+        await v.play();
+        setPlaying((p) => ({ ...p, [i]: true }));
+      } catch {
+        setPlaying((p) => ({ ...p, [i]: false }));
+      }
     }
   };
 
@@ -232,23 +237,6 @@ export default function ProjectMediaCarousel({
     } catch {}
   };
 
-  const onVideoError = (i: number) => {
-    setBrokenVideo((b) => ({ ...b, [i]: true }));
-    setVideoReady((r) => ({ ...r, [i]: false }));
-    setPlaying((p) => ({ ...p, [i]: false }));
-
-    const v = videoRefs.current[i];
-    try {
-      v?.pause();
-      if (v) v.currentTime = 0;
-    } catch {}
-  };
-
-  const onVideoCanPlay = (i: number) => {
-    // video is playable, safe to show the <video> layer when needed
-    setVideoReady((r) => ({ ...r, [i]: true }));
-  };
-
   // ---------- UI ----------
   if (safeItems.length === 0) {
     return (
@@ -260,16 +248,16 @@ export default function ProjectMediaCarousel({
     );
   }
 
-  const isVideo = current.type === "video";
-  const isBroken = isVideo ? !!brokenVideo[activeIndex] : false;
-  const isReady = isVideo ? !!videoReady[activeIndex] : false;
-
-  // Only show the actual <video> layer if:
-  // - not broken
-  // - AND browser confirmed it can play (canplay)
-  // - AND user is playing (or in modal controls where video element is needed)
-  // For inline carousel: only show when playing to avoid any gray error UI.
-  const showVideoLayerInline = isVideo && !isBroken && isReady && !!playing[activeIndex];
+  // If something is weird and current is undefined, fail gracefully
+  if (!current) {
+    return (
+      <div className={`relative overflow-hidden bg-slate-100 ${roundedClassName} ${className}`}>
+        <div className="absolute inset-0 grid place-items-center text-xs font-semibold text-slate-500">
+          Media unavailable
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -283,14 +271,12 @@ export default function ProjectMediaCarousel({
         <div className="absolute inset-0">
           {current.type === "image" ? (
             <img
-              src={current.src}
+              src={normalizeSrc(current.src)}
               alt={current.alt ?? "Project image"}
               className="h-full w-full object-cover"
               draggable={false}
               onError={(e) => {
-                const img = e.currentTarget;
-                if (img.src.endsWith(FALLBACK_POSTER)) return;
-                img.src = FALLBACK_POSTER;
+                e.currentTarget.src = FALLBACK_POSTER;
               }}
             />
           ) : (
@@ -299,74 +285,48 @@ export default function ProjectMediaCarousel({
               onMouseEnter={() => pauseVideo(activeIndex)}
               onMouseLeave={() => resumeVideo(activeIndex)}
             >
-              {/* Poster is ALWAYS the base layer */}
-              <img
-                src={getThumbSrc(current)}
-                alt={current.alt ?? "Project demo video poster"}
-                className="absolute inset-0 h-full w-full object-cover"
-                draggable={false}
-                onError={(e) => {
-                  const img = e.currentTarget;
-                  if (img.src.endsWith(FALLBACK_POSTER)) return;
-                  img.src = FALLBACK_POSTER;
+              {!playing[activeIndex] && (
+                <img
+                  src={getThumbSrc(current)}
+                  alt={current.alt ?? "Project demo video poster"}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  draggable={false}
+                  onError={(e) => {
+                    e.currentTarget.src = FALLBACK_POSTER;
+                  }}
+                />
+              )}
+
+              <video
+                ref={(el) => {
+                  videoRefs.current[activeIndex] = el;
                 }}
+                className="absolute inset-0 h-full w-full object-cover"
+                src={normalizeSrc(current.src)}
+                poster={getThumbSrc(current)}
+                playsInline
+                controls={false}
+                preload="metadata"
+                onEnded={() => setPlaying((p) => ({ ...p, [activeIndex]: false }))}
               />
 
-              {/* Hidden preflight video element (for canplay/error detection). Never shown directly. */}
-              {!isBroken && (
-                <video
-                  ref={(el) => {
-                    videoRefs.current[activeIndex] = el;
-                  }}
-                  className="hidden"
-                  src={current.src}
-                  preload="metadata"
-                  playsInline
-                  onCanPlay={() => onVideoCanPlay(activeIndex)}
-                  onError={() => onVideoError(activeIndex)}
-                />
-              )}
-
-              {/* Visible video layer ONLY when actually playing AND ready */}
-              {showVideoLayerInline && !isBroken && (
-                <video
-                  className="absolute inset-0 h-full w-full object-cover"
-                  src={current.src}
-                  poster={getThumbSrc(current)}
-                  playsInline
-                  controls={false}
-                  autoPlay
-                  onEnded={() => setPlaying((p) => ({ ...p, [activeIndex]: false }))}
-                />
-              )}
-
-              {/* Play / Coming soon */}
               <div className="absolute inset-0 grid place-items-center">
-                {isBroken ? (
-                  <div className="rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur">
-                    Video coming soon
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // If it isn't ready yet, clicking will still try.
-                      // If it fails, onError will flip to "coming soon".
-                      toggleVideo(activeIndex);
-                    }}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                    aria-label={playing[activeIndex] ? "Pause video" : "Play video"}
-                  >
-                    <span className="text-xs">{playing[activeIndex] ? "Pause" : "Play"}</span>
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleVideo(activeIndex);
+                  }}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  aria-label={playing[activeIndex] ? "Pause video" : "Play video"}
+                >
+                  <span className="text-xs">{playing[activeIndex] ? "Pause" : "Play"}</span>
+                </button>
               </div>
 
-              {/* Badge */}
               <div className="absolute left-3 top-3 rounded-full border border-slate-200 bg-white/80 px-2 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur">
-                {isBroken ? "Coming soon" : "Demo"}
+                Demo
               </div>
             </div>
           )}
@@ -460,9 +420,7 @@ export default function ProjectMediaCarousel({
                   className="h-full w-full object-cover"
                   draggable={false}
                   onError={(e) => {
-                    const img = e.currentTarget;
-                    if (img.src.endsWith(FALLBACK_POSTER)) return;
-                    img.src = FALLBACK_POSTER;
+                    e.currentTarget.src = FALLBACK_POSTER;
                   }}
                 />
                 {item.type === "video" && (
@@ -488,7 +446,6 @@ export default function ProjectMediaCarousel({
             stopAllVideos();
             setModalOpen(false);
           }}
-          fallbackPoster={FALLBACK_POSTER}
         />
       )}
     </>
@@ -500,18 +457,14 @@ function MediaModal({
   startIndex,
   getThumbSrc,
   onClose,
-  fallbackPoster,
 }: {
   items: MediaItem[];
   startIndex: number;
   getThumbSrc: (item: MediaItem) => string;
   onClose: () => void;
-  fallbackPoster: string;
 }) {
   const [index, setIndex] = useState(startIndex);
   const [playing, setPlaying] = useState<Record<number, boolean>>({});
-  const [brokenVideo, setBrokenVideo] = useState<Record<number, boolean>>({});
-  const [videoReady, setVideoReady] = useState<Record<number, boolean>>({});
   const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
 
   const clamp = (n: number) => {
@@ -535,26 +488,20 @@ function MediaModal({
     setIndex(clamp(n));
   };
 
-  const onVideoError = (i: number) => {
-    setBrokenVideo((b) => ({ ...b, [i]: true }));
-    setVideoReady((r) => ({ ...r, [i]: false }));
-    setPlaying((p) => ({ ...p, [i]: false }));
-
-    const v = videoRefs.current[i];
-    try {
-      v?.pause();
-      if (v) v.currentTime = 0;
-    } catch {}
-  };
-
-  const onVideoCanPlay = (i: number) => {
-    setVideoReady((r) => ({ ...r, [i]: true }));
-  };
-
   const toggleVideo = async (i: number) => {
     const item = items[i];
     if (!item || item.type !== "video") return;
-    if (brokenVideo[i]) return;
+
+    Object.keys(videoRefs.current).forEach((k) => {
+      const idx = Number(k);
+      if (idx !== i) {
+        const v = videoRefs.current[idx];
+        try {
+          v?.pause();
+          if (v) v.currentTime = 0;
+        } catch {}
+      }
+    });
 
     const v = videoRefs.current[i];
     if (!v) return;
@@ -563,18 +510,16 @@ function MediaModal({
     if (isPlaying) {
       v.pause();
       setPlaying((p) => ({ ...p, [i]: false }));
-      return;
-    }
-
-    try {
-      await v.play();
-      setPlaying((p) => ({ ...p, [i]: true }));
-    } catch {
-      setPlaying((p) => ({ ...p, [i]: false }));
+    } else {
+      try {
+        await v.play();
+        setPlaying((p) => ({ ...p, [i]: true }));
+      } catch {
+        setPlaying((p) => ({ ...p, [i]: false }));
+      }
     }
   };
 
-  // ESC + arrows
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -587,15 +532,6 @@ function MediaModal({
   }, [index]);
 
   const current = items[index];
-  const isVideo = current.type === "video";
-  const isBroken = isVideo ? !!brokenVideo[index] : false;
-  const isReady = isVideo ? !!videoReady[index] : false;
-
-  // In modal: we ONLY show the visible video player when:
-  // - not broken
-  // - and ready
-  // - and user has started playing
-  const showVideoLayerModal = isVideo && !isBroken && isReady && !!playing[index];
 
   return (
     <div className="fixed inset-0 z-[9999]">
@@ -618,76 +554,52 @@ function MediaModal({
             <div className="relative aspect-[16/9] w-full">
               {current.type === "image" ? (
                 <img
-                  src={current.src}
+                  src={normalizeSrc(current.src)}
                   alt={current.alt ?? "Project image"}
                   className="h-full w-full object-contain"
                   draggable={false}
                   onError={(e) => {
-                    const img = e.currentTarget;
-                    if (img.src.endsWith(fallbackPoster)) return;
-                    img.src = fallbackPoster;
+                    e.currentTarget.src = FALLBACK_POSTER;
                   }}
                 />
               ) : (
                 <div className="relative h-full w-full">
-                  {/* Poster is ALWAYS the base layer */}
-                  <img
-                    src={getThumbSrc(current)}
-                    alt={current.alt ?? "Project demo poster"}
-                    className="absolute inset-0 h-full w-full object-contain"
-                    draggable={false}
-                    onError={(e) => {
-                      const img = e.currentTarget;
-                      if (img.src.endsWith(fallbackPoster)) return;
-                      img.src = fallbackPoster;
+                  {!playing[index] && (
+                    <img
+                      src={getThumbSrc(current)}
+                      alt={current.alt ?? "Project demo poster"}
+                      className="absolute inset-0 h-full w-full object-contain"
+                      draggable={false}
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_POSTER;
+                      }}
+                    />
+                  )}
+
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[index] = el;
                     }}
+                    className="absolute inset-0 h-full w-full object-contain"
+                    src={normalizeSrc(current.src)}
+                    poster={getThumbSrc(current)}
+                    playsInline
+                    controls
+                    preload="metadata"
+                    onPlay={() => setPlaying((p) => ({ ...p, [index]: true }))}
+                    onPause={() => setPlaying((p) => ({ ...p, [index]: false }))}
+                    onEnded={() => setPlaying((p) => ({ ...p, [index]: false }))}
                   />
 
-                  {/* Hidden preflight video element for canplay/error detection */}
-                  {!isBroken && (
-                    <video
-                      ref={(el) => {
-                        videoRefs.current[index] = el;
-                      }}
-                      className="hidden"
-                      src={current.src}
-                      preload="metadata"
-                      playsInline
-                      onCanPlay={() => onVideoCanPlay(index)}
-                      onError={() => onVideoError(index)}
-                    />
-                  )}
-
-                  {/* Visible video player ONLY when playing AND ready */}
-                  {showVideoLayerModal && !isBroken && (
-                    <video
-                      className="absolute inset-0 h-full w-full object-contain"
-                      src={current.src}
-                      playsInline
-                      controls
-                      autoPlay
-                      onPlay={() => setPlaying((p) => ({ ...p, [index]: true }))}
-                      onPause={() => setPlaying((p) => ({ ...p, [index]: false }))}
-                      onEnded={() => setPlaying((p) => ({ ...p, [index]: false }))}
-                    />
-                  )}
-
-                  {/* Overlay */}
                   {!playing[index] && (
                     <div className="absolute inset-0 grid place-items-center">
-                      {isBroken ? (
-                        <div className="rounded-full border border-slate-200 bg-white/90 px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm backdrop-blur">
-                          Video coming soon
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => toggleVideo(index)}
-                          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                        >
-                          Play
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => toggleVideo(index)}
+                        className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                      >
+                        Play
+                      </button>
                     </div>
                   )}
                 </div>
@@ -734,9 +646,7 @@ function MediaModal({
                         className="h-full w-full object-cover"
                         draggable={false}
                         onError={(e) => {
-                          const img = e.currentTarget;
-                          if (img.src.endsWith(fallbackPoster)) return;
-                          img.src = fallbackPoster;
+                          e.currentTarget.src = FALLBACK_POSTER;
                         }}
                       />
                       {item.type === "video" && (
