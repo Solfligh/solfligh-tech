@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProjectMediaCarousel, { type MediaItem } from "@/app/components/ProjectMediaCarousel";
 
 const FALLBACK_POSTER = "/projects/video-poster.jpg";
@@ -20,21 +20,27 @@ function isLikelyVideoSrc(src: string | undefined | null): boolean {
   return /\.(mp4|webm|ogg|mov|m4v)$/i.test(s);
 }
 
-/** Remove “fake videos” so the Play button never shows unless you actually have a video file */
-function sanitizeItems(title: string, items: MediaItem[]): MediaItem[] {
+/**
+ * ✅ Sanitize items:
+ * - Keep images
+ * - Keep videos ONLY if src is a real-looking video file
+ * - If there is NO real video, we do NOT include a fake video slide (so no Play UI can show)
+ */
+function sanitizeItems(title: string, items: MediaItem[]): { items: MediaItem[]; hasRealVideo: boolean } {
   const out: MediaItem[] = [];
+  let hasRealVideo = false;
 
   for (const m of items) {
     if (!m) continue;
 
     if (m.type === "video") {
-      // ✅ Drop video items unless the src looks like a real video file
+      // ✅ Keep only real videos
       if (!isLikelyVideoSrc(m.src)) continue;
 
+      hasRealVideo = true;
       out.push({
         ...m,
         src: normalizeSrc(m.src),
-        // normalize optional fields too
         poster: normalizeSrc(m.poster),
         thumb: normalizeSrc(m.thumb),
         thumbnail: normalizeSrc(m.thumbnail),
@@ -55,16 +61,19 @@ function sanitizeItems(title: string, items: MediaItem[]): MediaItem[] {
 
   // If everything was filtered out, fallback to an IMAGE (not video)
   if (out.length === 0) {
-    return [
-      {
-        type: "image",
-        src: FALLBACK_POSTER,
-        alt: "Media coming soon",
-      },
-    ];
+    return {
+      items: [
+        {
+          type: "image",
+          src: FALLBACK_POSTER,
+          alt: "Media coming soon",
+        },
+      ],
+      hasRealVideo: false,
+    };
   }
 
-  return out;
+  return { items: out, hasRealVideo };
 }
 
 export default function ProjectGallery({
@@ -74,7 +83,10 @@ export default function ProjectGallery({
   title: string;
   items: MediaItem[];
 }) {
-  const safeItems = useMemo(() => sanitizeItems(title, Array.isArray(items) ? items : []), [items, title]);
+  const { items: safeItems, hasRealVideo } = useMemo(
+    () => sanitizeItems(title, Array.isArray(items) ? items : []),
+    [items, title]
+  );
 
   const [open, setOpen] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
@@ -154,6 +166,13 @@ export default function ProjectGallery({
             showDots
           />
 
+          {/* ✅ If NO real video exists, show “Demo video coming soon” */}
+          {!hasRealVideo && (
+            <div className="pointer-events-none absolute left-4 bottom-4 rounded-full border border-slate-200/70 bg-white/80 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur">
+              🎥 Demo video coming soon
+            </div>
+          )}
+
           <div className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1 text-[11px] font-semibold text-slate-800 shadow-sm backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-sky-600" />
             Click to expand
@@ -201,6 +220,15 @@ export default function ProjectGallery({
                 index={modalIndex}
                 onIndexChange={setModalIndex}
               />
+
+              {/* ✅ In modal too */}
+              {!hasRealVideo && (
+                <div className="px-5 pb-4 pt-3">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                    🎥 Demo video coming soon
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Thumbnail strip */}
