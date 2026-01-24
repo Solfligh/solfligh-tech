@@ -3,7 +3,7 @@ import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import Link from "next/link";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
-import { listProjects } from "../lib/projectStore";
+import { listProjects } from "@/app/lib/projectStore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +18,7 @@ type AnyProject = {
   highlights?: string[];
   ctaLabel?: string;
   href?: string;
+  externalUrl?: string;
   published?: boolean;
   media?: any[];
 };
@@ -32,7 +33,6 @@ function normalizeMedia(projectName: string, media: any[]) {
         return {
           type: "video" as const,
           src: String(m.src),
-          // ✅ supports your projects.json "thumbnail"
           thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
           alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
@@ -42,7 +42,6 @@ function normalizeMedia(projectName: string, media: any[]) {
         type: "image" as const,
         src: String(m.src),
         alt: m.alt ? String(m.alt) : `${projectName} image`,
-        // ✅ supports optional "thumbnail" for images too
         thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
       };
     });
@@ -93,23 +92,22 @@ export default async function ProjectsPage() {
                 const description = project.description || "";
                 const highlights = Array.isArray(project.highlights) ? project.highlights : [];
 
-                const isFxcoPilot = slug === "fxco-pilot";
-                const externalFxcoUrl = "https://fxco-pilot.solflightech.org";
+                // ✅ Generic external support (no hardcoding)
+                const externalUrl = project.externalUrl ? String(project.externalUrl) : "";
+                const isExternal = !!externalUrl;
 
-                const href = isFxcoPilot ? externalFxcoUrl : project.href || `/projects/${slug}`;
-
-                const status = isFxcoPilot ? "Live" : project.status || "Upcoming";
-                const statusColor = isFxcoPilot
-                  ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                  : project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
-
-                const ctaLabel = isFxcoPilot ? "Open FXCO-PILOT" : project.ctaLabel || "View project";
-
-                const mediaItems = normalizeMedia(name, project.media || []);
-
-                const linkProps = isFxcoPilot
+                const href = isExternal ? externalUrl : project.href || `/projects/${slug}`;
+                const linkProps = isExternal
                   ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
                   : ({} as const);
+
+                const status = project.status || "Upcoming";
+                const statusColor =
+                  project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
+
+                const ctaLabel = project.ctaLabel || (isExternal ? "Open project" : "View project");
+
+                const mediaItems = normalizeMedia(name, project.media || []);
 
                 return (
                   <article
@@ -135,7 +133,7 @@ export default async function ProjectsPage() {
                         >
                           <span className="inline-flex items-center gap-2">
                             {name}
-                            {isFxcoPilot && <span className="text-slate-400">↗</span>}
+                            {isExternal && <span className="text-slate-400">↗</span>}
                           </span>
                         </Link>
 
@@ -161,14 +159,6 @@ export default async function ProjectsPage() {
                         )}
                       </Link>
 
-                      {isFxcoPilot && (
-                        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-                          <strong>Disclaimer:</strong> FXCO-PILOT provides AI-assisted analysis for
-                          educational purposes only. It is not financial or investment advice.
-                          Trading involves risk.
-                        </div>
-                      )}
-
                       <div className="mt-6">
                         <Link
                           href={href}
@@ -176,7 +166,7 @@ export default async function ProjectsPage() {
                           className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                         >
                           {ctaLabel}
-                          {isFxcoPilot && <span className="ml-2 text-slate-400">↗</span>}
+                          {isExternal && <span className="ml-2 text-slate-400">↗</span>}
                         </Link>
                       </div>
                     </div>
