@@ -2,7 +2,7 @@
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
-import { listProjects } from "../../lib/projectStore";
+import { listProjects } from "@/app/lib/projectStore";
 import { notFound, redirect } from "next/navigation";
 
 export const runtime = "nodejs";
@@ -16,17 +16,16 @@ type AnyProject = {
   statusColor?: string;
   description?: string;
   highlights?: string[];
-  ctaLabel?: string;
-  href?: string;
   published?: boolean;
   media?: any[];
+
+  externalUrl?: string;
 
   problem?: string;
   solution?: string;
   keyFeatures?: string[];
   roadmap?: string[];
   techStack?: string[];
-  updatedAt?: string;
 };
 
 function normalizeMedia(projectName: string, media: any[]) {
@@ -65,12 +64,12 @@ function normalizeMedia(projectName: string, media: any[]) {
   return out;
 }
 
-export default async function ProjectDetailPage({ params }: { params: { slug: string } }) {
+export default async function ProjectDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const slug = params?.slug;
-
-  if (slug === "fxco-pilot") {
-    redirect("https://fxco-pilot.solflightech.org");
-  }
 
   let projects: AnyProject[] = [];
   try {
@@ -83,9 +82,14 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
   const project = projects.find((p) => p?.published && p?.slug === slug);
   if (!project) notFound();
 
+  // ✅ Generic external redirect (no hardcoding)
+  const externalUrl = project.externalUrl ? String(project.externalUrl) : "";
+  if (externalUrl) redirect(externalUrl);
+
   const name = project.name || "Untitled project";
   const status = project.status || "Upcoming";
-  const statusColor = project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
+  const statusColor =
+    project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
 
   const description = project.description || "";
   const highlights = Array.isArray(project.highlights) ? project.highlights : [];
@@ -105,6 +109,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
           <PageHeader level={1} badge="Project" title={name} subtitle={description} />
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
+            {/* Media */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
               <ProjectMediaCarousel
                 items={mediaItems}
@@ -115,6 +120,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
               />
             </div>
 
+            {/* Summary card */}
             <aside className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-base font-semibold text-slate-900">Overview</h2>
@@ -154,6 +160,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
             </aside>
           </div>
 
+          {/* Details */}
           <div className="mt-12 grid gap-8 lg:grid-cols-3">
             <section className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
               <h3 className="text-sm font-semibold text-slate-900">Key Features</h3>
