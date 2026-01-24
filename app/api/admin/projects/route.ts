@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { upsertProject } from "@/app/lib/projectsStore";
+import { upsertProject } from "@/app/lib/projectStore";
 
 export const runtime = "nodejs";
 
