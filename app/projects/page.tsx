@@ -3,7 +3,7 @@ import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import Link from "next/link";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
-import { listProjects } from "@/app/lib/projectStore";
+import { listProjects } from "../lib/projectStore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -47,7 +47,6 @@ function normalizeMedia(projectName: string, media: any[]) {
       };
     });
 
-  // ✅ Better fallback: use the same global poster image standard
   if (out.length === 0) {
     return [
       {
@@ -78,7 +77,7 @@ export default async function ProjectsPage() {
           <PageHeader
             level={1}
             badge="Projects"
-            title="Products By Us"
+            title="Products we are building"
             subtitle="A selection of platforms designed to solve real operational and business problems."
           />
 
@@ -162,7 +161,6 @@ export default async function ProjectsPage() {
                         )}
                       </Link>
 
-                      {/* ✅ DISCLAIMER (FXCO-PILOT ONLY) */}
                       {isFxcoPilot && (
                         <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
                           <strong>Disclaimer:</strong> FXCO-PILOT provides AI-assisted analysis for
