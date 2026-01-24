@@ -2,7 +2,7 @@
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
-import { listProjects } from "@/app/lib/projectStore";
+import { listProjects } from "../../lib/projectStore";
 import { notFound, redirect } from "next/navigation";
 
 export const runtime = "nodejs";
@@ -33,18 +33,12 @@ function normalizeMedia(projectName: string, media: any[]) {
   const safe = Array.isArray(media) ? media : [];
 
   const out = safe
-    .filter(
-      (m) =>
-        m &&
-        typeof m.src === "string" &&
-        (m.type === "image" || m.type === "video")
-    )
+    .filter((m) => m && typeof m.src === "string" && (m.type === "image" || m.type === "video"))
     .map((m) => {
       if (m.type === "video") {
         return {
           type: "video" as const,
           src: String(m.src),
-          // supports your projects.json "thumbnail"
           thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
           alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
@@ -58,7 +52,6 @@ function normalizeMedia(projectName: string, media: any[]) {
       };
     });
 
-  // fallback if no media exists
   if (out.length === 0) {
     return [
       {
@@ -72,14 +65,9 @@ function normalizeMedia(projectName: string, media: any[]) {
   return out;
 }
 
-export default async function ProjectDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function ProjectDetailPage({ params }: { params: { slug: string } }) {
   const slug = params?.slug;
 
-  // Special case: FXCO-PILOT is external
   if (slug === "fxco-pilot") {
     redirect("https://fxco-pilot.solflightech.org");
   }
@@ -97,8 +85,7 @@ export default async function ProjectDetailPage({
 
   const name = project.name || "Untitled project";
   const status = project.status || "Upcoming";
-  const statusColor =
-    project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
+  const statusColor = project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
 
   const description = project.description || "";
   const highlights = Array.isArray(project.highlights) ? project.highlights : [];
@@ -115,15 +102,9 @@ export default async function ProjectDetailPage({
     <main className="bg-white text-slate-900">
       <section className="py-16 sm:py-20">
         <Container>
-          <PageHeader
-            level={1}
-            badge="Project"
-            title={name}
-            subtitle={description}
-          />
+          <PageHeader level={1} badge="Project" title={name} subtitle={description} />
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
-            {/* Media */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
               <ProjectMediaCarousel
                 items={mediaItems}
@@ -134,7 +115,6 @@ export default async function ProjectDetailPage({
               />
             </div>
 
-            {/* Summary card */}
             <aside className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-base font-semibold text-slate-900">Overview</h2>
@@ -174,7 +154,6 @@ export default async function ProjectDetailPage({
             </aside>
           </div>
 
-          {/* Details */}
           <div className="mt-12 grid gap-8 lg:grid-cols-3">
             <section className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
               <h3 className="text-sm font-semibold text-slate-900">Key Features</h3>
