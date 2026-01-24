@@ -60,6 +60,23 @@ function isLikelyVideoSrc(src: string): boolean {
   return /\.(mp4|webm|ogg|mov|m4v)$/i.test(s);
 }
 
+function VideoComingSoon({
+  className = "",
+}: {
+  className?: string;
+}) {
+  return (
+    <div className={`absolute inset-0 grid place-items-center bg-slate-100 ${className}`}>
+      <div className="rounded-2xl border border-slate-200 bg-white/80 px-6 py-4 text-center shadow-sm backdrop-blur">
+        <div className="text-sm font-semibold text-slate-900">🎬 Video coming soon</div>
+        <div className="mt-1 text-xs font-semibold text-slate-500">
+          We’ll upload a demo video here soon.
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /**
  * ProjectMediaCarousel
  * - Slides for images/videos
@@ -68,8 +85,8 @@ function isLikelyVideoSrc(src: string): boolean {
  * - Swipe support on mobile
  * - Optional internal modal (fullscreen)
  *
- * ✅ HARDENED: If an item claims type:"video" but src isn't a real video file,
- * we convert it into an image so NO Play UI appears.
+ * ✅ UPDATED: If an item is type:"video" BUT src is not a real video file,
+ * we show "Video coming soon" (NO poster, NO play UI).
  */
 export default function ProjectMediaCarousel({
   items,
@@ -89,18 +106,9 @@ export default function ProjectMediaCarousel({
       .filter((m) => m && typeof (m as any).src === "string" && String((m as any).src).trim())
       .map((m) => {
         if (m.type === "video") {
-          const src = normalizeSrc(m.src);
-          // ✅ If it doesn't look like a real video, convert to image
-          if (!src || !isLikelyVideoSrc(src)) {
-            return {
-              type: "image" as const,
-              src: src || FALLBACK_POSTER,
-              alt: m.alt ?? "Project image",
-              thumb: m.thumb,
-              thumbnail: m.thumbnail ?? m.poster,
-            };
-          }
-          return { ...m, src };
+          // ✅ Normalize, but DO NOT convert to image anymore.
+          // We'll render "Video coming soon" if it isn't real.
+          return { ...m, src: normalizeSrc(m.src) || "" };
         }
 
         return { ...m, src: normalizeSrc(m.src) || FALLBACK_POSTER };
@@ -114,7 +122,7 @@ export default function ProjectMediaCarousel({
     return cleaned;
   }, [items]);
 
-  const hasVideo = safeItems.some((it) => it.type === "video" && isLikelyVideoSrc(it.src));
+  const hasRealVideo = safeItems.some((it) => it.type === "video" && isLikelyVideoSrc(it.src));
 
   const isControlled = typeof controlledIndex === "number";
   const [uncontrolledIndex, setUncontrolledIndex] = useState(0);
@@ -141,7 +149,7 @@ export default function ProjectMediaCarousel({
   };
 
   const stopAllVideos = () => {
-    if (!hasVideo) return;
+    if (!hasRealVideo) return;
     setPlaying({});
     Object.values(videoRefs.current).forEach((v) => {
       try {
@@ -166,15 +174,9 @@ export default function ProjectMediaCarousel({
       return normalizeSrc(item.thumb ?? item.thumbnail ?? item.src) || FALLBACK_POSTER;
     }
 
-    const src = normalizeSrc(item.src);
-    const fallbackFromVideo =
-      src.replace(/\.mp4$/i, ".jpg").replace(/\/demo\.mp4$/i, "/poster.jpg") || FALLBACK_POSTER;
-
-    return (
-      normalizeSrc(item.thumb ?? item.thumbnail ?? item.poster) ||
-      normalizeSrc(fallbackFromVideo) ||
-      FALLBACK_POSTER
-    );
+    // ✅ For video thumbs: if no poster/thumb/thumbnail exists, use FALLBACK_POSTER.
+    // We are NOT auto-guessing .jpg from .mp4 anymore (avoids wrong .png/.jpg issues).
+    return normalizeSrc(item.thumb ?? item.thumbnail ?? item.poster) || FALLBACK_POSTER;
   };
 
   const current = safeItems[activeIndex];
@@ -186,13 +188,14 @@ export default function ProjectMediaCarousel({
     if (isModalOpen) return;
 
     const t = window.setInterval(() => {
-      if (hasVideo && playing[activeIndex]) return;
+      // If current is a REAL video and playing, don't advance
+      if (current?.type === "video" && isLikelyVideoSrc(current.src) && playing[activeIndex]) return;
       next();
     }, intervalMs);
 
     return () => window.clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoPlay, intervalMs, activeIndex, isModalOpen, safeItems.length, playing, hasVideo]);
+  }, [autoPlay, intervalMs, activeIndex, isModalOpen, safeItems.length, playing, current]);
 
   // Keep index valid if items change
   useEffect(() => {
@@ -227,7 +230,7 @@ export default function ProjectMediaCarousel({
 
   // ---------- Video controls ----------
   const toggleVideo = async (i: number) => {
-    if (!hasVideo) return;
+    if (!hasRealVideo) return;
 
     const item = safeItems[i];
     if (!item || item.type !== "video") return;
@@ -263,7 +266,7 @@ export default function ProjectMediaCarousel({
   };
 
   const pauseVideo = (i: number) => {
-    if (!hasVideo) return;
+    if (!hasRealVideo) return;
     if (!playing[i]) return;
     const v = videoRefs.current[i];
     try {
@@ -272,7 +275,7 @@ export default function ProjectMediaCarousel({
   };
 
   const resumeVideo = async (i: number) => {
-    if (!hasVideo) return;
+    if (!hasRealVideo) return;
     if (!playing[i]) return;
     const v = videoRefs.current[i];
     if (!v) return;
@@ -292,7 +295,9 @@ export default function ProjectMediaCarousel({
     );
   }
 
-  const showVideoUI = current.type === "video" && isLikelyVideoSrc(current.src);
+  const isVideo = current.type === "video";
+  const isRealVideo = isVideo && isLikelyVideoSrc(current.src);
+  const isMissingVideo = isVideo && !isRealVideo;
 
   return (
     <>
@@ -304,7 +309,9 @@ export default function ProjectMediaCarousel({
       >
         {/* Slide */}
         <div className="absolute inset-0">
-          {!showVideoUI ? (
+          {isMissingVideo ? (
+            <VideoComingSoon />
+          ) : !isRealVideo ? (
             <img
               src={normalizeSrc((current as any).src)}
               alt={(current as any).alt ?? "Project image"}
@@ -438,8 +445,9 @@ export default function ProjectMediaCarousel({
       {safeItems.length > 1 && (
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           {safeItems.map((item, i) => {
-            const thumb = getThumbSrc(item);
             const isVideoThumb = item.type === "video" && isLikelyVideoSrc(item.src);
+            const isMissing = item.type === "video" && !isVideoThumb;
+            const thumb = isMissing ? "" : getThumbSrc(item);
 
             return (
               <button
@@ -451,15 +459,23 @@ export default function ProjectMediaCarousel({
                 }`}
                 aria-label={`Select media ${i + 1}`}
               >
-                <img
-                  src={thumb}
-                  alt={isVideoThumb ? "Video thumbnail" : (item as any).alt ?? "Image thumbnail"}
-                  className="h-full w-full object-cover"
-                  draggable={false}
-                  onError={(e) => {
-                    e.currentTarget.src = FALLBACK_POSTER;
-                  }}
-                />
+                {isMissing ? (
+                  <div className="grid h-full w-full place-items-center bg-slate-100">
+                    <span className="rounded-full border border-slate-200 bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                      Video soon
+                    </span>
+                  </div>
+                ) : (
+                  <img
+                    src={thumb}
+                    alt={isVideoThumb ? "Video thumbnail" : (item as any).alt ?? "Image thumbnail"}
+                    className="h-full w-full object-cover"
+                    draggable={false}
+                    onError={(e) => {
+                      e.currentTarget.src = FALLBACK_POSTER;
+                    }}
+                  />
+                )}
 
                 {isVideoThumb && (
                   <div className="absolute inset-0 grid place-items-center">
@@ -501,7 +517,7 @@ function MediaModal({
   getThumbSrc: (item: MediaItem) => string;
   onClose: () => void;
 }) {
-  const hasVideo = items.some((it) => it.type === "video" && isLikelyVideoSrc(it.src));
+  const hasRealVideo = items.some((it) => it.type === "video" && isLikelyVideoSrc(it.src));
 
   const [index, setIndex] = useState(startIndex);
   const [playing, setPlaying] = useState<Record<number, boolean>>({});
@@ -514,7 +530,7 @@ function MediaModal({
   };
 
   const stopAll = () => {
-    if (!hasVideo) return;
+    if (!hasRealVideo) return;
     setPlaying({});
     Object.values(videoRefs.current).forEach((v) => {
       try {
@@ -530,7 +546,7 @@ function MediaModal({
   };
 
   const toggleVideo = async (i: number) => {
-    if (!hasVideo) return;
+    if (!hasRealVideo) return;
 
     const item = items[i];
     if (!item || item.type !== "video") return;
@@ -576,7 +592,9 @@ function MediaModal({
   }, [index]);
 
   const current = items[index];
-  const showVideoUI = current?.type === "video" && isLikelyVideoSrc(current.src);
+  const isVideo = current?.type === "video";
+  const isRealVideo = !!current && isVideo && isLikelyVideoSrc(current.src);
+  const isMissingVideo = !!current && isVideo && !isRealVideo;
 
   return (
     <div className="fixed inset-0 z-[9999]">
@@ -597,7 +615,9 @@ function MediaModal({
 
           <div className="relative bg-slate-950">
             <div className="relative aspect-[16/9] w-full">
-              {!current || !showVideoUI ? (
+              {!current ? null : isMissingVideo ? (
+                <VideoComingSoon className="bg-slate-950" />
+              ) : !isRealVideo ? (
                 <img
                   src={normalizeSrc((current as any)?.src) || FALLBACK_POSTER}
                   alt={(current as any)?.alt ?? "Project image"}
@@ -675,8 +695,8 @@ function MediaModal({
             {items.length > 1 && (
               <div className="flex gap-2 overflow-x-auto border-t border-white/10 bg-slate-900 px-3 py-3">
                 {items.map((item, i) => {
-                  const thumb = getThumbSrc(item);
                   const isVideoThumb = item.type === "video" && isLikelyVideoSrc(item.src);
+                  const isMissing = item.type === "video" && !isVideoThumb;
 
                   return (
                     <button
@@ -687,15 +707,24 @@ function MediaModal({
                         i === index ? "border-sky-400" : "border-white/10"
                       }`}
                     >
-                      <img
-                        src={thumb}
-                        alt={isVideoThumb ? "Video thumbnail" : (item as any).alt ?? "Image thumbnail"}
-                        className="h-full w-full object-cover"
-                        draggable={false}
-                        onError={(e) => {
-                          e.currentTarget.src = FALLBACK_POSTER;
-                        }}
-                      />
+                      {isMissing ? (
+                        <div className="grid h-full w-full place-items-center bg-white/5">
+                          <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-900">
+                            Video soon
+                          </span>
+                        </div>
+                      ) : (
+                        <img
+                          src={getThumbSrc(item)}
+                          alt={isVideoThumb ? "Video thumbnail" : (item as any).alt ?? "Image thumbnail"}
+                          className="h-full w-full object-cover"
+                          draggable={false}
+                          onError={(e) => {
+                            e.currentTarget.src = FALLBACK_POSTER;
+                          }}
+                        />
+                      )}
+
                       {isVideoThumb && (
                         <div className="absolute inset-0 grid place-items-center">
                           <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-900">
