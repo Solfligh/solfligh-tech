@@ -9,6 +9,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+type DemoInfo =
+  | { status?: "none" }
+  | { status?: "coming_soon"; thumbnail?: string }
+  | { status?: "live"; videoSrc?: string; thumbnail?: string };
+
 type AnyProject = {
   slug?: string;
   name?: string;
@@ -20,7 +25,9 @@ type AnyProject = {
   media?: any[];
 
   // ✅ first-class external destination
-  externalUrl?: string;
+  externalUrl?: string | null;
+
+  demo?: DemoInfo | null;
 
   problem?: string;
   solution?: string;
@@ -71,6 +78,45 @@ function normalizeMedia(projectName: string, media: any[]) {
   return out;
 }
 
+function isLikelyVideoSrc(src: unknown): boolean {
+  if (typeof src !== "string") return false;
+  const s = src.trim();
+  return /\.(mp4|webm|ogg|mov|m4v)$/i.test(s);
+}
+
+function withDemoInjected(projectName: string, baseMedia: ReturnType<typeof normalizeMedia>, demo?: DemoInfo | null) {
+  const items = Array.isArray(baseMedia) ? [...baseMedia] : [];
+  const d = demo || null;
+
+  const alreadyHasRealVideo = items.some((m) => m?.type === "video" && isLikelyVideoSrc(m?.src));
+  const demoStatus = (d as any)?.status;
+
+  if (demoStatus === "live") {
+    const videoSrc = typeof (d as any)?.videoSrc === "string" ? (d as any).videoSrc.trim() : "";
+    if (videoSrc && !alreadyHasRealVideo) {
+      items.unshift({
+        type: "video" as const,
+        src: videoSrc,
+        thumbnail: typeof (d as any)?.thumbnail === "string" ? (d as any).thumbnail : undefined,
+        alt: `${projectName} demo video`,
+      });
+    }
+  }
+
+  if (demoStatus === "coming_soon") {
+    if (!alreadyHasRealVideo) {
+      items.unshift({
+        type: "video" as const,
+        src: "",
+        thumbnail: typeof (d as any)?.thumbnail === "string" ? (d as any).thumbnail : "/projects/video-poster.jpg",
+        alt: `${projectName} demo coming soon`,
+      });
+    }
+  }
+
+  return items;
+}
+
 export default async function ProjectDetailPage({
   params,
 }: {
@@ -107,7 +153,8 @@ export default async function ProjectDetailPage({
   const roadmap = Array.isArray(project.roadmap) ? project.roadmap : [];
   const techStack = Array.isArray(project.techStack) ? project.techStack : [];
 
-  const mediaItems = normalizeMedia(name, project.media || []);
+  const baseMedia = normalizeMedia(name, project.media || []);
+  const mediaItems = withDemoInjected(name, baseMedia, project.demo || null);
 
   return (
     <main className="bg-white text-slate-900">
