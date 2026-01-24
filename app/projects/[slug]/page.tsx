@@ -2,7 +2,7 @@
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
-import { listProjects } from "@/app/lib/projectsStore";
+import { listProjects } from "@/app/lib/projectStore";
 import { notFound, redirect } from "next/navigation";
 
 export const runtime = "nodejs";
