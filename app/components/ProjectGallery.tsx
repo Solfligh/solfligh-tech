@@ -1,7 +1,7 @@
 "use client";
 
-import type React from "react";
 import { useEffect, useMemo, useState } from "react";
+import type React from "react";
 import ProjectMediaCarousel, { type MediaItem } from "@/app/components/ProjectMediaCarousel";
 
 const FALLBACK_POSTER = "/projects/video-poster.jpg";
@@ -14,30 +14,29 @@ function normalizeSrc(src: string | undefined | null): string {
   return s.startsWith("/") ? s : `/${s}`;
 }
 
-/** Only treat as real video if it looks like a video file */
+/** Only treat as real video if it looks like a video file (extension) */
 function isLikelyVideoSrc(src: string | undefined | null): boolean {
   const s = normalizeSrc(src);
   return /\.(mp4|webm|ogg|mov|m4v)$/i.test(s);
 }
 
 /**
- * ✅ Sanitize items:
- * - Keep images
- * - Keep videos ONLY if src is a real-looking video file
- * - If there is NO real video, we do NOT include a fake video slide (so no Play UI can show)
+ * IMPORTANT:
+ * - We do NOT try to “guess” if a video file exists (client can’t check filesystem).
+ * - We ONLY show "Demo video coming soon" if your JSON DOES NOT include any video item at all.
+ * - If you add a video item back later, make sure the file actually exists in /public,
+ *   otherwise the browser will 404 and you’ll see video UI.
  */
-function sanitizeItems(title: string, items: MediaItem[]): { items: MediaItem[]; hasRealVideo: boolean } {
+function sanitizeItems(title: string, items: MediaItem[]): MediaItem[] {
   const out: MediaItem[] = [];
-  let hasRealVideo = false;
 
   for (const m of items) {
     if (!m) continue;
 
     if (m.type === "video") {
-      // ✅ Keep only real videos
+      // Keep video only if it at least looks like a video file path
       if (!isLikelyVideoSrc(m.src)) continue;
 
-      hasRealVideo = true;
       out.push({
         ...m,
         src: normalizeSrc(m.src),
@@ -61,19 +60,16 @@ function sanitizeItems(title: string, items: MediaItem[]): { items: MediaItem[];
 
   // If everything was filtered out, fallback to an IMAGE (not video)
   if (out.length === 0) {
-    return {
-      items: [
-        {
-          type: "image",
-          src: FALLBACK_POSTER,
-          alt: "Media coming soon",
-        },
-      ],
-      hasRealVideo: false,
-    };
+    return [
+      {
+        type: "image",
+        src: FALLBACK_POSTER,
+        alt: "Media coming soon",
+      },
+    ];
   }
 
-  return { items: out, hasRealVideo };
+  return out;
 }
 
 export default function ProjectGallery({
@@ -83,7 +79,13 @@ export default function ProjectGallery({
   title: string;
   items: MediaItem[];
 }) {
-  const { items: safeItems, hasRealVideo } = useMemo(
+  // 🔎 Detect whether JSON included ANY video item (this drives the "coming soon" label)
+  const jsonHasVideo = useMemo(() => {
+    const arr = Array.isArray(items) ? items : [];
+    return arr.some((m) => m && (m as any).type === "video");
+  }, [items]);
+
+  const safeItems = useMemo(
     () => sanitizeItems(title, Array.isArray(items) ? items : []),
     [items, title]
   );
@@ -104,11 +106,7 @@ export default function ProjectGallery({
 
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement | null)?.tagName?.toLowerCase();
-      if (
-        tag === "input" ||
-        tag === "textarea" ||
-        (e.target as HTMLElement | null)?.isContentEditable
-      )
+      if (tag === "input" || tag === "textarea" || (e.target as HTMLElement | null)?.isContentEditable)
         return;
 
       if (e.key === "Escape") {
@@ -166,17 +164,19 @@ export default function ProjectGallery({
             showDots
           />
 
-          {/* ✅ If NO real video exists, show “Demo video coming soon” */}
-          {!hasRealVideo && (
-            <div className="pointer-events-none absolute left-4 bottom-4 rounded-full border border-slate-200/70 bg-white/80 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur">
-              🎥 Demo video coming soon
-            </div>
-          )}
-
+          {/* Top-right label */}
           <div className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1 text-[11px] font-semibold text-slate-800 shadow-sm backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-sky-600" />
             Click to expand
           </div>
+
+          {/* ✅ If NO video is present in JSON, show "Demo video coming soon" */}
+          {!jsonHasVideo ? (
+            <div className="pointer-events-none absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-[11px] font-semibold text-amber-800 shadow-sm backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+              Demo video coming soon
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -220,15 +220,6 @@ export default function ProjectGallery({
                 index={modalIndex}
                 onIndexChange={setModalIndex}
               />
-
-              {/* ✅ In modal too */}
-              {!hasRealVideo && (
-                <div className="px-5 pb-4 pt-3">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
-                    🎥 Demo video coming soon
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Thumbnail strip */}
@@ -237,7 +228,6 @@ export default function ProjectGallery({
                 {safeItems.map((m, i) => {
                   const selected = i === modalIndex;
 
-                  // ✅ Supports thumb / thumbnail / poster
                   const thumbSrc =
                     m.type === "image"
                       ? normalizeSrc(m.thumb ?? m.thumbnail ?? m.src)
@@ -275,12 +265,6 @@ export default function ProjectGallery({
                           </div>
                         </div>
                       )}
-
-                      {m.type === "video" ? (
-                        <div className="absolute bottom-2 right-2 rounded-full border border-slate-200/70 bg-white/85 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
-                          ▶
-                        </div>
-                      ) : null}
 
                       {selected ? <div className="absolute inset-0 bg-sky-500/10" /> : null}
                     </button>
