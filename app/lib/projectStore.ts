@@ -1,6 +1,4 @@
 // app/lib/projectStore.ts
-import "server-only";
-
 import { unstable_noStore as noStore } from "next/cache";
 import { supabaseAdmin } from "@/app/lib/supabaseAdmin";
 
@@ -14,10 +12,7 @@ export type MediaItem =
     }
   | {
       type: "video";
-      /**
-       * Can be "" when demo is "coming soon".
-       * Your ProjectMediaCarousel treats non-video src as "coming soon".
-       */
+      /** Can be empty when demo is "coming soon" */
       src: string;
       poster?: string;
       thumb?: string;
@@ -28,29 +23,17 @@ export type MediaItem =
 export type ProjectPayload = {
   slug: string;
   name: string;
-
   status: string;
   statusColor: string;
-
   description: string;
   highlights: string[];
-
   ctaLabel: string;
-
-  /**
-   * Internal destination. Example: /projects/profitpilot
-   * (Used when externalUrl is empty.)
-   */
   href: string;
 
-  /**
-   * First-class external destination.
-   * If set, /projects card opens externalUrl and /projects/[slug] redirects there.
-   */
+  // ✅ first-class external destination
   externalUrl?: string | null;
 
   published: boolean;
-
   media: MediaItem[];
 
   problem: string;
@@ -62,134 +45,153 @@ export type ProjectPayload = {
   updatedAt: string;
 };
 
-type DbRow = {
+/**
+ * IMPORTANT:
+ * This store is now SUPABASE-FIRST (service role).
+ * No JSON writes — because Vercel filesystem is not persistent.
+ *
+ * Assumes these tables:
+ * - public.projects (primary key: slug)
+ * - public.project_media (project_slug fk to projects.slug OR store project_slug text)
+ *
+ * If your project_media uses project_id instead, tell me and I’ll adjust in one shot.
+ */
+
+type ProjectRow = {
   slug: string;
   name: string;
-  status: string;
-  status_color: string;
-  description: string;
-  highlights: string[];
-  cta_label: string;
-  href: string;
+  status: string | null;
+  status_color: string | null;
+  description: string | null;
+  highlights: string[] | null;
+  cta_label: string | null;
+  href: string | null;
   external_url: string | null;
-  published: boolean;
-  media: any; // jsonb
+  published: boolean | null;
 
-  problem: string;
-  solution: string;
-  key_features: string[];
-  roadmap: string[];
-  tech_stack: string[];
+  problem: string | null;
+  solution: string | null;
+  key_features: string[] | null;
+  roadmap: string[] | null;
+  tech_stack: string[] | null;
 
-  updated_at: string;
+  updated_at: string | null;
 };
 
-function isValidExternalUrl(url: unknown): url is string {
-  if (typeof url !== "string") return false;
-  const u = url.trim();
-  return u.startsWith("https://") || u.startsWith("http://");
+type MediaRow = {
+  id?: string;
+  project_slug: string;
+  sort_order: number | null;
+
+  type: "image" | "video";
+  src: string | null;
+  alt: string | null;
+  poster: string | null;
+  thumb: string | null;
+  thumbnail: string | null;
+};
+
+function asStringArray(x: unknown): string[] {
+  if (!Array.isArray(x)) return [];
+  return x.map(String).map((s) => s.trim()).filter(Boolean);
 }
 
-function normalizeStringArray(v: unknown): string[] {
-  if (!Array.isArray(v)) return [];
-  return v.map((x) => String(x ?? "").trim()).filter(Boolean);
-}
-
-function normalizeMedia(v: unknown): MediaItem[] {
-  if (!Array.isArray(v)) return [];
-  const out: MediaItem[] = [];
-
-  for (const m of v) {
-    if (!m || typeof m !== "object") continue;
-    const type = (m as any).type;
-
-    if (type === "image") {
-      const src = String((m as any).src ?? "").trim();
-      if (!src) continue;
-      out.push({
-        type: "image",
-        src,
-        alt: (m as any).alt ? String((m as any).alt) : undefined,
-        thumb: (m as any).thumb ? String((m as any).thumb) : undefined,
-        thumbnail: (m as any).thumbnail ? String((m as any).thumbnail) : undefined,
-      });
-      continue;
-    }
-
-    if (type === "video") {
-      // ✅ allow src to be "" (demo coming soon)
-      const src = String((m as any).src ?? "").trim();
-      out.push({
-        type: "video",
-        src,
-        alt: (m as any).alt ? String((m as any).alt) : undefined,
-        poster: (m as any).poster ? String((m as any).poster) : undefined,
-        thumb: (m as any).thumb ? String((m as any).thumb) : undefined,
-        thumbnail: (m as any).thumbnail ? String((m as any).thumbnail) : undefined,
-      });
-      continue;
-    }
-  }
-
-  return out;
-}
-
-function toPayload(row: DbRow): ProjectPayload {
+function normalizeProject(row: ProjectRow, media: MediaRow[]): ProjectPayload {
   return {
     slug: row.slug,
     name: row.name,
-    status: row.status,
-    statusColor: row.status_color,
-    description: row.description,
-    highlights: normalizeStringArray(row.highlights),
-    ctaLabel: row.cta_label,
-    href: row.href,
-    externalUrl: isValidExternalUrl(row.external_url) ? row.external_url.trim() : null,
-    published: !!row.published,
-    media: normalizeMedia(row.media),
+    status: row.status ?? "Upcoming",
+    statusColor: row.status_color ?? "bg-slate-100 text-slate-700 border-slate-200",
+    description: row.description ?? "",
+    highlights: asStringArray(row.highlights),
+    ctaLabel: row.cta_label ?? "View project",
+    href: row.href ?? `/projects/${row.slug}`,
+    externalUrl: row.external_url ?? null,
+    published: Boolean(row.published),
 
-    problem: row.problem || "",
-    solution: row.solution || "",
-    keyFeatures: normalizeStringArray(row.key_features),
-    roadmap: normalizeStringArray(row.roadmap),
-    techStack: normalizeStringArray(row.tech_stack),
+    media: (media || [])
+      .slice()
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+      .map((m) => {
+        if (m.type === "video") {
+          return {
+            type: "video" as const,
+            src: m.src ?? "",
+            alt: m.alt ?? undefined,
+            poster: m.poster ?? undefined,
+            thumb: m.thumb ?? undefined,
+            thumbnail: m.thumbnail ?? undefined,
+          };
+        }
+        return {
+          type: "image" as const,
+          src: m.src ?? "",
+          alt: m.alt ?? undefined,
+          thumb: m.thumb ?? undefined,
+          thumbnail: m.thumbnail ?? undefined,
+        };
+      }),
 
-    updatedAt: row.updated_at,
+    problem: row.problem ?? "",
+    solution: row.solution ?? "",
+    keyFeatures: asStringArray(row.key_features),
+    roadmap: asStringArray(row.roadmap),
+    techStack: asStringArray(row.tech_stack),
+
+    updatedAt: row.updated_at ?? new Date().toISOString(),
   };
 }
 
 export async function listProjects(): Promise<ProjectPayload[]> {
-  // ensures Next doesn't cache this request
   noStore();
 
-  const { data, error } = await supabaseAdmin
+  // 1) read all projects
+  const { data: projects, error: pErr } = await supabaseAdmin
     .from("projects")
-    .select("*")
+    .select(
+      [
+        "slug",
+        "name",
+        "status",
+        "status_color",
+        "description",
+        "highlights",
+        "cta_label",
+        "href",
+        "external_url",
+        "published",
+        "problem",
+        "solution",
+        "key_features",
+        "roadmap",
+        "tech_stack",
+        "updated_at",
+      ].join(",")
+    )
     .order("updated_at", { ascending: false });
 
-  if (error) {
-    // Fail safely for UI
-    return [];
+  if (pErr) throw new Error(pErr.message);
+  const safeProjects = (projects || []) as ProjectRow[];
+
+  if (safeProjects.length === 0) return [];
+
+  // 2) read media for those slugs
+  const slugs = safeProjects.map((p) => p.slug);
+  const { data: mediaRows, error: mErr } = await supabaseAdmin
+    .from("project_media")
+    .select("project_slug, sort_order, type, src, alt, poster, thumb, thumbnail")
+    .in("project_slug", slugs);
+
+  if (mErr) throw new Error(mErr.message);
+
+  const mediaBySlug = new Map<string, MediaRow[]>();
+  for (const m of (mediaRows || []) as MediaRow[]) {
+    const arr = mediaBySlug.get(m.project_slug) || [];
+    arr.push(m);
+    mediaBySlug.set(m.project_slug, arr);
   }
 
-  const rows = (data || []) as DbRow[];
-  return rows.map(toPayload);
-}
-
-export async function getProjectBySlug(slug: string): Promise<ProjectPayload | null> {
-  noStore();
-
-  const clean = String(slug || "").trim().toLowerCase();
-  if (!clean) return null;
-
-  const { data, error } = await supabaseAdmin
-    .from("projects")
-    .select("*")
-    .eq("slug", clean)
-    .maybeSingle();
-
-  if (error || !data) return null;
-  return toPayload(data as DbRow);
+  return safeProjects.map((p) => normalizeProject(p, mediaBySlug.get(p.slug) || []));
 }
 
 export async function upsertProject(
@@ -197,45 +199,98 @@ export async function upsertProject(
 ): Promise<ProjectPayload> {
   noStore();
 
-  const slug = String(input.slug || "").trim().toLowerCase();
-  const name = String(input.name || "").trim();
+  const now = new Date().toISOString();
 
-  if (!slug) throw new Error("slug is required");
-  if (!name) throw new Error("name is required");
+  // Upsert project
+  const projectUpsert: Partial<ProjectRow> & { slug: string; name: string } = {
+    slug: input.slug,
+    name: input.name,
+    status: input.status,
+    status_color: input.statusColor,
+    description: input.description,
+    highlights: input.highlights,
+    cta_label: input.ctaLabel,
+    href: input.href,
+    external_url: input.externalUrl ?? null,
+    published: input.published,
 
-  const externalUrl = isValidExternalUrl(input.externalUrl) ? input.externalUrl.trim() : null;
+    problem: input.problem,
+    solution: input.solution,
+    key_features: input.keyFeatures,
+    roadmap: input.roadmap,
+    tech_stack: input.techStack,
 
-  const row = {
-    slug,
-    name,
-    status: String(input.status || "Upcoming"),
-    status_color: String(
-      input.statusColor || "bg-slate-100 text-slate-700 border-slate-200"
-    ),
-    description: String(input.description || ""),
-    highlights: normalizeStringArray(input.highlights),
-    cta_label: String(input.ctaLabel || "View project"),
-    href: String(input.href || `/projects/${slug}`),
-    external_url: externalUrl,
-    published: !!input.published,
-    media: Array.isArray(input.media) ? input.media : [],
-
-    problem: String(input.problem || ""),
-    solution: String(input.solution || ""),
-    key_features: normalizeStringArray(input.keyFeatures),
-    roadmap: normalizeStringArray(input.roadmap),
-    tech_stack: normalizeStringArray(input.techStack),
+    updated_at: now,
   };
 
-  const { data, error } = await supabaseAdmin
+  const { data: savedProject, error: upErr } = await supabaseAdmin
     .from("projects")
-    .upsert(row, { onConflict: "slug" })
-    .select("*")
+    .upsert(projectUpsert, { onConflict: "slug" })
+    .select(
+      [
+        "slug",
+        "name",
+        "status",
+        "status_color",
+        "description",
+        "highlights",
+        "cta_label",
+        "href",
+        "external_url",
+        "published",
+        "problem",
+        "solution",
+        "key_features",
+        "roadmap",
+        "tech_stack",
+        "updated_at",
+      ].join(",")
+    )
     .single();
 
-  if (error || !data) {
-    throw new Error(error?.message || "Failed to save project");
+  if (upErr) throw new Error(upErr.message);
+
+  // Replace media rows (simple + reliable)
+  const { error: delErr } = await supabaseAdmin.from("project_media").delete().eq("project_slug", input.slug);
+  if (delErr) throw new Error(delErr.message);
+
+  const mediaInsert: MediaRow[] = (input.media || []).map((m, idx) => {
+    if (m.type === "video") {
+      return {
+        project_slug: input.slug,
+        sort_order: idx,
+        type: "video",
+        src: m.src ?? "",
+        alt: m.alt ?? null,
+        poster: (m as any).poster ?? null,
+        thumb: (m as any).thumb ?? null,
+        thumbnail: (m as any).thumbnail ?? null,
+      };
+    }
+    return {
+      project_slug: input.slug,
+      sort_order: idx,
+      type: "image",
+      src: m.src ?? "",
+      alt: m.alt ?? null,
+      poster: null,
+      thumb: (m as any).thumb ?? null,
+      thumbnail: (m as any).thumbnail ?? null,
+    };
+  });
+
+  if (mediaInsert.length > 0) {
+    const { error: insErr } = await supabaseAdmin.from("project_media").insert(mediaInsert);
+    if (insErr) throw new Error(insErr.message);
   }
 
-  return toPayload(data as DbRow);
+  // Re-read media to return normalized payload
+  const { data: finalMedia, error: fmErr } = await supabaseAdmin
+    .from("project_media")
+    .select("project_slug, sort_order, type, src, alt, poster, thumb, thumbnail")
+    .eq("project_slug", input.slug);
+
+  if (fmErr) throw new Error(fmErr.message);
+
+  return normalizeProject(savedProject as ProjectRow, (finalMedia || []) as MediaRow[]);
 }
