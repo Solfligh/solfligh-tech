@@ -5,23 +5,33 @@ import { unstable_noStore as noStore } from "next/cache";
 
 export type MediaItem =
   | { type: "image"; src: string; alt?: string; thumbnail?: string }
-  | { type: "video"; src: string; thumbnail?: string; alt?: string };
+  | { type: "video"; src: string; alt?: string; thumbnail?: string };
+
+export type DemoInfo =
+  | { status: "none" }
+  | { status: "coming_soon"; thumbnail?: string }
+  | { status: "live"; videoSrc: string; thumbnail?: string };
 
 export type ProjectPayload = {
   slug: string;
   name: string;
+
   status: string;
   statusColor: string;
+
   description: string;
   highlights: string[];
 
   ctaLabel: string;
 
-  /** Local internal route */
+  /** Internal route (still useful for slug-based URLs) */
   href: string;
 
-  /** If set, project should open externally (like FXCO-PILOT) */
+  /** If set, project is external and should open/redirect there */
   externalUrl?: string | null;
+
+  /** Demo metadata (coming soon vs live) */
+  demo?: DemoInfo;
 
   published: boolean;
   media: MediaItem[];
@@ -37,16 +47,7 @@ export type ProjectPayload = {
 
 type StoreShape = { projects: ProjectPayload[] };
 
-// ✅ Preferred store location (same as your current code)
 const STORE_PATH = path.join(process.cwd(), "data", "projects.json");
-
-// ✅ Also try common alternate locations in case the JSON lives elsewhere
-const READ_CANDIDATES = [
-  STORE_PATH,
-  path.join(process.cwd(), "app", "data", "projects.json"),
-  path.join(process.cwd(), "public", "data", "projects.json"),
-  path.join(process.cwd(), "projects.json"),
-];
 
 function normalizeStoreShape(parsed: unknown): StoreShape {
   if (!parsed || typeof parsed !== "object") return { projects: [] };
@@ -55,36 +56,19 @@ function normalizeStoreShape(parsed: unknown): StoreShape {
   return { projects: projects as ProjectPayload[] };
 }
 
-async function readStoreFrom(filePath: string): Promise<StoreShape> {
-  const raw = await fs.readFile(filePath, "utf8");
-  const parsed = JSON.parse(raw);
-  return normalizeStoreShape(parsed);
-}
-
 async function readStore(): Promise<StoreShape> {
-  // ✅ Critical: disables Next/Vercel caching for this request
-  // So updates to projects.json reflect immediately.
   noStore();
 
-  let lastErr: unknown = null;
-
-  for (const filePath of READ_CANDIDATES) {
-    try {
-      return await readStoreFrom(filePath);
-    } catch (err) {
-      lastErr = err;
-    }
+  try {
+    const raw = await fs.readFile(STORE_PATH, "utf8");
+    const parsed = JSON.parse(raw);
+    return normalizeStoreShape(parsed);
+  } catch {
+    return { projects: [] };
   }
-
-  // If none found / all fail, return empty safely
-  // (In dev, you can log lastErr if needed.)
-  return { projects: [] };
 }
 
 async function writeStore(store: StoreShape) {
-  // NOTE:
-  // Writing to the filesystem on Vercel serverless is not persistent across deploys/instances.
-  // This is fine for local/dev, but for production you should store this in a DB or CMS.
   await fs.mkdir(path.dirname(STORE_PATH), { recursive: true });
   await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2), "utf8");
 }
@@ -100,14 +84,7 @@ export async function upsertProject(
   const store = await readStore();
 
   const now = new Date().toISOString();
-
-  // Normalize externalUrl a bit (keep null/undefined if empty)
-  const externalUrl =
-    input.externalUrl && String(input.externalUrl).trim()
-      ? String(input.externalUrl).trim()
-      : null;
-
-  const next: ProjectPayload = { ...input, externalUrl, updatedAt: now };
+  const next: ProjectPayload = { ...input, updatedAt: now };
 
   const idx = store.projects.findIndex((p) => p.slug === input.slug);
   if (idx >= 0) store.projects[idx] = next;
