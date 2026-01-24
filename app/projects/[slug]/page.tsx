@@ -19,6 +19,7 @@ type AnyProject = {
   published?: boolean;
   media?: any[];
 
+  // ✅ first-class external destination
   externalUrl?: string;
 
   problem?: string;
@@ -27,6 +28,12 @@ type AnyProject = {
   roadmap?: string[];
   techStack?: string[];
 };
+
+function isValidExternalUrl(url: unknown): url is string {
+  if (typeof url !== "string") return false;
+  const u = url.trim();
+  return u.startsWith("https://") || u.startsWith("http://");
+}
 
 function normalizeMedia(projectName: string, media: any[]) {
   const safe = Array.isArray(media) ? media : [];
@@ -82,8 +89,8 @@ export default async function ProjectDetailPage({
   const project = projects.find((p) => p?.published && p?.slug === slug);
   if (!project) notFound();
 
-  // ✅ Generic external redirect (no hardcoding)
-  const externalUrl = project.externalUrl ? String(project.externalUrl) : "";
+  // ✅ externalUrl is first-class: if present, we redirect to it.
+  const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   if (externalUrl) redirect(externalUrl);
 
   const name = project.name || "Untitled project";
