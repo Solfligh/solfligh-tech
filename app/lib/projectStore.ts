@@ -5,7 +5,7 @@ import { unstable_noStore as noStore } from "next/cache";
 
 export type MediaItem =
   | { type: "image"; src: string; alt?: string; thumbnail?: string }
-  | { type: "video"; src: string; thumbnail?: string };
+  | { type: "video"; src: string; thumbnail?: string; alt?: string };
 
 export type ProjectPayload = {
   slug: string;
@@ -14,8 +14,15 @@ export type ProjectPayload = {
   statusColor: string;
   description: string;
   highlights: string[];
+
   ctaLabel: string;
+
+  /** Local internal route */
   href: string;
+
+  /** If set, project should open externally (like FXCO-PILOT) */
+  externalUrl?: string | null;
+
   published: boolean;
   media: MediaItem[];
 
@@ -93,7 +100,14 @@ export async function upsertProject(
   const store = await readStore();
 
   const now = new Date().toISOString();
-  const next: ProjectPayload = { ...input, updatedAt: now };
+
+  // Normalize externalUrl a bit (keep null/undefined if empty)
+  const externalUrl =
+    input.externalUrl && String(input.externalUrl).trim()
+      ? String(input.externalUrl).trim()
+      : null;
+
+  const next: ProjectPayload = { ...input, externalUrl, updatedAt: now };
 
   const idx = store.projects.findIndex((p) => p.slug === input.slug);
   if (idx >= 0) store.projects[idx] = next;
