@@ -18,10 +18,19 @@ type AnyProject = {
   highlights?: string[];
   ctaLabel?: string;
   href?: string;
+
+  // ✅ first-class external destination
   externalUrl?: string;
+
   published?: boolean;
   media?: any[];
 };
+
+function isValidExternalUrl(url: unknown): url is string {
+  if (typeof url !== "string") return false;
+  const u = url.trim();
+  return u.startsWith("https://") || u.startsWith("http://");
+}
 
 function normalizeMedia(projectName: string, media: any[]) {
   const safe = Array.isArray(media) ? media : [];
@@ -59,6 +68,20 @@ function normalizeMedia(projectName: string, media: any[]) {
   return out;
 }
 
+function getProjectLink(project: AnyProject) {
+  const slug = project.slug || "project";
+
+  const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
+  const isExternal = !!externalUrl;
+
+  const href = isExternal ? externalUrl : project.href || `/projects/${slug}`;
+  const linkProps = isExternal
+    ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
+    : ({} as const);
+
+  return { href, isExternal, linkProps };
+}
+
 export default async function ProjectsPage() {
   let projects: AnyProject[] = [];
 
@@ -92,14 +115,7 @@ export default async function ProjectsPage() {
                 const description = project.description || "";
                 const highlights = Array.isArray(project.highlights) ? project.highlights : [];
 
-                // ✅ Generic external support (no hardcoding)
-                const externalUrl = project.externalUrl ? String(project.externalUrl) : "";
-                const isExternal = !!externalUrl;
-
-                const href = isExternal ? externalUrl : project.href || `/projects/${slug}`;
-                const linkProps = isExternal
-                  ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
-                  : ({} as const);
+                const { href, isExternal, linkProps } = getProjectLink(project);
 
                 const status = project.status || "Upcoming";
                 const statusColor =
