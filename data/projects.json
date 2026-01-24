@@ -3,8 +3,8 @@
     {
       "slug": "profitpilot",
       "name": "ProfitPilot",
-      "status": "Live / Near Launch",
-      "statusColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+      "status": "Near Launch / Coming Soon",
+      "statusColor": "bg-amber-100 text-amber-700 border-amber-200",
       "description": "A modern business management platform for SMEs to track income, expenses, inventory, and insights in one clean dashboard.",
       "highlights": [
         "Multi-tenant SaaS architecture",
