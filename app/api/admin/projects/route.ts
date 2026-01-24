@@ -1,4 +1,3 @@
-// app/api/admin/projects/route.ts
 import { NextResponse } from "next/server";
 import { upsertProject } from "../../../lib/projectStore";
 
@@ -23,20 +22,18 @@ function bad(msg: string, status = 400) {
   return NextResponse.json({ error: msg }, { status });
 }
 
-function normalizeExternalUrl(v: unknown): string | undefined {
-  const s = String(v ?? "").trim();
-  if (!s) return undefined;
-
-  // Allow only http(s) external links
-  if (!/^https?:\/\//i.test(s)) return undefined;
-
-  return s;
+function isValidExternalUrl(url: unknown): url is string {
+  if (typeof url !== "string") return false;
+  const u = url.trim();
+  return u.startsWith("https://") || u.startsWith("http://");
 }
 
 export async function POST(req: Request) {
   // 🔐 Auth
   const auth = requireAdmin(req);
-  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: 401 });
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: 401 });
+  }
 
   // 📦 Body
   const body = await req.json().catch(() => null);
@@ -48,31 +45,29 @@ export async function POST(req: Request) {
   if (!slug) return bad("slug is required");
   if (!name) return bad("name is required");
 
-  // ✅ externalUrl is first-class:
-  // - If externalUrl is provided, we allow media to be optional (nice for link-only projects)
-  // - If NOT external, we keep requiring a non-empty media array (your old behavior)
-  const externalUrl = normalizeExternalUrl(body.externalUrl);
-  const isExternal = !!externalUrl;
-
+  // ✅ media: allow video with empty src (demo coming soon), but require at least 1 item
   const media = Array.isArray(body.media) ? body.media : [];
-  if (!isExternal && media.length === 0) {
-    return bad("media must be a non-empty array (unless externalUrl is set)");
-  }
+  if (media.length === 0) return bad("media must be a non-empty array");
 
-  // Internal fallback href (still stored for convenience; pages can ignore it if externalUrl exists)
-  const href = `/projects/${slug}`;
+  // internal default
+  const href = String(body.href || `/projects/${slug}`);
 
-  // 💾 Save
+  // ✅ externalUrl first-class
+  const externalUrl = isValidExternalUrl(body.externalUrl) ? String(body.externalUrl).trim() : null;
+
+  // 💾 Save (Supabase)
   const saved = await upsertProject({
     slug,
     name,
     status: String(body.status || "Upcoming"),
-    statusColor: String(body.statusColor || "bg-slate-100 text-slate-700 border-slate-200"),
+    statusColor: String(
+      body.statusColor || "bg-slate-100 text-slate-700 border-slate-200"
+    ),
     description: String(body.description || ""),
     highlights: Array.isArray(body.highlights) ? body.highlights.map(String) : [],
-    ctaLabel: String(body.ctaLabel || (isExternal ? "Open project" : "View project")),
+    ctaLabel: String(body.ctaLabel || (externalUrl ? "Open project" : "View project")),
     href,
-    externalUrl, // ✅ NEW: saved to projects.json
+    externalUrl,
     published: Boolean(body.published),
     media,
 
