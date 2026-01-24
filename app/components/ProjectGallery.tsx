@@ -6,7 +6,6 @@ import ProjectMediaCarousel, { type MediaItem } from "@/app/components/ProjectMe
 
 const FALLBACK_POSTER = "/projects/video-poster.jpg";
 
-/** Ensure local asset paths start with "/" so they don't become relative like /projects/rebirthagro/projects/... */
 function normalizeSrc(src: string | undefined | null): string {
   const s = String(src || "").trim();
   if (!s) return "";
@@ -14,18 +13,15 @@ function normalizeSrc(src: string | undefined | null): string {
   return s.startsWith("/") ? s : `/${s}`;
 }
 
-/** Only treat as real video if it looks like a video file (extension) */
 function isLikelyVideoSrc(src: string | undefined | null): boolean {
   const s = normalizeSrc(src);
   return /\.(mp4|webm|ogg|mov|m4v)$/i.test(s);
 }
 
 /**
- * IMPORTANT:
- * - We do NOT try to “guess” if a video file exists (client can’t check filesystem).
- * - We ONLY show "Demo video coming soon" if your JSON DOES NOT include any video item at all.
- * - If you add a video item back later, make sure the file actually exists in /public,
- *   otherwise the browser will 404 and you’ll see video UI.
+ * ✅ Keep "video coming soon" items:
+ * - video with real src -> real video
+ * - video with empty/non-video src -> coming soon placeholder (NO play)
  */
 function sanitizeItems(title: string, items: MediaItem[]): MediaItem[] {
   const out: MediaItem[] = [];
@@ -34,21 +30,17 @@ function sanitizeItems(title: string, items: MediaItem[]): MediaItem[] {
     if (!m) continue;
 
     if (m.type === "video") {
-      // Keep video only if it at least looks like a video file path
-      if (!isLikelyVideoSrc(m.src)) continue;
-
       out.push({
         ...m,
-        src: normalizeSrc(m.src),
+        src: normalizeSrc(m.src), // may be ""
         poster: normalizeSrc(m.poster),
         thumb: normalizeSrc(m.thumb),
         thumbnail: normalizeSrc(m.thumbnail),
-        alt: m.alt ?? `${title} demo video`,
+        alt: m.alt ?? `${title} demo`,
       });
       continue;
     }
 
-    // image
     out.push({
       ...m,
       src: normalizeSrc(m.src) || FALLBACK_POSTER,
@@ -58,15 +50,8 @@ function sanitizeItems(title: string, items: MediaItem[]): MediaItem[] {
     });
   }
 
-  // If everything was filtered out, fallback to an IMAGE (not video)
   if (out.length === 0) {
-    return [
-      {
-        type: "image",
-        src: FALLBACK_POSTER,
-        alt: "Media coming soon",
-      },
-    ];
+    return [{ type: "image", src: FALLBACK_POSTER, alt: "Media coming soon" }];
   }
 
   return out;
@@ -79,12 +64,6 @@ export default function ProjectGallery({
   title: string;
   items: MediaItem[];
 }) {
-  // 🔎 Detect whether JSON included ANY video item (this drives the "coming soon" label)
-  const jsonHasVideo = useMemo(() => {
-    const arr = Array.isArray(items) ? items : [];
-    return arr.some((m) => m && (m as any).type === "video");
-  }, [items]);
-
   const safeItems = useMemo(
     () => sanitizeItems(title, Array.isArray(items) ? items : []),
     [items, title]
@@ -106,7 +85,11 @@ export default function ProjectGallery({
 
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement | null)?.tagName?.toLowerCase();
-      if (tag === "input" || tag === "textarea" || (e.target as HTMLElement | null)?.isContentEditable)
+      if (
+        tag === "input" ||
+        tag === "textarea" ||
+        (e.target as HTMLElement | null)?.isContentEditable
+      )
         return;
 
       if (e.key === "Escape") {
@@ -146,7 +129,6 @@ export default function ProjectGallery({
 
   return (
     <>
-      {/* Inline gallery */}
       <div
         role="button"
         tabIndex={0}
@@ -164,23 +146,13 @@ export default function ProjectGallery({
             showDots
           />
 
-          {/* Top-right label */}
           <div className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1 text-[11px] font-semibold text-slate-800 shadow-sm backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-sky-600" />
             Click to expand
           </div>
-
-          {/* ✅ If NO video is present in JSON, show "Demo video coming soon" */}
-          {!jsonHasVideo ? (
-            <div className="pointer-events-none absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-[11px] font-semibold text-amber-800 shadow-sm backdrop-blur">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-              Demo video coming soon
-            </div>
-          ) : null}
         </div>
       </div>
 
-      {/* Modal */}
       {open ? (
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4"
@@ -222,20 +194,22 @@ export default function ProjectGallery({
               />
             </div>
 
-            {/* Thumbnail strip */}
             <div className="border-t border-slate-200/70 bg-white px-4 py-3">
               <div className="flex gap-3 overflow-x-auto pb-1">
                 {safeItems.map((m, i) => {
                   const selected = i === modalIndex;
 
-                  const thumbSrc =
-                    m.type === "image"
-                      ? normalizeSrc(m.thumb ?? m.thumbnail ?? m.src)
-                      : normalizeSrc(m.thumb ?? m.thumbnail ?? m.poster ?? "");
+                  const isVideo = m.type === "video";
+                  const realVideo = isVideo && isLikelyVideoSrc(m.src);
+                  const comingSoon = isVideo && !isLikelyVideoSrc(m.src);
+
+                  const thumbSrc = isVideo
+                    ? normalizeSrc(m.thumb ?? m.thumbnail ?? m.poster ?? "")
+                    : normalizeSrc(m.thumb ?? m.thumbnail ?? m.src);
 
                   return (
                     <button
-                      key={`${m.src}-${i}`}
+                      key={`${m.type}-${m.src}-${i}`}
                       type="button"
                       onClick={() => setModalIndex(i)}
                       className={[
@@ -260,11 +234,17 @@ export default function ProjectGallery({
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">
-                          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-semibold text-slate-800">
-                            Media
+                          <div className="rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-slate-800">
+                            {comingSoon ? "🎬 Demo soon" : "Media"}
                           </div>
                         </div>
                       )}
+
+                      {isVideo ? (
+                        <div className="absolute bottom-2 right-2 rounded-full border border-slate-200/70 bg-white/85 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                          {realVideo ? "▶" : comingSoon ? "🎬" : "▶"}
+                        </div>
+                      ) : null}
 
                       {selected ? <div className="absolute inset-0 bg-sky-500/10" /> : null}
                     </button>
