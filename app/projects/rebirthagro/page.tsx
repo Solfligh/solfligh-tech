@@ -6,8 +6,8 @@ import { type MediaItem } from "@/app/components/ProjectMediaCarousel";
 
 const media: MediaItem[] = [
   { type: "video", src: "/projects/rebirthagro/demo.mp4" },
-  { type: "image", src: "/projects/rebirthagro/1.png", alt: "RebirthAgro marketplace" },
-  { type: "image", src: "/projects/rebirthagro/2.png", alt: "RebirthAgro listing" },
+  { type: "image", src: "/projects/rebirthagro/1.jpg", alt: "RebirthAgro marketplace" },
+  { type: "image", src: "/projects/rebirthagro/2.jpg", alt: "RebirthAgro listing" },
 ];
 
 export default function RebirthAgroPage() {
