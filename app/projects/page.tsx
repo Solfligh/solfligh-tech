@@ -3,7 +3,7 @@ import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import Link from "next/link";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
-import { listProjects } from "@/app/lib/projectsStore";
+import { listProjects } from "@/app/lib/projectStore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
