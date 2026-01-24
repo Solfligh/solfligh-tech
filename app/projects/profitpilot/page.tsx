@@ -6,8 +6,8 @@ import { type MediaItem } from "@/app/components/ProjectMediaCarousel";
 
 const media: MediaItem[] = [
   { type: "video", src: "/projects/profitpilot/demo.mp4" },
-  { type: "image", src: "/projects/profitpilot/1.png", alt: "ProfitPilot dashboard" },
-  { type: "image", src: "/projects/profitpilot/2.png", alt: "ProfitPilot transactions" },
+  { type: "image", src: "/projects/profitpilot/1.jpg", alt: "ProfitPilot dashboard" },
+  { type: "image", src: "/projects/profitpilot/2.jpg", alt: "ProfitPilot transactions" },
 ];
 
 export default function ProfitPilotPage() {
