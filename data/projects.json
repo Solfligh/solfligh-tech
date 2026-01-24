@@ -3,8 +3,8 @@
     {
       "slug": "profitpilot",
       "name": "ProfitPilot",
-      "status": "Near Launch / Coming Soon",
-      "statusColor": "bg-amber-100 text-amber-700 border-amber-200",
+      "status": "Live / Near Launch",
+      "statusColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
       "description": "A modern business management platform for SMEs to track income, expenses, inventory, and insights in one clean dashboard.",
       "highlights": [
         "Multi-tenant SaaS architecture",
@@ -14,6 +14,7 @@
       ],
       "ctaLabel": "View ProfitPilot",
       "href": "/projects/profitpilot",
+      "externalUrl": null,
       "published": true,
       "media": [
         {
@@ -59,8 +60,9 @@
         "Decision-support tooling",
         "Automation-ready design"
       ],
-      "ctaLabel": "View FXCO-PILOT",
+      "ctaLabel": "Open FXCO-PILOT",
       "href": "/projects/fxco-pilot",
+      "externalUrl": "https://fxco-pilot.solflightech.org",
       "published": true,
       "media": [
         {
@@ -101,6 +103,7 @@
       ],
       "ctaLabel": "View RebirthAgro",
       "href": "/projects/rebirthagro",
+      "externalUrl": null,
       "published": true,
       "media": [
         {
