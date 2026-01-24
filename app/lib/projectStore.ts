@@ -45,107 +45,111 @@ export type ProjectPayload = {
   updatedAt: string;
 };
 
-/**
- * IMPORTANT:
- * This store is now SUPABASE-FIRST (service role).
- * No JSON writes — because Vercel filesystem is not persistent.
- *
- * Assumes these tables:
- * - public.projects (primary key: slug)
- * - public.project_media (project_slug fk to projects.slug OR store project_slug text)
- *
- * If your project_media uses project_id instead, tell me and I’ll adjust in one shot.
- */
+// -------------------------
+// Helpers (safe normalizers)
+// -------------------------
 
-type ProjectRow = {
-  slug: string;
-  name: string;
-  status: string | null;
-  status_color: string | null;
-  description: string | null;
-  highlights: string[] | null;
-  cta_label: string | null;
-  href: string | null;
-  external_url: string | null;
-  published: boolean | null;
-
-  problem: string | null;
-  solution: string | null;
-  key_features: string[] | null;
-  roadmap: string[] | null;
-  tech_stack: string[] | null;
-
-  updated_at: string | null;
-};
-
-type MediaRow = {
-  id?: string;
-  project_slug: string;
-  sort_order: number | null;
-
-  type: "image" | "video";
-  src: string | null;
-  alt: string | null;
-  poster: string | null;
-  thumb: string | null;
-  thumbnail: string | null;
-};
-
-function asStringArray(x: unknown): string[] {
-  if (!Array.isArray(x)) return [];
-  return x.map(String).map((s) => s.trim()).filter(Boolean);
+function s(x: unknown, fallback = ""): string {
+  if (typeof x === "string") return x;
+  if (x == null) return fallback;
+  return String(x);
 }
 
-function normalizeProject(row: ProjectRow, media: MediaRow[]): ProjectPayload {
+function b(x: unknown, fallback = false): boolean {
+  if (typeof x === "boolean") return x;
+  if (typeof x === "number") return x !== 0;
+  if (typeof x === "string") return x.toLowerCase() === "true";
+  return fallback;
+}
+
+function arrStr(x: unknown): string[] {
+  if (!Array.isArray(x)) return [];
+  return x.map((v) => s(v).trim()).filter(Boolean);
+}
+
+function isValidExternalUrl(x: unknown): string | null {
+  if (typeof x !== "string") return null;
+  const u = x.trim();
+  if (!u) return null;
+  if (u.startsWith("https://") || u.startsWith("http://")) return u;
+  return null;
+}
+
+function normalizeMedia(rows: any[]): MediaItem[] {
+  const safe = Array.isArray(rows) ? rows : [];
+  const sorted = safe
+    .slice()
+    .sort((a, b) => (Number(a?.sort_order ?? 0) || 0) - (Number(b?.sort_order ?? 0) || 0));
+
+  const out: MediaItem[] = [];
+
+  for (const r of sorted) {
+    const t = s(r?.type).toLowerCase();
+    if (t !== "image" && t !== "video") continue;
+
+    if (t === "video") {
+      out.push({
+        type: "video",
+        src: s(r?.src, ""), // can be ""
+        alt: r?.alt ? s(r.alt) : undefined,
+        poster: r?.poster ? s(r.poster) : undefined,
+        thumb: r?.thumb ? s(r.thumb) : undefined,
+        thumbnail: r?.thumbnail ? s(r.thumbnail) : undefined,
+      });
+    } else {
+      out.push({
+        type: "image",
+        src: s(r?.src, ""),
+        alt: r?.alt ? s(r.alt) : undefined,
+        thumb: r?.thumb ? s(r.thumb) : undefined,
+        thumbnail: r?.thumbnail ? s(r.thumbnail) : undefined,
+      });
+    }
+  }
+
+  return out;
+}
+
+function normalizeProject(projectRow: any, mediaRows: any[]): ProjectPayload {
+  const slug = s(projectRow?.slug).trim();
+  const name = s(projectRow?.name).trim();
+
   return {
-    slug: row.slug,
-    name: row.name,
-    status: row.status ?? "Upcoming",
-    statusColor: row.status_color ?? "bg-slate-100 text-slate-700 border-slate-200",
-    description: row.description ?? "",
-    highlights: asStringArray(row.highlights),
-    ctaLabel: row.cta_label ?? "View project",
-    href: row.href ?? `/projects/${row.slug}`,
-    externalUrl: row.external_url ?? null,
-    published: Boolean(row.published),
+    slug,
+    name,
+    status: s(projectRow?.status, "Upcoming"),
+    statusColor: s(
+      projectRow?.status_color,
+      "bg-slate-100 text-slate-700 border-slate-200"
+    ),
+    description: s(projectRow?.description, ""),
+    highlights: arrStr(projectRow?.highlights),
+    ctaLabel: s(projectRow?.cta_label, "View project"),
+    href: s(projectRow?.href, `/projects/${slug}`),
 
-    media: (media || [])
-      .slice()
-      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-      .map((m) => {
-        if (m.type === "video") {
-          return {
-            type: "video" as const,
-            src: m.src ?? "",
-            alt: m.alt ?? undefined,
-            poster: m.poster ?? undefined,
-            thumb: m.thumb ?? undefined,
-            thumbnail: m.thumbnail ?? undefined,
-          };
-        }
-        return {
-          type: "image" as const,
-          src: m.src ?? "",
-          alt: m.alt ?? undefined,
-          thumb: m.thumb ?? undefined,
-          thumbnail: m.thumbnail ?? undefined,
-        };
-      }),
+    externalUrl: isValidExternalUrl(projectRow?.external_url),
 
-    problem: row.problem ?? "",
-    solution: row.solution ?? "",
-    keyFeatures: asStringArray(row.key_features),
-    roadmap: asStringArray(row.roadmap),
-    techStack: asStringArray(row.tech_stack),
+    published: b(projectRow?.published, false),
+    media: normalizeMedia(mediaRows),
 
-    updatedAt: row.updated_at ?? new Date().toISOString(),
+    problem: s(projectRow?.problem, ""),
+    solution: s(projectRow?.solution, ""),
+    keyFeatures: arrStr(projectRow?.key_features),
+    roadmap: arrStr(projectRow?.roadmap),
+    techStack: arrStr(projectRow?.tech_stack),
+
+    updatedAt: s(projectRow?.updated_at, new Date().toISOString()),
   };
 }
+
+// -------------------------
+// Public API
+// -------------------------
 
 export async function listProjects(): Promise<ProjectPayload[]> {
   noStore();
 
-  // 1) read all projects
+  // 1) Read projects
   const { data: projects, error: pErr } = await supabaseAdmin
     .from("projects")
     .select(
@@ -171,12 +175,13 @@ export async function listProjects(): Promise<ProjectPayload[]> {
     .order("updated_at", { ascending: false });
 
   if (pErr) throw new Error(pErr.message);
-  const safeProjects = (projects || []) as ProjectRow[];
 
+  const safeProjects = Array.isArray(projects) ? projects : [];
   if (safeProjects.length === 0) return [];
 
-  // 2) read media for those slugs
-  const slugs = safeProjects.map((p) => p.slug);
+  // 2) Read media for those slugs
+  const slugs = safeProjects.map((p: any) => s(p?.slug)).filter(Boolean);
+
   const { data: mediaRows, error: mErr } = await supabaseAdmin
     .from("project_media")
     .select("project_slug, sort_order, type, src, alt, poster, thumb, thumbnail")
@@ -184,14 +189,16 @@ export async function listProjects(): Promise<ProjectPayload[]> {
 
   if (mErr) throw new Error(mErr.message);
 
-  const mediaBySlug = new Map<string, MediaRow[]>();
-  for (const m of (mediaRows || []) as MediaRow[]) {
-    const arr = mediaBySlug.get(m.project_slug) || [];
+  const bySlug = new Map<string, any[]>();
+  for (const m of Array.isArray(mediaRows) ? mediaRows : []) {
+    const key = s(m?.project_slug);
+    if (!key) continue;
+    const arr = bySlug.get(key) || [];
     arr.push(m);
-    mediaBySlug.set(m.project_slug, arr);
+    bySlug.set(key, arr);
   }
 
-  return safeProjects.map((p) => normalizeProject(p, mediaBySlug.get(p.slug) || []));
+  return safeProjects.map((p: any) => normalizeProject(p, bySlug.get(s(p?.slug)) || []));
 }
 
 export async function upsertProject(
@@ -201,8 +208,8 @@ export async function upsertProject(
 
   const now = new Date().toISOString();
 
-  // Upsert project
-  const projectUpsert: Partial<ProjectRow> & { slug: string; name: string } = {
+  // Upsert project (Supabase returns loosely typed data; normalize later)
+  const projectUpsert = {
     slug: input.slug,
     name: input.name,
     status: input.status,
@@ -211,7 +218,7 @@ export async function upsertProject(
     highlights: input.highlights,
     cta_label: input.ctaLabel,
     href: input.href,
-    external_url: input.externalUrl ?? null,
+    external_url: isValidExternalUrl(input.externalUrl) ?? null,
     published: input.published,
 
     problem: input.problem,
@@ -250,29 +257,34 @@ export async function upsertProject(
 
   if (upErr) throw new Error(upErr.message);
 
-  // Replace media rows (simple + reliable)
-  const { error: delErr } = await supabaseAdmin.from("project_media").delete().eq("project_slug", input.slug);
+  // Replace media for that slug (simple + reliable)
+  const { error: delErr } = await supabaseAdmin
+    .from("project_media")
+    .delete()
+    .eq("project_slug", input.slug);
+
   if (delErr) throw new Error(delErr.message);
 
-  const mediaInsert: MediaRow[] = (input.media || []).map((m, idx) => {
+  const mediaInsert = (Array.isArray(input.media) ? input.media : []).map((m, idx) => {
     if (m.type === "video") {
       return {
         project_slug: input.slug,
         sort_order: idx,
         type: "video",
-        src: m.src ?? "",
-        alt: m.alt ?? null,
+        src: s((m as any).src, ""), // can be ""
+        alt: (m as any).alt ?? null,
         poster: (m as any).poster ?? null,
         thumb: (m as any).thumb ?? null,
         thumbnail: (m as any).thumbnail ?? null,
       };
     }
+
     return {
       project_slug: input.slug,
       sort_order: idx,
       type: "image",
-      src: m.src ?? "",
-      alt: m.alt ?? null,
+      src: s((m as any).src, ""),
+      alt: (m as any).alt ?? null,
       poster: null,
       thumb: (m as any).thumb ?? null,
       thumbnail: (m as any).thumbnail ?? null,
@@ -284,7 +296,7 @@ export async function upsertProject(
     if (insErr) throw new Error(insErr.message);
   }
 
-  // Re-read media to return normalized payload
+  // Re-read media to return a clean normalized payload
   const { data: finalMedia, error: fmErr } = await supabaseAdmin
     .from("project_media")
     .select("project_slug, sort_order, type, src, alt, poster, thumb, thumbnail")
@@ -292,5 +304,5 @@ export async function upsertProject(
 
   if (fmErr) throw new Error(fmErr.message);
 
-  return normalizeProject(savedProject as ProjectRow, (finalMedia || []) as MediaRow[]);
+  return normalizeProject(savedProject, Array.isArray(finalMedia) ? finalMedia : []);
 }
