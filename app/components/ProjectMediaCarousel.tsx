@@ -61,6 +61,9 @@ function normalizeSrc(src: string | undefined | null): string {
  * - Pause video on hover
  * - Swipe support on mobile
  * - Optional internal modal (fullscreen)
+ *
+ * ✅ FIX: If there are NO video items, we NEVER render any <video> or Play UI.
+ * This prevents phantom video UI when your JSON has images only.
  */
 export default function ProjectMediaCarousel({
   items,
@@ -74,6 +77,9 @@ export default function ProjectMediaCarousel({
   onIndexChange,
 }: Props) {
   const safeItems = Array.isArray(items) ? items : [];
+
+  // ✅ Detect if this carousel actually contains a video item
+  const hasVideo = safeItems.some((it) => it?.type === "video");
 
   const isControlled = typeof controlledIndex === "number";
   const [uncontrolledIndex, setUncontrolledIndex] = useState(0);
@@ -101,6 +107,9 @@ export default function ProjectMediaCarousel({
   };
 
   const stopAllVideos = () => {
+    // ✅ If there are no videos, nothing to stop
+    if (!hasVideo) return;
+
     setPlaying({});
     Object.values(videoRefs.current).forEach((v) => {
       try {
@@ -111,9 +120,9 @@ export default function ProjectMediaCarousel({
   };
 
   const go = (n: number) => {
-    const next = clampIndex(n);
+    const nextIdx = clampIndex(n);
     stopAllVideos();
-    setIndex(next);
+    setIndex(nextIdx);
   };
 
   const next = () => go(activeIndex + 1);
@@ -127,9 +136,7 @@ export default function ProjectMediaCarousel({
 
     const src = normalizeSrc(item.src);
     const fallbackFromVideo =
-      src
-        .replace(/\.mp4$/i, ".jpg")
-        .replace(/\/demo\.mp4$/i, "/poster.jpg") || FALLBACK_POSTER;
+      src.replace(/\.mp4$/i, ".jpg").replace(/\/demo\.mp4$/i, "/poster.jpg") || FALLBACK_POSTER;
 
     return (
       normalizeSrc(item.thumb ?? item.thumbnail ?? item.poster) ||
@@ -147,13 +154,14 @@ export default function ProjectMediaCarousel({
     if (isModalOpen) return;
 
     const t = window.setInterval(() => {
-      if (playing[activeIndex]) return;
+      // ✅ only block auto-advance if a video is actually playing
+      if (hasVideo && playing[activeIndex]) return;
       next();
     }, intervalMs);
 
     return () => window.clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoPlay, intervalMs, activeIndex, isModalOpen, safeItems.length, playing]);
+  }, [autoPlay, intervalMs, activeIndex, isModalOpen, safeItems.length, playing, hasVideo]);
 
   // Keep index valid if items change
   useEffect(() => {
@@ -188,6 +196,8 @@ export default function ProjectMediaCarousel({
 
   // ---------- Video controls ----------
   const toggleVideo = async (i: number) => {
+    if (!hasVideo) return;
+
     const item = safeItems[i];
     if (!item || item.type !== "video") return;
 
@@ -221,6 +231,7 @@ export default function ProjectMediaCarousel({
   };
 
   const pauseVideo = (i: number) => {
+    if (!hasVideo) return;
     if (!playing[i]) return;
     const v = videoRefs.current[i];
     try {
@@ -229,6 +240,7 @@ export default function ProjectMediaCarousel({
   };
 
   const resumeVideo = async (i: number) => {
+    if (!hasVideo) return;
     if (!playing[i]) return;
     const v = videoRefs.current[i];
     if (!v) return;
@@ -280,6 +292,7 @@ export default function ProjectMediaCarousel({
               }}
             />
           ) : (
+            // ✅ Only render video UI if we actually have video items
             <div
               className="relative h-full w-full"
               onMouseEnter={() => pauseVideo(activeIndex)}
@@ -297,37 +310,44 @@ export default function ProjectMediaCarousel({
                 />
               )}
 
-              <video
-                ref={(el) => {
-                  videoRefs.current[activeIndex] = el;
-                }}
-                className="absolute inset-0 h-full w-full object-cover"
-                src={normalizeSrc(current.src)}
-                poster={getThumbSrc(current)}
-                playsInline
-                controls={false}
-                preload="metadata"
-                onEnded={() => setPlaying((p) => ({ ...p, [activeIndex]: false }))}
-              />
-
-              <div className="absolute inset-0 grid place-items-center">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleVideo(activeIndex);
+              {hasVideo && (
+                <video
+                  ref={(el) => {
+                    videoRefs.current[activeIndex] = el;
                   }}
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                  aria-label={playing[activeIndex] ? "Pause video" : "Play video"}
-                >
-                  <span className="text-xs">{playing[activeIndex] ? "Pause" : "Play"}</span>
-                </button>
-              </div>
+                  className="absolute inset-0 h-full w-full object-cover"
+                  src={normalizeSrc(current.src)}
+                  poster={getThumbSrc(current)}
+                  playsInline
+                  controls={false}
+                  preload="metadata"
+                  onEnded={() => setPlaying((p) => ({ ...p, [activeIndex]: false }))}
+                />
+              )}
 
-              <div className="absolute left-3 top-3 rounded-full border border-slate-200 bg-white/80 px-2 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur">
-                Demo
-              </div>
+              {/* ✅ Play button only for real videos */}
+              {hasVideo && (
+                <div className="absolute inset-0 grid place-items-center">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleVideo(activeIndex);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                    aria-label={playing[activeIndex] ? "Pause video" : "Play video"}
+                  >
+                    <span className="text-xs">{playing[activeIndex] ? "Pause" : "Play"}</span>
+                  </button>
+                </div>
+              )}
+
+              {hasVideo && (
+                <div className="absolute left-3 top-3 rounded-full border border-slate-200 bg-white/80 px-2 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur">
+                  Demo
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -423,7 +443,7 @@ export default function ProjectMediaCarousel({
                     e.currentTarget.src = FALLBACK_POSTER;
                   }}
                 />
-                {item.type === "video" && (
+                {item.type === "video" && hasVideo && (
                   <div className="absolute inset-0 grid place-items-center">
                     <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-900 shadow-sm">
                       ▶
@@ -463,6 +483,9 @@ function MediaModal({
   getThumbSrc: (item: MediaItem) => string;
   onClose: () => void;
 }) {
+  // ✅ Detect if this modal actually contains a video item
+  const hasVideo = items.some((it) => it?.type === "video");
+
   const [index, setIndex] = useState(startIndex);
   const [playing, setPlaying] = useState<Record<number, boolean>>({});
   const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
@@ -474,6 +497,8 @@ function MediaModal({
   };
 
   const stopAll = () => {
+    if (!hasVideo) return;
+
     setPlaying({});
     Object.values(videoRefs.current).forEach((v) => {
       try {
@@ -489,6 +514,8 @@ function MediaModal({
   };
 
   const toggleVideo = async (i: number) => {
+    if (!hasVideo) return;
+
     const item = items[i];
     if (!item || item.type !== "video") return;
 
@@ -576,22 +603,26 @@ function MediaModal({
                     />
                   )}
 
-                  <video
-                    ref={(el) => {
-                      videoRefs.current[index] = el;
-                    }}
-                    className="absolute inset-0 h-full w-full object-contain"
-                    src={normalizeSrc(current.src)}
-                    poster={getThumbSrc(current)}
-                    playsInline
-                    controls
-                    preload="metadata"
-                    onPlay={() => setPlaying((p) => ({ ...p, [index]: true }))}
-                    onPause={() => setPlaying((p) => ({ ...p, [index]: false }))}
-                    onEnded={() => setPlaying((p) => ({ ...p, [index]: false }))}
-                  />
+                  {/* ✅ Only render <video> if there are real videos */}
+                  {hasVideo && (
+                    <video
+                      ref={(el) => {
+                        videoRefs.current[index] = el;
+                      }}
+                      className="absolute inset-0 h-full w-full object-contain"
+                      src={normalizeSrc(current.src)}
+                      poster={getThumbSrc(current)}
+                      playsInline
+                      controls
+                      preload="metadata"
+                      onPlay={() => setPlaying((p) => ({ ...p, [index]: true }))}
+                      onPause={() => setPlaying((p) => ({ ...p, [index]: false }))}
+                      onEnded={() => setPlaying((p) => ({ ...p, [index]: false }))}
+                    />
+                  )}
 
-                  {!playing[index] && (
+                  {/* ✅ Play overlay only for real videos */}
+                  {hasVideo && !playing[index] && (
                     <div className="absolute inset-0 grid place-items-center">
                       <button
                         type="button"
@@ -649,7 +680,7 @@ function MediaModal({
                           e.currentTarget.src = FALLBACK_POSTER;
                         }}
                       />
-                      {item.type === "video" && (
+                      {item.type === "video" && hasVideo && (
                         <div className="absolute inset-0 grid place-items-center">
                           <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-900">
                             ▶
