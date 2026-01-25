@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
-import ProjectMediaCarousel, { type MediaItem } from "@/app/components/ProjectMediaCarousel";
+import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
 import { listProjects } from "@/app/lib/projectStore";
 import { notFound, redirect } from "next/navigation";
 
@@ -11,6 +11,14 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const SITE_URL = "https://solflightech.org";
+
+function ogUrl(params: { title?: string; subtitle?: string; badge?: string }) {
+  const u = new URL("/og", SITE_URL);
+  if (params.title) u.searchParams.set("title", params.title);
+  if (params.subtitle) u.searchParams.set("subtitle", params.subtitle);
+  if (params.badge) u.searchParams.set("badge", params.badge);
+  return u.toString();
+}
 
 type DemoInfo =
   | { status?: "none" }
@@ -25,9 +33,8 @@ type AnyProject = {
   description?: string;
   highlights?: string[];
   published?: boolean;
-  media?: unknown[];
+  media?: any[];
 
-  // ✅ first-class external destination
   externalUrl?: string | null;
 
   demo?: DemoInfo | null;
@@ -39,47 +46,39 @@ type AnyProject = {
   techStack?: string[];
 };
 
-type RawMedia = {
-  type?: unknown;
-  src?: unknown;
-  thumbnail?: unknown;
-  alt?: unknown;
-};
-
 function isValidExternalUrl(url: unknown): url is string {
   if (typeof url !== "string") return false;
   const u = url.trim();
   return u.startsWith("https://") || u.startsWith("http://");
 }
 
-function normalizeMedia(projectName: string, media: unknown[]): MediaItem[] {
+function normalizeMedia(projectName: string, media: any[]) {
   const safe = Array.isArray(media) ? media : [];
 
-  const out: MediaItem[] = safe
-    .filter((m): m is RawMedia => !!m && typeof m === "object")
-    .filter((m) => typeof m.src === "string" && (m.type === "image" || m.type === "video"))
+  const out = safe
+    .filter((m) => m && typeof m.src === "string" && (m.type === "image" || m.type === "video"))
     .map((m) => {
       if (m.type === "video") {
         return {
-          type: "video",
+          type: "video" as const,
           src: String(m.src),
-          thumbnail: typeof m.thumbnail === "string" ? m.thumbnail : undefined,
-          alt: typeof m.alt === "string" ? m.alt : `${projectName} demo video`,
+          thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
+          alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
       }
 
       return {
-        type: "image",
+        type: "image" as const,
         src: String(m.src),
-        alt: typeof m.alt === "string" ? m.alt : `${projectName} image`,
-        thumbnail: typeof m.thumbnail === "string" ? m.thumbnail : undefined,
+        alt: m.alt ? String(m.alt) : `${projectName} image`,
+        thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
       };
     });
 
   if (out.length === 0) {
     return [
       {
-        type: "image",
+        type: "image" as const,
         src: "/projects/video-poster.jpg",
         alt: "Media coming soon",
       },
@@ -97,9 +96,9 @@ function isLikelyVideoSrc(src: unknown): boolean {
 
 function withDemoInjected(
   projectName: string,
-  baseMedia: MediaItem[],
+  baseMedia: ReturnType<typeof normalizeMedia>,
   demo?: DemoInfo | null
-): MediaItem[] {
+) {
   const items = Array.isArray(baseMedia) ? [...baseMedia] : [];
   const d = demo || null;
 
@@ -110,7 +109,7 @@ function withDemoInjected(
     const videoSrc = typeof (d as any)?.videoSrc === "string" ? (d as any).videoSrc.trim() : "";
     if (videoSrc && !alreadyHasRealVideo) {
       items.unshift({
-        type: "video",
+        type: "video" as const,
         src: videoSrc,
         thumbnail: typeof (d as any)?.thumbnail === "string" ? (d as any).thumbnail : undefined,
         alt: `${projectName} demo video`,
@@ -121,12 +120,10 @@ function withDemoInjected(
   if (demoStatus === "coming_soon") {
     if (!alreadyHasRealVideo) {
       items.unshift({
-        type: "video",
+        type: "video" as const,
         src: "",
         thumbnail:
-          typeof (d as any)?.thumbnail === "string"
-            ? (d as any).thumbnail
-            : "/projects/video-poster.jpg",
+          typeof (d as any)?.thumbnail === "string" ? (d as any).thumbnail : "/projects/video-poster.jpg",
         alt: `${projectName} demo coming soon`,
       });
     }
@@ -135,76 +132,73 @@ function withDemoInjected(
   return items;
 }
 
-async function getPublishedProjectBySlug(slug: string): Promise<AnyProject | null> {
-  try {
-    const all = await listProjects();
-    const projects = (all as AnyProject[]) || [];
-    const project = projects.find((p) => p?.published && p?.slug === slug);
-    return project || null;
-  } catch {
-    return null;
-  }
-}
-
 export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const slug = params.slug;
-  const project = await getPublishedProjectBySlug(slug);
+  const slug = params?.slug || "";
+
+  let projects: AnyProject[] = [];
+  try {
+    projects = ((await listProjects()) as AnyProject[]) || [];
+  } catch {
+    projects = [];
+  }
+
+  const project = projects.find((p) => p?.published && p?.slug === slug);
 
   if (!project) {
     return {
-      title: "Project not found",
-      robots: { index: false, follow: false },
+      title: "Project not found — SOLFLIGH TECH",
+      description: "This project could not be found.",
+      robots: { index: false, follow: true },
     };
   }
 
-  const name = project.name ?? "SOLFLIGH TECH Project";
-  const description =
-    project.description ??
-    "A SOLFLIGH TECH project designed to solve real operational and business problems.";
+  const name = project.name || "SOLFLIGH TECH Project";
+  const description = (project.description || "").trim();
+  const safeDescription =
+    description.length > 0
+      ? description
+      : "Explore SOLFLIGH TECH projects focused on automation, clarity, and real business impact.";
 
-  const resolvedSlug = project.slug ?? slug;
+  const internalUrl = `${SITE_URL}/projects/${slug}`;
 
-  // If external, canonical points to that. Otherwise internal page.
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
-  const canonical = externalUrl ? externalUrl : `${SITE_URL}/projects/${resolvedSlug}`;
+  const canonical = externalUrl || internalUrl;
 
-  // ✅ Dynamic OG image
-  const og = `/og?title=${encodeURIComponent(name)}&subtitle=${encodeURIComponent(
-    description
-  )}&badge=${encodeURIComponent("Project")}`;
+  // If this project redirects externally, we keep it "follow" but "noindex" to avoid duplicate indexing.
+  const robots = externalUrl
+    ? ({ index: false, follow: true } as const)
+    : ({ index: true, follow: true } as const);
+
+  const ogImage = ogUrl({
+    title: name,
+    subtitle: safeDescription,
+    badge: "Project",
+  });
 
   return {
-    title: name,
-    description,
-    alternates: { canonical },
+    title: `${name} — SOLFLIGH TECH`,
+    description: safeDescription,
+    alternates: {
+      canonical,
+    },
+    robots,
     openGraph: {
-      title: `${name} — SOLFLIGH TECH`,
-      description,
+      title: name,
+      description: safeDescription,
       url: canonical,
-      type: "article",
-      images: [
-        {
-          url: og,
-          width: 1200,
-          height: 630,
-          alt: `${name} — SOLFLIGH TECH`,
-        },
-      ],
+      type: "website",
+      siteName: "SOLFLIGH TECH",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: name }],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${name} — SOLFLIGH TECH`,
-      description,
-      images: [og],
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: { index: true, follow: true },
+      title: name,
+      description: safeDescription,
+      images: [ogImage],
     },
   };
 }
@@ -214,24 +208,32 @@ export default async function ProjectDetailPage({
 }: {
   params: { slug: string };
 }) {
-  const slug = params.slug;
+  const slug = params?.slug;
 
-  const project = await getPublishedProjectBySlug(slug);
+  let projects: AnyProject[] = [];
+  try {
+    const all = await listProjects();
+    projects = (all as AnyProject[]) || [];
+  } catch {
+    projects = [];
+  }
+
+  const project = projects.find((p) => p?.published && p?.slug === slug);
   if (!project) notFound();
 
-  // ✅ externalUrl is first-class: if present, we redirect to it.
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   if (externalUrl) redirect(externalUrl);
 
-  const name = project.name ?? "Untitled project";
-  const status = project.status ?? "Upcoming";
-  const statusColor = project.statusColor ?? "bg-slate-100 text-slate-700 border-slate-200";
+  const name = project.name || "Untitled project";
+  const status = project.status || "Upcoming";
+  const statusColor =
+    project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
 
-  const description = project.description ?? "";
+  const description = project.description || "";
   const highlights = Array.isArray(project.highlights) ? project.highlights : [];
 
-  const problem = project.problem ?? "";
-  const solution = project.solution ?? "";
+  const problem = project.problem || "";
+  const solution = project.solution || "";
   const keyFeatures = Array.isArray(project.keyFeatures) ? project.keyFeatures : [];
   const roadmap = Array.isArray(project.roadmap) ? project.roadmap : [];
   const techStack = Array.isArray(project.techStack) ? project.techStack : [];
@@ -246,7 +248,6 @@ export default async function ProjectDetailPage({
           <PageHeader level={1} badge="Project" title={name} subtitle={description} />
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
-            {/* Media */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
               <ProjectMediaCarousel
                 items={mediaItems}
@@ -257,7 +258,6 @@ export default async function ProjectDetailPage({
               />
             </div>
 
-            {/* Summary card */}
             <aside className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-base font-semibold text-slate-900">Overview</h2>
@@ -270,8 +270,8 @@ export default async function ProjectDetailPage({
 
               {highlights.length > 0 && (
                 <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                  {highlights.map((item, i) => (
-                    <li key={`${slug}-hl-${i}`} className="flex items-start gap-2">
+                  {highlights.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
                       <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
                       <span>{item}</span>
                     </li>
@@ -297,14 +297,13 @@ export default async function ProjectDetailPage({
             </aside>
           </div>
 
-          {/* Details */}
           <div className="mt-12 grid gap-8 lg:grid-cols-3">
             <section className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
               <h3 className="text-sm font-semibold text-slate-900">Key Features</h3>
               {keyFeatures.length ? (
                 <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                  {keyFeatures.map((f, i) => (
-                    <li key={`${slug}-kf-${i}`} className="flex items-start gap-2">
+                  {keyFeatures.map((f) => (
+                    <li key={f} className="flex items-start gap-2">
                       <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
                       <span>{f}</span>
                     </li>
@@ -319,8 +318,8 @@ export default async function ProjectDetailPage({
               <h3 className="text-sm font-semibold text-slate-900">Roadmap</h3>
               {roadmap.length ? (
                 <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                  {roadmap.map((r, i) => (
-                    <li key={`${slug}-rm-${i}`} className="flex items-start gap-2">
+                  {roadmap.map((r) => (
+                    <li key={r} className="flex items-start gap-2">
                       <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
                       <span>{r}</span>
                     </li>
@@ -335,9 +334,9 @@ export default async function ProjectDetailPage({
               <h3 className="text-sm font-semibold text-slate-900">Tech Stack</h3>
               {techStack.length ? (
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {techStack.map((t, i) => (
+                  {techStack.map((t) => (
                     <span
-                      key={`${slug}-ts-${i}`}
+                      key={t}
                       className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700"
                     >
                       {t}
