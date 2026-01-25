@@ -231,7 +231,7 @@ export default function HomePage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <Chip>Technology</Chip>
                   <Chip>Innovation</Chip>
-                  <Chip>Delivery</Chip>
+                  <Chip>Getting you back your time</Chip>
                 </div>
 
                 <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl md:text-6xl">
