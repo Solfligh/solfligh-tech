@@ -1,5 +1,5 @@
 // app/layout.tsx
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -14,29 +14,34 @@ const inter = Inter({
 });
 
 const SITE_URL = "https://solflightech.org";
+const ORG_NAME = "SOLFLIGH TECH";
 
-function ogUrl(params: { title?: string; subtitle?: string; badge?: string }) {
-  const u = new URL("/og", SITE_URL);
-  if (params.title) u.searchParams.set("title", params.title);
-  if (params.subtitle) u.searchParams.set("subtitle", params.subtitle);
-  if (params.badge) u.searchParams.set("badge", params.badge);
-  return u.toString();
-}
+// ✅ Organization Schema (JSON-LD)
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: ORG_NAME,
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`, // ✅ make sure this file exists in /public
+  image: `${SITE_URL}/og.png`, // ✅ optional but nice (your OG image in /public)
+  description:
+    "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
+  // ✅ Add social links later if you want
+  sameAs: [
+    // "https://www.linkedin.com/company/your-company",
+    // "https://twitter.com/yourhandle",
+    // "https://www.instagram.com/yourhandle",
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-
   title: {
-    default: "SOLFLIGH TECH – Automation & Software That Saves You Time",
+    default: "SOLFLIGH TECH — Technology · Innovation · Getting you back your time",
     template: "%s — SOLFLIGH TECH",
   },
   description:
-    "SOLFLIGH TECH builds modern platforms like ProfitPilot and RebirthAgro — focused on automation, clarity, and real business impact.",
-
-  alternates: {
-    canonical: SITE_URL,
-  },
-
+    "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
   icons: {
     icon: [
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
@@ -44,47 +49,34 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/favicon-192.png", sizes: "192x192", type: "image/png" }],
   },
-
   openGraph: {
-    title: "SOLFLIGH TECH",
+    title: ORG_NAME,
     description: "Technology · Innovation · Getting you back your time",
     url: SITE_URL,
-    siteName: "SOLFLIGH TECH",
+    siteName: ORG_NAME,
     type: "website",
     images: [
       {
-        url: ogUrl({
-          title: "SOLFLIGH TECH",
-          subtitle: "Technology · Innovation · Getting you back your time",
-          badge: "SOLFLIGH TECH",
-        }),
+        url: "/og.png",
         width: 1200,
         height: 630,
         alt: "SOLFLIGH TECH",
       },
     ],
   },
-
   twitter: {
     card: "summary_large_image",
-    title: "SOLFLIGH TECH",
+    title: ORG_NAME,
     description: "Technology · Innovation · Getting you back your time",
-    images: [
-      ogUrl({
-        title: "SOLFLIGH TECH",
-        subtitle: "Technology · Innovation · Getting you back your time",
-        badge: "SOLFLIGH TECH",
-      }),
-    ],
+    images: ["/og.png"],
   },
-
   robots: {
     index: true,
     follow: true,
   },
 };
 
-export const viewport: Viewport = {
+export const viewport = {
   themeColor: "#0284c7",
 };
 
@@ -96,6 +88,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen bg-white font-sans text-slate-900 antialiased">
+        {/* ✅ Organization schema injected site-wide */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+
         <Navbar />
         {children}
         <Footer />
