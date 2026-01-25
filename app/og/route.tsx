@@ -103,3 +103,48 @@ export async function GET(req: Request) {
             style={{
               fontSize: 76,
               lineHeight: 1.05,
+              fontWeight: 900,
+              maxWidth: 1020,
+            }}
+          >
+            {title}
+          </div>
+
+          <div
+            style={{
+              marginTop: 22,
+              fontSize: 30,
+              lineHeight: 1.25,
+              fontWeight: 600,
+              color: "rgba(255,255,255,0.85)",
+              maxWidth: 1020,
+            }}
+          >
+            {subtitle}
+          </div>
+        </div>
+
+        {/* bottom */}
+        <div
+          style={{
+            zIndex: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            paddingTop: 24,
+            borderTop: "1px solid rgba(255,255,255,0.2)",
+            fontSize: 20,
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.75)",
+          }}
+        >
+          <div>Technology · Innovation · Automation</div>
+          <div>Share preview</div>
+        </div>
+      </div>
+    ),
+    {
+      width: 1200,
+      height: 630,
+    }
+  );
+}
