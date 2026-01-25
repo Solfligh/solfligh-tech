@@ -4,6 +4,7 @@ import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
 import { listProjects } from "@/app/lib/projectStore";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 export const runtime = "nodejs";
@@ -20,7 +21,7 @@ function ogUrl(params: { title?: string; subtitle?: string; badge?: string }) {
   return u.toString();
 }
 
-// ✅ status rules (shared behavior with /projects)
+// ✅ Status rules (Live = green, Development = yellow)
 function isLiveStatus(status: unknown): boolean {
   if (typeof status !== "string") return false;
   return status.toLowerCase().includes("live");
@@ -33,15 +34,8 @@ function isDevStatus(status: unknown): boolean {
 }
 
 function getStatusBadgeClasses(status: string) {
-  if (isLiveStatus(status)) {
-    // ✅ Live = GREEN
-    return "bg-emerald-50 text-emerald-700 border-emerald-200";
-  }
-  if (isDevStatus(status)) {
-    // ✅ Development = YELLOW
-    return "bg-amber-50 text-amber-800 border-amber-200";
-  }
-  // default
+  if (isLiveStatus(status)) return "bg-emerald-50 text-emerald-700 border-emerald-200";
+  if (isDevStatus(status)) return "bg-amber-50 text-amber-800 border-amber-200";
   return "bg-slate-100 text-slate-700 border-slate-200";
 }
 
@@ -158,6 +152,20 @@ function withDemoInjected(
   return items;
 }
 
+function getProjectLink(project: AnyProject) {
+  const slug = project.slug || "project";
+
+  const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
+  const isExternal = !!externalUrl;
+
+  const href = isExternal ? externalUrl : `/projects/${slug}`;
+  const linkProps = isExternal
+    ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
+    : ({} as const);
+
+  return { href, isExternal, linkProps };
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -265,6 +273,11 @@ export default async function ProjectDetailPage({
 
   const baseMedia = normalizeMedia(name, project.media || []);
   const mediaItems = withDemoInjected(name, baseMedia, project.demo || null);
+
+  // ✅ NEW: Other projects for internal linking
+  const otherProjects = projects
+    .filter((p) => p?.published && p?.slug && p.slug !== slug)
+    .slice(0, 6);
 
   return (
     <main className="bg-white text-slate-900">
@@ -376,6 +389,54 @@ export default async function ProjectDetailPage({
               )}
             </section>
           </div>
+
+          {/* ✅ NEW: Other Projects */}
+          {otherProjects.length > 0 && (
+            <section className="mt-16">
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-lg font-semibold text-slate-900">Other Projects</h3>
+                <Link
+                  href="/projects"
+                  className="text-sm font-semibold text-sky-700 hover:underline"
+                >
+                  View all →
+                </Link>
+              </div>
+
+              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {otherProjects.map((p) => {
+                  const name = p.name || "Untitled project";
+                  const description = p.description || "";
+                  const status = p.status || "Upcoming";
+                  const statusColor = getStatusBadgeClasses(status);
+
+                  const { href, isExternal, linkProps } = getProjectLink(p);
+
+                  return (
+                    <Link
+                      key={p.slug}
+                      href={href}
+                      {...linkProps}
+                      className="group rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="text-base font-semibold text-slate-900 group-hover:underline">
+                          {name} {isExternal ? <span className="text-slate-400">↗</span> : null}
+                        </p>
+                        <span
+                          className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${statusColor}`}
+                        >
+                          {status}
+                        </span>
+                      </div>
+
+                      <p className="mt-3 line-clamp-3 text-sm text-slate-600">{description}</p>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </Container>
       </section>
     </main>
