@@ -25,23 +25,16 @@ export const metadata: Metadata = {
   title: "Projects – SOLFLIGH TECH Products & Platforms",
   description:
     "Explore SOLFLIGH TECH projects including ProfitPilot and RebirthAgro — platforms built to solve real operational problems.",
-  alternates: {
-    canonical: `${SITE_URL}/projects`,
-  },
+  alternates: { canonical: `${SITE_URL}/projects` },
   openGraph: {
     title: "Projects – SOLFLIGH TECH",
-    description:
-      "A selection of platforms designed to solve real operational and business problems.",
+    description: "A selection of platforms designed to solve real operational and business problems.",
     url: `${SITE_URL}/projects`,
     type: "website",
     siteName: "SOLFLIGH TECH",
     images: [
       {
-        url: ogUrl({
-          title: "Projects",
-          subtitle: "Products we are building",
-          badge: "SOLFLIGH TECH",
-        }),
+        url: ogUrl({ title: "Projects", subtitle: "Products we are building", badge: "SOLFLIGH TECH" }),
         width: 1200,
         height: 630,
         alt: "SOLFLIGH TECH Projects",
@@ -51,15 +44,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Projects – SOLFLIGH TECH",
-    description:
-      "A selection of platforms designed to solve real operational and business problems.",
-    images: [
-      ogUrl({
-        title: "Projects",
-        subtitle: "Products we are building",
-        badge: "SOLFLIGH TECH",
-      }),
-    ],
+    description: "A selection of platforms designed to solve real operational and business problems.",
+    images: [ogUrl({ title: "Projects", subtitle: "Products we are building", badge: "SOLFLIGH TECH" })],
   },
 };
 
@@ -72,10 +58,7 @@ type AnyProject = {
   highlights?: string[];
   ctaLabel?: string;
   href?: string;
-
-  // ✅ first-class external destination
   externalUrl?: string;
-
   published?: boolean;
   media?: any[];
 };
@@ -88,7 +71,6 @@ function isValidExternalUrl(url: unknown): url is string {
 
 function normalizeMedia(projectName: string, media: any[]) {
   const safe = Array.isArray(media) ? media : [];
-
   const out = safe
     .filter((m) => m && typeof m.src === "string" && (m.type === "image" || m.type === "video"))
     .map((m) => {
@@ -100,7 +82,6 @@ function normalizeMedia(projectName: string, media: any[]) {
           alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
       }
-
       return {
         type: "image" as const,
         src: String(m.src),
@@ -110,21 +91,13 @@ function normalizeMedia(projectName: string, media: any[]) {
     });
 
   if (out.length === 0) {
-    return [
-      {
-        type: "image" as const,
-        src: "/projects/video-poster.jpg",
-        alt: "Media coming soon",
-      },
-    ];
+    return [{ type: "image" as const, src: "/projects/video-poster.jpg", alt: "Media coming soon" }];
   }
-
   return out;
 }
 
 function getProjectLink(project: AnyProject) {
   const slug = project.slug || "project";
-
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   const isExternal = !!externalUrl;
 
@@ -136,9 +109,29 @@ function getProjectLink(project: AnyProject) {
   return { href, isExternal, linkProps };
 }
 
+// ✅ status rules
 function isLiveStatus(status: unknown): boolean {
   if (typeof status !== "string") return false;
   return status.toLowerCase().includes("live");
+}
+
+function isDevStatus(status: unknown): boolean {
+  if (typeof status !== "string") return false;
+  const s = status.toLowerCase();
+  return s.includes("development") || s.includes("in dev") || s.includes("dev");
+}
+
+function getStatusBadgeClasses(status: string) {
+  if (isLiveStatus(status)) {
+    // ✅ Live = GREEN
+    return "bg-emerald-50 text-emerald-700 border-emerald-200";
+  }
+  if (isDevStatus(status)) {
+    // ✅ Development = YELLOW
+    return "bg-amber-50 text-amber-800 border-amber-200";
+  }
+  // default
+  return "bg-slate-100 text-slate-700 border-slate-200";
 }
 
 export default async function ProjectsPage() {
@@ -177,15 +170,13 @@ export default async function ProjectsPage() {
                 const { href, isExternal, linkProps } = getProjectLink(project);
 
                 const status = project.status || "Upcoming";
-                const statusColor =
-                  project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
+                const statusColor = getStatusBadgeClasses(status);
 
                 const ctaLabel = project.ctaLabel || (isExternal ? "Open project" : "View project");
-
                 const mediaItems = normalizeMedia(name, project.media || []);
 
-                // ✅ hide waitlist on Live projects
-                const showWaitlist = !isLiveStatus(status);
+                // ✅ show waitlist ONLY for development projects
+                const showWaitlist = isDevStatus(status);
 
                 return (
                   <article
