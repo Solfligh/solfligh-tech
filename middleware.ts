@@ -19,13 +19,22 @@ const ALLOW_PREFIXES = [
 ];
 
 const ALLOW_EXACT = new Set([
+  // Favicons / icons
+  "/favicon.ico",
   "/favicon.png",
+  "/favicon-32.png",
+  "/favicon-192.png",
+  "/apple-touch-icon.png",
+  "/site.webmanifest",
+  "/manifest.webmanifest",
+
+  // SEO
   "/robots.txt",
   "/sitemap.xml",
 ]);
 
 function isStaticAsset(pathname: string) {
-  return /\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|map|txt|xml|json|woff2?|ttf|eot)$/i.test(
+  return /\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|map|txt|xml|json|woff2?|ttf|eot|webmanifest)$/i.test(
     pathname
   );
 }
