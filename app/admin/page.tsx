@@ -1,3 +1,4 @@
+// app/admin/page.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -25,6 +26,9 @@ type ProjectPayload = {
   // ✅ new controls
   demoStatus: DemoStatus;
   featured: boolean;
+
+  // ✅ NEW: when true, cards/buttons should use externalUrl instead of internal project page
+  useExternalLink: boolean;
 
   published: boolean;
   media: MediaItem[];
@@ -79,8 +83,10 @@ function normalizeUrl(input: string) {
 }
 
 function demoBadge(demoStatus: DemoStatus) {
-  if (demoStatus === "live") return { label: "Live demo", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" };
-  if (demoStatus === "demo") return { label: "Demo", cls: "bg-sky-50 text-sky-700 border-sky-200" };
+  if (demoStatus === "live")
+    return { label: "Live demo", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" };
+  if (demoStatus === "demo")
+    return { label: "Demo", cls: "bg-sky-50 text-sky-700 border-sky-200" };
   return null;
 }
 
@@ -101,6 +107,7 @@ export default function AdminPage() {
 
   // ✅ New admin fields
   const [externalUrlText, setExternalUrlText] = useState("");
+  const [useExternalLink, setUseExternalLink] = useState(false);
   const [demoStatusValue, setDemoStatusValue] = useState<DemoStatus>("none");
   const [featured, setFeatured] = useState(false);
 
@@ -146,7 +153,7 @@ export default function AdminPage() {
 
   const payload: ProjectPayload = useMemo(() => {
     const safeSlug = slug.trim().toLowerCase();
-    const href = `/projects/${safeSlug}`;
+    const internalHref = `/projects/${safeSlug}`;
 
     const ext = normalizeUrl(externalUrlText);
     const demo = demoStatusValue;
@@ -156,6 +163,12 @@ export default function AdminPage() {
     if (ext && demo === "live") cta = "Open live demo";
     if (ext && demo === "demo") cta = "Open demo";
 
+    // What link should the *card* use?
+    const href =
+      useExternalLink && ext
+        ? ext
+        : internalHref;
+
     return {
       slug: safeSlug,
       name: name.trim(),
@@ -164,10 +177,11 @@ export default function AdminPage() {
       description: description.trim(),
       highlights: clampLines(highlightsText),
       ctaLabel: cta,
-      href,
+      href, // <-- internal or external based on toggle
       externalUrl: ext ? ext : null,
       demoStatus: demo,
       featured: Boolean(featured),
+      useExternalLink: Boolean(useExternalLink),
       published,
       media: parsedMedia,
 
@@ -194,6 +208,7 @@ export default function AdminPage() {
     externalUrlText,
     demoStatusValue,
     featured,
+    useExternalLink,
   ]);
 
   async function generateDraft() {
@@ -262,9 +277,9 @@ export default function AdminPage() {
       return;
     }
 
-    // If demo/live is selected, external URL should exist (otherwise button has nowhere to go)
-    if ((payload.demoStatus === "demo" || payload.demoStatus === "live") && !payload.externalUrl) {
-      setToast({ type: "err", msg: "If Demo Status is Demo/Live, please add External URL." });
+    // If demo/live selected OR "use external link" enabled, external URL must exist
+    if ((payload.demoStatus === "demo" || payload.demoStatus === "live" || payload.useExternalLink) && !payload.externalUrl) {
+      setToast({ type: "err", msg: "Please add External URL (required for Demo/Live or Use external link)." });
       return;
     }
 
@@ -395,7 +410,7 @@ export default function AdminPage() {
                     <span className="text-xs text-slate-500">(turn off to save as draft)</span>
                   </div>
 
-                  {/* ✅ Featured */}
+                  {/* ✅ Featured checkbox */}
                   <div className="flex items-center gap-3 sm:col-span-2">
                     <label className="flex items-center gap-2 text-sm">
                       <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
@@ -404,7 +419,7 @@ export default function AdminPage() {
                     <span className="text-xs text-slate-500">(featured projects can appear first)</span>
                   </div>
 
-                  {/* ✅ Demo status */}
+                  {/* ✅ Demo status dropdown */}
                   <div>
                     <label className="text-xs font-semibold text-slate-700">Demo status</label>
                     <select
@@ -418,7 +433,7 @@ export default function AdminPage() {
                     </select>
                   </div>
 
-                  {/* ✅ External URL */}
+                  {/* ✅ External URL input + toggle */}
                   <div>
                     <label className="text-xs font-semibold text-slate-700">External URL (optional)</label>
                     <input
@@ -427,6 +442,26 @@ export default function AdminPage() {
                       onChange={(e) => setExternalUrlText(e.target.value)}
                       placeholder="https://app.yourproject.com"
                     />
+
+                    <div className="mt-3 flex items-center gap-3">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={useExternalLink}
+                          onChange={(e) => setUseExternalLink(e.target.checked)}
+                          disabled={!normalizeUrl(externalUrlText)}
+                        />
+                        <span className="text-sm font-semibold text-slate-900">Use external link</span>
+                      </label>
+                      <span className="text-xs text-slate-500">
+                        (when enabled, the project card link will open the external URL)
+                      </span>
+                    </div>
+
+                    {!normalizeUrl(externalUrlText) && useExternalLink && (
+                      <p className="mt-2 text-[11px] text-rose-600">Add an External URL to enable this.</p>
+                    )}
+
                     <p className="mt-2 text-[11px] text-slate-500">
                       If Demo Status is <b>Demo</b> or <b>Live</b>, add an External URL so the button can open it.
                     </p>
@@ -674,7 +709,9 @@ export default function AdminPage() {
                         )}
                       </div>
 
-                      <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${statusPreset.color}`}>
+                      <span
+                        className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${statusPreset.color}`}
+                      >
                         {status}
                       </span>
                     </div>
@@ -730,6 +767,7 @@ export default function AdminPage() {
                   <li>• Put your demo video first in the media list.</li>
                   <li>• Use .jpg/.png images for screenshots.</li>
                   <li>• If demo/live is selected, add External URL.</li>
+                  <li>• “Use external link” makes the card open external instead of /projects/slug.</li>
                   <li>• Preview before Publish to avoid broken pages.</li>
                 </ul>
               </div>
@@ -794,11 +832,15 @@ export default function AdminPage() {
 
                 <div className="flex items-center gap-2">
                   {demo && (
-                    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${demo.cls}`}>
+                    <span
+                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${demo.cls}`}
+                    >
                       {demo.label}
                     </span>
                   )}
-                  <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${payload.statusColor}`}>
+                  <span
+                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${payload.statusColor}`}
+                  >
                     {payload.status}
                   </span>
                 </div>
@@ -822,12 +864,14 @@ export default function AdminPage() {
 
                   <h2 className="mt-6 text-lg font-semibold text-slate-900">Key features</h2>
                   <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                    {(payload.keyFeatures.length ? payload.keyFeatures : ["Feature one", "Feature two", "Feature three"]).map((x) => (
-                      <li key={x} className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sky-600" />
-                        <span>{x}</span>
-                      </li>
-                    ))}
+                    {(payload.keyFeatures.length ? payload.keyFeatures : ["Feature one", "Feature two", "Feature three"]).map(
+                      (x) => (
+                        <li key={x} className="flex items-start gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                          <span>{x}</span>
+                        </li>
+                      )
+                    )}
                   </ul>
                 </div>
 
@@ -874,7 +918,9 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              <div className="mt-10 text-xs text-slate-500">Preview only — nothing is published until you click Publish/Save.</div>
+              <div className="mt-10 text-xs text-slate-500">
+                Preview only — nothing is published until you click Publish/Save.
+              </div>
             </div>
           </div>
         </div>
