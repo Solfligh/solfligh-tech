@@ -19,7 +19,7 @@ const ALLOW_PREFIXES = [
 ];
 
 const ALLOW_EXACT = new Set([
-  "/favicon.ico",
+  "/favicon.png",
   "/robots.txt",
   "/sitemap.xml",
 ]);
