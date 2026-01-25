@@ -1,14 +1,51 @@
 // app/projects/page.tsx
+import type { Metadata } from "next";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import Link from "next/link";
-import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
+import ProjectMediaCarousel, { type MediaItem } from "@/app/components/ProjectMediaCarousel";
 import { listProjects } from "@/app/lib/projectStore";
 import ProjectLeadButton from "@/app/components/ProjectLeadButton";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: "Projects",
+  description:
+    "A selection of platforms designed to solve real operational and business problems — built by SOLFLIGH TECH.",
+  alternates: {
+    canonical: "/projects",
+  },
+  openGraph: {
+    title: "Projects — SOLFLIGH TECH",
+    description:
+      "A selection of platforms designed to solve real operational and business problems.",
+    url: "/projects",
+    type: "website",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "SOLFLIGH TECH — Projects",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Projects — SOLFLIGH TECH",
+    description:
+      "A selection of platforms designed to solve real operational and business problems.",
+    images: ["/og-default.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+};
 
 type AnyProject = {
   slug?: string;
@@ -24,7 +61,14 @@ type AnyProject = {
   externalUrl?: string;
 
   published?: boolean;
-  media?: any[];
+  media?: unknown[];
+};
+
+type RawMedia = {
+  type?: unknown;
+  src?: unknown;
+  thumbnail?: unknown;
+  alt?: unknown;
 };
 
 function isValidExternalUrl(url: unknown): url is string {
@@ -33,33 +77,34 @@ function isValidExternalUrl(url: unknown): url is string {
   return u.startsWith("https://") || u.startsWith("http://");
 }
 
-function normalizeMedia(projectName: string, media: any[]) {
+function normalizeMedia(projectName: string, media: unknown[]): MediaItem[] {
   const safe = Array.isArray(media) ? media : [];
 
-  const out = safe
-    .filter((m) => m && typeof m.src === "string" && (m.type === "image" || m.type === "video"))
+  const out: MediaItem[] = safe
+    .filter((m): m is RawMedia => !!m && typeof m === "object")
+    .filter((m) => typeof m.src === "string" && (m.type === "image" || m.type === "video"))
     .map((m) => {
       if (m.type === "video") {
         return {
-          type: "video" as const,
+          type: "video",
           src: String(m.src),
-          thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
-          alt: m.alt ? String(m.alt) : `${projectName} demo video`,
+          thumbnail: typeof m.thumbnail === "string" ? m.thumbnail : undefined,
+          alt: typeof m.alt === "string" ? m.alt : `${projectName} demo video`,
         };
       }
 
       return {
-        type: "image" as const,
+        type: "image",
         src: String(m.src),
-        alt: m.alt ? String(m.alt) : `${projectName} image`,
-        thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
+        alt: typeof m.alt === "string" ? m.alt : `${projectName} image`,
+        thumbnail: typeof m.thumbnail === "string" ? m.thumbnail : undefined,
       };
     });
 
   if (out.length === 0) {
     return [
       {
-        type: "image" as const,
+        type: "image",
         src: "/projects/video-poster.jpg",
         alt: "Media coming soon",
       },
@@ -110,8 +155,8 @@ export default async function ProjectsPage() {
             </div>
           ) : (
             <div className="mt-12 grid gap-8 lg:grid-cols-3">
-              {projects.map((project) => {
-                const slug = project.slug || "project";
+              {projects.map((project, projectIndex) => {
+                const slug = project.slug || `project-${projectIndex}`;
                 const name = project.name || "Untitled project";
                 const description = project.description || "";
                 const highlights = Array.isArray(project.highlights) ? project.highlights : [];
@@ -166,8 +211,8 @@ export default async function ProjectsPage() {
 
                         {highlights.length > 0 && (
                           <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                            {highlights.map((item) => (
-                              <li key={item} className="flex items-start gap-2">
+                            {highlights.map((item, i) => (
+                              <li key={`${slug}-hl-${i}`} className="flex items-start gap-2">
                                 <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
                                 <span>{item}</span>
                               </li>
@@ -186,7 +231,7 @@ export default async function ProjectsPage() {
                           {isExternal && <span className="ml-2 text-slate-400">↗</span>}
                         </Link>
 
-                        {/* ✅ NEW: waitlist button (does NOT navigate away) */}
+                        {/* ✅ waitlist button (does NOT navigate away) */}
                         <ProjectLeadButton
                           projectSlug={slug}
                           projectName={name}
