@@ -92,16 +92,23 @@ type DbProjectRow = {
   status: string | null;
   status_color: string | null;
   description: string | null;
-  highlights: any;
+
+  // text[] in Postgres (Supabase JS returns string[] usually)
+  highlights: unknown;
+
   cta_label: string | null;
   href: string | null;
   external_url: string | null;
   published: boolean | null;
+
   problem: string | null;
   solution: string | null;
-  key_features: any;
-  roadmap: any;
-  tech_stack: any;
+
+  // text[] in Postgres
+  key_features: unknown;
+  roadmap: unknown;
+  tech_stack: unknown;
+
   updated_at: string | null;
 };
 
@@ -114,7 +121,14 @@ type DbMediaRow = {
   sort_order: number | null;
 };
 
-function asStringArray(v: any): string[] {
+function isSupabaseEnabled() {
+  // Must match your supabaseAdmin.ts env usage
+  const url = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").trim();
+  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+  return !!url && !!key;
+}
+
+function asStringArray(v: unknown): string[] {
   if (Array.isArray(v)) return v.map((x) => String(x));
   return [];
 }
@@ -157,6 +171,7 @@ async function listProjectsFromSupabase(): Promise<ProjectPayload[]> {
     .order("updated_at", { ascending: false });
 
   if (error) throw error;
+
   const rows = (projects || []) as DbProjectRow[];
   if (rows.length === 0) return [];
 
@@ -171,19 +186,51 @@ async function listProjectsFromSupabase(): Promise<ProjectPayload[]> {
   if (mediaErr) throw mediaErr;
 
   const bySlug = new Map<string, MediaItem[]>();
+
   for (const m of (mediaRows || []) as DbMediaRow[]) {
     const s = (m.project_slug || "").trim();
     if (!s) continue;
-    if (!m.src) continue;
 
-    const item: MediaItem =
-      m.type === "video"
-        ? { type: "video", src: m.src, thumbnail: m.thumbnail || undefined, alt: m.alt || undefined }
-        : { type: "image", src: m.src, thumbnail: m.thumbnail || undefined, alt: m.alt || undefined };
+    const type = String(m.type || "").toLowerCase();
 
-    const arr = bySlug.get(s) || [];
-    arr.push(item);
-    bySlug.set(s, arr);
+    // ✅ IMPORTANT:
+    // - Images MUST have src
+    // - Videos may have empty src ("demo coming soon")
+    if (type === "image") {
+      const src = (m.src || "").trim();
+      if (!src) continue;
+
+      const item: MediaItem = {
+        type: "image",
+        src,
+        thumbnail: m.thumbnail || undefined,
+        alt: m.alt || undefined,
+      };
+
+      const arr = bySlug.get(s) || [];
+      arr.push(item);
+      bySlug.set(s, arr);
+      continue;
+    }
+
+    if (type === "video") {
+      // allow empty string
+      const src = (m.src ?? "").toString();
+
+      const item: MediaItem = {
+        type: "video",
+        src,
+        thumbnail: m.thumbnail || undefined,
+        alt: m.alt || undefined,
+      };
+
+      const arr = bySlug.get(s) || [];
+      arr.push(item);
+      bySlug.set(s, arr);
+      continue;
+    }
+
+    // ignore unknown types
   }
 
   return rows.map((p) => toPayload(p, bySlug.get(p.slug) || []));
@@ -206,21 +253,23 @@ async function upsertProjectToSupabase(
         status: input.status,
         status_color: input.statusColor,
         description: input.description,
-        highlights: input.highlights,
+        highlights: input.highlights, // text[]
         cta_label: input.ctaLabel,
         href: input.href,
         external_url: input.externalUrl ?? null,
         published: input.published,
         problem: input.problem,
         solution: input.solution,
-        key_features: input.keyFeatures,
-        roadmap: input.roadmap,
-        tech_stack: input.techStack,
+        key_features: input.keyFeatures, // text[]
+        roadmap: input.roadmap, // text[]
+        tech_stack: input.techStack, // text[]
         updated_at: now,
       },
       { onConflict: "slug" }
     )
-    .select("id,slug,name,status,status_color,description,highlights,cta_label,href,external_url,published,problem,solution,key_features,roadmap,tech_stack,updated_at")
+    .select(
+      "id,slug,name,status,status_color,description,highlights,cta_label,href,external_url,published,problem,solution,key_features,roadmap,tech_stack,updated_at"
+    )
     .single();
 
   if (error) throw error;
@@ -236,6 +285,7 @@ async function upsertProjectToSupabase(
         project_id: proj.id,
         project_slug: input.slug,
         type: m.type,
+        // allow "" for "video coming soon"
         src: m.src,
         thumbnail: (m as any).thumbnail ?? null,
         alt: (m as any).alt ?? null,
@@ -250,14 +300,83 @@ async function upsertProjectToSupabase(
 }
 
 /**
+ * ✅ Health check helper (Step 2)
+ * Useful when "projects not showing" on Vercel.
+ */
+export async function getProjectsHealth(): Promise<{
+  ok: boolean;
+  source: "supabase" | "json";
+  supabaseEnabled: boolean;
+  counts?: {
+    totalProjects: number;
+    publishedProjects: number;
+    mediaRows: number;
+  };
+  error?: string;
+}> {
+  noStore();
+
+  const supabaseEnabled = isSupabaseEnabled();
+
+  if (!supabaseEnabled) {
+    // JSON only
+    const store = await readJsonStore();
+    const totalProjects = store.projects.length;
+    const publishedProjects = store.projects.filter((p) => p.published).length;
+
+    return {
+      ok: true,
+      source: "json",
+      supabaseEnabled,
+      counts: { totalProjects, publishedProjects, mediaRows: 0 },
+    };
+  }
+
+  try {
+    const { count: totalProjects, error: pErr } = await supabaseAdmin
+      .from("projects")
+      .select("id", { count: "exact", head: true });
+
+    if (pErr) throw pErr;
+
+    const { count: publishedProjects, error: pubErr } = await supabaseAdmin
+      .from("projects")
+      .select("id", { count: "exact", head: true })
+      .eq("published", true);
+
+    if (pubErr) throw pubErr;
+
+    const { count: mediaRows, error: mErr } = await supabaseAdmin
+      .from("project_media")
+      .select("id", { count: "exact", head: true });
+
+    if (mErr) throw mErr;
+
+    return {
+      ok: true,
+      source: "supabase",
+      supabaseEnabled,
+      counts: {
+        totalProjects: totalProjects ?? 0,
+        publishedProjects: publishedProjects ?? 0,
+        mediaRows: mediaRows ?? 0,
+      },
+    };
+  } catch (e: any) {
+    return {
+      ok: false,
+      source: "supabase",
+      supabaseEnabled,
+      error: e?.message || String(e),
+    };
+  }
+}
+
+/**
  * Public API
  */
 export async function listProjects(): Promise<ProjectPayload[]> {
-  // ✅ Prefer Supabase when env keys exist
-  const hasSupabase =
-    !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (hasSupabase) {
+  if (isSupabaseEnabled()) {
     try {
       return await listProjectsFromSupabase();
     } catch {
@@ -274,10 +393,7 @@ export async function listProjects(): Promise<ProjectPayload[]> {
 export async function upsertProject(
   input: Omit<ProjectPayload, "updatedAt">
 ): Promise<ProjectPayload> {
-  const hasSupabase =
-    !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (hasSupabase) {
+  if (isSupabaseEnabled()) {
     return await upsertProjectToSupabase(input);
   }
 
