@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import Link from "next/link";
-import ProjectMediaCarousel, { type MediaItem } from "@/app/components/ProjectMediaCarousel";
+import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
 import { listProjects } from "@/app/lib/projectStore";
 import ProjectLeadButton from "@/app/components/ProjectLeadButton";
 
@@ -11,45 +11,55 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const OG_PROJECTS = `/og?title=${encodeURIComponent(
-  "Projects"
-)}&subtitle=${encodeURIComponent(
-  "Products we are building"
-)}&badge=${encodeURIComponent("Projects")}`;
+const SITE_URL = "https://solflightech.org";
+
+function ogUrl(params: { title?: string; subtitle?: string; badge?: string }) {
+  const u = new URL("/og", SITE_URL);
+  if (params.title) u.searchParams.set("title", params.title);
+  if (params.subtitle) u.searchParams.set("subtitle", params.subtitle);
+  if (params.badge) u.searchParams.set("badge", params.badge);
+  return u.toString();
+}
 
 export const metadata: Metadata = {
-  title: "Projects",
+  title: "Projects – SOLFLIGH TECH Products & Platforms",
   description:
-    "A selection of platforms designed to solve real operational and business problems — built by SOLFLIGH TECH.",
+    "Explore SOLFLIGH TECH projects including ProfitPilot and RebirthAgro — platforms built to solve real operational problems.",
   alternates: {
-    canonical: "/projects",
+    canonical: `${SITE_URL}/projects`,
   },
   openGraph: {
-    title: "Projects — SOLFLIGH TECH",
+    title: "Projects – SOLFLIGH TECH",
     description:
       "A selection of platforms designed to solve real operational and business problems.",
-    url: "/projects",
+    url: `${SITE_URL}/projects`,
     type: "website",
+    siteName: "SOLFLIGH TECH",
     images: [
       {
-        url: OG_PROJECTS,
+        url: ogUrl({
+          title: "Projects",
+          subtitle: "Products we are building",
+          badge: "SOLFLIGH TECH",
+        }),
         width: 1200,
         height: 630,
-        alt: "SOLFLIGH TECH — Projects",
+        alt: "SOLFLIGH TECH Projects",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Projects — SOLFLIGH TECH",
+    title: "Projects – SOLFLIGH TECH",
     description:
       "A selection of platforms designed to solve real operational and business problems.",
-    images: [OG_PROJECTS],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true },
+    images: [
+      ogUrl({
+        title: "Projects",
+        subtitle: "Products we are building",
+        badge: "SOLFLIGH TECH",
+      }),
+    ],
   },
 };
 
@@ -63,18 +73,10 @@ type AnyProject = {
   ctaLabel?: string;
   href?: string;
 
-  // ✅ first-class external destination
   externalUrl?: string;
 
   published?: boolean;
-  media?: unknown[];
-};
-
-type RawMedia = {
-  type?: unknown;
-  src?: unknown;
-  thumbnail?: unknown;
-  alt?: unknown;
+  media?: any[];
 };
 
 function isValidExternalUrl(url: unknown): url is string {
@@ -83,34 +85,33 @@ function isValidExternalUrl(url: unknown): url is string {
   return u.startsWith("https://") || u.startsWith("http://");
 }
 
-function normalizeMedia(projectName: string, media: unknown[]): MediaItem[] {
+function normalizeMedia(projectName: string, media: any[]) {
   const safe = Array.isArray(media) ? media : [];
 
-  const out: MediaItem[] = safe
-    .filter((m): m is RawMedia => !!m && typeof m === "object")
-    .filter((m) => typeof m.src === "string" && (m.type === "image" || m.type === "video"))
+  const out = safe
+    .filter((m) => m && typeof m.src === "string" && (m.type === "image" || m.type === "video"))
     .map((m) => {
       if (m.type === "video") {
         return {
-          type: "video",
+          type: "video" as const,
           src: String(m.src),
-          thumbnail: typeof m.thumbnail === "string" ? m.thumbnail : undefined,
-          alt: typeof m.alt === "string" ? m.alt : `${projectName} demo video`,
+          thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
+          alt: m.alt ? String(m.alt) : `${projectName} demo video`,
         };
       }
 
       return {
-        type: "image",
+        type: "image" as const,
         src: String(m.src),
-        alt: typeof m.alt === "string" ? m.alt : `${projectName} image`,
-        thumbnail: typeof m.thumbnail === "string" ? m.thumbnail : undefined,
+        alt: m.alt ? String(m.alt) : `${projectName} image`,
+        thumbnail: m.thumbnail ? String(m.thumbnail) : undefined,
       };
     });
 
   if (out.length === 0) {
     return [
       {
-        type: "image",
+        type: "image" as const,
         src: "/projects/video-poster.jpg",
         alt: "Media coming soon",
       },
@@ -161,8 +162,8 @@ export default async function ProjectsPage() {
             </div>
           ) : (
             <div className="mt-12 grid gap-8 lg:grid-cols-3">
-              {projects.map((project, projectIndex) => {
-                const slug = project.slug || `project-${projectIndex}`;
+              {projects.map((project) => {
+                const slug = project.slug || "project";
                 const name = project.name || "Untitled project";
                 const description = project.description || "";
                 const highlights = Array.isArray(project.highlights) ? project.highlights : [];
@@ -217,8 +218,8 @@ export default async function ProjectsPage() {
 
                         {highlights.length > 0 && (
                           <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                            {highlights.map((item, i) => (
-                              <li key={`${slug}-hl-${i}`} className="flex items-start gap-2">
+                            {highlights.map((item) => (
+                              <li key={item} className="flex items-start gap-2">
                                 <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
                                 <span>{item}</span>
                               </li>
@@ -237,7 +238,6 @@ export default async function ProjectsPage() {
                           {isExternal && <span className="ml-2 text-slate-400">↗</span>}
                         </Link>
 
-                        {/* ✅ waitlist button (does NOT navigate away) */}
                         <ProjectLeadButton
                           projectSlug={slug}
                           projectName={name}
