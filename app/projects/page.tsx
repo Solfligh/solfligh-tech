@@ -11,6 +11,12 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const OG_PROJECTS = `/og?title=${encodeURIComponent(
+  "Projects"
+)}&subtitle=${encodeURIComponent(
+  "Products we are building"
+)}&badge=${encodeURIComponent("Projects")}`;
+
 export const metadata: Metadata = {
   title: "Projects",
   description:
@@ -26,7 +32,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-default.png",
+        url: OG_PROJECTS,
         width: 1200,
         height: 630,
         alt: "SOLFLIGH TECH — Projects",
@@ -38,7 +44,7 @@ export const metadata: Metadata = {
     title: "Projects — SOLFLIGH TECH",
     description:
       "A selection of platforms designed to solve real operational and business problems.",
-    images: ["/og-default.png"],
+    images: [OG_PROJECTS],
   },
   robots: {
     index: true,
