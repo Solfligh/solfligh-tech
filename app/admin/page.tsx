@@ -263,6 +263,13 @@ export default function AdminPage() {
             actions={
               <div className="flex items-center gap-3">
                 <Link
+                 href="/admin/leads"
+                 className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                >
+                  View leads
+                </Link>
+                
+                <Link
                   href="/maintenance"
                   className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                 >
