@@ -29,33 +29,47 @@ export async function GET(req: Request) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: 64,
           backgroundColor: "#0f172a",
           color: "#ffffff",
           fontFamily: "system-ui, -apple-system, Segoe UI, Roboto",
+          paddingTop: 64,
+          paddingRight: 64,
+          paddingBottom: 64,
+          paddingLeft: 64,
         }}
       >
-        {/* Top row */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <div
             style={{
-              padding: "10px 16px",
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "rgba(255,255,255,0.10)",
+              borderColor: "rgba(255,255,255,0.18)",
+              borderWidth: 1,
               borderRadius: 999,
+              paddingTop: 10,
+              paddingRight: 16,
+              paddingBottom: 10,
+              paddingLeft: 16,
               fontSize: 20,
               fontWeight: 700,
-              backgroundColor: "rgba(255,255,255,0.10)",
-              border: "1px solid rgba(255,255,255,0.18)",
             }}
           >
             {badge}
           </div>
 
-          <div style={{ marginLeft: "auto", fontSize: 18, fontWeight: 700, opacity: 0.9 }}>
+          <div
+            style={{
+              marginLeft: "auto",
+              fontSize: 18,
+              fontWeight: 700,
+              color: "rgba(255,255,255,0.90)",
+            }}
+          >
             solflightech.org
           </div>
         </div>
 
-        {/* Middle */}
         <div>
           <div
             style={{
@@ -82,13 +96,13 @@ export async function GET(req: Request) {
           </div>
         </div>
 
-        {/* Bottom */}
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
+            borderColor: "rgba(255,255,255,0.18)",
+            borderTopWidth: 1,
             paddingTop: 24,
-            borderTop: "1px solid rgba(255,255,255,0.18)",
             fontSize: 20,
             fontWeight: 600,
             color: "rgba(255,255,255,0.70)",
