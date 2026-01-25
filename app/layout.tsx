@@ -13,31 +13,30 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
+const OG_DEFAULT = `/og?title=${encodeURIComponent(
+  "SOLFLIGH TECH"
+)}&subtitle=${encodeURIComponent(
+  "Technology · Innovation · Getting you back your time"
+)}&badge=${encodeURIComponent("SOLFLIGH TECH")}`;
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://solflightech.org"),
-
   title: {
     default: "SOLFLIGH TECH — Technology · Innovation · Getting you back your time",
     template: "%s — SOLFLIGH TECH",
   },
-
   description:
     "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
-
   alternates: {
     canonical: "https://solflightech.org",
   },
-
   icons: {
     icon: [
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
     ],
-    apple: [
-      { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
-    ],
+    apple: [{ url: "/favicon-192.png", sizes: "192x192", type: "image/png" }],
   },
-
   openGraph: {
     title: "SOLFLIGH TECH",
     description: "Technology · Innovation · Getting you back your time",
@@ -46,21 +45,19 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-default.png",
+        url: OG_DEFAULT,
         width: 1200,
         height: 630,
         alt: "SOLFLIGH TECH — Technology & Innovation",
       },
     ],
   },
-
   twitter: {
     card: "summary_large_image",
     title: "SOLFLIGH TECH",
     description: "Technology · Innovation · Getting you back your time",
-    images: ["/og-default.png"],
+    images: [OG_DEFAULT],
   },
-
   robots: {
     index: true,
     follow: true,
