@@ -22,16 +22,11 @@ const organizationJsonLd = {
   "@type": "Organization",
   name: ORG_NAME,
   url: SITE_URL,
-  logo: `${SITE_URL}/logo.png`, // ✅ make sure this file exists in /public
-  image: `${SITE_URL}/og.png`, // ✅ optional but nice (your OG image in /public)
+  logo: `${SITE_URL}/logo.png`, // must exist in /public
+  image: `${SITE_URL}/og.png`, // must exist in /public
   description:
     "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
-  // ✅ Add social links later if you want
-  sameAs: [
-    // "https://www.linkedin.com/company/your-company",
-    // "https://twitter.com/yourhandle",
-    // "https://www.instagram.com/yourhandle",
-  ],
+  sameAs: [],
 };
 
 export const metadata: Metadata = {
@@ -42,13 +37,18 @@ export const metadata: Metadata = {
   },
   description:
     "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
+
+  // ✅ Use standard, predictable favicon paths
+  // IMPORTANT: these files must exist in /public
   icons: {
     icon: [
+      { url: "/favicon.png", type: "image/png" },
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
     ],
     apple: [{ url: "/favicon-192.png", sizes: "192x192", type: "image/png" }],
   },
+
   openGraph: {
     title: ORG_NAME,
     description: "Technology · Innovation · Getting you back your time",
@@ -64,12 +64,14 @@ export const metadata: Metadata = {
       },
     ],
   },
+
   twitter: {
     card: "summary_large_image",
     title: ORG_NAME,
     description: "Technology · Innovation · Getting you back your time",
     images: ["/og.png"],
   },
+
   robots: {
     index: true,
     follow: true,
