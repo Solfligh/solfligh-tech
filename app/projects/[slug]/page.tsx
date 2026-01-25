@@ -95,7 +95,11 @@ function isLikelyVideoSrc(src: unknown): boolean {
   return /\.(mp4|webm|ogg|mov|m4v)$/i.test(s);
 }
 
-function withDemoInjected(projectName: string, baseMedia: MediaItem[], demo?: DemoInfo | null) {
+function withDemoInjected(
+  projectName: string,
+  baseMedia: MediaItem[],
+  demo?: DemoInfo | null
+): MediaItem[] {
   const items = Array.isArray(baseMedia) ? [...baseMedia] : [];
   const d = demo || null;
 
@@ -131,28 +135,6 @@ function withDemoInjected(projectName: string, baseMedia: MediaItem[], demo?: De
   return items;
 }
 
-/**
- * ✅ FIXED: TypeScript-safe OG image picker
- * We never touch `.src` until we confirm the object has it and it is a string.
- */
-function pickOgImage(project: AnyProject): string {
-  const media = Array.isArray(project.media) ? project.media : [];
-
-  for (const m of media) {
-    if (!m || typeof m !== "object") continue;
-
-    // narrow safely without using m.src directly
-    const type = (m as { type?: unknown }).type;
-    const src = (m as { src?: unknown }).src;
-
-    if (type === "image" && typeof src === "string" && src.trim().length > 0) {
-      return src.trim();
-    }
-  }
-
-  return "/og-default.png";
-}
-
 async function getPublishedProjectBySlug(slug: string): Promise<AnyProject | null> {
   try {
     const all = await listProjects();
@@ -186,10 +168,14 @@ export async function generateMetadata({
 
   const resolvedSlug = project.slug ?? slug;
 
+  // If external, canonical points to that. Otherwise internal page.
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   const canonical = externalUrl ? externalUrl : `${SITE_URL}/projects/${resolvedSlug}`;
 
-  const ogImage = pickOgImage(project);
+  // ✅ Dynamic OG image
+  const og = `/og?title=${encodeURIComponent(name)}&subtitle=${encodeURIComponent(
+    description
+  )}&badge=${encodeURIComponent("Project")}`;
 
   return {
     title: name,
@@ -202,7 +188,7 @@ export async function generateMetadata({
       type: "article",
       images: [
         {
-          url: ogImage,
+          url: og,
           width: 1200,
           height: 630,
           alt: `${name} — SOLFLIGH TECH`,
@@ -213,7 +199,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `${name} — SOLFLIGH TECH`,
       description,
-      images: [ogImage],
+      images: [og],
     },
     robots: {
       index: true,
@@ -233,6 +219,7 @@ export default async function ProjectDetailPage({
   const project = await getPublishedProjectBySlug(slug);
   if (!project) notFound();
 
+  // ✅ externalUrl is first-class: if present, we redirect to it.
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   if (externalUrl) redirect(externalUrl);
 
