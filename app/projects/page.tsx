@@ -4,15 +4,11 @@ import PageHeader from "@/app/components/PageHeader";
 import Link from "next/link";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
 import { listProjects } from "@/app/lib/projectStore";
+import ProjectLeadButton from "@/app/components/ProjectLeadButton";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-type DemoInfo =
-  | { status?: "none" }
-  | { status?: "coming_soon"; thumbnail?: string }
-  | { status?: "live"; videoSrc?: string; thumbnail?: string };
 
 type AnyProject = {
   slug?: string;
@@ -25,9 +21,7 @@ type AnyProject = {
   href?: string;
 
   // ✅ first-class external destination
-  externalUrl?: string | null;
-
-  demo?: DemoInfo | null;
+  externalUrl?: string;
 
   published?: boolean;
   media?: any[];
@@ -75,50 +69,6 @@ function normalizeMedia(projectName: string, media: any[]) {
   return out;
 }
 
-function isLikelyVideoSrc(src: unknown): boolean {
-  if (typeof src !== "string") return false;
-  const s = src.trim();
-  return /\.(mp4|webm|ogg|mov|m4v)$/i.test(s);
-}
-
-/**
- * ✅ Auto-inject demo slide from project.demo
- * - live -> add real video (if not already present)
- * - coming_soon -> add placeholder video (empty src) so carousel shows "Demo coming soon"
- */
-function withDemoInjected(projectName: string, baseMedia: ReturnType<typeof normalizeMedia>, demo?: DemoInfo | null) {
-  const items = Array.isArray(baseMedia) ? [...baseMedia] : [];
-  const d = demo || null;
-
-  const alreadyHasRealVideo = items.some((m) => m?.type === "video" && isLikelyVideoSrc(m?.src));
-  const demoStatus = (d as any)?.status;
-
-  if (demoStatus === "live") {
-    const videoSrc = typeof (d as any)?.videoSrc === "string" ? (d as any).videoSrc.trim() : "";
-    if (videoSrc && !alreadyHasRealVideo) {
-      items.unshift({
-        type: "video" as const,
-        src: videoSrc,
-        thumbnail: typeof (d as any)?.thumbnail === "string" ? (d as any).thumbnail : undefined,
-        alt: `${projectName} demo video`,
-      });
-    }
-  }
-
-  if (demoStatus === "coming_soon") {
-    if (!alreadyHasRealVideo) {
-      items.unshift({
-        type: "video" as const,
-        src: "", // ✅ placeholder -> your carousel shows "🎬 Demo coming soon"
-        thumbnail: typeof (d as any)?.thumbnail === "string" ? (d as any).thumbnail : "/projects/video-poster.jpg",
-        alt: `${projectName} demo coming soon`,
-      });
-    }
-  }
-
-  return items;
-}
-
 function getProjectLink(project: AnyProject) {
   const slug = project.slug || "project";
 
@@ -150,7 +100,7 @@ export default async function ProjectsPage() {
           <PageHeader
             level={1}
             badge="Projects"
-            title="Products By Solfligh Tech"
+            title="Products we are building"
             subtitle="A selection of platforms designed to solve real operational and business problems."
           />
 
@@ -174,8 +124,7 @@ export default async function ProjectsPage() {
 
                 const ctaLabel = project.ctaLabel || (isExternal ? "Open project" : "View project");
 
-                const baseMedia = normalizeMedia(name, project.media || []);
-                const mediaItems = withDemoInjected(name, baseMedia, project.demo || null);
+                const mediaItems = normalizeMedia(name, project.media || []);
 
                 return (
                   <article
@@ -227,7 +176,7 @@ export default async function ProjectsPage() {
                         )}
                       </Link>
 
-                      <div className="mt-6">
+                      <div className="mt-6 flex flex-wrap items-center gap-3">
                         <Link
                           href={href}
                           {...linkProps}
@@ -236,6 +185,14 @@ export default async function ProjectsPage() {
                           {ctaLabel}
                           {isExternal && <span className="ml-2 text-slate-400">↗</span>}
                         </Link>
+
+                        {/* ✅ NEW: waitlist button (does NOT navigate away) */}
+                        <ProjectLeadButton
+                          projectSlug={slug}
+                          projectName={name}
+                          source="projects_page"
+                          buttonLabel="Join waitlist"
+                        />
                       </div>
                     </div>
                   </article>
