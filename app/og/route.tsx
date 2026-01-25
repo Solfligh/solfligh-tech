@@ -2,6 +2,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
+export const contentType = "image/png"; // ✅ REQUIRED
 
 function clampText(input: string, max = 90) {
   const s = (input || "").trim();
@@ -25,20 +26,20 @@ export async function GET(req: Request) {
     (
       <div
         style={{
-          width: "1200px",
-          height: "630px",
+          width: 1200,
+          height: 630,
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "64px",
+          padding: 64,
           backgroundColor: "#06121f",
           color: "#ffffff",
           fontFamily:
-            'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial',
+            "system-ui, -apple-system, Segoe UI, Roboto, Arial",
           position: "relative",
         }}
       >
-        {/* background gradients */}
+        {/* background */}
         <div
           style={{
             position: "absolute",
@@ -48,7 +49,7 @@ export async function GET(req: Request) {
           }}
         />
 
-        {/* top */}
+        {/* header */}
         <div style={{ display: "flex", alignItems: "center", gap: 16, zIndex: 1 }}>
           <div
             style={{
@@ -80,8 +81,7 @@ export async function GET(req: Request) {
                 width: 34,
                 height: 34,
                 borderRadius: 10,
-                background:
-                  "linear-gradient(135deg, #0ea5e9, #6366f1)",
+                background: "linear-gradient(135deg,#0ea5e9,#6366f1)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -97,7 +97,7 @@ export async function GET(req: Request) {
           </div>
         </div>
 
-        {/* center */}
+        {/* content */}
         <div style={{ zIndex: 1 }}>
           <div
             style={{
@@ -124,7 +124,7 @@ export async function GET(req: Request) {
           </div>
         </div>
 
-        {/* bottom */}
+        {/* footer */}
         <div
           style={{
             zIndex: 1,
@@ -142,9 +142,6 @@ export async function GET(req: Request) {
         </div>
       </div>
     ),
-    {
-      width: 1200,
-      height: 630,
-    }
+    { width: 1200, height: 630 }
   );
 }
