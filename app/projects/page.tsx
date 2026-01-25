@@ -73,6 +73,7 @@ type AnyProject = {
   ctaLabel?: string;
   href?: string;
 
+  // ✅ first-class external destination
   externalUrl?: string;
 
   published?: boolean;
@@ -135,6 +136,11 @@ function getProjectLink(project: AnyProject) {
   return { href, isExternal, linkProps };
 }
 
+function isLiveStatus(status: unknown): boolean {
+  if (typeof status !== "string") return false;
+  return status.toLowerCase().includes("live");
+}
+
 export default async function ProjectsPage() {
   let projects: AnyProject[] = [];
 
@@ -177,6 +183,9 @@ export default async function ProjectsPage() {
                 const ctaLabel = project.ctaLabel || (isExternal ? "Open project" : "View project");
 
                 const mediaItems = normalizeMedia(name, project.media || []);
+
+                // ✅ hide waitlist on Live projects
+                const showWaitlist = !isLiveStatus(status);
 
                 return (
                   <article
@@ -238,12 +247,14 @@ export default async function ProjectsPage() {
                           {isExternal && <span className="ml-2 text-slate-400">↗</span>}
                         </Link>
 
-                        <ProjectLeadButton
-                          projectSlug={slug}
-                          projectName={name}
-                          source="projects_page"
-                          buttonLabel="Join waitlist"
-                        />
+                        {showWaitlist ? (
+                          <ProjectLeadButton
+                            projectSlug={slug}
+                            projectName={name}
+                            source="projects_page"
+                            buttonLabel="Join waitlist"
+                          />
+                        ) : null}
                       </div>
                     </div>
                   </article>
