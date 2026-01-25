@@ -20,6 +20,31 @@ function ogUrl(params: { title?: string; subtitle?: string; badge?: string }) {
   return u.toString();
 }
 
+// ✅ status rules (shared behavior with /projects)
+function isLiveStatus(status: unknown): boolean {
+  if (typeof status !== "string") return false;
+  return status.toLowerCase().includes("live");
+}
+
+function isDevStatus(status: unknown): boolean {
+  if (typeof status !== "string") return false;
+  const s = status.toLowerCase();
+  return s.includes("development") || s.includes("in dev") || s.includes("dev");
+}
+
+function getStatusBadgeClasses(status: string) {
+  if (isLiveStatus(status)) {
+    // ✅ Live = GREEN
+    return "bg-emerald-50 text-emerald-700 border-emerald-200";
+  }
+  if (isDevStatus(status)) {
+    // ✅ Development = YELLOW
+    return "bg-amber-50 text-amber-800 border-amber-200";
+  }
+  // default
+  return "bg-slate-100 text-slate-700 border-slate-200";
+}
+
 type DemoInfo =
   | { status?: "none" }
   | { status?: "coming_soon"; thumbnail?: string }
@@ -35,6 +60,7 @@ type AnyProject = {
   published?: boolean;
   media?: any[];
 
+  // ✅ first-class external destination
   externalUrl?: string | null;
 
   demo?: DemoInfo | null;
@@ -164,11 +190,10 @@ export async function generateMetadata({
       : "Explore SOLFLIGH TECH projects focused on automation, clarity, and real business impact.";
 
   const internalUrl = `${SITE_URL}/projects/${slug}`;
-
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   const canonical = externalUrl || internalUrl;
 
-  // If this project redirects externally, we keep it "follow" but "noindex" to avoid duplicate indexing.
+  // If this project redirects externally, avoid duplicate indexing
   const robots = externalUrl
     ? ({ index: false, follow: true } as const)
     : ({ index: true, follow: true } as const);
@@ -182,9 +207,7 @@ export async function generateMetadata({
   return {
     title: `${name} — SOLFLIGH TECH`,
     description: safeDescription,
-    alternates: {
-      canonical,
-    },
+    alternates: { canonical },
     robots,
     openGraph: {
       title: name,
@@ -221,13 +244,15 @@ export default async function ProjectDetailPage({
   const project = projects.find((p) => p?.published && p?.slug === slug);
   if (!project) notFound();
 
+  // ✅ externalUrl is first-class: if present, redirect out.
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   if (externalUrl) redirect(externalUrl);
 
   const name = project.name || "Untitled project";
   const status = project.status || "Upcoming";
-  const statusColor =
-    project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
+
+  // ✅ ignore stored statusColor; compute consistent badge color
+  const statusColor = getStatusBadgeClasses(status);
 
   const description = project.description || "";
   const highlights = Array.isArray(project.highlights) ? project.highlights : [];
@@ -248,6 +273,7 @@ export default async function ProjectDetailPage({
           <PageHeader level={1} badge="Project" title={name} subtitle={description} />
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
+            {/* Media */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
               <ProjectMediaCarousel
                 items={mediaItems}
@@ -258,6 +284,7 @@ export default async function ProjectDetailPage({
               />
             </div>
 
+            {/* Summary card */}
             <aside className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-base font-semibold text-slate-900">Overview</h2>
@@ -297,6 +324,7 @@ export default async function ProjectDetailPage({
             </aside>
           </div>
 
+          {/* Details */}
           <div className="mt-12 grid gap-8 lg:grid-cols-3">
             <section className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
               <h3 className="text-sm font-semibold text-slate-900">Key Features</h3>
