@@ -7,6 +7,8 @@ import Link from "next/link";
 import ProjectMediaCarousel, { type MediaItem } from "@/app/components/ProjectMediaCarousel";
 import ProjectGallery from "@/app/components/ProjectGallery";
 
+type DemoStatus = "none" | "demo" | "live";
+
 type ProjectPayload = {
   slug: string;
   name: string;
@@ -16,10 +18,17 @@ type ProjectPayload = {
   highlights: string[];
   ctaLabel: string;
   href: string;
+
+  // ✅ external destination
+  externalUrl?: string | null;
+
+  // ✅ new controls
+  demoStatus: DemoStatus;
+  featured: boolean;
+
   published: boolean;
   media: MediaItem[];
 
-  // ✅ NEW long-form fields
   problem: string;
   solution: string;
   keyFeatures: string[];
@@ -35,11 +44,11 @@ type DraftAnswers = {
   howItWorks: string;
   differentiator: string;
   status: "Live / Near Launch" | "In Development" | "Upcoming";
-  platforms: string; // web / mobile / both
-  tech: string; // free text
+  platforms: string;
+  tech: string;
 };
 
-const STATUS_PRESETS: Record<ProjectPayload["status"], { color: string; cta: string }> = {
+const STATUS_PRESETS: Record<string, { color: string; cta: string }> = {
   "Live / Near Launch": {
     color: "bg-emerald-100 text-emerald-700 border-emerald-200",
     cta: "View project",
@@ -61,13 +70,27 @@ function clampLines(input: string) {
     .filter(Boolean);
 }
 
+function normalizeUrl(input: string) {
+  const s = (input || "").trim();
+  if (!s) return "";
+  // If user pastes "example.com", make it https://example.com
+  if (!/^https?:\/\//i.test(s)) return `https://${s}`;
+  return s;
+}
+
+function demoBadge(demoStatus: DemoStatus) {
+  if (demoStatus === "live") return { label: "Live demo", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" };
+  if (demoStatus === "demo") return { label: "Demo", cls: "bg-sky-50 text-sky-700 border-sky-200" };
+  return null;
+}
+
 export default function AdminPage() {
   const [adminToken, setAdminToken] = useState("");
 
   // Core
   const [slug, setSlug] = useState("");
   const [name, setName] = useState("");
-  const [status, setStatus] = useState<ProjectPayload["status"]>("Upcoming");
+  const [status, setStatus] = useState<string>("Upcoming");
   const [description, setDescription] = useState("");
   const [highlightsText, setHighlightsText] = useState("Feature one\nFeature two\nFeature three");
 
@@ -76,7 +99,12 @@ export default function AdminPage() {
     "/projects/your-slug/demo.mp4\n/projects/your-slug/1.jpg\n/projects/your-slug/2.jpg"
   );
 
-  // New long-form fields
+  // ✅ New admin fields
+  const [externalUrlText, setExternalUrlText] = useState("");
+  const [demoStatusValue, setDemoStatusValue] = useState<DemoStatus>("none");
+  const [featured, setFeatured] = useState(false);
+
+  // Long-form
   const [problem, setProblem] = useState("");
   const [solution, setSolution] = useState("");
   const [keyFeaturesText, setKeyFeaturesText] = useState("");
@@ -104,7 +132,7 @@ export default function AdminPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [toast, setToast] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
 
-  const statusPreset = STATUS_PRESETS[status];
+  const statusPreset = STATUS_PRESETS[status] || STATUS_PRESETS["Upcoming"];
 
   const parsedMedia: MediaItem[] = useMemo(() => {
     const lines = clampLines(mediaText);
@@ -117,21 +145,29 @@ export default function AdminPage() {
   }, [mediaText, name, slug]);
 
   const payload: ProjectPayload = useMemo(() => {
-    const finalStatus = status;
-    const preset = STATUS_PRESETS[finalStatus];
-
     const safeSlug = slug.trim().toLowerCase();
     const href = `/projects/${safeSlug}`;
+
+    const ext = normalizeUrl(externalUrlText);
+    const demo = demoStatusValue;
+
+    // CTA: if you have an external URL + demo/live flag, make CTA more direct
+    let cta = statusPreset.cta;
+    if (ext && demo === "live") cta = "Open live demo";
+    if (ext && demo === "demo") cta = "Open demo";
 
     return {
       slug: safeSlug,
       name: name.trim(),
-      status: finalStatus,
-      statusColor: preset.color,
+      status,
+      statusColor: statusPreset.color,
       description: description.trim(),
       highlights: clampLines(highlightsText),
-      ctaLabel: preset.cta,
+      ctaLabel: cta,
       href,
+      externalUrl: ext ? ext : null,
+      demoStatus: demo,
+      featured: Boolean(featured),
       published,
       media: parsedMedia,
 
@@ -145,6 +181,7 @@ export default function AdminPage() {
     slug,
     name,
     status,
+    statusPreset,
     description,
     highlightsText,
     published,
@@ -154,6 +191,9 @@ export default function AdminPage() {
     keyFeaturesText,
     roadmapText,
     techStackText,
+    externalUrlText,
+    demoStatusValue,
+    featured,
   ]);
 
   async function generateDraft() {
@@ -181,27 +221,18 @@ export default function AdminPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.error || "Draft generation failed");
-      }
+      if (!res.ok) throw new Error(data?.error || "Draft generation failed");
 
-      // Apply generated fields
       setProblem(data.problem || "");
       setSolution(data.solution || "");
       setKeyFeaturesText((data.keyFeatures || []).join("\n"));
       setRoadmapText((data.roadmap || []).join("\n"));
       setTechStackText((data.techStack || []).join("\n"));
 
-      // If description is empty, fill it
-      if (!description.trim() && data.shortDescription) {
-        setDescription(data.shortDescription);
-      }
+      if (!description.trim() && data.shortDescription) setDescription(data.shortDescription);
 
-      // If highlights empty-ish, fill it
       const hl = clampLines(highlightsText);
-      if (hl.length <= 1 && (data.highlights?.length || 0) > 0) {
-        setHighlightsText(data.highlights.join("\n"));
-      }
+      if (hl.length <= 1 && (data.highlights?.length || 0) > 0) setHighlightsText(data.highlights.join("\n"));
 
       setToast({ type: "ok", msg: "Draft generated. Open Preview to review, then Publish." });
     } catch (e: any) {
@@ -214,7 +245,6 @@ export default function AdminPage() {
   async function saveProject() {
     setToast(null);
 
-    // Basic validation
     if (!adminToken.trim()) {
       setToast({ type: "err", msg: "Paste your ADMIN_TOKEN first." });
       return;
@@ -229,6 +259,12 @@ export default function AdminPage() {
     }
     if (!payload.media.length) {
       setToast({ type: "err", msg: "Add at least 1 media file path (video or image)." });
+      return;
+    }
+
+    // If demo/live is selected, external URL should exist (otherwise button has nowhere to go)
+    if ((payload.demoStatus === "demo" || payload.demoStatus === "live") && !payload.externalUrl) {
+      setToast({ type: "err", msg: "If Demo Status is Demo/Live, please add External URL." });
       return;
     }
 
@@ -251,6 +287,8 @@ export default function AdminPage() {
     }
   }
 
+  const demo = demoBadge(payload.demoStatus);
+
   return (
     <main className="bg-white text-slate-900">
       <section className="py-12 sm:py-16">
@@ -263,18 +301,19 @@ export default function AdminPage() {
             actions={
               <div className="flex items-center gap-3">
                 <Link
-                 href="/admin/leads"
-                 className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  href="/admin/leads"
+                  className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                 >
                   View leads
                 </Link>
-                
+
                 <Link
                   href="/maintenance"
                   className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                 >
                   View maintenance
                 </Link>
+
                 <Link
                   href="/projects"
                   className="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
@@ -340,7 +379,7 @@ export default function AdminPage() {
                     <select
                       className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-sky-400"
                       value={status}
-                      onChange={(e) => setStatus(e.target.value as any)}
+                      onChange={(e) => setStatus(e.target.value)}
                     >
                       <option>Upcoming</option>
                       <option>In Development</option>
@@ -350,14 +389,47 @@ export default function AdminPage() {
 
                   <div className="flex items-end gap-3">
                     <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={published}
-                        onChange={(e) => setPublished(e.target.checked)}
-                      />
+                      <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
                       <span className="text-sm font-semibold text-slate-900">Published</span>
                     </label>
                     <span className="text-xs text-slate-500">(turn off to save as draft)</span>
+                  </div>
+
+                  {/* ✅ Featured */}
+                  <div className="flex items-center gap-3 sm:col-span-2">
+                    <label className="flex items-center gap-2 text-sm">
+                      <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+                      <span className="text-sm font-semibold text-slate-900">Featured</span>
+                    </label>
+                    <span className="text-xs text-slate-500">(featured projects can appear first)</span>
+                  </div>
+
+                  {/* ✅ Demo status */}
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700">Demo status</label>
+                    <select
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-sky-400"
+                      value={demoStatusValue}
+                      onChange={(e) => setDemoStatusValue(e.target.value as DemoStatus)}
+                    >
+                      <option value="none">None</option>
+                      <option value="demo">Demo</option>
+                      <option value="live">Live</option>
+                    </select>
+                  </div>
+
+                  {/* ✅ External URL */}
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700">External URL (optional)</label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-sky-400"
+                      value={externalUrlText}
+                      onChange={(e) => setExternalUrlText(e.target.value)}
+                      placeholder="https://app.yourproject.com"
+                    />
+                    <p className="mt-2 text-[11px] text-slate-500">
+                      If Demo Status is <b>Demo</b> or <b>Live</b>, add an External URL so the button can open it.
+                    </p>
                   </div>
                 </div>
 
@@ -500,9 +572,7 @@ export default function AdminPage() {
               {/* ✅ Generated sections */}
               <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
                 <h2 className="text-sm font-semibold text-slate-900">Generated write-up (editable)</h2>
-                <p className="mt-1 text-xs text-slate-600">
-                  You can edit after generation. Preview before you publish.
-                </p>
+                <p className="mt-1 text-xs text-slate-600">You can edit after generation. Preview before you publish.</p>
 
                 <div className="mt-5 grid gap-4">
                   <div>
@@ -568,14 +638,12 @@ export default function AdminPage() {
                     {isSaving ? "Saving…" : published ? "Publish project" : "Save draft"}
                   </button>
 
-                  <span className="text-xs text-slate-500">
-                    Tip: keep Published off until your preview looks perfect.
-                  </span>
+                  <span className="text-xs text-slate-500">Tip: keep Published off until your preview looks perfect.</span>
                 </div>
               </div>
             </div>
 
-            {/* Right: live small preview card */}
+            {/* Right: preview card */}
             <aside className="space-y-6">
               <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
                 <h3 className="text-sm font-semibold text-slate-900">Live card preview</h3>
@@ -583,7 +651,11 @@ export default function AdminPage() {
 
                 <div className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white">
                   <ProjectMediaCarousel
-                    items={parsedMedia.length ? parsedMedia : [{ type: "image", src: "/images/placeholder.png", alt: "placeholder" }]}
+                    items={
+                      parsedMedia.length
+                        ? parsedMedia
+                        : [{ type: "image", src: "/images/placeholder.png", alt: "placeholder" }]
+                    }
                     ariaLabel="Preview media"
                     autoPlay
                     intervalMs={3500}
@@ -593,13 +665,27 @@ export default function AdminPage() {
 
                   <div className="p-5">
                     <div className="flex items-center justify-between gap-3">
-                      <div className="text-base font-semibold text-slate-900">{payload.name || "Project name"}</div>
-                      <span
-                        className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${statusPreset.color}`}
-                      >
+                      <div className="text-base font-semibold text-slate-900">
+                        {payload.name || "Project name"}{" "}
+                        {payload.featured && (
+                          <span className="ml-2 inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
+                            ★ Featured
+                          </span>
+                        )}
+                      </div>
+
+                      <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${statusPreset.color}`}>
                         {status}
                       </span>
                     </div>
+
+                    {demo && (
+                      <div className="mt-2">
+                        <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${demo.cls}`}>
+                          {demo.label}
+                        </span>
+                      </div>
+                    )}
 
                     <p className="mt-3 text-sm leading-relaxed text-slate-600">
                       {payload.description || "Short description will show here…"}
@@ -614,7 +700,7 @@ export default function AdminPage() {
                       ))}
                     </ul>
 
-                    <div className="mt-5">
+                    <div className="mt-5 flex gap-3">
                       <button
                         type="button"
                         onClick={() => setPreviewOpen(true)}
@@ -622,6 +708,17 @@ export default function AdminPage() {
                       >
                         Open preview
                       </button>
+
+                      {payload.externalUrl && (
+                        <a
+                          href={payload.externalUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                        >
+                          {payload.ctaLabel}
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -632,6 +729,7 @@ export default function AdminPage() {
                 <ul className="mt-3 space-y-2 text-sm text-slate-600">
                   <li>• Put your demo video first in the media list.</li>
                   <li>• Use .jpg/.png images for screenshots.</li>
+                  <li>• If demo/live is selected, add External URL.</li>
                   <li>• Preview before Publish to avoid broken pages.</li>
                 </ul>
               </div>
@@ -640,7 +738,7 @@ export default function AdminPage() {
         </Container>
       </section>
 
-      {/* ✅ Full Preview Modal */}
+      {/* ✅ Preview Modal */}
       {previewOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-xl">
@@ -656,14 +754,24 @@ export default function AdminPage() {
             </div>
 
             <div className="max-h-[78vh] overflow-y-auto p-6">
-              {/* This mimics your project detail page layout */}
-              <div className="mb-6">
+              <div className="mb-6 flex items-center justify-between gap-3">
                 <Link
                   href="/projects"
                   className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                 >
                   ← Back to projects
                 </Link>
+
+                {payload.externalUrl && (
+                  <a
+                    href={payload.externalUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                  >
+                    {payload.ctaLabel}
+                  </a>
+                )}
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -672,16 +780,28 @@ export default function AdminPage() {
                     Project
                   </div>
                   <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-                    {payload.name || "Project name"}
+                    {payload.name || "Project name"}{" "}
+                    {payload.featured && (
+                      <span className="ml-2 inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
+                        ★ Featured
+                      </span>
+                    )}
                   </h1>
                   <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
                     {payload.description || "Short description will show here…"}
                   </p>
                 </div>
 
-                <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${payload.statusColor}`}>
-                  {payload.status}
-                </span>
+                <div className="flex items-center gap-2">
+                  {demo && (
+                    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${demo.cls}`}>
+                      {demo.label}
+                    </span>
+                  )}
+                  <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${payload.statusColor}`}>
+                    {payload.status}
+                  </span>
+                </div>
               </div>
 
               <div className="mt-8">
@@ -702,14 +822,12 @@ export default function AdminPage() {
 
                   <h2 className="mt-6 text-lg font-semibold text-slate-900">Key features</h2>
                   <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                    {(payload.keyFeatures.length ? payload.keyFeatures : ["Feature one", "Feature two", "Feature three"]).map(
-                      (x) => (
-                        <li key={x} className="flex items-start gap-2">
-                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sky-600" />
-                          <span>{x}</span>
-                        </li>
-                      )
-                    )}
+                    {(payload.keyFeatures.length ? payload.keyFeatures : ["Feature one", "Feature two", "Feature three"]).map((x) => (
+                      <li key={x} className="flex items-start gap-2">
+                        <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                        <span>{x}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
 
@@ -756,21 +874,7 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              <div className="mt-10 rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
-                <h3 className="text-sm font-semibold text-slate-900">Card highlights</h3>
-                <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                  {(payload.highlights.length ? payload.highlights : ["Feature 1", "Feature 2"]).map((x) => (
-                    <li key={x} className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sky-600" />
-                      <span>{x}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-10 text-xs text-slate-500">
-                Preview only — nothing is published until you click Publish/Save.
-              </div>
+              <div className="mt-10 text-xs text-slate-500">Preview only — nothing is published until you click Publish/Save.</div>
             </div>
           </div>
         </div>
