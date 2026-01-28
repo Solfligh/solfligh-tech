@@ -1,5 +1,6 @@
 // app/page.tsx
 import Link from "next/link";
+import Image from "next/image";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import { getHub, getLatestPost } from "@/app/lib/insightsStore";
@@ -260,7 +261,6 @@ export default function HomePage() {
                   businesses faster, clearer, and more profitable.
                 </p>
 
-                {/* Only PRIMARY Contact CTA here */}
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                   <Link
                     href="/contact"
@@ -376,8 +376,6 @@ export default function HomePage() {
                         ))}
                       </div>
                     </div>
-
-                    {/* Removed extra "Start" (contact) CTA here to avoid duplicates */}
                   </div>
                 </div>
 
@@ -408,7 +406,6 @@ export default function HomePage() {
                 ))}
               </div>
 
-              {/* One small extra link row (no contact) */}
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
                 <Link
                   href="/projects"
@@ -425,7 +422,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* ✅ Latest from Insights (AUTO + richer meta) */}
+            {/* ✅ Latest from Insights (with cover image) */}
             {latest ? (
               <div className="mt-12">
                 <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur sm:p-8">
@@ -486,36 +483,55 @@ export default function HomePage() {
 
                     <Link
                       href={latest.href}
-                      className="group relative w-full overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md lg:max-w-md"
+                      className="group relative w-full overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md lg:max-w-md"
                     >
-                      <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${latest.accent}`} />
-
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700">
-                          {latest.tag}
-                        </span>
-                        <span className="text-xs font-semibold text-slate-600">{latest.readingTime}</span>
-                        <span className="text-xs text-slate-400">•</span>
-                        <span className="text-xs font-semibold text-slate-600">{latest.dateLabel}</span>
-                        {showNew ? (
-                          <span className="ml-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
-                            NEW
-                          </span>
-                        ) : null}
+                      {/* Cover image (or gradient fallback) */}
+                      <div className="relative h-40 w-full overflow-hidden">
+                        {latest.coverImage ? (
+                          <>
+                            <Image
+                              src={latest.coverImage}
+                              alt={latest.title}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 1024px) 100vw, 420px"
+                              priority={false}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/20 to-transparent" />
+                          </>
+                        ) : (
+                          <div className={`absolute inset-0 bg-gradient-to-br ${latest.accent}`} />
+                        )}
                       </div>
 
-                      <p className="mt-4 text-xs font-semibold text-slate-600">
-                        Insights{latestHub ? ` / ${latestHub.title}` : ""}
-                      </p>
+                      <div className="p-6">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700">
+                            {latest.tag}
+                          </span>
+                          <span className="text-xs font-semibold text-slate-600">{latest.readingTime}</span>
+                          <span className="text-xs text-slate-400">•</span>
+                          <span className="text-xs font-semibold text-slate-600">{latest.dateLabel}</span>
+                          {showNew ? (
+                            <span className="ml-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
+                              NEW
+                            </span>
+                          ) : null}
+                        </div>
 
-                      <p className="mt-3 text-lg font-bold leading-snug text-slate-900 group-hover:underline">
-                        {latest.title}
-                      </p>
+                        <p className="mt-3 text-xs font-semibold text-slate-600">
+                          Insights{latestHub ? ` / ${latestHub.title}` : ""}
+                        </p>
 
-                      <p className="mt-2 text-sm text-slate-600">{latest.description}</p>
+                        <p className="mt-2 text-lg font-bold leading-snug text-slate-900 group-hover:underline">
+                          {latest.title}
+                        </p>
 
-                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
-                        Read now <span aria-hidden="true">→</span>
+                        <p className="mt-2 text-sm text-slate-600">{latest.description}</p>
+
+                        <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
+                          Read now <span aria-hidden="true">→</span>
+                        </div>
                       </div>
                     </Link>
                   </div>
@@ -604,7 +620,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* No contact button here */}
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-sm">
             <Link
               href="/services"
@@ -658,7 +673,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* No contact button here */}
           <div className="mt-10 flex flex-col items-center justify-between gap-3 rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur sm:flex-row">
             <div>
               <p className="text-base font-semibold tracking-tight text-slate-900">Want your product to feel premium?</p>
@@ -682,7 +696,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Final CTA (Keep ONE contact button here) */}
+      {/* Final CTA */}
       <section className="py-14 sm:py-18">
         <Container>
           <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-white to-blue-50 p-8 shadow-sm sm:p-10">
