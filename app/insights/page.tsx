@@ -1,6 +1,96 @@
 import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
 
+function InsightHeroArt() {
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.25),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_50%),radial-gradient(circle_at_50%_80%,rgba(15,23,42,0.08),transparent_55%)]" />
+      <svg
+        viewBox="0 0 900 420"
+        className="relative h-[220px] w-full sm:h-[260px]"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1">
+            <stop offset="0" stopColor="rgba(56,189,248,0.95)" />
+            <stop offset="1" stopColor="rgba(59,130,246,0.85)" />
+          </linearGradient>
+        </defs>
+
+        {/* soft grid */}
+        <g opacity="0.18">
+          {Array.from({ length: 18 }).map((_, i) => (
+            <line
+              key={`v-${i}`}
+              x1={40 + i * 48}
+              y1="30"
+              x2={40 + i * 48}
+              y2="390"
+              stroke="rgba(15,23,42,0.45)"
+              strokeWidth="1"
+            />
+          ))}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <line
+              key={`h-${i}`}
+              x1="40"
+              y1={60 + i * 42}
+              x2="860"
+              y2={60 + i * 42}
+              stroke="rgba(15,23,42,0.45)"
+              strokeWidth="1"
+            />
+          ))}
+        </g>
+
+        {/* “signal” line */}
+        <path
+          d="M60 300 C 160 210, 240 250, 330 190 C 420 130, 520 170, 610 120 C 700 75, 780 120, 850 85"
+          fill="none"
+          stroke="url(#g1)"
+          strokeWidth="8"
+          strokeLinecap="round"
+        />
+        {/* dots */}
+        {[
+          [60, 300],
+          [330, 190],
+          [610, 120],
+          [850, 85],
+        ].map(([x, y], idx) => (
+          <circle
+            key={idx}
+            cx={x}
+            cy={y}
+            r="10"
+            fill="white"
+            stroke="rgba(59,130,246,0.9)"
+            strokeWidth="5"
+          />
+        ))}
+
+        {/* label chips */}
+        <g>
+          <rect x="70" y="70" rx="14" ry="14" width="230" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <text x="92" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
+            Plain-language clarity
+          </text>
+
+          <rect x="330" y="70" rx="14" ry="14" width="210" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <text x="352" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
+            Real-world problems
+          </text>
+
+          <rect x="560" y="70" rx="14" ry="14" width="260" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <text x="582" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
+            Built from shipped work
+          </text>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
 const SECTIONS = [
   {
     title: "ProfitPilot",
@@ -8,43 +98,84 @@ const SECTIONS = [
       "Daily profit clarity for business owners — no accounting jargon, just clean decisions.",
     href: "/insights/profitpilot",
     badge: "Project Hub",
+    accent: "from-sky-500/20 to-blue-500/10",
   },
 ];
 
 export default function InsightsIndexPage() {
   return (
     <div className="space-y-10">
-      <PageHeader
-        title="Insights"
-        subtitle="We write to make complicated business problems feel simple — and to explain how we think when building products."
-      />
+      <div className="grid gap-8 lg:grid-cols-[1.05fr_.95fr] lg:items-start">
+        <div className="space-y-5">
+          <PageHeader
+            title="Insights"
+            subtitle="We write to make complicated business problems feel simple — and to explain how we think when building products."
+          />
 
-      <section className="grid gap-4 sm:grid-cols-2">
-        {SECTIONS.map((s) => (
-          <Link
-            key={s.href}
-            href={s.href}
-            className="group rounded-2xl border border-neutral-200 p-5 shadow-sm transition hover:border-neutral-300 hover:shadow-md"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-2">
-                <h2 className="text-lg font-semibold">{s.title}</h2>
-                <p className="text-sm text-neutral-600">{s.description}</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+              Problem-aware → Solution-aware
+            </span>
+            <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+              Zero fluff
+            </span>
+            <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+              Built for non-technical decision makers
+            </span>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur">
+            <p className="text-sm font-semibold text-slate-900">What you’ll get here</p>
+            <ul className="mt-3 space-y-2 text-sm text-slate-600">
+              <li className="flex items-start gap-2">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
+                <span>Clear explanations of messy business problems</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
+                <span>Frameworks you can apply immediately</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
+                <span>Proof that our products are built with intent</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <InsightHeroArt />
+      </div>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-lg font-semibold text-slate-900">Project hubs</h2>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          {SECTIONS.map((s) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
+            >
+              <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${s.accent}`} />
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-bold text-slate-950">{s.title}</h3>
+                  <p className="text-sm text-slate-600">{s.description}</p>
+                </div>
+
+                <span className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                  {s.badge}
+                </span>
               </div>
 
-              <span className="shrink-0 rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs text-neutral-700">
-                {s.badge}
-              </span>
-            </div>
-
-            <div className="mt-4 text-sm font-medium text-neutral-900">
-              <span className="underline decoration-neutral-300 underline-offset-4 group-hover:decoration-neutral-500">
-                View articles
-              </span>{" "}
-              →
-            </div>
-          </Link>
-        ))}
+              <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
+                View articles <span aria-hidden="true">→</span>
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
     </div>
   );
