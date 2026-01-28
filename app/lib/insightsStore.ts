@@ -12,19 +12,17 @@ export type InsightHub = {
 export type InsightPost = {
   hubSlug: string;
 
-  // ✅ NEW: slug used by /insights/<hub>/[slug]
-  slug: string;
+  // ✅ NEW: stable slug for dynamic routes
+  slug: string; // "why-most-smes-dont-actually-know-how-much-they-made-today"
 
   title: string;
   description: string;
-
-  // canonical URL for linking
   href: string;
 
   tag: string; // "Problem Awareness"
   readingTime: string; // "4–6 min"
   dateLabel: string; // "Jan 2026"
-  dateISO: string; // "2026-01-10" (used for NEW logic)
+  dateISO: string; // "2026-01-10" (used for sorting/NEW logic)
 
   accent: string; // tailwind gradient class (fallback)
   coverImage?: string; // "/insights/profitpilot/posts/why-made-today.jpg"
@@ -75,12 +73,9 @@ export function getPostByHref(href: string): InsightPost | null {
   return POSTS.find((p) => p.href === href) || null;
 }
 
-// ✅ NEW: used by /insights/<hub>/[slug]/page.tsx
+// ✅ NEW: use dynamic route param safely
 export function getPostBySlug(hubSlug: string, slug: string): InsightPost | null {
-  const s = (slug || "").trim();
-  const h = (hubSlug || "").trim();
-  if (!s || !h) return null;
-  return POSTS.find((p) => p.hubSlug === h && p.slug === s) || null;
+  return POSTS.find((p) => p.hubSlug === hubSlug && p.slug === slug) || null;
 }
 
 /**
@@ -95,4 +90,16 @@ export function getLatestPost(): InsightPost | null {
 
   const sorted = [...POSTS].sort((a, b) => safeDate(b.dateISO) - safeDate(a.dateISO));
   return sorted[0] || null;
+}
+
+/**
+ * ✅ Backward-compatible aliases
+ * (So older pages that imported these won’t break.)
+ */
+export function getHubs(): InsightHub[] {
+  return listHubs();
+}
+
+export function getPostsByHub(hubSlug: string): InsightPost[] {
+  return listPostsByHub(hubSlug);
 }
