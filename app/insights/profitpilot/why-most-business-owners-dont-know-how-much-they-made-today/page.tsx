@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title:
     "Why Most Business Owners Don’t Actually Know How Much They Made Today | ProfitPilot Insights",
   description:
-    "Many business owners end the day unsure if they actually made money. This article explains why — in plain language — without accounting jargon.",
+    "Many business owners end the day unsure if they actually made money. This article explains why in plain language without accounting jargon.",
 };
 
 const toc = [
@@ -136,7 +136,7 @@ export default function BlogPostPage() {
         <PageHeader
           badge="Article"
           title="Why Most Business Owners Don’t Actually Know How Much They Made Today"
-          subtitle="A plain-language explanation of why “today’s profit” feels so hard to pin down — and why it isn’t your fault."
+          subtitle="A plain-language explanation of why “today’s profit” feels so hard to pin down and why it isn’t your fault."
         />
         <ArticleHero />
       </div>
@@ -236,10 +236,10 @@ export default function BlogPostPage() {
                 At some point, most of us turn to accounting software for answers. And then we hit another wall.
               </p>
               <p>
-                The reports are detailed, technical, and focused on periods — not days.
+                The reports are detailed, technical, and focused on periods not days.
               </p>
               <p>
-                Accounting tools are incredibly important — but they’re designed for accuracy and compliance,
+                Accounting tools are incredibly important but they’re designed for accuracy and compliance,
                 not daily decision-making.
               </p>
 
@@ -278,7 +278,7 @@ export default function BlogPostPage() {
                 A signal that the way performance is being presented doesn’t match the way you run your business.
               </p>
               <p>
-                There are better ways to think about daily performance — starting with separating cash movement from profit.
+                There are better ways to think about daily performance starting with separating cash movement from profit.
               </p>
               <p>We’ll explore that next.</p>
             </div>
