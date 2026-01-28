@@ -1,3 +1,4 @@
+// app/insights/page.tsx
 import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
 
@@ -71,17 +72,44 @@ function InsightHeroArt() {
 
         {/* label chips */}
         <g>
-          <rect x="70" y="70" rx="14" ry="14" width="230" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <rect
+            x="70"
+            y="70"
+            rx="14"
+            ry="14"
+            width="230"
+            height="48"
+            fill="rgba(255,255,255,0.85)"
+            stroke="rgba(148,163,184,0.6)"
+          />
           <text x="92" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
             Plain-language clarity
           </text>
 
-          <rect x="330" y="70" rx="14" ry="14" width="210" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <rect
+            x="330"
+            y="70"
+            rx="14"
+            ry="14"
+            width="210"
+            height="48"
+            fill="rgba(255,255,255,0.85)"
+            stroke="rgba(148,163,184,0.6)"
+          />
           <text x="352" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
             Real-world problems
           </text>
 
-          <rect x="560" y="70" rx="14" ry="14" width="260" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <rect
+            x="560"
+            y="70"
+            rx="14"
+            ry="14"
+            width="260"
+            height="48"
+            fill="rgba(255,255,255,0.85)"
+            stroke="rgba(148,163,184,0.6)"
+          />
           <text x="582" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
             Built from shipped work
           </text>
@@ -94,8 +122,7 @@ function InsightHeroArt() {
 const SECTIONS = [
   {
     title: "ProfitPilot",
-    description:
-      "Daily profit clarity for business owners no accounting jargon, just clean decisions.",
+    description: "Daily profit clarity for business owners — no accounting jargon, just clean decisions.",
     href: "/insights/profitpilot",
     badge: "Project Hub",
     accent: "from-sky-500/20 to-blue-500/10",
@@ -108,8 +135,9 @@ export default function InsightsIndexPage() {
       <div className="grid gap-8 lg:grid-cols-[1.05fr_.95fr] lg:items-start">
         <div className="space-y-5">
           <PageHeader
+            badge="Library"
             title="Insights"
-            subtitle="We write to make complicated business problems feel simple and to explain how we think when building products."
+            subtitle="We write to make complicated business problems feel simple — and to explain how we think when building products."
           />
 
           <div className="flex flex-wrap gap-2">
