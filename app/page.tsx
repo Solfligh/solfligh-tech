@@ -75,7 +75,7 @@ const capabilities = [
 const features = [
   {
     title: "Product design that feels premium",
-    desc: "We design interfaces that look modern, load fast, and convert  without sacrificing clarity.",
+    desc: "We design interfaces that look modern, load fast, and convert without sacrificing clarity.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
         <path d="M7 7h10M7 12h10M7 17h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -93,7 +93,7 @@ const features = [
   },
   {
     title: "Automation that saves real time",
-    desc: "From internal ops to customer workflows  we remove repetitive work and reduce human error.",
+    desc: "From internal ops to customer workflows we remove repetitive work and reduce human error.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
         <path d="M8 7h8M8 12h8M8 17h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -166,13 +166,12 @@ const process = [
 const testimonials = [
   {
     quote:
-      "You can feel the difference  everything is clean, premium, and structured. It’s not just a website; it’s a foundation.",
+      "You can feel the difference — everything is clean, premium, and structured. It’s not just a website; it’s a foundation.",
     name: "Founder",
     title: "Digital Product",
   },
   {
-    quote:
-      "The UI looks expensive, but it’s still simple. And the workflows are actually practical  no fluff.",
+    quote: "The UI looks expensive, but it’s still simple. And the workflows are actually practical — no fluff.",
     name: "Operator",
     title: "SME Team",
   },
@@ -217,6 +216,9 @@ export default function HomePage() {
   const latest = getLatestPost();
   const latestHub = latest ? getHub(latest.hubSlug) : null;
   const showNew = latest ? isNewPost(latest.dateISO) : false;
+
+  // ✅ Prefer the post cover; fallback to the hub cover; fallback to gradient
+  const latestCover = latest?.coverImage || latestHub?.coverImage || "";
 
   return (
     <main className="bg-white text-slate-900">
@@ -380,7 +382,7 @@ export default function HomePage() {
                 </div>
 
                 <p className="mt-4 text-xs leading-relaxed text-slate-500">
-                  Clean visuals, real structure  designed to feel premium while staying simple and readable.
+                  Clean visuals, real structure — designed to feel premium while staying simple and readable.
                 </p>
               </div>
             </div>
@@ -422,7 +424,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* ✅ Latest from Insights (with cover image) */}
+            {/* ✅ Latest from Insights (premium cover) */}
             {latest ? (
               <div className="mt-12">
                 <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur sm:p-8">
@@ -440,19 +442,17 @@ export default function HomePage() {
                       </h2>
 
                       <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                        Our Insights are where we break down real business problems in plain language — so
-                        clients can trust the approach before they buy.
+                        Our Insights are where we break down real business problems in plain language — so clients can
+                        trust the approach before they buy.
                       </p>
 
                       <div className="mt-4 flex flex-wrap gap-2">
                         <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
                           {latest.tag}
                         </span>
-
                         <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
                           {latest.readingTime}
                         </span>
-
                         <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
                           {latest.dateLabel}
                         </span>
@@ -485,19 +485,19 @@ export default function HomePage() {
                       href={latest.href}
                       className="group relative w-full overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md lg:max-w-md"
                     >
-                      {/* Cover image (or gradient fallback) */}
-                      <div className="relative h-40 w-full overflow-hidden">
-                        {latest.coverImage ? (
+                      {/* Cover image */}
+                      <div className="relative h-44 w-full overflow-hidden">
+                        {latestCover ? (
                           <>
                             <Image
-                              src={latest.coverImage}
+                              src={latestCover}
                               alt={latest.title}
                               fill
-                              className="object-cover"
+                              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                               sizes="(max-width: 1024px) 100vw, 420px"
                               priority={false}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/20 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/25 to-transparent" />
                           </>
                         ) : (
                           <div className={`absolute inset-0 bg-gradient-to-br ${latest.accent}`} />
@@ -505,21 +505,7 @@ export default function HomePage() {
                       </div>
 
                       <div className="p-6">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700">
-                            {latest.tag}
-                          </span>
-                          <span className="text-xs font-semibold text-slate-600">{latest.readingTime}</span>
-                          <span className="text-xs text-slate-400">•</span>
-                          <span className="text-xs font-semibold text-slate-600">{latest.dateLabel}</span>
-                          {showNew ? (
-                            <span className="ml-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
-                              NEW
-                            </span>
-                          ) : null}
-                        </div>
-
-                        <p className="mt-3 text-xs font-semibold text-slate-600">
+                        <p className="text-xs font-semibold text-slate-600">
                           Insights{latestHub ? ` / ${latestHub.title}` : ""}
                         </p>
 
