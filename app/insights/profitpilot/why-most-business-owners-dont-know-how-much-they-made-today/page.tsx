@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title:
     "Why Most Business Owners Don’t Actually Know How Much They Made Today | ProfitPilot Insights",
   description:
-    "Many business owners end the day unsure if they actually made money. This article explains why — in plain language — without accounting jargon.",
+    "Many business owners end the day unsure if they actually made money. This article explains why in plain language without accounting jargon.",
 };
 
 function ArticleHero() {
@@ -26,7 +26,7 @@ function ArticleHero() {
         The core idea:
       </p>
       <p className="mt-1 text-base font-bold text-slate-900">
-        Bank balance tells you where money is — not what you earned.
+        Bank balance tells you where money is not what you earned.
       </p>
     </div>
   );
@@ -41,7 +41,7 @@ export default function BlogPostPage() {
           contextHref="/insights/profitpilot"
           badge="Article"
           title="Why Most Business Owners Don’t Actually Know How Much They Made Today"
-          subtitle="A plain-language explanation of why “today’s profit” feels so hard to pin down — and why it isn’t your fault."
+          subtitle="A plain-language explanation of why “today’s profit” feels so hard to pin down  and why it isn’t your fault."
         />
         <ArticleHero />
       </div>
@@ -129,7 +129,7 @@ export default function BlogPostPage() {
         </p>
         <p>The reports are detailed, technical, and focused on periods, not days.</p>
         <p>
-          Accounting tools are incredibly important — but they’re designed for
+          Accounting tools are incredibly important but they’re designed for
           accuracy and compliance, not daily decision-making.
         </p>
         <p>
@@ -168,7 +168,7 @@ export default function BlogPostPage() {
         </ul>
         <p>That delay is the real problem.</p>
         <p>
-          Daily profit isn’t impossible to know — it’s just rarely designed for
+          Daily profit isn’t impossible to know it’s just rarely designed for
           the people who need it most.
         </p>
 
@@ -183,7 +183,7 @@ export default function BlogPostPage() {
           way you run your business.
         </p>
         <p>
-          There are better ways to think about daily performance — starting with
+          There are better ways to think about daily performance starting with
           separating cash movement from profit.
         </p>
         <p>We’ll explore that next.</p>
