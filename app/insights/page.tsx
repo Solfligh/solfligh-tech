@@ -95,7 +95,7 @@ const SECTIONS = [
   {
     title: "ProfitPilot",
     description:
-      "Daily profit clarity for business owners — no accounting jargon, just clean decisions.",
+      "Daily profit clarity for business owners no accounting jargon, just clean decisions.",
     href: "/insights/profitpilot",
     badge: "Project Hub",
     accent: "from-sky-500/20 to-blue-500/10",
@@ -109,7 +109,7 @@ export default function InsightsIndexPage() {
         <div className="space-y-5">
           <PageHeader
             title="Insights"
-            subtitle="We write to make complicated business problems feel simple — and to explain how we think when building products."
+            subtitle="We write to make complicated business problems feel simple and to explain how we think when building products."
           />
 
           <div className="flex flex-wrap gap-2">
