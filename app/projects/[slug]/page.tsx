@@ -143,7 +143,9 @@ function withDemoInjected(
         type: "video" as const,
         src: "",
         thumbnail:
-          typeof (d as any)?.thumbnail === "string" ? (d as any).thumbnail : "/projects/video-poster.jpg",
+          typeof (d as any)?.thumbnail === "string"
+            ? (d as any).thumbnail
+            : "/projects/video-poster.jpg",
         alt: `${projectName} demo coming soon`,
       });
     }
@@ -279,6 +281,27 @@ export default async function ProjectDetailPage({
     .filter((p) => p?.published && p?.slug && p.slug !== slug)
     .slice(0, 6);
 
+  // ✅ NEW: Related Insights (only show for projects we actually have insights for)
+  const relatedInsights =
+    slug === "profitpilot"
+      ? [
+          {
+            title: "Why Most Business Owners Don’t Actually Know How Much They Made Today",
+            description:
+              "A plain-language explanation of why “today’s profit” feels so hard to pin down — and why it isn’t your fault.",
+            href: "/insights/profitpilot/why-most-business-owners-dont-know-how-much-they-made-today",
+            tag: "Problem Awareness",
+          },
+          {
+            title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
+            description:
+              "A simple explanation of cash movement vs real performance — and how to stop confusing the two.",
+            href: "/insights/profitpilot",
+            tag: "Solution Awareness",
+          },
+        ]
+      : [];
+
   return (
     <main className="bg-white text-slate-900">
       <section className="py-16 sm:py-20">
@@ -390,15 +413,55 @@ export default async function ProjectDetailPage({
             </section>
           </div>
 
+          {/* ✅ NEW: Related Insights (shows only for ProfitPilot right now) */}
+          {relatedInsights.length > 0 && (
+            <section className="mt-16">
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-lg font-semibold text-slate-900">Related Insights</h3>
+                <Link
+                  href="/insights/profitpilot"
+                  className="text-sm font-semibold text-sky-700 hover:underline"
+                >
+                  View all →
+                </Link>
+              </div>
+
+              <p className="mt-2 max-w-2xl text-sm text-slate-600">
+                Thought pieces explaining the problem this project was built to solve.
+              </p>
+
+              <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                {relatedInsights.map((i) => (
+                  <Link
+                    key={i.href}
+                    href={i.href}
+                    className="group rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
+                  >
+                    <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
+                      {i.tag}
+                    </span>
+
+                    <p className="mt-3 text-base font-semibold text-slate-900 group-hover:underline">
+                      {i.title}
+                    </p>
+
+                    <p className="mt-2 text-sm text-slate-600">{i.description}</p>
+
+                    <div className="mt-3 text-sm font-semibold text-sky-700">
+                      Read →
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* ✅ NEW: Other Projects */}
           {otherProjects.length > 0 && (
             <section className="mt-16">
               <div className="flex items-center justify-between gap-4">
                 <h3 className="text-lg font-semibold text-slate-900">Other Projects</h3>
-                <Link
-                  href="/projects"
-                  className="text-sm font-semibold text-sky-700 hover:underline"
-                >
+                <Link href="/projects" className="text-sm font-semibold text-sky-700 hover:underline">
                   View all →
                 </Link>
               </div>
