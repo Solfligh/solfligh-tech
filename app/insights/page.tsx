@@ -1,7 +1,8 @@
 // app/insights/page.tsx
 import Link from "next/link";
+import Image from "next/image";
 import PageHeader from "@/app/components/PageHeader";
-import { getHubs } from "@/app/lib/insightsStore";
+import { listHubs } from "@/app/lib/insightsStore";
 
 function InsightHeroArt() {
   return (
@@ -65,14 +66,47 @@ function InsightHeroArt() {
         ))}
 
         <g>
-          <rect x="70" y="70" rx="14" ry="14" width="230" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
-          <text x="92" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">Plain-language clarity</text>
+          <rect
+            x="70"
+            y="70"
+            rx="14"
+            ry="14"
+            width="230"
+            height="48"
+            fill="rgba(255,255,255,0.85)"
+            stroke="rgba(148,163,184,0.6)"
+          />
+          <text x="92" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
+            Plain-language clarity
+          </text>
 
-          <rect x="330" y="70" rx="14" ry="14" width="210" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
-          <text x="352" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">Real-world problems</text>
+          <rect
+            x="330"
+            y="70"
+            rx="14"
+            ry="14"
+            width="210"
+            height="48"
+            fill="rgba(255,255,255,0.85)"
+            stroke="rgba(148,163,184,0.6)"
+          />
+          <text x="352" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
+            Real-world problems
+          </text>
 
-          <rect x="560" y="70" rx="14" ry="14" width="260" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
-          <text x="582" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">Built from shipped work</text>
+          <rect
+            x="560"
+            y="70"
+            rx="14"
+            ry="14"
+            width="260"
+            height="48"
+            fill="rgba(255,255,255,0.85)"
+            stroke="rgba(148,163,184,0.6)"
+          />
+          <text x="582" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
+            Built from shipped work
+          </text>
         </g>
       </svg>
     </div>
@@ -80,7 +114,7 @@ function InsightHeroArt() {
 }
 
 export default function InsightsIndexPage() {
-  const hubs = getHubs();
+  const hubs = listHubs();
 
   return (
     <div className="space-y-10">
@@ -89,7 +123,7 @@ export default function InsightsIndexPage() {
           <PageHeader
             badge="Library"
             title="Insights"
-            subtitle="We write to make complicated business problems feel simple and to explain how we think when building products."
+            subtitle="We write to make complicated business problems feel simple — and to explain how we think when building products."
           />
 
           <div className="flex flex-wrap gap-2">
@@ -136,22 +170,52 @@ export default function InsightsIndexPage() {
             <Link
               key={h.slug}
               href={h.href}
-              className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
+              className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
             >
-              <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${h.accent}`} />
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-slate-950">{h.title}</h3>
-                  <p className="text-sm text-slate-600">{h.description}</p>
-                </div>
+              {/* ✅ Cover (image if available, gradient fallback) */}
+              <div className="relative h-36 w-full overflow-hidden">
+                {h.coverImage ? (
+                  <>
+                    <Image
+                      src={h.coverImage}
+                      alt={`${h.title} cover`}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 100vw, 520px"
+                      priority={false}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/20 to-transparent" />
+                  </>
+                ) : (
+                  <div className={`absolute inset-0 bg-gradient-to-br ${h.accent}`} />
+                )}
 
-                <span className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
-                  {h.badge}
-                </span>
+                {/* Badge */}
+                <div className="absolute left-5 top-5">
+                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+                    {h.badge}
+                  </span>
+                </div>
               </div>
 
-              <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
-                View articles <span aria-hidden="true">→</span>
+              {/* Content */}
+              <div className="p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold text-slate-950 group-hover:underline">{h.title}</h3>
+                    <p className="text-sm leading-relaxed text-slate-600">{h.description}</p>
+                  </div>
+                </div>
+
+                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
+                  View articles <span aria-hidden="true">→</span>
+                </div>
+              </div>
+
+              {/* Subtle hover glow */}
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="absolute -left-24 -top-28 h-80 w-80 rounded-full bg-sky-200/25 blur-3xl" />
+                <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/25 blur-3xl" />
               </div>
             </Link>
           ))}
