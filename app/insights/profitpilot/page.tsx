@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PageHeader from "@/app/components/PageHeader";
 
 const POSTS = [
   {
@@ -14,32 +15,13 @@ const POSTS = [
 
 export default function ProfitPilotInsightsHubPage() {
   return (
-    <div className="space-y-8">
-      <header className="space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            href="/insights"
-            className="text-sm text-neutral-600 underline decoration-neutral-300 underline-offset-4 hover:decoration-neutral-500"
-          >
-            Insights
-          </Link>
-          <span className="text-sm text-neutral-400">/</span>
-          <span className="text-sm text-neutral-800">ProfitPilot</span>
-        </div>
-
-        <h1 className="text-3xl font-semibold tracking-tight">
-          ProfitPilot Insights
-        </h1>
-        <p className="text-base text-neutral-600">
-          Clear writing for business owners who want to understand daily
-          performance — without accounting confusion.
-        </p>
-
-        <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
-          <strong>Goal:</strong> help problem-aware business owners name what’s
-          wrong, then guide solution-aware readers toward clarity and trust.
-        </div>
-      </header>
+    <div className="space-y-10">
+      <PageHeader
+        contextLabel="Insights"
+        contextHref="/insights"
+        title="ProfitPilot Insights"
+        subtitle="Clear writing for business owners who want to understand daily performance — without accounting confusion."
+      />
 
       <section className="space-y-4">
         {POSTS.map((p) => (
