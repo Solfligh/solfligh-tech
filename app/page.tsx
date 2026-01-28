@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
+import { getHub, getLatestPost } from "@/app/lib/insightsStore";
 
 const capabilities = [
   {
@@ -176,18 +177,6 @@ const testimonials = [
   },
 ];
 
-// ✅ NEW: Featured Insight (homepage teaser)
-const featuredInsight = {
-  category: "Insights",
-  hub: "ProfitPilot",
-  tag: "Problem Awareness",
-  title: "Why Most Business Owners Don’t Actually Know How Much They Made Today",
-  desc:
-    "A plain-language explanation of why daily profit feels so hard to pin down — and why it isn’t your fault.",
-  href: "/insights/profitpilot/why-most-business-owners-dont-know-how-much-they-made-today",
-  hubHref: "/insights/profitpilot",
-};
-
 function Chip({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center rounded-full border border-slate-200/80 bg-white/70 px-3 py-1 text-sm text-slate-700 shadow-sm backdrop-blur">
@@ -216,6 +205,9 @@ function Card({ title, desc, icon }: { title: string; desc: string; icon: React.
 }
 
 export default function HomePage() {
+  const latest = getLatestPost();
+  const latestHub = latest ? getHub(latest.hubSlug) : null;
+
   return (
     <main className="bg-white text-slate-900">
       {/* Hero */}
@@ -424,73 +416,75 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* ✅ NEW: Latest from Insights */}
-            <div className="mt-12">
-              <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur sm:p-8">
-                <div className="pointer-events-none absolute inset-0">
-                  <div className="absolute -left-24 -top-28 h-80 w-80 rounded-full bg-sky-200/30 blur-3xl" />
-                  <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/30 blur-3xl" />
-                </div>
-
-                <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="max-w-2xl">
-                    <p className="text-xs font-bold tracking-wider text-slate-500">
-                      LATEST FROM INSIGHTS
-                    </p>
-
-                    <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-                      We don’t just build. We explain the thinking.
-                    </h2>
-
-                    <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                      Our Insights are where we break down real business problems in plain language — so
-                      clients can trust the approach before they buy.
-                    </p>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
-                        {featuredInsight.tag}
-                      </span>
-                      <Link
-                        href={featuredInsight.hubHref}
-                        className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-                      >
-                        {featuredInsight.hub} →
-                      </Link>
-                      <Link
-                        href="/insights"
-                        className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-                      >
-                        All Insights →
-                      </Link>
-                    </div>
+            {/* ✅ Latest from Insights (AUTO) */}
+            {latest ? (
+              <div className="mt-12">
+                <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur sm:p-8">
+                  <div className="pointer-events-none absolute inset-0">
+                    <div className="absolute -left-24 -top-28 h-80 w-80 rounded-full bg-sky-200/30 blur-3xl" />
+                    <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/30 blur-3xl" />
                   </div>
 
-                  <Link
-                    href={featuredInsight.href}
-                    className="group relative w-full overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md lg:max-w-md"
-                  >
-                    <div className="absolute inset-0 -z-10 bg-gradient-to-br from-sky-500/15 via-white to-blue-500/10" />
+                  <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-2xl">
+                      <p className="text-xs font-bold tracking-wider text-slate-500">LATEST FROM INSIGHTS</p>
 
-                    <p className="text-xs font-semibold text-slate-600">
-                      {featuredInsight.category} / {featuredInsight.hub}
-                    </p>
+                      <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                        We don’t just build. We explain the thinking.
+                      </h2>
 
-                    <p className="mt-3 text-lg font-bold leading-snug text-slate-900 group-hover:underline">
-                      {featuredInsight.title}
-                    </p>
+                      <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                        Our Insights are where we break down real business problems in plain language — so
+                        clients can trust the approach before they buy.
+                      </p>
 
-                    <p className="mt-2 text-sm text-slate-600">
-                      {featuredInsight.desc}
-                    </p>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                          {latest.tag}
+                        </span>
 
-                    <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
-                      Read now <span aria-hidden="true">→</span>
+                        {latestHub ? (
+                          <Link
+                            href={latestHub.href}
+                            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                          >
+                            {latestHub.title} →
+                          </Link>
+                        ) : null}
+
+                        <Link
+                          href="/insights"
+                          className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                        >
+                          All Insights →
+                        </Link>
+                      </div>
                     </div>
-                  </Link>
+
+                    <Link
+                      href={latest.href}
+                      className="group relative w-full overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md lg:max-w-md"
+                    >
+                      <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${latest.accent}`} />
+
+                      <p className="text-xs font-semibold text-slate-600">
+                        Insights{latestHub ? ` / ${latestHub.title}` : ""}
+                      </p>
+
+                      <p className="mt-3 text-lg font-bold leading-snug text-slate-900 group-hover:underline">
+                        {latest.title}
+                      </p>
+
+                      <p className="mt-2 text-sm text-slate-600">{latest.description}</p>
+
+                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
+                        Read now <span aria-hidden="true">→</span>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : null}
             {/* ✅ END Latest from Insights */}
           </div>
         </Container>
