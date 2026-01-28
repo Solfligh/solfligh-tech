@@ -9,27 +9,43 @@ export const metadata: Metadata = {
     "Many business owners end the day unsure if they actually made money. This article explains why — in plain language — without accounting jargon.",
 };
 
+function ArticleHero() {
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.22),transparent_45%),radial-gradient(circle_at_85%_25%,rgba(59,130,246,0.16),transparent_52%)]" />
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+          Problem Awareness
+        </span>
+        <span className="text-xs font-semibold text-slate-600">4–6 min read</span>
+        <span className="text-xs text-slate-400">•</span>
+        <span className="text-xs font-semibold text-slate-600">Jan 2026</span>
+      </div>
+
+      <p className="mt-4 text-sm font-semibold text-slate-700">
+        The core idea:
+      </p>
+      <p className="mt-1 text-base font-bold text-slate-900">
+        Bank balance tells you where money is — not what you earned.
+      </p>
+    </div>
+  );
+}
+
 export default function BlogPostPage() {
   return (
     <article className="space-y-10">
-      {/* ✅ PageHeader-based breadcrumb + title */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         <PageHeader
           contextLabel="Insights / ProfitPilot"
           contextHref="/insights/profitpilot"
-          badge="Problem Awareness"
+          badge="Article"
           title="Why Most Business Owners Don’t Actually Know How Much They Made Today"
           subtitle="A plain-language explanation of why “today’s profit” feels so hard to pin down — and why it isn’t your fault."
         />
-
-        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
-          <span className="font-semibold">4–6 min read</span>
-          <span className="text-slate-400">•</span>
-          <span className="font-semibold">Jan 2026</span>
-        </div>
+        <ArticleHero />
       </div>
 
-      {/* ✅ Article body */}
       <div className="prose prose-neutral max-w-none">
         <p>
           At the end of most days, we all ask ourselves the same quiet question:
@@ -48,6 +64,8 @@ export default function BlogPostPage() {
         <p>And yet, the answer still doesn’t feel solid.</p>
         <p>If that sounds familiar, you’re not alone.</p>
 
+        <hr />
+
         <h2>The question we’re really trying to answer</h2>
         <p>
           Most business owners aren’t trying to do complex financial analysis at
@@ -57,8 +75,7 @@ export default function BlogPostPage() {
           <strong>“Did my business make money today?”</strong>
         </p>
         <p>
-          Not this month. Not last quarter. Not after an accountant closes the
-          books.
+          Not this month. Not last quarter. Not after an accountant closes the books.
         </p>
         <p>
           <strong>Today.</strong>
@@ -67,8 +84,7 @@ export default function BlogPostPage() {
 
         <h2>Why checking your bank balance feels like the answer</h2>
         <p>
-          When we don’t have a clear number, we default to what’s easiest to
-          see.
+          When we don’t have a clear number, we default to what’s easiest to see.
         </p>
         <p>The bank balance.</p>
         <p>It feels logical:</p>
@@ -173,24 +189,23 @@ export default function BlogPostPage() {
         <p>We’ll explore that next.</p>
       </div>
 
-      {/* ✅ Footer nav */}
-      <footer className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5">
-        <h3 className="text-sm font-semibold text-neutral-900">Next up</h3>
-        <p className="mt-1 text-sm text-neutral-700">
-          Blog 2 will explain <strong>cashflow vs profit</strong> in plain
-          language, and why mixing them up leads to confusing decisions.
+      <footer className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.18),transparent_45%),radial-gradient(circle_at_80%_25%,rgba(59,130,246,0.12),transparent_52%)]" />
+        <h3 className="text-sm font-bold text-slate-900">Next up</h3>
+        <p className="mt-2 text-sm text-slate-700">
+          Blog 2 will explain <strong>cashflow vs profit</strong> in plain language, and why mixing them up leads to confusing decisions.
         </p>
 
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             href="/insights/profitpilot"
-            className="rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-100"
+            className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50"
           >
             Back to ProfitPilot hub
           </Link>
           <Link
             href="/insights"
-            className="rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-100"
+            className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50"
           >
             All Insights
           </Link>
