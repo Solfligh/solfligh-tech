@@ -11,12 +11,16 @@ function MiniHero({ title }: { title: string }) {
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title} mission</p>
-          <p className="text-base font-semibold text-slate-900">
-            Help business owners know what happened <span className="text-sky-700">today</span> — without accounting
-            confusion.
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            {title} mission
           </p>
-          <p className="text-sm text-slate-600">We start by naming the problem. Then we show the approach.</p>
+          <p className="text-base font-semibold text-slate-900">
+            Help SMEs understand what happened{" "}
+            <span className="text-sky-700">today</span> — without accounting confusion.
+          </p>
+          <p className="text-sm text-slate-600">
+            We start by naming the problem. Then we show the approach.
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -39,7 +43,7 @@ export default function ProfitPilotInsightsHubPage() {
   const hubTitle = hub?.title || "ProfitPilot";
   const hubDescription =
     hub?.description ||
-    "Clear writing for business owners who want to understand daily performance — without accounting confusion.";
+    "Clear writing for SMEs who want to understand daily performance — without accounting confusion.";
 
   return (
     <div className="space-y-10">
@@ -112,8 +116,12 @@ export default function ProfitPilotInsightsHubPage() {
                   <span className="text-xs font-semibold text-slate-600">{p.dateLabel}</span>
                 </div>
 
-                <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:underline">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.description}</p>
+                <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:underline">
+                  {p.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {p.description}
+                </p>
 
                 <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
                   Read <span aria-hidden="true">→</span>
@@ -141,7 +149,7 @@ export default function ProfitPilotInsightsHubPage() {
           <div>
             <p className="text-sm font-semibold text-slate-900">Want the product version?</p>
             <p className="mt-1 text-sm text-slate-600">
-              ProfitPilot turns these ideas into a dashboard business owners can understand instantly.
+              ProfitPilot turns these ideas into a dashboard SMEs can understand instantly.
             </p>
           </div>
           <div className="flex gap-3">
