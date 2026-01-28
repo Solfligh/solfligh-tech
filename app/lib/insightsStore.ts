@@ -1,27 +1,28 @@
 // app/lib/insightsStore.ts
-
 export type InsightHub = {
-  slug: string; // e.g. "profitpilot"
-  title: string; // e.g. "ProfitPilot"
+  slug: string;
+  title: string; // display name, e.g. "ProfitPilot"
   description: string;
-  href: string; // e.g. "/insights/profitpilot"
-  badge: string; // e.g. "Project Hub"
-  accent: string; // tailwind gradient classes
-  missionLabel?: string; // optional small label for hub hero
-  missionLine?: string; // optional hub mission sentence
+  href: string; // "/insights/profitpilot"
+  badge: string; // "Project Hub"
+  accent: string; // tailwind gradient class
+  coverImage?: string; // "/insights/profitpilot/cover.jpg"
 };
 
 export type InsightPost = {
-  id: string; // unique
-  hubSlug: string; // "profitpilot"
+  hubSlug: string;
+
   title: string;
   description: string;
   href: string;
-  tag: string; // e.g. "Problem Awareness"
-  readingTime: string; // e.g. "4–6 min"
-  dateISO: string; // e.g. "2026-01-26"
-  dateLabel: string; // e.g. "Jan 2026"
-  accent: string; // tailwind gradient classes
+
+  tag: string; // "Problem Awareness"
+  readingTime: string; // "4–6 min"
+  dateLabel: string; // "Jan 2026"
+  dateISO: string; // "2026-01-10" (used for NEW logic)
+
+  accent: string; // tailwind gradient class (fallback)
+  coverImage?: string; // "/insights/profitpilot/posts/why-made-today.jpg"
 };
 
 const HUBS: InsightHub[] = [
@@ -32,14 +33,12 @@ const HUBS: InsightHub[] = [
     href: "/insights/profitpilot",
     badge: "Project Hub",
     accent: "from-sky-500/20 to-blue-500/10",
-    missionLabel: "ProfitPilot mission",
-    missionLine: "Help business owners know what happened today — without accounting confusion.",
+    coverImage: "/insights/profitpilot/cover.jpg",
   },
 ];
 
 const POSTS: InsightPost[] = [
   {
-    id: "pp-001",
     hubSlug: "profitpilot",
     title: "Why Most Business Owners Don’t Actually Know How Much They Made Today",
     description:
@@ -47,32 +46,39 @@ const POSTS: InsightPost[] = [
     href: "/insights/profitpilot/why-most-business-owners-dont-know-how-much-they-made-today",
     tag: "Problem Awareness",
     readingTime: "4–6 min",
-    dateISO: "2026-01-26",
     dateLabel: "Jan 2026",
+    dateISO: "2026-01-10",
     accent: "from-sky-500/20 to-blue-500/10",
+    coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
   },
 ];
 
-export function getHubs(): InsightHub[] {
+export function listHubs(): InsightHub[] {
   return [...HUBS];
 }
 
-export function getHub(slug: string): InsightHub | undefined {
-  const s = (slug || "").trim().toLowerCase();
-  return HUBS.find((h) => h.slug === s);
+export function listPostsByHub(hubSlug: string): InsightPost[] {
+  return POSTS.filter((p) => p.hubSlug === hubSlug);
 }
 
-export function getAllPosts(): InsightPost[] {
-  return [...POSTS];
+export function getHub(hubSlug: string): InsightHub | null {
+  return HUBS.find((h) => h.slug === hubSlug) || null;
 }
 
-export function getHubPosts(hubSlug: string): InsightPost[] {
-  const s = (hubSlug || "").trim().toLowerCase();
-  return POSTS.filter((p) => p.hubSlug === s).sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
+export function getPostByHref(href: string): InsightPost | null {
+  return POSTS.find((p) => p.href === href) || null;
 }
 
+/**
+ * Picks the newest post based on dateISO.
+ * Falls back safely if date parsing fails.
+ */
 export function getLatestPost(): InsightPost | null {
-  if (!POSTS.length) return null;
-  const sorted = [...POSTS].sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
+  const safeDate = (iso: string) => {
+    const d = new Date(`${iso}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+  };
+
+  const sorted = [...POSTS].sort((a, b) => safeDate(b.dateISO) - safeDate(a.dateISO));
   return sorted[0] || null;
 }
