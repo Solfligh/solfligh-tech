@@ -1,16 +1,13 @@
 // app/insights/page.tsx
 import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
+import { getHubs } from "@/app/lib/insightsStore";
 
 function InsightHeroArt() {
   return (
     <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.25),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_50%),radial-gradient(circle_at_50%_80%,rgba(15,23,42,0.08),transparent_55%)]" />
-      <svg
-        viewBox="0 0 900 420"
-        className="relative h-[220px] w-full sm:h-[260px]"
-        aria-hidden="true"
-      >
+      <svg viewBox="0 0 900 420" className="relative h-[220px] w-full sm:h-[260px]" aria-hidden="true">
         <defs>
           <linearGradient id="g1" x1="0" x2="1">
             <stop offset="0" stopColor="rgba(56,189,248,0.95)" />
@@ -18,7 +15,6 @@ function InsightHeroArt() {
           </linearGradient>
         </defs>
 
-        {/* soft grid */}
         <g opacity="0.18">
           {Array.from({ length: 18 }).map((_, i) => (
             <line
@@ -44,7 +40,6 @@ function InsightHeroArt() {
           ))}
         </g>
 
-        {/* “signal” line */}
         <path
           d="M60 300 C 160 210, 240 250, 330 190 C 420 130, 520 170, 610 120 C 700 75, 780 120, 850 85"
           fill="none"
@@ -52,7 +47,6 @@ function InsightHeroArt() {
           strokeWidth="8"
           strokeLinecap="round"
         />
-        {/* dots */}
         {[
           [60, 300],
           [330, 190],
@@ -70,66 +64,24 @@ function InsightHeroArt() {
           />
         ))}
 
-        {/* label chips */}
         <g>
-          <rect
-            x="70"
-            y="70"
-            rx="14"
-            ry="14"
-            width="230"
-            height="48"
-            fill="rgba(255,255,255,0.85)"
-            stroke="rgba(148,163,184,0.6)"
-          />
-          <text x="92" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
-            Plain-language clarity
-          </text>
+          <rect x="70" y="70" rx="14" ry="14" width="230" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <text x="92" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">Plain-language clarity</text>
 
-          <rect
-            x="330"
-            y="70"
-            rx="14"
-            ry="14"
-            width="210"
-            height="48"
-            fill="rgba(255,255,255,0.85)"
-            stroke="rgba(148,163,184,0.6)"
-          />
-          <text x="352" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
-            Real-world problems
-          </text>
+          <rect x="330" y="70" rx="14" ry="14" width="210" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <text x="352" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">Real-world problems</text>
 
-          <rect
-            x="560"
-            y="70"
-            rx="14"
-            ry="14"
-            width="260"
-            height="48"
-            fill="rgba(255,255,255,0.85)"
-            stroke="rgba(148,163,184,0.6)"
-          />
-          <text x="582" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">
-            Built from shipped work
-          </text>
+          <rect x="560" y="70" rx="14" ry="14" width="260" height="48" fill="rgba(255,255,255,0.85)" stroke="rgba(148,163,184,0.6)" />
+          <text x="582" y="100" fontSize="16" fontWeight="700" fill="rgba(15,23,42,0.9)">Built from shipped work</text>
         </g>
       </svg>
     </div>
   );
 }
 
-const SECTIONS = [
-  {
-    title: "ProfitPilot",
-    description: "Daily profit clarity for business owners — no accounting jargon, just clean decisions.",
-    href: "/insights/profitpilot",
-    badge: "Project Hub",
-    accent: "from-sky-500/20 to-blue-500/10",
-  },
-];
-
 export default function InsightsIndexPage() {
+  const hubs = getHubs();
+
   return (
     <div className="space-y-10">
       <div className="grid gap-8 lg:grid-cols-[1.05fr_.95fr] lg:items-start">
@@ -180,21 +132,21 @@ export default function InsightsIndexPage() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
-          {SECTIONS.map((s) => (
+          {hubs.map((h) => (
             <Link
-              key={s.href}
-              href={s.href}
+              key={h.slug}
+              href={h.href}
               className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
             >
-              <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${s.accent}`} />
+              <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${h.accent}`} />
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-slate-950">{s.title}</h3>
-                  <p className="text-sm text-slate-600">{s.description}</p>
+                  <h3 className="text-xl font-bold text-slate-950">{h.title}</h3>
+                  <p className="text-sm text-slate-600">{h.description}</p>
                 </div>
 
                 <span className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
-                  {s.badge}
+                  {h.badge}
                 </span>
               </div>
 
