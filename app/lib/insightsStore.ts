@@ -1,31 +1,33 @@
 // app/lib/insightsStore.ts
 export type InsightHub = {
   slug: string;
-  title: string;
+  title: string; // display name, e.g. "ProfitPilot"
   description: string;
-  href: string;
-  badge: string;
-  accent: string;
-  coverImage?: string;
+  href: string; // "/insights/profitpilot"
+  badge: string; // "Project Hub"
+  accent: string; // tailwind gradient class
+  coverImage?: string; // "/insights/profitpilot/cover.jpg"
 };
 
 export type InsightPost = {
   hubSlug: string;
 
-  // ✅ NEW
+  // ✅ NEW: slug used by /insights/<hub>/[slug]
   slug: string;
 
   title: string;
   description: string;
+
+  // canonical URL for linking
   href: string;
 
-  tag: string;
-  readingTime: string;
-  dateLabel: string;
-  dateISO: string;
+  tag: string; // "Problem Awareness"
+  readingTime: string; // "4–6 min"
+  dateLabel: string; // "Jan 2026"
+  dateISO: string; // "2026-01-10" (used for NEW logic)
 
-  accent: string;
-  coverImage?: string;
+  accent: string; // tailwind gradient class (fallback)
+  coverImage?: string; // "/insights/profitpilot/posts/why-made-today.jpg"
 };
 
 const HUBS: InsightHub[] = [
@@ -73,11 +75,18 @@ export function getPostByHref(href: string): InsightPost | null {
   return POSTS.find((p) => p.href === href) || null;
 }
 
-// ✅ NEW: get a post by slug (used by /[slug]/page.tsx)
+// ✅ NEW: used by /insights/<hub>/[slug]/page.tsx
 export function getPostBySlug(hubSlug: string, slug: string): InsightPost | null {
-  return POSTS.find((p) => p.hubSlug === hubSlug && p.slug === slug) || null;
+  const s = (slug || "").trim();
+  const h = (hubSlug || "").trim();
+  if (!s || !h) return null;
+  return POSTS.find((p) => p.hubSlug === h && p.slug === s) || null;
 }
 
+/**
+ * Picks the newest post based on dateISO.
+ * Falls back safely if date parsing fails.
+ */
 export function getLatestPost(): InsightPost | null {
   const safeDate = (iso: string) => {
     const d = new Date(`${iso}T00:00:00Z`);
