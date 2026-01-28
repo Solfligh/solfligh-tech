@@ -4,44 +4,47 @@ import Image from "next/image";
 import Container from "@/app/components/Container";
 import { getHub, getPostBySlug, type InsightPost } from "@/app/lib/insightsStore";
 
-function Pill({ children }: { children: React.ReactNode }) {
+function MetaPill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+    <span className="inline-flex items-center rounded-full border border-slate-200/80 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur">
       {children}
     </span>
   );
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs font-bold tracking-wide text-slate-600 shadow-sm backdrop-blur">
-      <span className="h-2 w-2 rounded-full bg-sky-500" />
-      {children}
-    </div>
-  );
-}
-
-function Divider() {
-  return <div className="my-10 h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />;
-}
-
-function TocLink({ href, children }: { href: string; children: React.ReactNode }) {
+function AnchorLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <a
       href={href}
-      className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
+      className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
     >
       {children}
     </a>
   );
 }
 
-/**
- * ✅ 1% Article Renderer
- * - pulls title/meta from insightsStore
- * - renders premium layout (hero, cover, sidebar TOC)
- * - content comes from a local map (so it’s still fast + simple)
- */
+function Callout({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-sky-200/30 blur-3xl" />
+        <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/25 blur-3xl" />
+      </div>
+
+      <div className="relative space-y-2">
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title}</p>
+        <div className="text-sm leading-relaxed text-slate-700">{children}</div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProfitPilotArticlePage({ params }: { params: { slug: string } }) {
   const hub = getHub("profitpilot");
   const post = getPostBySlug("profitpilot", params.slug);
@@ -52,9 +55,8 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
         <div className="py-16">
           <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-8 shadow-sm backdrop-blur">
             <p className="text-sm font-semibold text-slate-900">Article not found</p>
-            <p className="mt-2 text-sm text-slate-600">
-              This article slug doesn’t exist yet.
-            </p>
+            <p className="mt-2 text-sm text-slate-600">This article slug doesn’t exist yet.</p>
+
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
                 href="/insights/profitpilot"
@@ -76,9 +78,6 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
   }
 
   const hubTitle = hub?.title || "ProfitPilot";
-
-  // ✅ Content source (for now)
-  // If you want later: store content in MDX files instead. This is the simplest “ship now” setup.
   const content = getProfitPilotArticleContent(post);
 
   return (
@@ -105,19 +104,16 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
-            {/* Hero */}
-            <div className="mt-6 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
+            {/* HERO (single focus) */}
+            <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
               <div className="space-y-5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Pill>{post.tag}</Pill>
-                  <Pill>{post.readingTime}</Pill>
-                  <Pill>{post.dateLabel}</Pill>
-                  <Pill>SME clarity</Pill>
-                  <Pill>Daily profit</Pill>
-                  <Pill>Zero jargon</Pill>
+                <div className="flex flex-wrap gap-2">
+                  <MetaPill>{post.tag}</MetaPill>
+                  <MetaPill>{post.readingTime}</MetaPill>
+                  <MetaPill>{post.dateLabel}</MetaPill>
                 </div>
 
-                <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
+                <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
                   {post.title}
                 </h1>
 
@@ -127,53 +123,36 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
 
                 <div className="flex flex-wrap gap-3">
                   <Link
-                    href="/insights/profitpilot"
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                  >
-                    ProfitPilot hub
-                  </Link>
-                  <Link
                     href="/contact"
                     className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                   >
-                    Contact us
+                    Talk to us
+                  </Link>
+                  <Link
+                    href="/insights/profitpilot"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  >
+                    Back to hub
                   </Link>
                 </div>
               </div>
 
-              {/* Right-side mini summary */}
-              <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur">
-                <div className="pointer-events-none absolute inset-0">
-                  <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-sky-200/30 blur-2xl" />
-                  <div className="absolute -left-16 -bottom-16 h-56 w-56 rounded-full bg-blue-200/20 blur-2xl" />
-                </div>
-
-                <div className="relative space-y-3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500">In one sentence</p>
-                  <p className="text-sm font-semibold text-slate-900">
-                    Most SMEs can’t answer “how much did we make today?” because the tools they use were built for
-                    reporting — not daily decisions.
-                  </p>
-
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                    <div className="rounded-2xl border border-slate-200 bg-white/80 p-4">
-                      <p className="text-xs font-semibold text-slate-500">What SMEs need</p>
-                      <p className="mt-1 text-sm font-bold text-slate-900">A daily performance answer</p>
-                      <p className="mt-1 text-xs text-slate-600">Simple. Reliable. Decision-ready.</p>
-                    </div>
-                    <div className="rounded-2xl border border-slate-200 bg-white/80 p-4">
-                      <p className="text-xs font-semibold text-slate-500">What they usually get</p>
-                      <p className="mt-1 text-sm font-bold text-slate-900">Sales + bank balance</p>
-                      <p className="mt-1 text-xs text-slate-600">Helpful… but not the answer.</p>
-                    </div>
-                  </div>
-                </div>
+              {/* Calm side note (one box only) */}
+              <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The idea</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  SMEs don’t need more accounting. They need a daily answer they can steer with:
+                  <span className="font-semibold text-slate-900"> “Did we make money today — yes or no — and why?”</span>
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                  This article explains why the current tools fail that question — and what “good” looks like.
+                </p>
               </div>
             </div>
 
             {/* Cover */}
             <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
-              <div className="relative h-[220px] w-full sm:h-[320px] md:h-[360px]">
+              <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
                 {post.coverImage ? (
                   <>
                     <Image
@@ -184,7 +163,7 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
                       sizes="(max-width: 1024px) 100vw, 1100px"
                       priority={false}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/25 to-transparent" />
                   </>
                 ) : (
                   <div className={`absolute inset-0 bg-gradient-to-br ${post.accent}`} />
@@ -192,15 +171,29 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               </div>
             </div>
 
-            {/* Body + Sidebar */}
-            <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_320px] lg:items-start">
-              <article className="space-y-10">
-                {/* Render sections */}
+            {/* Mini TOC (not sticky, not noisy) */}
+            <div className="mt-8 rounded-3xl border border-slate-200/70 bg-white/70 p-4 shadow-sm backdrop-blur">
+              <p className="px-2 text-xs font-bold uppercase tracking-wider text-slate-500">In this essay</p>
+              <div className="mt-2 flex flex-wrap gap-2">
                 {content.sections.map((s) => (
-                  <section key={s.id} id={s.id} className="space-y-4">
-                    <SectionLabel>{s.label}</SectionLabel>
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-950">{s.title}</h2>
-                    <div className="space-y-3 text-sm leading-relaxed text-slate-700">
+                  <AnchorLink key={s.id} href={`#${s.id}`}>
+                    {s.toc}
+                  </AnchorLink>
+                ))}
+              </div>
+            </div>
+
+            {/* BODY (single readable column) */}
+            <div className="mt-10">
+              <article className="mx-auto max-w-3xl space-y-12">
+                {content.sections.map((s) => (
+                  <section key={s.id} id={s.id} className="scroll-mt-24 space-y-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{s.label}</p>
+                    <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                      {s.title}
+                    </h2>
+
+                    <div className="space-y-4 text-base leading-relaxed text-slate-700">
                       {s.paragraphs.map((p, idx) => (
                         <p key={idx}>{p}</p>
                       ))}
@@ -219,12 +212,14 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
                       </div>
                     ) : null}
 
-                    {s.divider ? <Divider /> : null}
+                    {s.callout ? (
+                      <Callout title={s.callout.title}>{s.callout.body}</Callout>
+                    ) : null}
                   </section>
                 ))}
 
-                {/* Final CTA */}
-                <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-white to-blue-50 p-6 shadow-sm">
+                {/* Single END CTA (one decision) */}
+                <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-white to-blue-50 p-7 shadow-sm">
                   <div className="pointer-events-none absolute inset-0">
                     <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-sky-200/30 blur-3xl" />
                     <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/25 blur-3xl" />
@@ -233,69 +228,30 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
                   <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-base font-semibold tracking-tight text-slate-900">
-                        Want this as a dashboard, not an idea?
+                        Want “today” to be clear in your business?
                       </p>
                       <p className="mt-1 text-sm text-slate-600">
-                        We can build ProfitPilot-style daily clarity into your workflow.
+                        We build SME dashboards that answer the daily question — without accounting confusion.
                       </p>
                     </div>
-                    <div className="flex gap-3">
-                      <Link
-                        href="/insights/profitpilot"
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                      >
-                        More articles
-                      </Link>
+
+                    <div className="flex flex-wrap gap-3">
                       <Link
                         href="/contact"
                         className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                       >
-                        Contact us
+                        Talk to us
+                      </Link>
+                      <Link
+                        href="/insights/profitpilot"
+                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                      >
+                        Back to hub
                       </Link>
                     </div>
                   </div>
                 </div>
               </article>
-
-              <aside className="lg:sticky lg:top-24 space-y-4">
-                <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur">
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500">On this page</p>
-                  <div className="mt-3 space-y-1">
-                    {content.sections.map((s) => (
-                      <TocLink key={s.id} href={`#${s.id}`}>
-                        {s.toc}
-                      </TocLink>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur">
-                  <p className="text-sm font-bold text-slate-900">Quick next steps</p>
-                  <div className="mt-3 space-y-3">
-                    <Link
-                      href="/insights/profitpilot"
-                      className="block rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white"
-                    >
-                      View ProfitPilot hub →
-                      <p className="mt-1 text-xs font-normal text-slate-600">More SME-focused clarity articles.</p>
-                    </Link>
-                    <Link
-                      href="/projects"
-                      className="block rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white"
-                    >
-                      See our projects →
-                      <p className="mt-1 text-xs font-normal text-slate-600">What we ship in real life.</p>
-                    </Link>
-                    <Link
-                      href="/contact"
-                      className="block rounded-2xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                    >
-                      Contact us
-                      <p className="mt-1 text-xs font-normal text-white/90">Tell us what you want to build.</p>
-                    </Link>
-                  </div>
-                </div>
-              </aside>
             </div>
           </div>
         </Container>
@@ -304,12 +260,7 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
   );
 }
 
-/**
- * Content map for ProfitPilot articles
- * (simple now; later we can switch to MDX files without changing the layout)
- */
 function getProfitPilotArticleContent(post: InsightPost) {
-  // Match by href or slug if you add more later
   if (post.slug === "why-most-smes-dont-actually-know-how-much-they-made-today") {
     return {
       sections: [
@@ -317,21 +268,30 @@ function getProfitPilotArticleContent(post: InsightPost) {
           id: "hook",
           toc: "The daily question",
           label: "Start here",
-          title: "If you run an SME, this question is harder than it should be",
+          title: "The question every SME gets — and too few can answer",
           paragraphs: [
-            "If someone asked you “How much profit did you make today?”, there’s a good chance your answer sounds like one of these: “I’ll know at the end of the month”, “I’ll check my bank balance”, “We made sales today… so probably good”, or “My accountant handles that.”",
-            "If that’s you, here’s the important part: you’re not bad at business. The system around you just isn’t built for SMEs.",
+            "If someone asked you, “How much profit did you make today?”, there’s a good chance your answer would sound like: “I’ll know at month end,” “Let me check my bank balance,” “We made sales, so probably good,” or “My accountant handles that.”",
+            "If that’s you, you’re not bad at business. You’re running an SME with tools that weren’t built for how SMEs actually operate.",
           ],
+          callout: {
+            title: "The real problem",
+            body: (
+              <>
+                SMEs don’t need more reports. They need a daily decision answer:
+                <span className="font-semibold text-slate-900"> “Did we make money today — yes or no — and why?”</span>
+              </>
+            ),
+          },
         },
         {
           id: "why-today",
           toc: "Why “today” matters",
           label: "Why this matters",
-          title: "For SMEs, “today” is not optional",
+          title: "For SMEs, “today” is the real decision unit",
           paragraphs: [
-            "Large companies don’t wake up asking what happened today. They have finance teams, buffers, forecasts, and time. SMEs don’t.",
-            "For SMEs, today determines what happens next: pricing, restock decisions, staffing, deliveries, and whether tomorrow is a push or a pause.",
-            "Yet most SMEs finish the day without a clear answer — not because they’re careless, but because profit visibility is broken at the SME level.",
+            "Big companies can wait for month-end. They have buffers, forecasts, and teams. SMEs don’t have that luxury.",
+            "Your pricing, restock, staffing, delivery capacity, and tomorrow’s plan depend on what happened today.",
+            "Yet many SMEs finish the day with a feeling, not an answer — because profit visibility is broken at the SME level.",
           ],
           bullets: [
             "Did today help or hurt cash?",
@@ -339,34 +299,28 @@ function getProfitPilotArticleContent(post: InsightPost) {
             "Are we growing — or just working harder?",
             "Can I confidently make tomorrow’s decision?",
           ],
-          divider: true,
         },
         {
           id: "trap-1",
-          toc: "Trap #1: Sales ≠ profit",
-          label: "The two traps",
+          toc: "Trap #1: Sales",
+          label: "The trap",
           title: "Trap #1: “We made sales today, so we’re profitable”",
           paragraphs: [
             "Sales only tell you money came in. They don’t tell you what it cost to deliver, what expenses were triggered, what still hasn’t been paid, or what belongs to suppliers, staff, and tax authorities.",
-            "You can have a great sales day and still lose money. That’s not rare — it’s common.",
+            "That’s why you can have a great sales day and still lose money — and you won’t even notice until later.",
           ],
         },
         {
           id: "trap-2",
           toc: "Trap #2: Bank balance",
-          label: "The two traps",
+          label: "The trap",
           title: "Trap #2: “I’ll check my bank balance”",
           paragraphs: [
-            "Your bank balance is cash position, not performance. It can move because of old invoices getting paid, expenses from previous weeks, owner transfers, and loans/credit lines.",
-            "It tells you how much cash you have — not how well the business performed today.",
+            "Your bank balance is cash position, not performance.",
+            "It can move because of old invoices getting paid, expenses from previous weeks, owner transfers, or loans and credit lines.",
+            "So it tells you how much cash you have — not how well the business performed today.",
           ],
-          bullets: [
-            "Old invoices finally paid",
-            "Expenses from previous weeks",
-            "Owner transfers",
-            "Loans, credit lines, and delays",
-          ],
-          divider: true,
+          bullets: ["Old invoices finally paid", "Expenses from previous weeks", "Owner transfers", "Loans, credit lines, and delays"],
         },
         {
           id: "why-accounting",
@@ -374,19 +328,30 @@ function getProfitPilotArticleContent(post: InsightPost) {
           label: "Root cause",
           title: "Traditional accounting wasn’t designed for daily SME decisions",
           paragraphs: [
-            "Traditional accounting is built for reporting and compliance: monthly closes, quarterly reviews, tax reporting, and “official” profitability.",
-            "SMEs need a different answer: “Did we make money today — yes or no — and why?” That’s a decision question.",
+            "Accounting is built for compliance and reporting: month-end closes, tax reporting, and official profitability.",
+            "Those are important — but they don’t help you steer the business day-by-day.",
+            "SMEs need a simple daily view of income minus expenses tied to today, so decisions stop being guesswork.",
           ],
+          callout: {
+            title: "A clean definition",
+            body: (
+              <>
+                <span className="font-semibold text-slate-900">Daily performance</span> = income created today − expenses triggered today.
+                <br />
+                (Not “bank balance.” Not “sales.”)
+              </>
+            ),
+          },
         },
         {
           id: "what-good-looks-like",
           toc: "What good looks like",
-          label: "What good looks like",
-          title: "The 1% answer SMEs deserve",
+          label: "The standard",
+          title: "What the 1% answer looks like",
           paragraphs: [
-            "At the end of the day, an SME should see a simple, decision-ready result:",
+            "At the end of the day, an SME should see one decision-ready result:",
             "Income today. Expenses today. And a plain-language number: “You made $X today.”",
-            "Not jargon. Not confusion. Just clarity you can act on.",
+            "Not jargon. Not a maze of dashboards. Just clarity you can act on immediately.",
           ],
         },
         {
@@ -403,7 +368,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
     };
   }
 
-  // fallback for future posts you add
   return {
     sections: [
       {
@@ -413,7 +377,7 @@ function getProfitPilotArticleContent(post: InsightPost) {
         title: "This post exists but content isn’t mapped yet",
         paragraphs: [
           "You added this post to insightsStore, but the page content hasn’t been added to the content map yet.",
-          "Tell me the title + key points and I’ll generate the full 1% article layout content instantly.",
+          "Add the content here (same structure) and it will render automatically.",
         ],
       },
     ],
