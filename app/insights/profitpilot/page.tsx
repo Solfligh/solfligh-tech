@@ -1,29 +1,33 @@
 // app/insights/profitpilot/page.tsx
 import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
+import { getHub, getHubPosts } from "@/app/lib/insightsStore";
 
-const POSTS = [
-  {
-    title: "Why Most Business Owners Don’t Actually Know How Much They Made Today",
-    description:
-      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
-    href: "/insights/profitpilot/why-most-business-owners-dont-know-how-much-they-made-today",
-    tag: "Problem Awareness",
-    readingTime: "4–6 min",
-    dateLabel: "Jan 2026",
-    accent: "from-sky-500/20 to-blue-500/10",
-  },
-];
-
-function MiniHero() {
+function MiniHero({ missionLabel, missionLine }: { missionLabel?: string; missionLine?: string }) {
   return (
     <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.22),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.16),transparent_50%)]" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">ProfitPilot mission</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            {missionLabel || "Project mission"}
+          </p>
           <p className="text-base font-semibold text-slate-900">
-            Help business owners know what happened <span className="text-sky-700">today</span> — without accounting confusion.
+            {missionLine ? (
+              <>
+                {missionLine.split("today").length > 1 ? (
+                  <>
+                    {missionLine.split("today")[0]}
+                    <span className="text-sky-700">today</span>
+                    {missionLine.split("today").slice(1).join("today")}
+                  </>
+                ) : (
+                  missionLine
+                )}
+              </>
+            ) : (
+              "Clear writing for people who want clarity without confusion."
+            )}
           </p>
           <p className="text-sm text-slate-600">We start by naming the problem. Then we show the approach.</p>
         </div>
@@ -42,21 +46,27 @@ function MiniHero() {
 }
 
 export default function ProfitPilotInsightsHubPage() {
+  const hub = getHub("profitpilot");
+  const posts = getHubPosts("profitpilot");
+
   return (
     <div className="space-y-10">
-      {/* ✅ Breadcrumb that matches “1%” feel */}
+      {/* Breadcrumb */}
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
           Insights
         </Link>
         <span className="text-slate-400">/</span>
-        <span className="font-semibold text-slate-900">ProfitPilot</span>
+        <span className="font-semibold text-slate-900">{hub?.title || "Hub"}</span>
       </div>
 
       <PageHeader
-        badge="Project Hub"
-        title="ProfitPilot Insights"
-        subtitle="Clear writing for business owners who want to understand daily performance — without accounting confusion."
+        badge={hub?.badge || "Project Hub"}
+        title={`${hub?.title || "Hub"} Insights`}
+        subtitle={
+          hub?.description ||
+          "Clear writing for business owners who want to understand performance — without confusion."
+        }
         actions={
           <Link
             href="/projects"
@@ -67,7 +77,7 @@ export default function ProfitPilotInsightsHubPage() {
         }
       />
 
-      <MiniHero />
+      <MiniHero missionLabel={hub?.missionLabel} missionLine={hub?.missionLine} />
 
       <section className="space-y-4">
         <div className="flex items-center justify-between gap-4">
@@ -78,9 +88,9 @@ export default function ProfitPilotInsightsHubPage() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
-          {POSTS.map((p) => (
+          {posts.map((p) => (
             <Link
-              key={p.href}
+              key={p.id}
               href={p.href}
               className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
             >
@@ -106,13 +116,13 @@ export default function ProfitPilotInsightsHubPage() {
         </div>
       </section>
 
-      {/* ✅ Small bottom “next step” bar to avoid dead-end feeling */}
+      {/* Bottom “next step” bar */}
       <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-slate-900">Want the product version?</p>
             <p className="mt-1 text-sm text-slate-600">
-              ProfitPilot turns these ideas into a dashboard business owners can understand instantly.
+              {hub?.title || "This project"} turns these ideas into a dashboard business owners can understand instantly.
             </p>
           </div>
           <div className="flex gap-3">
