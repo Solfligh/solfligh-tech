@@ -1,28 +1,31 @@
 // app/lib/insightsStore.ts
 export type InsightHub = {
   slug: string;
-  title: string; // display name, e.g. "ProfitPilot"
+  title: string;
   description: string;
-  href: string; // "/insights/profitpilot"
-  badge: string; // "Project Hub"
-  accent: string; // tailwind gradient class
-  coverImage?: string; // "/insights/profitpilot/cover.jpg"
+  href: string;
+  badge: string;
+  accent: string;
+  coverImage?: string;
 };
 
 export type InsightPost = {
   hubSlug: string;
 
+  // ✅ NEW
+  slug: string;
+
   title: string;
   description: string;
   href: string;
 
-  tag: string; // "Problem Awareness"
-  readingTime: string; // "4–6 min"
-  dateLabel: string; // "Jan 2026"
-  dateISO: string; // "2026-01-10" (used for NEW logic)
+  tag: string;
+  readingTime: string;
+  dateLabel: string;
+  dateISO: string;
 
-  accent: string; // tailwind gradient class (fallback)
-  coverImage?: string; // "/insights/profitpilot/posts/why-made-today.jpg"
+  accent: string;
+  coverImage?: string;
 };
 
 const HUBS: InsightHub[] = [
@@ -40,6 +43,7 @@ const HUBS: InsightHub[] = [
 const POSTS: InsightPost[] = [
   {
     hubSlug: "profitpilot",
+    slug: "why-most-smes-dont-actually-know-how-much-they-made-today",
     title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
     description:
       "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
@@ -69,10 +73,11 @@ export function getPostByHref(href: string): InsightPost | null {
   return POSTS.find((p) => p.href === href) || null;
 }
 
-/**
- * Picks the newest post based on dateISO.
- * Falls back safely if date parsing fails.
- */
+// ✅ NEW: get a post by slug (used by /[slug]/page.tsx)
+export function getPostBySlug(hubSlug: string, slug: string): InsightPost | null {
+  return POSTS.find((p) => p.hubSlug === hubSlug && p.slug === slug) || null;
+}
+
 export function getLatestPost(): InsightPost | null {
   const safeDate = (iso: string) => {
     const d = new Date(`${iso}T00:00:00Z`);
