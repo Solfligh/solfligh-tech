@@ -5,7 +5,7 @@ const POSTS = [
   {
     title: "Why Most Business Owners Don’t Actually Know How Much They Made Today",
     description:
-      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
+      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens and why it isn’t your fault.",
     href: "/insights/profitpilot/why-most-business-owners-dont-know-how-much-they-made-today",
     tag: "Problem Awareness",
     readingTime: "4–6 min",
@@ -25,7 +25,7 @@ function MiniHero() {
           </p>
           <p className="text-base font-semibold text-slate-900">
             Help business owners know what happened{" "}
-            <span className="text-sky-700">today</span> — without accounting confusion.
+            <span className="text-sky-700">today</span> without accounting confusion.
           </p>
           <p className="text-sm text-slate-600">
             We start by naming the problem. Then we show the approach.
@@ -52,7 +52,7 @@ export default function ProfitPilotInsightsHubPage() {
         contextLabel="Insights"
         contextHref="/insights"
         title="ProfitPilot Insights"
-        subtitle="Clear writing for business owners who want to understand daily performance — without accounting confusion."
+        subtitle="Clear writing for business owners who want to understand daily performance without accounting confusion."
       />
 
       <MiniHero />
