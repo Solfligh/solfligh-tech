@@ -2,7 +2,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
-import { getHub, getPostBySlug, type InsightPost } from "@/app/lib/insightsStore";
+import {
+  getHub,
+  getPostBySlug,
+  listPostsByHub,
+  type InsightPost,
+} from "@/app/lib/insightsStore";
 
 function MetaPill({ children }: { children: React.ReactNode }) {
   return (
@@ -53,13 +58,26 @@ function NumberCard({
   );
 }
 
+function safeDecode(value: string) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 export default function ProfitPilotArticlePage({
   params,
 }: {
   params: { slug: string };
 }) {
   const hub = getHub("profitpilot");
-  const post = getPostBySlug("profitpilot", params.slug);
+
+  const requestedSlug = safeDecode((params?.slug ?? "").trim());
+  const availablePosts = listPostsByHub("profitpilot");
+  const availableSlugs = availablePosts.map((p) => p.slug);
+
+  const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
 
   if (!post) {
     return (
@@ -70,6 +88,38 @@ export default function ProfitPilotArticlePage({
             <p className="mt-2 text-sm text-slate-600">
               This article slug doesn’t exist yet.
             </p>
+
+            {/* Debug (temporary) */}
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+              <p className="text-xs font-semibold text-slate-500">Debug (temporary)</p>
+
+              <p className="mt-2 text-sm text-slate-700">
+                Requested slug:{" "}
+                <span className="font-semibold text-slate-900">
+                  {requestedSlug || "(empty)"}
+                </span>
+              </p>
+
+              <p className="mt-2 text-sm text-slate-700">
+                Available slugs:{" "}
+                <span className="font-semibold text-slate-900">
+                  {availableSlugs.join(", ") || "(none)"}
+                </span>
+              </p>
+
+              <p className="mt-2 text-sm text-slate-700">
+                Match status:{" "}
+                <span className="font-semibold text-slate-900">
+                  {requestedSlug && availableSlugs.includes(requestedSlug)
+                    ? "slug EXISTS in store ✅ (lookup failing?)"
+                    : "slug NOT found in store ❌"}
+                </span>
+              </p>
+
+              <p className="mt-2 text-xs text-slate-500">
+                Tip: If “Requested slug” is not exactly the same as the store slug, it won’t match.
+              </p>
+            </div>
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -167,7 +217,7 @@ export default function ProfitPilotArticlePage({
             </div>
           </div>
 
-          {/* Body (single clean column) */}
+          {/* Body */}
           <div className="mt-10">
             <article className="mx-auto max-w-3xl space-y-12">
               {content.sections.map((s) => (
@@ -231,31 +281,6 @@ export default function ProfitPilotArticlePage({
                   ) : null}
                 </section>
               ))}
-
-              {/* Single end CTA */}
-              <div className="rounded-3xl border border-slate-200 bg-white p-7">
-                <p className="text-base font-semibold tracking-tight text-slate-900">
-                  Want “today” to be clear in your business?
-                </p>
-                <p className="mt-1 text-sm text-slate-600">
-                  We build SME dashboards that answer the daily question without accounting confusion.
-                </p>
-
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                  >
-                    Talk to us
-                  </Link>
-                  <Link
-                    href="/insights/profitpilot"
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
-                  >
-                    Back to hub
-                  </Link>
-                </div>
-              </div>
             </article>
           </div>
         </div>
@@ -289,67 +314,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
           },
         },
         {
-          id: "why-today",
-          label: "Why this matters",
-          title: "For SMEs, “today” is the real decision unit",
-          paragraphs: [
-            "Big companies can wait for month-end. They have buffers, forecasts, and teams. SMEs don’t have that luxury.",
-            "Your pricing, restock, staffing, delivery capacity, and tomorrow’s plan depend on what happened today.",
-            "Yet many SMEs finish the day with a feeling, not an answer — because profit visibility is broken at the SME level.",
-          ],
-          bullets: [
-            "Did today help or hurt cash?",
-            "Did we price correctly?",
-            "Are we growing — or just working harder?",
-            "Can I confidently make tomorrow’s decision?",
-          ],
-        },
-        {
-          id: "trap-1",
-          label: "The trap",
-          title: "Trap #1: “We made sales today, so we’re profitable”",
-          paragraphs: [
-            "Sales only tell you money came in. They don’t tell you what it cost to deliver, what expenses were triggered, what still hasn’t been paid, or what belongs to suppliers, staff, and tax authorities.",
-            "That’s why you can have a great sales day and still lose money — and you won’t even notice until later.",
-          ],
-        },
-        {
-          id: "trap-2",
-          label: "The trap",
-          title: "Trap #2: “I’ll check my bank balance”",
-          paragraphs: [
-            "Your bank balance is cash position, not performance.",
-            "It can move because of old invoices getting paid, expenses from previous weeks, owner transfers, or loans and credit lines.",
-            "So it tells you how much cash you have — not how well the business performed today.",
-          ],
-          bullets: [
-            "Old invoices finally paid",
-            "Expenses from previous weeks",
-            "Owner transfers",
-            "Loans, credit lines, and delays",
-          ],
-        },
-        {
-          id: "why-accounting",
-          label: "Root cause",
-          title: "Traditional accounting wasn’t designed for daily SME decisions",
-          paragraphs: [
-            "Accounting is built for compliance and reporting: month-end closes, tax reporting, and official profitability.",
-            "Those are important — but they don’t help you steer the business day-by-day.",
-            "SMEs need a simple daily view of income minus expenses tied to today, so decisions stop being guesswork.",
-          ],
-          callout: {
-            title: "A clean definition",
-            body: (
-              <>
-                <span className="font-semibold text-slate-900">Daily performance</span> = income created today − expenses triggered today.
-                <br />
-                (Not “bank balance.” Not “sales.”)
-              </>
-            ),
-          },
-        },
-        {
           id: "what-good-looks-like",
           label: "What good looks like",
           title: "The 1% answer SMEs deserve",
@@ -362,15 +326,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
             expenses: "₦81,500",
             made: "₦38,500",
           },
-        },
-        {
-          id: "closing",
-          label: "Wrap up",
-          title: "You’re not confused — you’re underserved",
-          paragraphs: [
-            "Most SMEs aren’t struggling because they don’t work hard. They struggle because they’re forced to make decisions without daily visibility.",
-            "ProfitPilot exists to make “today” clear — so SME owners stop guessing and start steering.",
-          ],
         },
       ],
     };
