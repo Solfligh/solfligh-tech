@@ -55,6 +55,23 @@ function safeDecodeURIComponent(value: string): string {
 }
 
 /**
+ * Some deployments end up with a param key name that isn't "slug"
+ * (e.g. folder renamed to [postSlug]). This makes the page resilient:
+ * - uses params.slug if present
+ * - otherwise uses the first param value
+ */
+function getSlugFromParams(params: Record<string, unknown>): string {
+  const direct =
+    (params as any).slug ??
+    (params as any).postSlug ??
+    (params as any).articleSlug ??
+    (params as any).id;
+
+  const fallback = direct ?? Object.values(params)[0];
+  return safeDecodeURIComponent(normalizeSlugParam(fallback));
+}
+
+/**
  * Fallback post for the known ProfitPilot article slug.
  * This guarantees your page renders even if the store lookup fails for any reason.
  */
@@ -77,22 +94,25 @@ function fallbackPostForSlug(slug: string): InsightPost | null {
   };
 }
 
-export default function ProfitPilotArticlePage({ params }: { params: { slug: string } }) {
+export default function ProfitPilotArticlePage({
+  params,
+}: {
+  params: Record<string, unknown>;
+}) {
   const hub = getHub("profitpilot");
 
-  const raw = normalizeSlugParam((params as any)?.slug);
-  const slug = safeDecodeURIComponent(raw);
+  const slug = getSlugFromParams(params);
 
   // 1) primary lookup by stable slug
-  let post = getPostBySlug("profitpilot", slug);
+  let post = slug ? getPostBySlug("profitpilot", slug) : null;
 
   // 2) fallback: lookup by href
-  if (!post) {
+  if (!post && slug) {
     post = getPostByHref(`/insights/profitpilot/${slug}`);
   }
 
   // 3) fallback: scan hub posts
-  if (!post) {
+  if (!post && slug) {
     const posts = listPostsByHub("profitpilot");
     post =
       posts.find(
@@ -104,12 +124,11 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
   }
 
   // 4) final fallback: known article self-heal
-  if (!post) {
+  if (!post && slug) {
     post = fallbackPostForSlug(slug);
   }
 
   if (!post) {
-    // Helpful debug info (only shown on the not-found page)
     const available = listPostsByHub("profitpilot").map((p) => p.slug);
 
     return (
@@ -127,6 +146,12 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               <p className="mt-2 text-sm text-slate-700">
                 Available slugs:{" "}
                 <span className="font-semibold text-slate-900">{available.join(", ") || "(none)"}</span>
+              </p>
+              <p className="mt-2 text-xs text-slate-500">
+                Params keys:{" "}
+                <span className="font-semibold text-slate-700">
+                  {Object.keys(params || {}).join(", ") || "(none)"}
+                </span>
               </p>
             </div>
 
@@ -272,39 +297,6 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
                     {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
                   </section>
                 ))}
-
-                <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-white to-blue-50 p-7 shadow-sm">
-                  <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-sky-200/30 blur-3xl" />
-                    <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/25 blur-3xl" />
-                  </div>
-
-                  <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-base font-semibold tracking-tight text-slate-900">
-                        Want “today” to be clear in your business?
-                      </p>
-                      <p className="mt-1 text-sm text-slate-600">
-                        We build SME dashboards that answer the daily question without accounting confusion.
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-3">
-                      <Link
-                        href="/contact"
-                        className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                      >
-                        Talk to us
-                      </Link>
-                      <Link
-                        href="/insights/profitpilot"
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                      >
-                        Back to hub
-                      </Link>
-                    </div>
-                  </div>
-                </div>
               </article>
             </div>
           </div>
@@ -320,7 +312,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
       sections: [
         {
           id: "hook",
-          toc: "The daily question",
           label: "Start here",
           title: "The question every SME gets and too few can answer",
           paragraphs: [
@@ -339,7 +330,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
         },
         {
           id: "why-today",
-          toc: "Why “today” matters",
           label: "Why this matters",
           title: "For SMEs, “today” is the real decision unit",
           paragraphs: [
@@ -356,7 +346,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
         },
         {
           id: "trap-1",
-          toc: "Trap #1: Sales",
           label: "The trap",
           title: "Trap #1: “We made sales today, so we’re profitable”",
           paragraphs: [
@@ -366,7 +355,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
         },
         {
           id: "trap-2",
-          toc: "Trap #2: Bank balance",
           label: "The trap",
           title: "Trap #2: “I’ll check my bank balance”",
           paragraphs: [
@@ -378,7 +366,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
         },
         {
           id: "why-accounting",
-          toc: "Why accounting fails daily",
           label: "Root cause",
           title: "Traditional accounting wasn’t designed for daily SME decisions",
           paragraphs: [
@@ -399,18 +386,16 @@ function getProfitPilotArticleContent(post: InsightPost) {
         },
         {
           id: "what-good-looks-like",
-          toc: "What good looks like",
           label: "The standard",
           title: "What the 1% answer looks like",
           paragraphs: [
             "At the end of the day, an SME should see one decision-ready result.",
-            "Here’s a simple example (illustrative numbers — not your real data): Income today ₦120,000, expenses today ₦81,500, and the plain-language line: “You made ₦38,500 today.”",
+            "Example (illustrative): Income today ₦120,000. Expenses today ₦81,500. Result: “You made ₦38,500 today.”",
             "Not jargon. Not a maze of dashboards. Just clarity you can act on immediately.",
           ],
         },
         {
           id: "closing",
-          toc: "Wrap up",
           label: "Wrap up",
           title: "You’re not confused — you’re underserved",
           paragraphs: [
@@ -426,7 +411,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
     sections: [
       {
         id: "coming-soon",
-        toc: "Coming soon",
         label: "Coming soon",
         title: "This article is being prepared",
         paragraphs: [
