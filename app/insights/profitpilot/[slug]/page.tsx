@@ -75,14 +75,15 @@ function safeDecode(value: string) {
 }
 
 function cleanSlug(value: string) {
-  // normalize weird whitespace / encoded stuff
   return safeDecode(value).replace(/\s+/g, " ").trim();
 }
 
 export default function ProfitPilotArticlePage({
   params,
+  searchParams,
 }: {
   params: { slug: string };
+  searchParams?: Record<string, string | string[] | undefined>;
 }) {
   const hub = getHub("profitpilot");
   const hubTitle = hub?.title || "ProfitPilot";
@@ -90,11 +91,11 @@ export default function ProfitPilotArticlePage({
   const requestedSlug = cleanSlug(params?.slug ?? "");
   const availableSlugs = listPostsByHub("profitpilot").map((p) => p.slug);
 
-  // ✅ Quiet debug: shows only in Vercel logs, not on the website
-  console.log("[ProfitPilot][slug] requestedSlug =", JSON.stringify(requestedSlug));
-  console.log("[ProfitPilot][slug] availableSlugs =", JSON.stringify(availableSlugs));
-
   const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
+
+  const debug =
+    (typeof searchParams?.debug === "string" && searchParams.debug === "1") ||
+    (Array.isArray(searchParams?.debug) && searchParams?.debug?.[0] === "1");
 
   if (!post) {
     return (
@@ -105,6 +106,25 @@ export default function ProfitPilotArticlePage({
             <p className="mt-2 text-sm text-slate-600">
               This article isn’t published (or the link is wrong).
             </p>
+
+            {/* ✅ Only shows when you add ?debug=1 */}
+            {debug ? (
+              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-xs font-semibold text-slate-500">Debug (only when ?debug=1)</p>
+                <p className="mt-2 text-sm text-slate-700">
+                  Requested slug:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {requestedSlug || "(empty)"}
+                  </span>
+                </p>
+                <p className="mt-2 text-sm text-slate-700">
+                  Available slugs:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {availableSlugs.join(", ") || "(none)"}
+                  </span>
+                </p>
+              </div>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -134,10 +154,7 @@ export default function ProfitPilotArticlePage({
         <div className="py-10 sm:py-12">
           {/* Breadcrumb */}
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <Link
-              href="/insights"
-              className="font-semibold text-slate-600 hover:text-slate-900"
-            >
+            <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
               Insights
             </Link>
             <span className="text-slate-400">/</span>
@@ -221,38 +238,21 @@ export default function ProfitPilotArticlePage({
                     ))}
                   </div>
 
-                  {s.callout ? (
-                    <Callout title={s.callout.title}>{s.callout.body}</Callout>
-                  ) : null}
+                  {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
 
                   {s.numbers ? (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
                       <p className="text-sm font-semibold text-slate-900">
                         Proof with real numbers (simple example):
                       </p>
-
                       <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                        <NumberCard
-                          label="Income today"
-                          value={s.numbers.income}
-                          note="Money earned from today’s work."
-                        />
-                        <NumberCard
-                          label="Expenses today"
-                          value={s.numbers.expenses}
-                          note="Costs triggered by today."
-                        />
-                        <NumberCard
-                          label="You made (today)"
-                          value={s.numbers.made}
-                          note="The decision-ready result."
-                        />
+                        <NumberCard label="Income today" value={s.numbers.income} note="Money earned today." />
+                        <NumberCard label="Expenses today" value={s.numbers.expenses} note="Costs triggered today." />
+                        <NumberCard label="You made (today)" value={s.numbers.made} note="Decision-ready result." />
                       </div>
-
                       <p className="mt-4 text-sm text-slate-700">
-                        The whole point is one sentence:
+                        The point is one sentence:{" "}
                         <span className="font-semibold text-slate-900">
-                          {" "}
                           “You made {s.numbers.made} today.”
                         </span>
                       </p>
