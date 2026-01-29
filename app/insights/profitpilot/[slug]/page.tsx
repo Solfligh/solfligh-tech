@@ -9,10 +9,9 @@ import {
   type InsightPost,
 } from "@/app/lib/insightsStore";
 
-export const dynamicParams = false; // only allow known slugs (pre-generated)
+export const dynamicParams = false;
 
 export function generateStaticParams() {
-  // ✅ Ensures Next builds these pages at build-time
   return listPostsByHub("profitpilot").map((p) => ({ slug: p.slug }));
 }
 
@@ -75,6 +74,11 @@ function safeDecode(value: string) {
   }
 }
 
+function cleanSlug(value: string) {
+  // normalize weird whitespace / encoded stuff
+  return safeDecode(value).replace(/\s+/g, " ").trim();
+}
+
 export default function ProfitPilotArticlePage({
   params,
 }: {
@@ -83,7 +87,13 @@ export default function ProfitPilotArticlePage({
   const hub = getHub("profitpilot");
   const hubTitle = hub?.title || "ProfitPilot";
 
-  const requestedSlug = safeDecode((params?.slug ?? "").trim());
+  const requestedSlug = cleanSlug(params?.slug ?? "");
+  const availableSlugs = listPostsByHub("profitpilot").map((p) => p.slug);
+
+  // ✅ Quiet debug: shows only in Vercel logs, not on the website
+  console.log("[ProfitPilot][slug] requestedSlug =", JSON.stringify(requestedSlug));
+  console.log("[ProfitPilot][slug] availableSlugs =", JSON.stringify(availableSlugs));
+
   const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
 
   if (!post) {
@@ -141,7 +151,7 @@ export default function ProfitPilotArticlePage({
             <span className="font-semibold text-slate-900">Article</span>
           </div>
 
-          {/* Hero (simple) */}
+          {/* Hero */}
           <div className="mt-8 max-w-3xl">
             <div className="flex flex-wrap gap-2">
               <MetaPill>{post.tag}</MetaPill>
@@ -251,7 +261,7 @@ export default function ProfitPilotArticlePage({
                 </section>
               ))}
 
-              {/* Simple end CTA */}
+              {/* End CTA */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6">
                 <p className="text-base font-semibold text-slate-900">
                   Want “today” to be clear in your business?
