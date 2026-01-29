@@ -2,7 +2,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
-import { getHub, getPostBySlug, type InsightPost } from "@/app/lib/insightsStore";
+import {
+  getHub,
+  getPostByHref,
+  getPostBySlug,
+  listPostsByHub,
+  type InsightPost,
+} from "@/app/lib/insightsStore";
 
 function MetaPill({ children }: { children: React.ReactNode }) {
   return (
@@ -45,9 +51,39 @@ function Callout({
   );
 }
 
+function normalizeSlugParam(value: unknown): string {
+  if (Array.isArray(value)) return value.join("/").trim();
+  if (typeof value === "string") return value.trim();
+  return "";
+}
+
+function safeDecodeURIComponent(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 export default function ProfitPilotArticlePage({ params }: { params: { slug: string } }) {
   const hub = getHub("profitpilot");
-  const post = getPostBySlug("profitpilot", params.slug);
+
+  const raw = normalizeSlugParam((params as any)?.slug);
+  const slug = safeDecodeURIComponent(raw);
+
+  // 1) primary lookup by stable slug
+  let post = getPostBySlug("profitpilot", slug);
+
+  // 2) fallback: lookup by href
+  if (!post) {
+    post = getPostByHref(`/insights/profitpilot/${slug}`);
+  }
+
+  // 3) fallback: scan hub posts for href ending
+  if (!post) {
+    const posts = listPostsByHub("profitpilot");
+    post = posts.find((p) => p.href === `/insights/profitpilot/${slug}` || p.href.endsWith(`/${slug}`)) || null;
+  }
 
   if (!post) {
     return (
@@ -104,7 +140,7 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
-            {/* HERO (single focus) */}
+            {/* HERO */}
             <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
               <div className="space-y-5">
                 <div className="flex flex-wrap gap-2">
@@ -137,7 +173,6 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
                 </div>
               </div>
 
-              {/* Calm side note (one box only) */}
               <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The idea</p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
@@ -171,9 +206,7 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               </div>
             </div>
 
-            {/* ✅ Removed: Mini TOC ("In this essay") to reduce top-of-page clutter */}
-
-            {/* BODY (single readable column) */}
+            {/* BODY */}
             <div className="mt-10">
               <article className="mx-auto max-w-3xl space-y-12">
                 {content.sections.map((s) => (
@@ -206,7 +239,6 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
                   </section>
                 ))}
 
-                {/* Single END CTA (one decision) */}
                 <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-white to-blue-50 p-7 shadow-sm">
                   <div className="pointer-events-none absolute inset-0">
                     <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-sky-200/30 blur-3xl" />
@@ -219,7 +251,7 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
                         Want “today” to be clear in your business?
                       </p>
                       <p className="mt-1 text-sm text-slate-600">
-                        We build SME dashboards that answer the daily question — without accounting confusion.
+                        We build SME dashboards that answer the daily question without accounting confusion.
                       </p>
                     </div>
 
@@ -256,7 +288,7 @@ function getProfitPilotArticleContent(post: InsightPost) {
           id: "hook",
           toc: "The daily question",
           label: "Start here",
-          title: "The question every SME gets — and too few can answer",
+          title: "The question every SME gets and too few can answer",
           paragraphs: [
             "If someone asked you, “How much profit did you make today?”, there’s a good chance your answer would sound like: “I’ll know at month end,” “Let me check my bank balance,” “We made sales, so probably good,” or “My accountant handles that.”",
             "If that’s you, you’re not bad at business. You’re running an SME with tools that weren’t built for how SMEs actually operate.",
@@ -337,39 +369,10 @@ function getProfitPilotArticleContent(post: InsightPost) {
           label: "The standard",
           title: "What the 1% answer looks like",
           paragraphs: [
-            "At the end of the day, an SME should see one decision-ready result:",
-            "Income today. Expenses today. And a plain-language line: “You made ₦38,500 today.”",
-            "Below is a simple example to prove the concept (example numbers — not your real data).",
+            "At the end of the day, an SME should see one decision-ready result.",
+            "Here’s a simple example (illustrative numbers — not your real data): Income today ₦120,000, expenses today ₦81,500, and the plain-language line: “You made ₦38,500 today.”",
+            "Not jargon. Not a maze of dashboards. Just clarity you can act on immediately.",
           ],
-          callout: {
-            title: "Example (illustrative)",
-            body: (
-              <>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4">
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Income today</p>
-                    <p className="mt-1 text-lg font-semibold text-slate-900">₦120,000</p>
-                    <p className="mt-1 text-xs text-slate-600">Total sales confirmed today</p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4">
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Expenses today</p>
-                    <p className="mt-1 text-lg font-semibold text-slate-900">₦81,500</p>
-                    <p className="mt-1 text-xs text-slate-600">Stock used + delivery + ops</p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4">
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">You made today</p>
-                    <p className="mt-1 text-lg font-semibold text-slate-900">₦38,500</p>
-                    <p className="mt-1 text-xs text-slate-600">Income − expenses (today)</p>
-                  </div>
-                </div>
-
-                <p className="mt-4 text-xs text-slate-600">
-                  Note: these are example numbers to show the idea. A real dashboard calculates this from your actual orders,
-                  costs, and day-specific expenses.
-                </p>
-              </>
-            ),
-          },
         },
         {
           id: "closing",
@@ -385,7 +388,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
     };
   }
 
-  // Reader-friendly fallback (NO developer notes)
   return {
     sections: [
       {
