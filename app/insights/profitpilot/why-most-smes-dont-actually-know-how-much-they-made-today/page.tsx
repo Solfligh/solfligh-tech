@@ -380,7 +380,7 @@ export default function Page() {
                     </p>
 
                     <p className="mt-3 text-base leading-relaxed text-slate-700">
-                      ProfitPilot exists to make “today” clear — so SME owners can stop guessing and start steering.
+                      ProfitPilot exists to make “today” clear so SME owners can stop guessing and start steering.
                     </p>
                   </div>
 
