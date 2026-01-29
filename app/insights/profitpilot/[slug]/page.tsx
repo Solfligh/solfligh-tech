@@ -171,17 +171,7 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               </div>
             </div>
 
-            {/* Mini TOC (not sticky, not noisy) */}
-            <div className="mt-8 rounded-3xl border border-slate-200/70 bg-white/70 p-4 shadow-sm backdrop-blur">
-              <p className="px-2 text-xs font-bold uppercase tracking-wider text-slate-500">In this essay</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {content.sections.map((s) => (
-                  <AnchorLink key={s.id} href={`#${s.id}`}>
-                    {s.toc}
-                  </AnchorLink>
-                ))}
-              </div>
-            </div>
+            {/* ✅ Removed: Mini TOC ("In this essay") to reduce top-of-page clutter */}
 
             {/* BODY (single readable column) */}
             <div className="mt-10">
@@ -348,9 +338,38 @@ function getProfitPilotArticleContent(post: InsightPost) {
           title: "What the 1% answer looks like",
           paragraphs: [
             "At the end of the day, an SME should see one decision-ready result:",
-            "Income today. Expenses today. And a plain-language number: “You made $X today.”",
-            "Not jargon. Not a maze of dashboards. Just clarity you can act on immediately.",
+            "Income today. Expenses today. And a plain-language line: “You made ₦38,500 today.”",
+            "Below is a simple example to prove the concept (example numbers — not your real data).",
           ],
+          callout: {
+            title: "Example (illustrative)",
+            body: (
+              <>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Income today</p>
+                    <p className="mt-1 text-lg font-semibold text-slate-900">₦120,000</p>
+                    <p className="mt-1 text-xs text-slate-600">Total sales confirmed today</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Expenses today</p>
+                    <p className="mt-1 text-lg font-semibold text-slate-900">₦81,500</p>
+                    <p className="mt-1 text-xs text-slate-600">Stock used + delivery + ops</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">You made today</p>
+                    <p className="mt-1 text-lg font-semibold text-slate-900">₦38,500</p>
+                    <p className="mt-1 text-xs text-slate-600">Income − expenses (today)</p>
+                  </div>
+                </div>
+
+                <p className="mt-4 text-xs text-slate-600">
+                  Note: these are example numbers to show the idea. A real dashboard calculates this from your actual orders,
+                  costs, and day-specific expenses.
+                </p>
+              </>
+            ),
+          },
         },
         {
           id: "closing",
@@ -366,7 +385,7 @@ function getProfitPilotArticleContent(post: InsightPost) {
     };
   }
 
-  // ✅ Reader-friendly fallback (NO developer notes)
+  // Reader-friendly fallback (NO developer notes)
   return {
     sections: [
       {
