@@ -43,30 +43,26 @@ function safeDecode(value: string) {
   }
 }
 
-/**
- * ✅ Bulletproof param reader:
- * - Works even if the folder param name changes
- * - e.g. [slug], [slugs], [id], etc.
- */
-function readFirstParam(params: Record<string, string | string[] | undefined> | undefined) {
-  if (!params) return "";
-  const keys = Object.keys(params);
-  if (keys.length === 0) return "";
-
-  const first = params[keys[0]];
-  if (Array.isArray(first)) return safeDecode((first[0] ?? "").trim());
-  return safeDecode((first ?? "").trim());
-}
-
 export default function ProfitPilotArticlePage({
   params,
+  searchParams,
 }: {
-  params?: Record<string, string | string[] | undefined>;
+  params: { slug: string };
+  searchParams?: Record<string, string | string[] | undefined>;
 }) {
   const hub = getHub("profitpilot");
-  const requestedSlug = readFirstParam(params);
+
+  // ✅ Main fix: always read slug from params.slug (Next.js standard)
+  const requestedSlug = safeDecode((params?.slug ?? "").trim());
+
+  const availablePosts = listPostsByHub("profitpilot");
+  const availableSlugs = availablePosts.map((p) => p.slug);
 
   const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
+
+  const debug =
+    (typeof searchParams?.debug === "string" && searchParams.debug === "1") ||
+    (Array.isArray(searchParams?.debug) && searchParams?.debug?.[0] === "1");
 
   if (!post) {
     return (
@@ -75,6 +71,31 @@ export default function ProfitPilotArticlePage({
           <div className="rounded-3xl border border-slate-200 bg-white p-8">
             <p className="text-sm font-semibold text-slate-900">Article not found</p>
             <p className="mt-2 text-sm text-slate-600">This article isn’t published (or the link is wrong).</p>
+
+            {debug ? (
+              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-xs font-semibold text-slate-500">Debug (only when ?debug=1)</p>
+
+                <p className="mt-2 text-sm text-slate-700">
+                  Requested slug:{" "}
+                  <span className="font-semibold text-slate-900">{requestedSlug || "(empty)"}</span>
+                </p>
+
+                <p className="mt-2 text-sm text-slate-700">
+                  Available slugs:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {availableSlugs.join(", ") || "(none)"}
+                  </span>
+                </p>
+
+                <p className="mt-2 text-sm text-slate-700">
+                  Match status:{" "}
+                  <span className={`font-semibold ${post ? "text-emerald-600" : "text-rose-600"}`}>
+                    {post ? "FOUND ✅" : "NOT FOUND ❌"}
+                  </span>
+                </p>
+              </div>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -296,52 +317,12 @@ function getProfitPilotArticleContent(post: InsightPost) {
           },
         },
         {
-          id: "how-to-fix",
-          label: "The fix",
-          title: "How to stop guessing (without accounting jargon)",
-          paragraphs: [
-            "The fix is not “more reports.” It’s a daily workflow that captures what matters while the day is still fresh.",
-            "Here’s the simple approach we recommend:",
-          ],
-          bullets: [
-            "Track income as it happens (sales, payments, transfers that are real income).",
-            "Track expenses the same day (stock, delivery, staff, fees, utilities — even if it’s partial).",
-            "Separate cash movement from performance (cashflow ≠ profit).",
-            "Show a day-end result you can understand: “You made ₦___ today.”",
-          ],
-          callout: {
-            title: "Why this matters",
-            body: (
-              <>
-                When you know today’s result, you make better decisions tomorrow — pricing, spending, staffing, and stock.
-                That’s how small businesses grow without stress.
-              </>
-            ),
-          },
-        },
-        {
-          id: "where-profitpilot-fits",
-          label: "Where ProfitPilot fits",
-          title: "What ProfitPilot is built to do for you",
-          paragraphs: [
-            "ProfitPilot is designed for real SMEs — busy days, mixed payments, many small expenses, and owners who need clarity fast.",
-            "We focus on a clean daily picture, not confusing dashboards.",
-          ],
-          bullets: [
-            "A daily “You made” result that’s easy to understand.",
-            "Simple income vs expenses tracking without accounting language.",
-            "Clear separation between profit and cash movement.",
-            "A hub-style insight system like this — so people understand the thinking behind the product.",
-          ],
-        },
-        {
           id: "conclusion",
           label: "Wrap up",
           title: "So… did we make money today?",
           paragraphs: [
             "That question should not feel scary. It should feel normal.",
             "If you’re running a business, you deserve clarity that matches your pace — daily, not “maybe at month end.”",
-            "If you want, we can help you set up a simple daily profit view for your business — even if you’re not ready for a full system yet.",
           ],
           cta: {
             title: "Want this level of clarity for your business?",
@@ -358,10 +339,7 @@ function getProfitPilotArticleContent(post: InsightPost) {
         id: "coming-soon",
         label: "Coming soon",
         title: "This article is being prepared",
-        paragraphs: [
-          "This piece isn’t published yet.",
-          "Check back soon — or explore other articles in the ProfitPilot hub.",
-        ],
+        paragraphs: ["This piece isn’t published yet.", "Check back soon — or explore other articles in the ProfitPilot hub."],
       },
     ],
   };
