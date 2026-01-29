@@ -212,9 +212,7 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
                       </div>
                     ) : null}
 
-                    {s.callout ? (
-                      <Callout title={s.callout.title}>{s.callout.body}</Callout>
-                    ) : null}
+                    {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
                   </section>
                 ))}
 
@@ -368,16 +366,17 @@ function getProfitPilotArticleContent(post: InsightPost) {
     };
   }
 
+  // ✅ Reader-friendly fallback (NO developer notes)
   return {
     sections: [
       {
-        id: "start",
-        toc: "Start",
-        label: "Draft",
-        title: "This post exists but content isn’t mapped yet",
+        id: "coming-soon",
+        toc: "Coming soon",
+        label: "Coming soon",
+        title: "This article is being prepared",
         paragraphs: [
-          "You added this post to insightsStore, but the page content hasn’t been added to the content map yet.",
-          "Add the content here (same structure) and it will render automatically.",
+          "This piece isn’t published yet.",
+          "Check back soon — or explore other articles in the ProfitPilot hub.",
         ],
       },
     ],
