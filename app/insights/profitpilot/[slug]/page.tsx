@@ -9,10 +9,12 @@ import {
   type InsightPost,
 } from "@/app/lib/insightsStore";
 
-// ✅ Helps Vercel/Next prebuild known slugs and stop “missing param” weirdness.
+// ✅ BUILD STAMP (to confirm you’re seeing the latest deployment)
+const BUILD_STAMP = "profitpilot-article-build-2026-01-29-v1";
+
+// ✅ Helps Next prebuild known slugs and stabilize params behavior on Vercel
 export const dynamicParams = true;
 
-// ✅ Pre-generate all known ProfitPilot post pages at build time.
 export function generateStaticParams() {
   const posts = listPostsByHub("profitpilot");
   return posts.map((p) => ({ slug: p.slug }));
@@ -79,22 +81,18 @@ function safeDecode(value: string) {
   }
 }
 
-/**
- * ✅ Bulletproof param reader:
- * - Prefers params.slug (standard)
- * - Falls back to “first param key” if something odd happens
- */
-function readSlug(params: Record<string, string | string[] | undefined> | undefined) {
+function readSlug(
+  params: Record<string, string | string[] | undefined> | undefined
+) {
   if (!params) return "";
 
-  // Standard Next.js
   const direct = params["slug"];
   if (typeof direct === "string") return safeDecode(direct.trim());
   if (Array.isArray(direct)) return safeDecode((direct[0] ?? "").trim());
 
-  // Fallback: first key
+  // Fallback: first param key (just in case)
   const keys = Object.keys(params);
-  if (keys.length === 0) return "";
+  if (!keys.length) return "";
   const first = params[keys[0]];
   if (typeof first === "string") return safeDecode(first.trim());
   if (Array.isArray(first)) return safeDecode((first[0] ?? "").trim());
@@ -104,74 +102,79 @@ function readSlug(params: Record<string, string | string[] | undefined> | undefi
 
 export default function ProfitPilotArticlePage({
   params,
-  searchParams,
 }: {
   params?: Record<string, string | string[] | undefined>;
-  searchParams?: Record<string, string | string[] | undefined>;
 }) {
   const hub = getHub("profitpilot");
+  const hubTitle = hub?.title || "ProfitPilot";
 
   const requestedSlug = readSlug(params);
 
   const availablePosts = listPostsByHub("profitpilot");
   const availableSlugs = availablePosts.map((p) => p.slug);
 
-  const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
+  const post = requestedSlug
+    ? getPostBySlug("profitpilot", requestedSlug)
+    : null;
 
-  const debug =
-    (typeof searchParams?.debug === "string" && searchParams.debug === "1") ||
-    (Array.isArray(searchParams?.debug) && searchParams?.debug?.[0] === "1");
-
+  // ✅ If NOT FOUND, ALWAYS show debug (no query string needed)
   if (!post) {
     return (
       <Container>
         <div className="py-16">
           <div className="rounded-3xl border border-slate-200 bg-white p-8">
-            <p className="text-sm font-semibold text-slate-900">Article not found</p>
+            <p className="text-sm font-semibold text-slate-900">
+              Article not found
+            </p>
             <p className="mt-2 text-sm text-slate-600">
               This article isn’t published (or the link is wrong).
             </p>
 
-            {debug ? (
-              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
-                <p className="text-xs font-semibold text-slate-500">Debug</p>
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+              <p className="text-xs font-semibold text-slate-500">Debug</p>
 
-                <p className="mt-2 text-sm text-slate-700">
-                  Params keys:{" "}
-                  <span className="font-semibold text-slate-900">
-                    {params ? Object.keys(params).join(", ") || "(none)" : "(none)"}
-                  </span>
-                </p>
+              <p className="mt-2 text-sm text-slate-700">
+                Build stamp:{" "}
+                <span className="font-semibold text-slate-900">
+                  {BUILD_STAMP}
+                </span>
+              </p>
 
-                <p className="mt-2 text-sm text-slate-700">
-                  params.slug:{" "}
-                  <span className="font-semibold text-slate-900">
-                    {params && "slug" in params ? String(params.slug) : "(missing)"}
-                  </span>
-                </p>
+              <p className="mt-2 text-sm text-slate-700">
+                Params keys:{" "}
+                <span className="font-semibold text-slate-900">
+                  {params ? Object.keys(params).join(", ") || "(none)" : "(none)"}
+                </span>
+              </p>
 
-                <p className="mt-2 text-sm text-slate-700">
-                  Requested slug (decoded):{" "}
-                  <span className="font-semibold text-slate-900">
-                    {requestedSlug || "(empty)"}
-                  </span>
-                </p>
+              <p className="mt-2 text-sm text-slate-700">
+                params.slug raw:{" "}
+                <span className="font-semibold text-slate-900">
+                  {params && "slug" in params ? String(params.slug) : "(missing)"}
+                </span>
+              </p>
 
-                <p className="mt-2 text-sm text-slate-700">
-                  Available slugs:{" "}
-                  <span className="font-semibold text-slate-900">
-                    {availableSlugs.join(", ") || "(none)"}
-                  </span>
-                </p>
+              <p className="mt-2 text-sm text-slate-700">
+                Requested slug (decoded):{" "}
+                <span className="font-semibold text-slate-900">
+                  {requestedSlug || "(empty)"}
+                </span>
+              </p>
 
-                <p className="mt-2 text-sm text-slate-700">
-                  Match status:{" "}
-                  <span className={`font-semibold ${post ? "text-emerald-600" : "text-rose-600"}`}>
-                    {post ? "FOUND ✅" : "NOT FOUND ❌"}
-                  </span>
-                </p>
-              </div>
-            ) : null}
+              <p className="mt-2 text-sm text-slate-700">
+                Available slugs:{" "}
+                <span className="font-semibold text-slate-900">
+                  {availableSlugs.join(", ") || "(none)"}
+                </span>
+              </p>
+
+              <p className="mt-2 text-sm text-slate-700">
+                Match status:{" "}
+                <span className="font-semibold text-rose-600">
+                  NOT FOUND ❌
+                </span>
+              </p>
+            </div>
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -193,16 +196,17 @@ export default function ProfitPilotArticlePage({
     );
   }
 
-  const hubTitle = hub?.title || "ProfitPilot";
   const content = getProfitPilotArticleContent(post);
 
   return (
     <main className="bg-white text-slate-900">
       <Container>
         <div className="py-10 sm:py-12">
-          {/* Breadcrumb */}
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
+            <Link
+              href="/insights"
+              className="font-semibold text-slate-600 hover:text-slate-900"
+            >
               Insights
             </Link>
             <span className="text-slate-400">/</span>
@@ -216,7 +220,10 @@ export default function ProfitPilotArticlePage({
             <span className="font-semibold text-slate-900">Article</span>
           </div>
 
-          {/* Hero */}
+          <div className="mt-2 text-xs text-slate-400">
+            Build: {BUILD_STAMP}
+          </div>
+
           <div className="mt-8 max-w-3xl">
             <div className="flex flex-wrap gap-2">
               <MetaPill>{post.tag}</MetaPill>
@@ -248,7 +255,6 @@ export default function ProfitPilotArticlePage({
             </div>
           </div>
 
-          {/* Cover */}
           <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white">
             <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
               {post.coverImage ? (
@@ -269,13 +275,11 @@ export default function ProfitPilotArticlePage({
             </div>
           </div>
 
-          {/* Body */}
           <div className="mt-10">
             <article className="mx-auto max-w-3xl space-y-12">
               {content.sections.map((s) => (
                 <section key={s.id} id={s.id} className="space-y-4">
                   <SectionLabel>{s.label}</SectionLabel>
-
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
                     {s.title}
                   </h2>
@@ -325,12 +329,6 @@ export default function ProfitPilotArticlePage({
                           note="The result you can act on."
                         />
                       </div>
-                      <p className="mt-4 text-sm text-slate-700">
-                        The goal is to end each day able to say:{" "}
-                        <span className="font-semibold text-slate-900">
-                          “We made {s.numbers.made} today.”
-                        </span>
-                      </p>
                     </div>
                   ) : null}
                 </section>
@@ -343,12 +341,6 @@ export default function ProfitPilotArticlePage({
   );
 }
 
-/**
- * NOTE:
- * You told me you want the article to speak directly to the business owner
- * (“as a small business owner…”, “we…”, “us…”) and avoid “1%” language.
- * This version follows that.
- */
 function getProfitPilotArticleContent(post: InsightPost) {
   if (post.slug === "why-most-smes-dont-actually-know-how-much-they-made-today") {
     return {
@@ -402,16 +394,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
             expenses: "₦81,500",
             made: "₦38,500",
           },
-        },
-        {
-          id: "wrap",
-          label: "Wrap up",
-          title: "We deserve clarity that matches our pace",
-          paragraphs: [
-            "That question — “did we make money today?” — shouldn’t feel scary. It should feel normal.",
-            "If we’re running a business, we deserve clarity that matches how we operate: daily, not “maybe at month end.”",
-            "That’s the thinking behind ProfitPilot: make daily profit clear enough to act on, without the accounting headache.",
-          ],
         },
       ],
     };
