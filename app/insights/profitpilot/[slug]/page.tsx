@@ -9,6 +9,15 @@ import {
   type InsightPost,
 } from "@/app/lib/insightsStore";
 
+// ✅ Helps Vercel/Next prebuild known slugs and stop “missing param” weirdness.
+export const dynamicParams = true;
+
+// ✅ Pre-generate all known ProfitPilot post pages at build time.
+export function generateStaticParams() {
+  const posts = listPostsByHub("profitpilot");
+  return posts.map((p) => ({ slug: p.slug }));
+}
+
 function MetaPill({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
@@ -70,21 +79,48 @@ function safeDecode(value: string) {
   }
 }
 
-type PageProps = {
-  params: { slug: string };
-  searchParams?: Record<string, string | string[] | undefined>;
-};
+/**
+ * ✅ Bulletproof param reader:
+ * - Prefers params.slug (standard)
+ * - Falls back to “first param key” if something odd happens
+ */
+function readSlug(params: Record<string, string | string[] | undefined> | undefined) {
+  if (!params) return "";
 
-export default function ProfitPilotArticlePage({ params }: PageProps) {
+  // Standard Next.js
+  const direct = params["slug"];
+  if (typeof direct === "string") return safeDecode(direct.trim());
+  if (Array.isArray(direct)) return safeDecode((direct[0] ?? "").trim());
+
+  // Fallback: first key
+  const keys = Object.keys(params);
+  if (keys.length === 0) return "";
+  const first = params[keys[0]];
+  if (typeof first === "string") return safeDecode(first.trim());
+  if (Array.isArray(first)) return safeDecode((first[0] ?? "").trim());
+
+  return "";
+}
+
+export default function ProfitPilotArticlePage({
+  params,
+  searchParams,
+}: {
+  params?: Record<string, string | string[] | undefined>;
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
   const hub = getHub("profitpilot");
 
-  // ✅ Always read slug from params.slug (Next.js standard)
-  const requestedSlug = safeDecode((params?.slug ?? "").trim());
+  const requestedSlug = readSlug(params);
 
   const availablePosts = listPostsByHub("profitpilot");
   const availableSlugs = availablePosts.map((p) => p.slug);
 
   const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
+
+  const debug =
+    (typeof searchParams?.debug === "string" && searchParams.debug === "1") ||
+    (Array.isArray(searchParams?.debug) && searchParams?.debug?.[0] === "1");
 
   if (!post) {
     return (
@@ -96,36 +132,46 @@ export default function ProfitPilotArticlePage({ params }: PageProps) {
               This article isn’t published (or the link is wrong).
             </p>
 
-            {/* ✅ Always show debug (so we can pinpoint the issue in one go) */}
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
-              <p className="text-xs font-semibold text-slate-500">Debug</p>
+            {debug ? (
+              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-xs font-semibold text-slate-500">Debug</p>
 
-              <p className="mt-2 text-sm text-slate-700">
-                params.slug:{" "}
-                <span className="font-semibold text-slate-900">
-                  {params?.slug ?? "(missing)"}
-                </span>
-              </p>
+                <p className="mt-2 text-sm text-slate-700">
+                  Params keys:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {params ? Object.keys(params).join(", ") || "(none)" : "(none)"}
+                  </span>
+                </p>
 
-              <p className="mt-2 text-sm text-slate-700">
-                Requested slug (decoded):{" "}
-                <span className="font-semibold text-slate-900">
-                  {requestedSlug || "(empty)"}
-                </span>
-              </p>
+                <p className="mt-2 text-sm text-slate-700">
+                  params.slug:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {params && "slug" in params ? String(params.slug) : "(missing)"}
+                  </span>
+                </p>
 
-              <p className="mt-2 text-sm text-slate-700">
-                Available slugs:{" "}
-                <span className="font-semibold text-slate-900">
-                  {availableSlugs.join(", ") || "(none)"}
-                </span>
-              </p>
+                <p className="mt-2 text-sm text-slate-700">
+                  Requested slug (decoded):{" "}
+                  <span className="font-semibold text-slate-900">
+                    {requestedSlug || "(empty)"}
+                  </span>
+                </p>
 
-              <p className="mt-2 text-sm text-slate-700">
-                Match status:{" "}
-                <span className="font-semibold text-rose-600">NOT FOUND ❌</span>
-              </p>
-            </div>
+                <p className="mt-2 text-sm text-slate-700">
+                  Available slugs:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {availableSlugs.join(", ") || "(none)"}
+                  </span>
+                </p>
+
+                <p className="mt-2 text-sm text-slate-700">
+                  Match status:{" "}
+                  <span className={`font-semibold ${post ? "text-emerald-600" : "text-rose-600"}`}>
+                    {post ? "FOUND ✅" : "NOT FOUND ❌"}
+                  </span>
+                </p>
+              </div>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -253,7 +299,9 @@ export default function ProfitPilotArticlePage({ params }: PageProps) {
                     </div>
                   ) : null}
 
-                  {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
+                  {s.callout ? (
+                    <Callout title={s.callout.title}>{s.callout.body}</Callout>
+                  ) : null}
 
                   {s.numbers ? (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
@@ -261,12 +309,24 @@ export default function ProfitPilotArticlePage({ params }: PageProps) {
                         Example (simple, decision-ready):
                       </p>
                       <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                        <NumberCard label="Income today" value={s.numbers.income} note="What came in today." />
-                        <NumberCard label="Expenses today" value={s.numbers.expenses} note="What today triggered." />
-                        <NumberCard label="You made (today)" value={s.numbers.made} note="The result you can act on." />
+                        <NumberCard
+                          label="Income today"
+                          value={s.numbers.income}
+                          note="What came in today."
+                        />
+                        <NumberCard
+                          label="Expenses today"
+                          value={s.numbers.expenses}
+                          note="What today triggered."
+                        />
+                        <NumberCard
+                          label="You made (today)"
+                          value={s.numbers.made}
+                          note="The result you can act on."
+                        />
                       </div>
                       <p className="mt-4 text-sm text-slate-700">
-                        This is the sentence we want to confidently say every day:{" "}
+                        The goal is to end each day able to say:{" "}
                         <span className="font-semibold text-slate-900">
                           “We made {s.numbers.made} today.”
                         </span>
@@ -283,19 +343,74 @@ export default function ProfitPilotArticlePage({ params }: PageProps) {
   );
 }
 
+/**
+ * NOTE:
+ * You told me you want the article to speak directly to the business owner
+ * (“as a small business owner…”, “we…”, “us…”) and avoid “1%” language.
+ * This version follows that.
+ */
 function getProfitPilotArticleContent(post: InsightPost) {
-  // Keep your article logic exactly tied to the slug in insightsStore.ts
   if (post.slug === "why-most-smes-dont-actually-know-how-much-they-made-today") {
     return {
       sections: [
         {
           id: "hook",
           label: "Start here",
-          title: "If you’re a small business owner, you’ve felt this before",
+          title: "As a small business owner, you’ve felt this before",
           paragraphs: [
-            "You close for the day. You’re tired. Sales happened. Money moved. People worked. Then the real question shows up:",
+            "We close for the day. We’re tired. Sales happened. Money moved. People worked.",
+            "Then the real question shows up:",
             "“Did we actually make money today… or did we just stay busy?”",
-            "If your honest answer is “I’m not sure”, you’re not alone — and you’re not doing anything wrong. Most small businesses are using tools that were never designed to explain profit clearly day-by-day.",
+            "If the honest answer is “I’m not sure,” you’re not alone — and you’re not doing anything wrong. Most businesses are running with tools that were never built to answer daily profit clearly.",
+          ],
+          callout: {
+            title: "The daily goal",
+            body: (
+              <>
+                At the end of each day, we should be able to say one simple sentence with confidence:{" "}
+                <span className="font-semibold text-slate-900">“We made ₦___ today.”</span>
+              </>
+            ),
+          },
+        },
+        {
+          id: "why-its-hard",
+          label: "Why it happens",
+          title: "Why today’s profit feels hard to know",
+          paragraphs: [
+            "Most of us end the day with data — but not clarity.",
+            "We check bank balance, sales alerts, and customer payments. Helpful… but those don’t answer profit.",
+            "Profit is the difference between what we earned today and what today truly cost us. If our tools don’t show both clearly, we keep guessing.",
+          ],
+          bullets: [
+            "Sales is not profit (we can sell and still lose money).",
+            "Bank balance is not performance (cash moves for many reasons).",
+            "Monthly reports are too late for daily decisions.",
+            "Expenses are often scattered (notes, WhatsApp, memory).",
+          ],
+        },
+        {
+          id: "what-clarity-looks-like",
+          label: "What good looks like",
+          title: "What a clear day-end view should show us",
+          paragraphs: [
+            "A good system doesn’t make us feel like we’re doing accounting. It feels like checking the score after a match.",
+            "We want something simple enough to understand fast — but accurate enough to trust.",
+          ],
+          numbers: {
+            income: "₦120,000",
+            expenses: "₦81,500",
+            made: "₦38,500",
+          },
+        },
+        {
+          id: "wrap",
+          label: "Wrap up",
+          title: "We deserve clarity that matches our pace",
+          paragraphs: [
+            "That question — “did we make money today?” — shouldn’t feel scary. It should feel normal.",
+            "If we’re running a business, we deserve clarity that matches how we operate: daily, not “maybe at month end.”",
+            "That’s the thinking behind ProfitPilot: make daily profit clear enough to act on, without the accounting headache.",
           ],
         },
       ],
