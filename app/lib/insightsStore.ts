@@ -20,7 +20,7 @@ export type InsightPost = {
   description: string;
 
   // ✅ Canonical href used for links everywhere
-  href: string; // "/insights/profitpilot/<slug>"
+  href: string; // canonical URL, e.g. "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today"
 
   tag: string; // "Problem Awareness"
   readingTime: string; // "4–6 min"
