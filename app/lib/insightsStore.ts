@@ -114,7 +114,7 @@ export function getHubs(): InsightHub[] {
 }
 
 export function getPostsByHub(hubSlug: string): InsightPost[] {
-  return listPostsByHub(hubSlugotni: any);
+  return listPostsByHub(hubSlug);
   // NOTE: If you see a TypeScript error here, delete this line and use:
   // return listPostsByHub(hubSlug);
 }
