@@ -75,21 +75,16 @@ type PageProps = {
   searchParams?: Record<string, string | string[] | undefined>;
 };
 
-export default function ProfitPilotArticlePage({ params, searchParams }: PageProps) {
+export default function ProfitPilotArticlePage({ params }: PageProps) {
   const hub = getHub("profitpilot");
 
-  // ✅ Always read from params.slug (Next.js App Router standard)
+  // ✅ Always read slug from params.slug (Next.js standard)
   const requestedSlug = safeDecode((params?.slug ?? "").trim());
 
   const availablePosts = listPostsByHub("profitpilot");
   const availableSlugs = availablePosts.map((p) => p.slug);
 
-  // ✅ Pass decoded slug to the store lookup
   const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
-
-  const debug =
-    (typeof searchParams?.debug === "string" && searchParams.debug === "1") ||
-    (Array.isArray(searchParams?.debug) && searchParams?.debug?.[0] === "1");
 
   if (!post) {
     return (
@@ -101,34 +96,36 @@ export default function ProfitPilotArticlePage({ params, searchParams }: PagePro
               This article isn’t published (or the link is wrong).
             </p>
 
-            {debug ? (
-              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
-                <p className="text-xs font-semibold text-slate-500">
-                  Debug (only when ?debug=1)
-                </p>
+            {/* ✅ Always show debug (so we can pinpoint the issue in one go) */}
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+              <p className="text-xs font-semibold text-slate-500">Debug</p>
 
-                <p className="mt-2 text-sm text-slate-700">
-                  Requested slug:{" "}
-                  <span className="font-semibold text-slate-900">
-                    {requestedSlug || "(empty)"}
-                  </span>
-                </p>
+              <p className="mt-2 text-sm text-slate-700">
+                params.slug:{" "}
+                <span className="font-semibold text-slate-900">
+                  {params?.slug ?? "(missing)"}
+                </span>
+              </p>
 
-                <p className="mt-2 text-sm text-slate-700">
-                  Available slugs:{" "}
-                  <span className="font-semibold text-slate-900">
-                    {availableSlugs.join(", ") || "(none)"}
-                  </span>
-                </p>
+              <p className="mt-2 text-sm text-slate-700">
+                Requested slug (decoded):{" "}
+                <span className="font-semibold text-slate-900">
+                  {requestedSlug || "(empty)"}
+                </span>
+              </p>
 
-                <p className="mt-2 text-sm text-slate-700">
-                  Match status:{" "}
-                  <span className={`font-semibold ${post ? "text-emerald-600" : "text-rose-600"}`}>
-                    {post ? "FOUND ✅" : "NOT FOUND ❌"}
-                  </span>
-                </p>
-              </div>
-            ) : null}
+              <p className="mt-2 text-sm text-slate-700">
+                Available slugs:{" "}
+                <span className="font-semibold text-slate-900">
+                  {availableSlugs.join(", ") || "(none)"}
+                </span>
+              </p>
+
+              <p className="mt-2 text-sm text-slate-700">
+                Match status:{" "}
+                <span className="font-semibold text-rose-600">NOT FOUND ❌</span>
+              </p>
+            </div>
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -256,9 +253,7 @@ export default function ProfitPilotArticlePage({ params, searchParams }: PagePro
                     </div>
                   ) : null}
 
-                  {s.callout ? (
-                    <Callout title={s.callout.title}>{s.callout.body}</Callout>
-                  ) : null}
+                  {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
 
                   {s.numbers ? (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
@@ -266,21 +261,9 @@ export default function ProfitPilotArticlePage({ params, searchParams }: PagePro
                         Example (simple, decision-ready):
                       </p>
                       <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                        <NumberCard
-                          label="Income today"
-                          value={s.numbers.income}
-                          note="What came in today."
-                        />
-                        <NumberCard
-                          label="Expenses today"
-                          value={s.numbers.expenses}
-                          note="What today triggered."
-                        />
-                        <NumberCard
-                          label="You made (today)"
-                          value={s.numbers.made}
-                          note="The result you can act on."
-                        />
+                        <NumberCard label="Income today" value={s.numbers.income} note="What came in today." />
+                        <NumberCard label="Expenses today" value={s.numbers.expenses} note="What today triggered." />
+                        <NumberCard label="You made (today)" value={s.numbers.made} note="The result you can act on." />
                       </div>
                       <p className="mt-4 text-sm text-slate-700">
                         This is the sentence we want to confidently say every day:{" "}
@@ -288,27 +271,6 @@ export default function ProfitPilotArticlePage({ params, searchParams }: PagePro
                           “We made {s.numbers.made} today.”
                         </span>
                       </p>
-                    </div>
-                  ) : null}
-
-                  {s.cta ? (
-                    <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-                      <p className="text-sm font-semibold text-slate-900">{s.cta.title}</p>
-                      <p className="mt-2 text-sm text-slate-700">{s.cta.body}</p>
-                      <div className="mt-4 flex flex-wrap gap-3">
-                        <Link
-                          href="/contact"
-                          className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                        >
-                          Book a quick chat
-                        </Link>
-                        <Link
-                          href="/insights/profitpilot"
-                          className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
-                        >
-                          Explore ProfitPilot →
-                        </Link>
-                      </div>
                     </div>
                   ) : null}
                 </section>
@@ -322,6 +284,7 @@ export default function ProfitPilotArticlePage({ params, searchParams }: PagePro
 }
 
 function getProfitPilotArticleContent(post: InsightPost) {
+  // Keep your article logic exactly tied to the slug in insightsStore.ts
   if (post.slug === "why-most-smes-dont-actually-know-how-much-they-made-today") {
     return {
       sections: [
@@ -334,131 +297,6 @@ function getProfitPilotArticleContent(post: InsightPost) {
             "“Did we actually make money today… or did we just stay busy?”",
             "If your honest answer is “I’m not sure”, you’re not alone — and you’re not doing anything wrong. Most small businesses are using tools that were never designed to explain profit clearly day-by-day.",
           ],
-          callout: {
-            title: "The goal",
-            body: (
-              <>
-                At the end of each day, you should be able to say one simple sentence with confidence:{" "}
-                <span className="font-semibold text-slate-900">“We made ₦___ today.”</span>
-              </>
-            ),
-          },
-        },
-        {
-          id: "what-we-check",
-          label: "What we usually do",
-          title: "The checks that feel helpful… but don’t answer profit",
-          paragraphs: [
-            "Most of us end the day checking bank balance, sales notifications, transfers, and maybe a notebook of expenses.",
-            "Those things matter — but they’re not profit. They’re activity.",
-            "The problem is simple: the data is scattered, and the daily question needs one clean answer.",
-          ],
-          bullets: [
-            "A bank balance can go up even when you’re losing money (loans, transfers, delayed expenses).",
-            "Sales can be high while profit is low (discounts, wrong pricing, high costs).",
-            "Monthly statements are too late when decisions are daily.",
-            "Expenses are often remembered later (and that’s where surprises come from).",
-          ],
-        },
-        {
-          id: "why-its-hard",
-          label: "Why it’s hard",
-          title: "Why daily profit feels impossible to know",
-          paragraphs: [
-            "Daily profit is not difficult because you’re “bad at accounting.” It’s difficult because the inputs are messy.",
-            "Small businesses don’t run like big companies. Things happen fast: part-payments, supplier credit, cash purchases, staff spending, inventory restocks, delivery costs, refunds.",
-            "When your system can’t capture those costs daily, your profit becomes a guess — and guesses are expensive.",
-          ],
-          callout: {
-            title: "A simple truth",
-            body: (
-              <>
-                Profit is not “money in the account.” Profit is:{" "}
-                <span className="font-semibold text-slate-900">
-                  what you earned today minus what today truly cost you.
-                </span>
-              </>
-            ),
-          },
-        },
-        {
-          id: "hidden-cost",
-          label: "What it causes",
-          title: "What guessing your profit does to your business",
-          paragraphs: [
-            "When we can’t see profit clearly, we start making decisions based on feelings and cash movement.",
-            "That leads to patterns like: stocking the wrong items, underpricing, paying expenses too early, hiring too fast, or feeling “busy” but not growing.",
-            "Clarity doesn’t just help reporting — it helps confidence.",
-          ],
-          bullets: [
-            "You can’t tell which product or service is actually working.",
-            "You can’t tell if a “good sales day” was actually a good day.",
-            "You don’t know what to fix first: price, costs, operations, or marketing.",
-            "You lose time explaining numbers to yourself (and sometimes to partners).",
-          ],
-        },
-        {
-          id: "what-clarity-looks-like",
-          label: "What good looks like",
-          title: "What a clean day-end view should show you",
-          paragraphs: [
-            "A good system doesn’t make you feel like you’re doing accounting. It feels like checking the score after a match.",
-            "We want something simple enough to understand in 10 seconds — but accurate enough to trust.",
-            "That means your daily view should clearly show income, expenses, and the final result — without jargon.",
-          ],
-          numbers: {
-            income: "₦120,000",
-            expenses: "₦81,500",
-            made: "₦38,500",
-          },
-        },
-        {
-          id: "how-to-fix",
-          label: "How to fix it",
-          title: "A practical way to get daily profit clarity",
-          paragraphs: [
-            "To get a reliable daily profit number, we need three things:",
-            "1) Capture income as it happens. 2) Capture costs as they happen. 3) Put them together in one daily view.",
-            "If your business sells on credit or buys inventory, it helps to separate performance (profit) from cash movement (cashflow) so you don’t confuse “money moved” with “we made money.”",
-          ],
-          bullets: [
-            "Record sales daily (even if payment is later).",
-            "Record costs daily (delivery, supplies, staff spending, refunds).",
-            "Group costs in a simple way (so it’s readable, not complicated).",
-            "Show the day’s result as one sentence: “We made ₦___ today.”",
-          ],
-        },
-        {
-          id: "profitpilot",
-          label: "Where ProfitPilot fits",
-          title: "How ProfitPilot is designed to help",
-          paragraphs: [
-            "ProfitPilot is built around the daily question: “Did we make money today — and why?”",
-            "Instead of giving you confusing accounting reports, it focuses on a simple, decision-ready daily view.",
-            "That way, when you’re making choices — pricing, restocking, marketing, staffing — you’re not guessing.",
-          ],
-          callout: {
-            title: "The goal is not “more dashboards”",
-            body: (
-              <>
-                The goal is confidence. A daily view that feels obvious — and helps you run the business better.
-              </>
-            ),
-          },
-        },
-        {
-          id: "conclusion",
-          label: "Wrap up",
-          title: "So… did we make money today?",
-          paragraphs: [
-            "That question should not feel scary. It should feel normal.",
-            "If you’re running a business, you deserve clarity that matches your pace — daily, not “maybe at month end.”",
-            "When you can see daily profit clearly, you stop guessing and start improving the right things.",
-          ],
-          cta: {
-            title: "Want this level of clarity for your business?",
-            body: "Send us a message. We’ll show you the simplest way to track daily profit clearly — and what ProfitPilot can automate for you.",
-          },
         },
       ],
     };
