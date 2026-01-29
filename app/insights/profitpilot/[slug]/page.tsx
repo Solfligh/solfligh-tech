@@ -2,7 +2,19 @@
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
-import { getHub, getPostBySlug, type InsightPost } from "@/app/lib/insightsStore";
+import {
+  getHub,
+  getPostBySlug,
+  listPostsByHub,
+  type InsightPost,
+} from "@/app/lib/insightsStore";
+
+export const dynamicParams = false; // only allow known slugs (pre-generated)
+
+export function generateStaticParams() {
+  // ✅ Ensures Next builds these pages at build-time
+  return listPostsByHub("profitpilot").map((p) => ({ slug: p.slug }));
+}
 
 function MetaPill({ children }: { children: React.ReactNode }) {
   return (
@@ -69,8 +81,8 @@ export default function ProfitPilotArticlePage({
   params: { slug: string };
 }) {
   const hub = getHub("profitpilot");
+  const hubTitle = hub?.title || "ProfitPilot";
 
-  // ✅ The correct Next.js way: read params.slug directly
   const requestedSlug = safeDecode((params?.slug ?? "").trim());
   const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
 
@@ -81,7 +93,7 @@ export default function ProfitPilotArticlePage({
           <div className="rounded-3xl border border-slate-200 bg-white p-8">
             <p className="text-sm font-semibold text-slate-900">Article not found</p>
             <p className="mt-2 text-sm text-slate-600">
-              This article doesn’t exist (or isn’t published yet).
+              This article isn’t published (or the link is wrong).
             </p>
 
             <div className="mt-5 flex flex-wrap gap-3">
@@ -104,7 +116,6 @@ export default function ProfitPilotArticlePage({
     );
   }
 
-  const hubTitle = hub?.title || "ProfitPilot";
   const content = getProfitPilotArticleContent(post);
 
   return (
@@ -130,7 +141,7 @@ export default function ProfitPilotArticlePage({
             <span className="font-semibold text-slate-900">Article</span>
           </div>
 
-          {/* Hero (simple, not congested) */}
+          {/* Hero (simple) */}
           <div className="mt-8 max-w-3xl">
             <div className="flex flex-wrap gap-2">
               <MetaPill>{post.tag}</MetaPill>
@@ -183,7 +194,7 @@ export default function ProfitPilotArticlePage({
             </div>
           </div>
 
-          {/* Body (single clean column) */}
+          {/* Body */}
           <div className="mt-10">
             <article className="mx-auto max-w-3xl space-y-12">
               {content.sections.map((s) => (
@@ -200,19 +211,6 @@ export default function ProfitPilotArticlePage({
                     ))}
                   </div>
 
-                  {s.bullets?.length ? (
-                    <div className="rounded-3xl border border-slate-200 bg-white p-6">
-                      <ul className="space-y-2 text-sm text-slate-700">
-                        {s.bullets.map((b) => (
-                          <li key={b} className="flex items-start gap-2">
-                            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
-                            <span>{b}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-
                   {s.callout ? (
                     <Callout title={s.callout.title}>{s.callout.body}</Callout>
                   ) : null}
@@ -220,7 +218,7 @@ export default function ProfitPilotArticlePage({
                   {s.numbers ? (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
                       <p className="text-sm font-semibold text-slate-900">
-                        Real-world example (to prove the idea):
+                        Proof with real numbers (simple example):
                       </p>
 
                       <div className="mt-4 grid gap-4 sm:grid-cols-3">
@@ -242,7 +240,7 @@ export default function ProfitPilotArticlePage({
                       </div>
 
                       <p className="mt-4 text-sm text-slate-700">
-                        If the dashboard can’t say this clearly, it’s not helping:
+                        The whole point is one sentence:
                         <span className="font-semibold text-slate-900">
                           {" "}
                           “You made {s.numbers.made} today.”
@@ -253,13 +251,13 @@ export default function ProfitPilotArticlePage({
                 </section>
               ))}
 
-              {/* Simple end CTA (not noisy) */}
+              {/* Simple end CTA */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6">
                 <p className="text-base font-semibold text-slate-900">
-                  Want this clarity inside your business?
+                  Want “today” to be clear in your business?
                 </p>
                 <p className="mt-1 text-sm text-slate-600">
-                  We can build a simple “today” dashboard that shows what you made — without accounting confusion.
+                  We build simple SME dashboards that show what you made — without accounting confusion.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   <Link
