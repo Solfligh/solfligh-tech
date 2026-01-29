@@ -5,7 +5,7 @@ import Container from "@/app/components/Container";
 import {
   getHub,
   getPostBySlug,
-  type InsightPost,
+  listPostsByHub,
 } from "@/app/lib/insightsStore";
 
 function Pill({ children }: { children: React.ReactNode }) {
@@ -25,32 +25,9 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Card({
-  title,
-  desc,
-  icon,
-}: {
-  title: string;
-  desc: string;
-  icon: React.ReactNode;
-}) {
+function Divider() {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur">
-      <div className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute -left-24 -top-28 h-80 w-80 rounded-full bg-sky-200/25 blur-3xl" />
-        <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/20 blur-3xl" />
-      </div>
-
-      <div className="relative flex items-start gap-3">
-        <div className="mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-sm">
-          {icon}
-        </div>
-        <div>
-          <p className="text-sm font-bold text-slate-950">{title}</p>
-          <p className="mt-1 text-sm leading-relaxed text-slate-600">{desc}</p>
-        </div>
-      </div>
-    </div>
+    <div className="my-10 h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
   );
 }
 
@@ -67,7 +44,6 @@ function Callout({
         <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-sky-200/25 blur-3xl" />
         <div className="absolute -right-20 -bottom-24 h-72 w-72 rounded-full bg-blue-200/20 blur-3xl" />
       </div>
-
       <div className="relative">
         <p className="text-sm font-bold text-slate-950">{title}</p>
         <div className="mt-2 text-sm leading-relaxed text-slate-700">
@@ -75,12 +51,6 @@ function Callout({
         </div>
       </div>
     </div>
-  );
-}
-
-function Divider() {
-  return (
-    <div className="my-10 h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
   );
 }
 
@@ -104,16 +74,55 @@ function NumberCard({
 
 export default function ProfitPilotArticlePage({
   params,
+  searchParams,
 }: {
   params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const hub = getHub("profitpilot");
-  const post = getPostBySlug("profitpilot", params.slug);
+
+  const requestedSlug = (params?.slug ?? "").trim();
+  const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
+
+  const debugEnabled = searchParams?.debug === "1";
+  const availableSlugs = listPostsByHub("profitpilot").map((p) => p.slug);
+
+  // ✅ PINPOINT PANEL
+  // If this panel shows requestedSlug correctly, routing is fine.
+  // If postFound=false, the store lookup is the problem.
+  const DebugPanel = debugEnabled ? (
+    <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-5">
+      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+        Debug (only when ?debug=1)
+      </p>
+
+      <div className="mt-3 grid gap-2 text-sm text-slate-700">
+        <div>
+          <span className="font-semibold text-slate-900">requestedSlug:</span>{" "}
+          <span className="font-mono">{requestedSlug || "(empty)"}</span>
+        </div>
+
+        <div>
+          <span className="font-semibold text-slate-900">postFound:</span>{" "}
+          {post ? "true ✅" : "false ❌"}
+        </div>
+
+        <div>
+          <span className="font-semibold text-slate-900">availableSlugs:</span>{" "}
+          <span className="font-mono">
+            {availableSlugs.length ? availableSlugs.join(", ") : "(none)"}
+          </span>
+        </div>
+      </div>
+    </div>
+  ) : null;
 
   if (!post) {
     return (
       <Container>
         <div className="py-16">
+          {DebugPanel}
+
           <div className="rounded-3xl border border-slate-200 bg-white p-8">
             <p className="text-sm font-semibold text-slate-900">
               Article not found
@@ -146,7 +155,6 @@ export default function ProfitPilotArticlePage({
 
   return (
     <main className="bg-white text-slate-900">
-      {/* Subtle page background */}
       <section className="relative overflow-hidden">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
           <div className="absolute -left-24 -top-32 h-96 w-96 rounded-full bg-sky-200/35 blur-3xl" />
@@ -156,7 +164,8 @@ export default function ProfitPilotArticlePage({
 
         <Container>
           <div className="relative py-10 sm:py-12">
-            {/* Breadcrumb */}
+            {DebugPanel}
+
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Link
                 href="/insights"
@@ -175,84 +184,37 @@ export default function ProfitPilotArticlePage({
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
-            {/* Hero */}
-            <div className="mt-6 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
-              <div className="space-y-5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Pill>{post.tag}</Pill>
-                  <Pill>{post.readingTime}</Pill>
-                  <Pill>{post.dateLabel}</Pill>
-                </div>
-
-                <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
-                  {post.title}
-                </h1>
-
-                <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                  {post.description}
-                </p>
-
-                <div className="flex flex-wrap gap-3">
-                  <Link
-                    href="/insights/profitpilot"
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                  >
-                    Back to hub
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                  >
-                    Contact us
-                  </Link>
-                </div>
+            <div className="mt-6 space-y-5">
+              <div className="flex flex-wrap items-center gap-2">
+                <Pill>{post.tag}</Pill>
+                <Pill>{post.readingTime}</Pill>
+                <Pill>{post.dateLabel}</Pill>
               </div>
 
-              {/* Right hero mini-card */}
-              <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur">
-                <div className="pointer-events-none absolute inset-0">
-                  <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-sky-200/30 blur-2xl" />
-                  <div className="absolute -left-16 -bottom-16 h-56 w-56 rounded-full bg-blue-200/20 blur-2xl" />
-                </div>
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
+                {post.title}
+              </h1>
 
-                <div className="relative space-y-3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    In one sentence
-                  </p>
-                  <p className="text-sm font-semibold text-slate-900">
-                    SMEs struggle to answer “how much did we make today?” because
-                    most tools show sales and balances — not daily performance.
-                  </p>
+              <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                {post.description}
+              </p>
 
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                    <div className="rounded-2xl border border-slate-200 bg-white/80 p-4">
-                      <p className="text-xs font-semibold text-slate-500">
-                        What you actually need
-                      </p>
-                      <p className="mt-1 text-sm font-bold text-slate-900">
-                        A daily “You made ₦X” answer
-                      </p>
-                      <p className="mt-1 text-xs text-slate-600">
-                        Simple. Reliable. Decision-ready.
-                      </p>
-                    </div>
-                    <div className="rounded-2xl border border-slate-200 bg-white/80 p-4">
-                      <p className="text-xs font-semibold text-slate-500">
-                        What most people use
-                      </p>
-                      <p className="mt-1 text-sm font-bold text-slate-900">
-                        Bank balance + sales
-                      </p>
-                      <p className="mt-1 text-xs text-slate-600">
-                        Useful… but not the answer.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/insights/profitpilot"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                >
+                  Back to hub
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                >
+                  Contact us
+                </Link>
               </div>
             </div>
 
-            {/* Cover image */}
             <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
               <div className="relative h-[220px] w-full sm:h-[320px] md:h-[360px]">
                 {post.coverImage ? (
@@ -273,46 +235,7 @@ export default function ProfitPilotArticlePage({
               </div>
             </div>
 
-            {/* Article (NO SIDEBAR, NO “On this page”) */}
             <article className="mx-auto mt-10 max-w-3xl space-y-10">
-              {/* Quick takeaways */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Card
-                  title="Today is the real decision unit"
-                  desc="SMEs don’t manage quarterly. They manage what happened today — so they can choose what to do tomorrow."
-                  icon={
-                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
-                      <path
-                        d="M8 7h8M8 12h8M8 17h8"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M5 7h.01M5 12h.01M5 17h.01"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  }
-                />
-                <Card
-                  title="Sales ≠ profit"
-                  desc="You can have a strong sales day and still lose money once delivery, expenses, and leakage show up."
-                  icon={
-                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
-                      <path
-                        d="M7 16V8m5 10V6m5 12v-7"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  }
-                />
-              </div>
-
               <section className="space-y-4">
                 <SectionLabel>Start here</SectionLabel>
                 <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
@@ -334,7 +257,7 @@ export default function ProfitPilotArticlePage({
               <section className="space-y-4">
                 <SectionLabel>What good looks like</SectionLabel>
                 <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
-                  The 1% answer SMEs deserve (with real numbers)
+                  The answer SMEs deserve
                 </h2>
 
                 <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
@@ -359,48 +282,6 @@ export default function ProfitPilotArticlePage({
                       note="The decision-ready result."
                     />
                   </div>
-
-                  <p className="mt-4 text-sm text-slate-700">
-                    That’s the entire point:{" "}
-                    <span className="font-semibold text-slate-900">
-                      “You made ₦38,500 today.”
-                    </span>
-                  </p>
-                </div>
-              </section>
-
-              <Divider />
-
-              <section className="space-y-4">
-                <SectionLabel>Wrap up</SectionLabel>
-                <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
-                  You’re not confused — you’re underserved
-                </h2>
-
-                <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
-                  <p className="text-sm leading-relaxed text-slate-700">
-                    SMEs don’t fail because they don’t work hard. They fail
-                    because they make decisions without clear daily visibility.
-                  </p>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-700">
-                    ProfitPilot exists to make “today” clear — so you stop
-                    guessing and start steering.
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-3 pt-2">
-                  <Link
-                    href="/insights/profitpilot"
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                  >
-                    More ProfitPilot articles
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                  >
-                    Contact us
-                  </Link>
                 </div>
               </section>
             </article>
