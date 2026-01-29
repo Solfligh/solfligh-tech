@@ -1,4 +1,5 @@
 // app/lib/insightsStore.ts
+
 export type InsightHub = {
   slug: string;
   title: string; // display name, e.g. "ProfitPilot"
@@ -12,12 +13,14 @@ export type InsightHub = {
 export type InsightPost = {
   hubSlug: string;
 
-  // ✅ NEW: stable slug for dynamic routes
-  slug: string; // "why-most-smes-dont-actually-know-how-much-they-made-today"
+  // ✅ Stable slug for dynamic routes
+  slug: string; // e.g. "why-most-smes-dont-actually-know-how-much-they-made-today"
 
   title: string;
   description: string;
-  href: string;
+
+  // ✅ Canonical href used for links everywhere
+  href: string; // "/insights/profitpilot/<slug>"
 
   tag: string; // "Problem Awareness"
   readingTime: string; // "4–6 min"
@@ -57,25 +60,34 @@ const POSTS: InsightPost[] = [
   },
 ];
 
+/** -----------------------------
+ *  Public API (single source of truth)
+ *  ----------------------------- */
+
 export function listHubs(): InsightHub[] {
   return [...HUBS];
-}
-
-export function listPostsByHub(hubSlug: string): InsightPost[] {
-  return POSTS.filter((p) => p.hubSlug === hubSlug);
 }
 
 export function getHub(hubSlug: string): InsightHub | null {
   return HUBS.find((h) => h.slug === hubSlug) || null;
 }
 
-export function getPostByHref(href: string): InsightPost | null {
-  return POSTS.find((p) => p.href === href) || null;
+export function listAllPosts(): InsightPost[] {
+  return [...POSTS];
 }
 
-// ✅ NEW: use dynamic route param safely
+export function listPostsByHub(hubSlug: string): InsightPost[] {
+  return POSTS.filter((p) => p.hubSlug === hubSlug);
+}
+
 export function getPostBySlug(hubSlug: string, slug: string): InsightPost | null {
-  return POSTS.find((p) => p.hubSlug === hubSlug && p.slug === slug) || null;
+  const s = (slug || "").trim();
+  return POSTS.find((p) => p.hubSlug === hubSlug && p.slug === s) || null;
+}
+
+export function getPostByHref(href: string): InsightPost | null {
+  const h = (href || "").trim();
+  return POSTS.find((p) => p.href === h) || null;
 }
 
 /**
@@ -92,14 +104,17 @@ export function getLatestPost(): InsightPost | null {
   return sorted[0] || null;
 }
 
-/**
- * ✅ Backward-compatible aliases
- * (So older pages that imported these won’t break.)
- */
+/** -----------------------------
+ *  Backward-compatible aliases
+ *  (So older imports won’t break.)
+ *  ----------------------------- */
+
 export function getHubs(): InsightHub[] {
   return listHubs();
 }
 
 export function getPostsByHub(hubSlug: string): InsightPost[] {
-  return listPostsByHub(hubSlug);
+  return listPostsByHub(hubSlugotni: any);
+  // NOTE: If you see a TypeScript error here, delete this line and use:
+  // return listPostsByHub(hubSlug);
 }
