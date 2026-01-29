@@ -66,14 +66,29 @@ function safeDecode(value: string) {
   }
 }
 
+/**
+ * ✅ Bulletproof param reader:
+ * - Works even if the folder param name changes
+ * - e.g. [slug], [slugs], [id], etc.
+ */
+function readFirstParam(params: Record<string, string | string[] | undefined> | undefined) {
+  if (!params) return "";
+  const keys = Object.keys(params);
+  if (keys.length === 0) return "";
+
+  const first = params[keys[0]];
+  if (Array.isArray(first)) return safeDecode((first[0] ?? "").trim());
+  return safeDecode((first ?? "").trim());
+}
+
 export default function ProfitPilotArticlePage({
   params,
 }: {
-  params: { slug: string };
+  params?: Record<string, string | string[] | undefined>;
 }) {
   const hub = getHub("profitpilot");
 
-  const requestedSlug = safeDecode((params?.slug ?? "").trim());
+  const requestedSlug = readFirstParam(params);
   const availablePosts = listPostsByHub("profitpilot");
   const availableSlugs = availablePosts.map((p) => p.slug);
 
@@ -94,6 +109,13 @@ export default function ProfitPilotArticlePage({
               <p className="text-xs font-semibold text-slate-500">Debug (temporary)</p>
 
               <p className="mt-2 text-sm text-slate-700">
+                Params keys:{" "}
+                <span className="font-semibold text-slate-900">
+                  {params ? Object.keys(params).join(", ") || "(none)" : "(none)"}
+                </span>
+              </p>
+
+              <p className="mt-2 text-sm text-slate-700">
                 Requested slug:{" "}
                 <span className="font-semibold text-slate-900">
                   {requestedSlug || "(empty)"}
@@ -105,19 +127,6 @@ export default function ProfitPilotArticlePage({
                 <span className="font-semibold text-slate-900">
                   {availableSlugs.join(", ") || "(none)"}
                 </span>
-              </p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Match status:{" "}
-                <span className="font-semibold text-slate-900">
-                  {requestedSlug && availableSlugs.includes(requestedSlug)
-                    ? "slug EXISTS in store ✅ (lookup failing?)"
-                    : "slug NOT found in store ❌"}
-                </span>
-              </p>
-
-              <p className="mt-2 text-xs text-slate-500">
-                Tip: If “Requested slug” is not exactly the same as the store slug, it won’t match.
               </p>
             </div>
 
@@ -255,21 +264,9 @@ export default function ProfitPilotArticlePage({
                         Example (illustrative numbers):
                       </p>
                       <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                        <NumberCard
-                          label="Income today"
-                          value={s.numbers.income}
-                          note="What you earned today."
-                        />
-                        <NumberCard
-                          label="Expenses today"
-                          value={s.numbers.expenses}
-                          note="What today triggered."
-                        />
-                        <NumberCard
-                          label="You made (today)"
-                          value={s.numbers.made}
-                          note="Decision-ready result."
-                        />
+                        <NumberCard label="Income today" value={s.numbers.income} note="What you earned today." />
+                        <NumberCard label="Expenses today" value={s.numbers.expenses} note="What today triggered." />
+                        <NumberCard label="You made (today)" value={s.numbers.made} note="Decision-ready result." />
                       </div>
                       <p className="mt-4 text-sm text-slate-700">
                         The point is the sentence:{" "}
