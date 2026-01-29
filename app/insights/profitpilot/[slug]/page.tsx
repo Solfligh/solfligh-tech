@@ -2,19 +2,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
-import {
-  getHub,
-  getPostByHref,
-  getPostBySlug,
-  listPostsByHub,
-  type InsightPost,
-} from "@/app/lib/insightsStore";
+import { getHub, getPostBySlug, type InsightPost } from "@/app/lib/insightsStore";
 
 function MetaPill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-slate-200/80 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur">
+    <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
       {children}
     </span>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+      {children}
+    </p>
   );
 }
 
@@ -26,139 +28,53 @@ function Callout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-sky-200/30 blur-3xl" />
-        <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/25 blur-3xl" />
-      </div>
-
-      <div className="relative space-y-2">
-        <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title}</p>
-        <div className="text-sm leading-relaxed text-slate-700">{children}</div>
-      </div>
+    <div className="rounded-3xl border border-slate-200 bg-white p-6">
+      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title}</p>
+      <div className="mt-2 text-sm leading-relaxed text-slate-700">{children}</div>
     </div>
   );
 }
 
-function normalizeSlugParam(value: unknown): string {
-  if (Array.isArray(value)) return value.join("/").trim();
-  if (typeof value === "string") return value.trim();
-  return "";
-}
-
-function safeDecodeURIComponent(value: string): string {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return value;
-  }
-}
-
-/**
- * Some deployments end up with a param key name that isn't "slug"
- * (e.g. folder renamed to [postSlug]). This makes the page resilient:
- * - uses params.slug if present
- * - otherwise uses the first param value
- */
-function getSlugFromParams(params: Record<string, unknown>): string {
-  const direct =
-    (params as any).slug ??
-    (params as any).postSlug ??
-    (params as any).articleSlug ??
-    (params as any).id;
-
-  const fallback = direct ?? Object.values(params)[0];
-  return safeDecodeURIComponent(normalizeSlugParam(fallback));
-}
-
-/**
- * Fallback post for the known ProfitPilot article slug.
- * This guarantees your page renders even if the store lookup fails for any reason.
- */
-function fallbackPostForSlug(slug: string): InsightPost | null {
-  if (slug !== "why-most-smes-dont-actually-know-how-much-they-made-today") return null;
-
-  return {
-    hubSlug: "profitpilot",
-    slug,
-    title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
-    description:
-      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
-    href: `/insights/profitpilot/${slug}`,
-    tag: "Problem Awareness",
-    readingTime: "4–6 min",
-    dateLabel: "Jan 2026",
-    dateISO: "2026-01-10",
-    accent: "from-sky-500/20 to-blue-500/10",
-    coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
-  };
+function NumberCard({
+  label,
+  value,
+  note,
+}: {
+  label: string;
+  value: string;
+  note: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <p className="text-xs font-semibold text-slate-500">{label}</p>
+      <p className="mt-1 text-lg font-bold text-slate-900">{value}</p>
+      <p className="mt-1 text-xs text-slate-600">{note}</p>
+    </div>
+  );
 }
 
 export default function ProfitPilotArticlePage({
   params,
 }: {
-  params: Record<string, unknown>;
+  params: { slug: string };
 }) {
   const hub = getHub("profitpilot");
-
-  const slug = getSlugFromParams(params);
-
-  // 1) primary lookup by stable slug
-  let post = slug ? getPostBySlug("profitpilot", slug) : null;
-
-  // 2) fallback: lookup by href
-  if (!post && slug) {
-    post = getPostByHref(`/insights/profitpilot/${slug}`);
-  }
-
-  // 3) fallback: scan hub posts
-  if (!post && slug) {
-    const posts = listPostsByHub("profitpilot");
-    post =
-      posts.find(
-        (p) =>
-          p.slug === slug ||
-          p.href === `/insights/profitpilot/${slug}` ||
-          p.href.endsWith(`/${slug}`)
-      ) || null;
-  }
-
-  // 4) final fallback: known article self-heal
-  if (!post && slug) {
-    post = fallbackPostForSlug(slug);
-  }
+  const post = getPostBySlug("profitpilot", params.slug);
 
   if (!post) {
-    const available = listPostsByHub("profitpilot").map((p) => p.slug);
-
     return (
       <Container>
         <div className="py-16">
-          <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-8 shadow-sm backdrop-blur">
+          <div className="rounded-3xl border border-slate-200 bg-white p-8">
             <p className="text-sm font-semibold text-slate-900">Article not found</p>
-            <p className="mt-2 text-sm text-slate-600">This article slug doesn’t exist yet.</p>
-
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white/80 p-4">
-              <p className="text-xs font-semibold text-slate-500">Debug (temporary)</p>
-              <p className="mt-1 text-sm text-slate-700">
-                Requested slug: <span className="font-semibold text-slate-900">{slug || "(empty)"}</span>
-              </p>
-              <p className="mt-2 text-sm text-slate-700">
-                Available slugs:{" "}
-                <span className="font-semibold text-slate-900">{available.join(", ") || "(none)"}</span>
-              </p>
-              <p className="mt-2 text-xs text-slate-500">
-                Params keys:{" "}
-                <span className="font-semibold text-slate-700">
-                  {Object.keys(params || {}).join(", ") || "(none)"}
-                </span>
-              </p>
-            </div>
+            <p className="mt-2 text-sm text-slate-600">
+              This article slug doesn’t exist yet.
+            </p>
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
                 href="/insights/profitpilot"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
               >
                 Back to ProfitPilot hub
               </Link>
@@ -180,45 +96,152 @@ export default function ProfitPilotArticlePage({
 
   return (
     <main className="bg-white text-slate-900">
-      <section className="relative overflow-hidden">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-24 -top-32 h-96 w-96 rounded-full bg-sky-200/35 blur-3xl" />
-          <div className="absolute -right-24 top-10 h-[28rem] w-[28rem] rounded-full bg-blue-200/25 blur-3xl" />
-          <div className="absolute left-1/2 top-1/2 h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-100/70 blur-3xl" />
-        </div>
+      <Container>
+        <div className="py-10 sm:py-12">
+          {/* Breadcrumb */}
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
+              Insights
+            </Link>
+            <span className="text-slate-400">/</span>
+            <Link
+              href="/insights/profitpilot"
+              className="font-semibold text-slate-600 hover:text-slate-900"
+            >
+              {hubTitle}
+            </Link>
+            <span className="text-slate-400">/</span>
+            <span className="font-semibold text-slate-900">Article</span>
+          </div>
 
-        <Container>
-          <div className="relative py-10 sm:py-12">
-            {/* Breadcrumb */}
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
-                Insights
-              </Link>
-              <span className="text-slate-400">/</span>
-              <Link href="/insights/profitpilot" className="font-semibold text-slate-600 hover:text-slate-900">
-                {hubTitle}
-              </Link>
-              <span className="text-slate-400">/</span>
-              <span className="font-semibold text-slate-900">Article</span>
+          {/* Hero */}
+          <div className="mt-8 max-w-3xl">
+            <div className="flex flex-wrap gap-2">
+              <MetaPill>{post.tag}</MetaPill>
+              <MetaPill>{post.readingTime}</MetaPill>
+              <MetaPill>{post.dateLabel}</MetaPill>
             </div>
 
-            <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
-              <div className="space-y-5">
-                <div className="flex flex-wrap gap-2">
-                  <MetaPill>{post.tag}</MetaPill>
-                  <MetaPill>{post.readingTime}</MetaPill>
-                  <MetaPill>{post.dateLabel}</MetaPill>
-                </div>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
+              {post.title}
+            </h1>
 
-                <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
-                  {post.title}
-                </h1>
+            <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+              {post.description}
+            </p>
 
-                <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                  {post.description}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+              >
+                Talk to us
+              </Link>
+              <Link
+                href="/insights/profitpilot"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+              >
+                Back to hub
+              </Link>
+            </div>
+          </div>
+
+          {/* Cover */}
+          <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white">
+            <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
+              {post.coverImage ? (
+                <>
+                  <Image
+                    src={post.coverImage}
+                    alt={post.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 1100px"
+                    priority={false}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
+                </>
+              ) : (
+                <div className={`absolute inset-0 bg-gradient-to-br ${post.accent}`} />
+              )}
+            </div>
+          </div>
+
+          {/* Body (single clean column) */}
+          <div className="mt-10">
+            <article className="mx-auto max-w-3xl space-y-12">
+              {content.sections.map((s) => (
+                <section key={s.id} id={s.id} className="space-y-4">
+                  <SectionLabel>{s.label}</SectionLabel>
+
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    {s.title}
+                  </h2>
+
+                  <div className="space-y-4 text-base leading-relaxed text-slate-700">
+                    {s.paragraphs.map((p, idx) => (
+                      <p key={idx}>{p}</p>
+                    ))}
+                  </div>
+
+                  {s.bullets?.length ? (
+                    <div className="rounded-3xl border border-slate-200 bg-white p-6">
+                      <ul className="space-y-2 text-sm text-slate-700">
+                        {s.bullets.map((b) => (
+                          <li key={b} className="flex items-start gap-2">
+                            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
+
+                  {s.numbers ? (
+                    <div className="rounded-3xl border border-slate-200 bg-white p-6">
+                      <p className="text-sm font-semibold text-slate-900">
+                        Example (illustrative numbers):
+                      </p>
+                      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                        <NumberCard
+                          label="Income today"
+                          value={s.numbers.income}
+                          note="What you earned today."
+                        />
+                        <NumberCard
+                          label="Expenses today"
+                          value={s.numbers.expenses}
+                          note="What today triggered."
+                        />
+                        <NumberCard
+                          label="You made (today)"
+                          value={s.numbers.made}
+                          note="Decision-ready result."
+                        />
+                      </div>
+                      <p className="mt-4 text-sm text-slate-700">
+                        The point is the sentence:{" "}
+                        <span className="font-semibold text-slate-900">
+                          “You made {s.numbers.made} today.”
+                        </span>
+                      </p>
+                    </div>
+                  ) : null}
+                </section>
+              ))}
+
+              {/* Single end CTA */}
+              <div className="rounded-3xl border border-slate-200 bg-white p-7">
+                <p className="text-base font-semibold tracking-tight text-slate-900">
+                  Want “today” to be clear in your business?
+                </p>
+                <p className="mt-1 text-sm text-slate-600">
+                  We build SME dashboards that answer the daily question without accounting confusion.
                 </p>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="mt-5 flex flex-wrap gap-3">
                   <Link
                     href="/contact"
                     className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
@@ -227,81 +250,16 @@ export default function ProfitPilotArticlePage({
                   </Link>
                   <Link
                     href="/insights/profitpilot"
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
                   >
                     Back to hub
                   </Link>
                 </div>
               </div>
-
-              <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The idea</p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  SMEs don’t need more accounting. They need a daily answer they can steer with:
-                  <span className="font-semibold text-slate-900"> “Did we make money today — yes or no — and why?”</span>
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  This article explains why the current tools fail that question — and what “good” looks like.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
-              <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
-                {post.coverImage ? (
-                  <>
-                    <Image
-                      src={post.coverImage}
-                      alt={post.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 1100px"
-                      priority={false}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/25 to-transparent" />
-                  </>
-                ) : (
-                  <div className={`absolute inset-0 bg-gradient-to-br ${post.accent}`} />
-                )}
-              </div>
-            </div>
-
-            <div className="mt-10">
-              <article className="mx-auto max-w-3xl space-y-12">
-                {content.sections.map((s) => (
-                  <section key={s.id} id={s.id} className="scroll-mt-24 space-y-4">
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{s.label}</p>
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                      {s.title}
-                    </h2>
-
-                    <div className="space-y-4 text-base leading-relaxed text-slate-700">
-                      {s.paragraphs.map((p, idx) => (
-                        <p key={idx}>{p}</p>
-                      ))}
-                    </div>
-
-                    {s.bullets?.length ? (
-                      <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
-                        <ul className="space-y-2 text-sm text-slate-700">
-                          {s.bullets.map((b) => (
-                            <li key={b} className="flex items-start gap-2">
-                              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
-                              <span>{b}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null}
-
-                    {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
-                  </section>
-                ))}
-              </article>
-            </div>
+            </article>
           </div>
-        </Container>
-      </section>
+        </div>
+      </Container>
     </main>
   );
 }
@@ -313,7 +271,7 @@ function getProfitPilotArticleContent(post: InsightPost) {
         {
           id: "hook",
           label: "Start here",
-          title: "The question every SME gets and too few can answer",
+          title: "The question every SME gets — and too few can answer",
           paragraphs: [
             "If someone asked you, “How much profit did you make today?”, there’s a good chance your answer would sound like: “I’ll know at month end,” “Let me check my bank balance,” “We made sales, so probably good,” or “My accountant handles that.”",
             "If that’s you, you’re not bad at business. You’re running an SME with tools that weren’t built for how SMEs actually operate.",
@@ -322,8 +280,10 @@ function getProfitPilotArticleContent(post: InsightPost) {
             title: "The real problem",
             body: (
               <>
-                SMEs don’t need more reports. They need a daily decision answer:
-                <span className="font-semibold text-slate-900"> “Did we make money today — yes or no — and why?”</span>
+                SMEs don’t need more reports. They need a daily decision answer:{" "}
+                <span className="font-semibold text-slate-900">
+                  “Did we make money today — yes or no — and why?”
+                </span>
               </>
             ),
           },
@@ -362,7 +322,12 @@ function getProfitPilotArticleContent(post: InsightPost) {
             "It can move because of old invoices getting paid, expenses from previous weeks, owner transfers, or loans and credit lines.",
             "So it tells you how much cash you have — not how well the business performed today.",
           ],
-          bullets: ["Old invoices finally paid", "Expenses from previous weeks", "Owner transfers", "Loans, credit lines, and delays"],
+          bullets: [
+            "Old invoices finally paid",
+            "Expenses from previous weeks",
+            "Owner transfers",
+            "Loans, credit lines, and delays",
+          ],
         },
         {
           id: "why-accounting",
@@ -386,13 +351,17 @@ function getProfitPilotArticleContent(post: InsightPost) {
         },
         {
           id: "what-good-looks-like",
-          label: "The standard",
-          title: "What the 1% answer looks like",
+          label: "What good looks like",
+          title: "The 1% answer SMEs deserve",
           paragraphs: [
-            "At the end of the day, an SME should see one decision-ready result.",
-            "Example (illustrative): Income today ₦120,000. Expenses today ₦81,500. Result: “You made ₦38,500 today.”",
+            "At the end of the day, an SME should see a simple, decision-ready result.",
             "Not jargon. Not a maze of dashboards. Just clarity you can act on immediately.",
           ],
+          numbers: {
+            income: "₦120,000",
+            expenses: "₦81,500",
+            made: "₦38,500",
+          },
         },
         {
           id: "closing",
