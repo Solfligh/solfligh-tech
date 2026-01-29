@@ -2,12 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
-import {
-  getHub,
-  getPostBySlug,
-  listPostsByHub,
-  type InsightPost,
-} from "@/app/lib/insightsStore";
+import { getHub, getPostBySlug, type InsightPost } from "@/app/lib/insightsStore";
 
 function MetaPill({ children }: { children: React.ReactNode }) {
   return (
@@ -34,7 +29,9 @@ function Callout({
 }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6">
-      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title}</p>
+      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+        {title}
+      </p>
       <div className="mt-2 text-sm leading-relaxed text-slate-700">{children}</div>
     </div>
   );
@@ -66,32 +63,15 @@ function safeDecode(value: string) {
   }
 }
 
-/**
- * ✅ Bulletproof param reader:
- * - Works even if the folder param name changes
- * - e.g. [slug], [slugs], [id], etc.
- */
-function readFirstParam(params: Record<string, string | string[] | undefined> | undefined) {
-  if (!params) return "";
-  const keys = Object.keys(params);
-  if (keys.length === 0) return "";
-
-  const first = params[keys[0]];
-  if (Array.isArray(first)) return safeDecode((first[0] ?? "").trim());
-  return safeDecode((first ?? "").trim());
-}
-
 export default function ProfitPilotArticlePage({
   params,
 }: {
-  params?: Record<string, string | string[] | undefined>;
+  params: { slug: string };
 }) {
   const hub = getHub("profitpilot");
 
-  const requestedSlug = readFirstParam(params);
-  const availablePosts = listPostsByHub("profitpilot");
-  const availableSlugs = availablePosts.map((p) => p.slug);
-
+  // ✅ The correct Next.js way: read params.slug directly
+  const requestedSlug = safeDecode((params?.slug ?? "").trim());
   const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
 
   if (!post) {
@@ -101,34 +81,8 @@ export default function ProfitPilotArticlePage({
           <div className="rounded-3xl border border-slate-200 bg-white p-8">
             <p className="text-sm font-semibold text-slate-900">Article not found</p>
             <p className="mt-2 text-sm text-slate-600">
-              This article slug doesn’t exist yet.
+              This article doesn’t exist (or isn’t published yet).
             </p>
-
-            {/* Debug (temporary) */}
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
-              <p className="text-xs font-semibold text-slate-500">Debug (temporary)</p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Params keys:{" "}
-                <span className="font-semibold text-slate-900">
-                  {params ? Object.keys(params).join(", ") || "(none)" : "(none)"}
-                </span>
-              </p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Requested slug:{" "}
-                <span className="font-semibold text-slate-900">
-                  {requestedSlug || "(empty)"}
-                </span>
-              </p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Available slugs:{" "}
-                <span className="font-semibold text-slate-900">
-                  {availableSlugs.join(", ") || "(none)"}
-                </span>
-              </p>
-            </div>
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -159,7 +113,10 @@ export default function ProfitPilotArticlePage({
         <div className="py-10 sm:py-12">
           {/* Breadcrumb */}
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
+            <Link
+              href="/insights"
+              className="font-semibold text-slate-600 hover:text-slate-900"
+            >
               Insights
             </Link>
             <span className="text-slate-400">/</span>
@@ -173,7 +130,7 @@ export default function ProfitPilotArticlePage({
             <span className="font-semibold text-slate-900">Article</span>
           </div>
 
-          {/* Hero */}
+          {/* Hero (simple, not congested) */}
           <div className="mt-8 max-w-3xl">
             <div className="flex flex-wrap gap-2">
               <MetaPill>{post.tag}</MetaPill>
@@ -226,7 +183,7 @@ export default function ProfitPilotArticlePage({
             </div>
           </div>
 
-          {/* Body */}
+          {/* Body (single clean column) */}
           <div className="mt-10">
             <article className="mx-auto max-w-3xl space-y-12">
               {content.sections.map((s) => (
@@ -256,21 +213,38 @@ export default function ProfitPilotArticlePage({
                     </div>
                   ) : null}
 
-                  {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
+                  {s.callout ? (
+                    <Callout title={s.callout.title}>{s.callout.body}</Callout>
+                  ) : null}
 
                   {s.numbers ? (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
                       <p className="text-sm font-semibold text-slate-900">
-                        Example (illustrative numbers):
+                        Real-world example (to prove the idea):
                       </p>
+
                       <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                        <NumberCard label="Income today" value={s.numbers.income} note="What you earned today." />
-                        <NumberCard label="Expenses today" value={s.numbers.expenses} note="What today triggered." />
-                        <NumberCard label="You made (today)" value={s.numbers.made} note="Decision-ready result." />
+                        <NumberCard
+                          label="Income today"
+                          value={s.numbers.income}
+                          note="Money earned from today’s work."
+                        />
+                        <NumberCard
+                          label="Expenses today"
+                          value={s.numbers.expenses}
+                          note="Costs triggered by today."
+                        />
+                        <NumberCard
+                          label="You made (today)"
+                          value={s.numbers.made}
+                          note="The decision-ready result."
+                        />
                       </div>
+
                       <p className="mt-4 text-sm text-slate-700">
-                        The point is the sentence:{" "}
+                        If the dashboard can’t say this clearly, it’s not helping:
                         <span className="font-semibold text-slate-900">
+                          {" "}
                           “You made {s.numbers.made} today.”
                         </span>
                       </p>
@@ -278,6 +252,30 @@ export default function ProfitPilotArticlePage({
                   ) : null}
                 </section>
               ))}
+
+              {/* Simple end CTA (not noisy) */}
+              <div className="rounded-3xl border border-slate-200 bg-white p-6">
+                <p className="text-base font-semibold text-slate-900">
+                  Want this clarity inside your business?
+                </p>
+                <p className="mt-1 text-sm text-slate-600">
+                  We can build a simple “today” dashboard that shows what you made — without accounting confusion.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                  >
+                    Contact us
+                  </Link>
+                  <Link
+                    href="/insights/profitpilot"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+                  >
+                    Back to ProfitPilot hub
+                  </Link>
+                </div>
+              </div>
             </article>
           </div>
         </div>
@@ -295,14 +293,14 @@ function getProfitPilotArticleContent(post: InsightPost) {
           label: "Start here",
           title: "The question every SME gets — and too few can answer",
           paragraphs: [
-            "If someone asked you, “How much profit did you make today?”, there’s a good chance your answer would sound like: “I’ll know at month end,” “Let me check my bank balance,” “We made sales, so probably good,” or “My accountant handles that.”",
-            "If that’s you, you’re not bad at business. You’re running an SME with tools that weren’t built for how SMEs actually operate.",
+            "If someone asked you, “How much profit did you make today?”, there’s a good chance your answer would be: “I’ll know at month end,” “Let me check my bank balance,” or “We made sales, so probably good.”",
+            "That’s not because you’re doing anything wrong — it’s because most tools were built for reporting, not daily decisions.",
           ],
           callout: {
             title: "The real problem",
             body: (
               <>
-                SMEs don’t need more reports. They need a daily decision answer:{" "}
+                SMEs don’t need more reports. They need one daily decision answer:{" "}
                 <span className="font-semibold text-slate-900">
                   “Did we make money today — yes or no — and why?”
                 </span>
@@ -315,8 +313,8 @@ function getProfitPilotArticleContent(post: InsightPost) {
           label: "What good looks like",
           title: "The 1% answer SMEs deserve",
           paragraphs: [
-            "At the end of the day, an SME should see a simple, decision-ready result.",
-            "Not jargon. Not a maze of dashboards. Just clarity you can act on immediately.",
+            "A good daily dashboard is boring in the best way: it gives a clear answer you can act on immediately.",
+            "Here’s what that looks like when you remove jargon and keep only decision information:",
           ],
           numbers: {
             income: "₦120,000",
