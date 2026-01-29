@@ -13,7 +13,7 @@ const meta = {
   coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
   title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
   subtitle:
-    "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
+    "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens and why it isn’t your fault.",
 };
 
 function Pill({ children }: { children: React.ReactNode }) {
@@ -139,7 +139,7 @@ export default function Page() {
               <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">In one sentence</p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Most SMEs can’t answer “how much did we make today?” because the tools they use were built for reporting —
+                  Most SMEs can’t answer “how much did we make today?” because the tools they use were built for reporting
                   not daily decisions.
                 </p>
 
@@ -226,7 +226,7 @@ export default function Page() {
                       {[
                         "Did today help or hurt cash?",
                         "Did we price correctly?",
-                        "Are we growing — or just working harder?",
+                        "Are we growing or just working harder?",
                         "Can I confidently make tomorrow’s decisions?",
                       ].map((t) => (
                         <li key={t} className="flex items-start gap-2">
@@ -267,7 +267,7 @@ export default function Page() {
                       ))}
                     </ul>
                     <p className="mt-3">
-                      You can have a great sales day and still lose money. That’s not rare — it’s common.
+                      You can have a great sales day and still lose money. That’s not rare it’s common.
                     </p>
                   </Callout>
                 </section>
@@ -303,7 +303,7 @@ export default function Page() {
                     </div>
 
                     <p className="mt-4 text-sm text-slate-700">
-                      It tells you how much cash you have — not how well the business performed today.
+                      It tells you how much cash you have not how well the business performed today.
                     </p>
                   </div>
                 </section>
@@ -320,7 +320,7 @@ export default function Page() {
 
                   <Callout title="The daily question that matters">
                     <p className="font-semibold text-slate-900">
-                      “Did we make money today — yes or no — and why?”
+                      “Did we make money today yes or no and why?”
                     </p>
                     <p className="mt-2">
                       That’s a decision question. It needs a simple daily view of income minus expenses tied to today.
@@ -339,7 +339,7 @@ export default function Page() {
                       At the end of the day, an SME should see one decision-ready result.
                     </p>
                     <p className="mt-2 text-sm text-slate-700">
-                      Here’s a simple example (illustrative numbers — not your real data):
+                      Here’s a simple example (illustrative numbers not your real data):
                     </p>
 
                     <div className="mt-4 grid gap-4 sm:grid-cols-3">
@@ -370,7 +370,7 @@ export default function Page() {
                 <section id="closing" className="space-y-4 scroll-mt-24">
                   <SectionLabel>Wrap up</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    You’re not confused — you’re underserved
+                    You’re not confused you’re underserved
                   </h2>
 
                   <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
@@ -396,7 +396,7 @@ export default function Page() {
                           Want “today” to be clear in your business?
                         </p>
                         <p className="mt-1 text-sm text-slate-600">
-                          We build SME dashboards that answer the daily question — without accounting confusion.
+                          We build SME dashboards that answer the daily question without accounting confusion.
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-3">
