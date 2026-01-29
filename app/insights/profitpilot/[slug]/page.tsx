@@ -18,17 +18,6 @@ function MetaPill({ children }: { children: React.ReactNode }) {
   );
 }
 
-function AnchorLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <a
-      href={href}
-      className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
-    >
-      {children}
-    </a>
-  );
-}
-
 function Callout({
   title,
   children,
@@ -65,6 +54,29 @@ function safeDecodeURIComponent(value: string): string {
   }
 }
 
+/**
+ * Fallback post for the known ProfitPilot article slug.
+ * This guarantees your page renders even if the store lookup fails for any reason.
+ */
+function fallbackPostForSlug(slug: string): InsightPost | null {
+  if (slug !== "why-most-smes-dont-actually-know-how-much-they-made-today") return null;
+
+  return {
+    hubSlug: "profitpilot",
+    slug,
+    title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
+    description:
+      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
+    href: `/insights/profitpilot/${slug}`,
+    tag: "Problem Awareness",
+    readingTime: "4–6 min",
+    dateLabel: "Jan 2026",
+    dateISO: "2026-01-10",
+    accent: "from-sky-500/20 to-blue-500/10",
+    coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
+  };
+}
+
 export default function ProfitPilotArticlePage({ params }: { params: { slug: string } }) {
   const hub = getHub("profitpilot");
 
@@ -79,19 +91,44 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
     post = getPostByHref(`/insights/profitpilot/${slug}`);
   }
 
-  // 3) fallback: scan hub posts for href ending
+  // 3) fallback: scan hub posts
   if (!post) {
     const posts = listPostsByHub("profitpilot");
-    post = posts.find((p) => p.href === `/insights/profitpilot/${slug}` || p.href.endsWith(`/${slug}`)) || null;
+    post =
+      posts.find(
+        (p) =>
+          p.slug === slug ||
+          p.href === `/insights/profitpilot/${slug}` ||
+          p.href.endsWith(`/${slug}`)
+      ) || null;
+  }
+
+  // 4) final fallback: known article self-heal
+  if (!post) {
+    post = fallbackPostForSlug(slug);
   }
 
   if (!post) {
+    // Helpful debug info (only shown on the not-found page)
+    const available = listPostsByHub("profitpilot").map((p) => p.slug);
+
     return (
       <Container>
         <div className="py-16">
           <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-8 shadow-sm backdrop-blur">
             <p className="text-sm font-semibold text-slate-900">Article not found</p>
             <p className="mt-2 text-sm text-slate-600">This article slug doesn’t exist yet.</p>
+
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white/80 p-4">
+              <p className="text-xs font-semibold text-slate-500">Debug (temporary)</p>
+              <p className="mt-1 text-sm text-slate-700">
+                Requested slug: <span className="font-semibold text-slate-900">{slug || "(empty)"}</span>
+              </p>
+              <p className="mt-2 text-sm text-slate-700">
+                Available slugs:{" "}
+                <span className="font-semibold text-slate-900">{available.join(", ") || "(none)"}</span>
+              </p>
+            </div>
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -140,7 +177,6 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
-            {/* HERO */}
             <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
               <div className="space-y-5">
                 <div className="flex flex-wrap gap-2">
@@ -185,7 +221,6 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               </div>
             </div>
 
-            {/* Cover */}
             <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
               <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
                 {post.coverImage ? (
@@ -206,7 +241,6 @@ export default function ProfitPilotArticlePage({ params }: { params: { slug: str
               </div>
             </div>
 
-            {/* BODY */}
             <div className="mt-10">
               <article className="mx-auto max-w-3xl space-y-12">
                 {content.sections.map((s) => (
