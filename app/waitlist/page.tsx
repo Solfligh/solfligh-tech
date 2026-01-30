@@ -1,7 +1,7 @@
 // app/waitlist/page.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Container from "@/app/components/Container";
@@ -18,7 +18,10 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function WaitlistPage() {
+/* ------------------------------
+   Inner component (SAFE)
+-------------------------------- */
+function WaitlistContent() {
   const sp = useSearchParams();
 
   const product = useMemo(() => {
@@ -45,7 +48,7 @@ export default function WaitlistPage() {
   const [note, setNote] = useState("");
 
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState("");
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -135,103 +138,68 @@ export default function WaitlistPage() {
                 ) : (
                   <form onSubmit={onSubmit} className="space-y-4">
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-slate-600">Full name (optional)</label>
-                        <input
-                          value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-300"
-                          placeholder="Your name"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-xs font-semibold text-slate-600">Company (optional)</label>
-                        <input
-                          value={company}
-                          onChange={(e) => setCompany(e.target.value)}
-                          className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-300"
-                          placeholder="Business name"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-slate-600">Email *</label>
-                        <input
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          type="email"
-                          required
-                          className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-300"
-                          placeholder="you@company.com"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-xs font-semibold text-slate-600">Phone (optional)</label>
-                        <input
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-300"
-                          placeholder="+234…"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-slate-600">Anything you want ProfitPilot to help with? (optional)</label>
-                      <textarea
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        rows={4}
-                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-300"
-                        placeholder="Daily profit, cashflow, expenses, reporting…"
+                      <input
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Full name (optional)"
+                        className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      />
+                      <input
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        placeholder="Company (optional)"
+                        className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
                       />
                     </div>
 
+                    <input
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      type="email"
+                      placeholder="Email address"
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    />
+
+                    <textarea
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      rows={4}
+                      placeholder="What do you want ProfitPilot to help with?"
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    />
+
                     {status === "error" && (
-                      <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
                         {message}
                       </div>
                     )}
 
-                    <div className="flex flex-wrap gap-3 pt-1">
-                      <button
-                        type="submit"
-                        disabled={status === "loading"}
-                        className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-70"
-                      >
-                        {status === "loading" ? "Joining..." : "Join the waitlist"}
-                      </button>
-
-                      <Link
-                        href="/insights/profitpilot"
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-                      >
-                        Back to ProfitPilot hub
-                      </Link>
-                    </div>
-
-                    <p className="text-xs text-slate-500">
-                      By joining, you agree to receive early-access updates for {productLabel}. Unsubscribe anytime.
-                    </p>
+                    <button
+                      type="submit"
+                      disabled={status === "loading"}
+                      className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-700"
+                    >
+                      {status === "loading" ? "Joining…" : "Join the waitlist"}
+                    </button>
                   </form>
                 )}
-              </div>
-
-              <div className="mt-6 text-sm text-slate-600">
-                Already joined?{" "}
-                <Link href="/insights/profitpilot" className="font-semibold text-sky-700 hover:text-sky-800">
-                  Read more insights
-                </Link>
-                .
               </div>
             </div>
           </div>
         </Container>
       </section>
     </main>
+  );
+}
+
+/* ------------------------------
+   REQUIRED Suspense wrapper
+-------------------------------- */
+export default function WaitlistPage() {
+  return (
+    <Suspense fallback={null}>
+      <WaitlistContent />
+    </Suspense>
   );
 }
