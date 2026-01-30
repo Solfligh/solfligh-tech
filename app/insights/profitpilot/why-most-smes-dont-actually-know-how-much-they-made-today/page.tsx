@@ -237,7 +237,7 @@ export default function ProfitPilotArticlePage() {
                   />
                   <Card
                     title="Daily clarity beats end-of-month surprises"
-                    desc="Small businesses live daily — decisions should be guided by daily truth."
+                    desc="Small businesses live daily decisions should be guided by daily truth."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
                         <path
@@ -298,7 +298,7 @@ export default function ProfitPilotArticlePage() {
                     </p>
                     <p>
                       Profit is what’s left after today’s income covers today’s real costs. And costs don’t only mean
-                      the cash we spent today — it includes inventory used, delivery costs triggered by today’s sales,
+                      the cash we spent today it includes inventory used, delivery costs triggered by today’s sales,
                       fees, staff time, and everyday running expenses.
                     </p>
                   </div>
@@ -317,12 +317,12 @@ export default function ProfitPilotArticlePage() {
                 <section id="why-its-hard" className="space-y-4">
                   <SectionLabel>Why it happens</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The problem isn’t discipline — it’s visibility
+                    The problem isn’t discipline it’s visibility
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      Most SMEs don’t lack effort — we lack a simple daily system. Income is tracked (sometimes),
+                      Most SMEs don’t lack effort we lack a simple daily system. Income is tracked (sometimes),
                       expenses are scattered, and decisions are made from memory or vibes.
                     </p>
                     <p>
@@ -335,7 +335,7 @@ export default function ProfitPilotArticlePage() {
                       "Sales records live in different places (POS, bank alerts, WhatsApp, notebooks).",
                       "Expenses happen in small, frequent chunks (fuel, data, deliveries, supplies).",
                       "Some costs don’t feel like “today’s costs” but they were triggered by today’s activity.",
-                      "Monthly reports come too late — daily decisions need daily truth.",
+                      "Monthly reports come too late daily decisions need daily truth.",
                     ]}
                   />
                 </section>
@@ -349,7 +349,7 @@ export default function ProfitPilotArticlePage() {
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
                       A good system shouldn’t make us feel like we’re doing accounting. It should feel like checking
-                      the score after a match — simple, quick, and decision-ready.
+                      the score after a match simple, quick, and decision-ready.
                     </p>
                     <p>At minimum, we want three numbers that tell the story of today:</p>
                   </div>
@@ -380,7 +380,7 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      We don’t need complex finance to be clear. We need consistency — one place, one daily habit.
+                      We don’t need complex finance to be clear. We need consistency one place, one daily habit.
                     </p>
                     <p>Here’s a simple routine any SME can run:</p>
                   </div>
@@ -411,7 +411,7 @@ export default function ProfitPilotArticlePage() {
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>Once the routine is clear, the next step is reducing manual work and mistakes.</p>
                     <p>
-                      That’s where ProfitPilot comes in — not as “more reports,” but as a daily clarity tool. It helps
+                      That’s where ProfitPilot comes in not as “more reports,” but as a daily clarity tool. It helps
                       us keep income and expenses organized, separates cash movement from performance, and gives a clean
                       day-end result in plain language.
                     </p>
@@ -431,7 +431,7 @@ export default function ProfitPilotArticlePage() {
                 <section id="closing" className="space-y-4">
                   <SectionLabel>Wrap up</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    We deserve daily clarity — not end of month surprises
+                    We deserve daily clarity not end of month surprises
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
