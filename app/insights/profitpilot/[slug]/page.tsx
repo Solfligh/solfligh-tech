@@ -1,4 +1,5 @@
 // app/insights/profitpilot/[slug]/page.tsx
+
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
@@ -9,16 +10,24 @@ import {
   type InsightPost,
 } from "@/app/lib/insightsStore";
 
-// ✅ BUILD STAMP (to confirm you’re seeing the latest deployment)
-const BUILD_STAMP = "profitpilot-article-build-2026-01-29-v1";
+/**
+ * ✅ IMPORTANT
+ * Force this route to be dynamic so params.slug is always available
+ */
+export const dynamic = "force-dynamic";
 
-// ✅ Helps Next prebuild known slugs and stabilize params behavior on Vercel
-export const dynamicParams = true;
-
+/**
+ * ✅ Pre-generate known slugs (helps Next understand this is a dynamic route)
+ */
 export function generateStaticParams() {
-  const posts = listPostsByHub("profitpilot");
-  return posts.map((p) => ({ slug: p.slug }));
+  return listPostsByHub("profitpilot").map((post) => ({
+    slug: post.slug,
+  }));
 }
+
+/* ---------------------------------------------
+ * Small UI helpers
+ * -------------------------------------------- */
 
 function MetaPill({ children }: { children: React.ReactNode }) {
   return (
@@ -81,43 +90,22 @@ function safeDecode(value: string) {
   }
 }
 
-function readSlug(
-  params: Record<string, string | string[] | undefined> | undefined
-) {
-  if (!params) return "";
-
-  const direct = params["slug"];
-  if (typeof direct === "string") return safeDecode(direct.trim());
-  if (Array.isArray(direct)) return safeDecode((direct[0] ?? "").trim());
-
-  // Fallback: first param key (just in case)
-  const keys = Object.keys(params);
-  if (!keys.length) return "";
-  const first = params[keys[0]];
-  if (typeof first === "string") return safeDecode(first.trim());
-  if (Array.isArray(first)) return safeDecode((first[0] ?? "").trim());
-
-  return "";
-}
+/* ---------------------------------------------
+ * Page
+ * -------------------------------------------- */
 
 export default function ProfitPilotArticlePage({
   params,
 }: {
-  params?: Record<string, string | string[] | undefined>;
+  params: { slug: string };
 }) {
   const hub = getHub("profitpilot");
-  const hubTitle = hub?.title || "ProfitPilot";
 
-  const requestedSlug = readSlug(params);
-
-  const availablePosts = listPostsByHub("profitpilot");
-  const availableSlugs = availablePosts.map((p) => p.slug);
-
+  const requestedSlug = safeDecode((params?.slug ?? "").trim());
   const post = requestedSlug
     ? getPostBySlug("profitpilot", requestedSlug)
     : null;
 
-  // ✅ If NOT FOUND, ALWAYS show debug (no query string needed)
   if (!post) {
     return (
       <Container>
@@ -130,62 +118,16 @@ export default function ProfitPilotArticlePage({
               This article isn’t published (or the link is wrong).
             </p>
 
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
-              <p className="text-xs font-semibold text-slate-500">Debug</p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Build stamp:{" "}
-                <span className="font-semibold text-slate-900">
-                  {BUILD_STAMP}
-                </span>
-              </p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Params keys:{" "}
-                <span className="font-semibold text-slate-900">
-                  {params ? Object.keys(params).join(", ") || "(none)" : "(none)"}
-                </span>
-              </p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                params.slug raw:{" "}
-                <span className="font-semibold text-slate-900">
-                  {params && "slug" in params ? String(params.slug) : "(missing)"}
-                </span>
-              </p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Requested slug (decoded):{" "}
-                <span className="font-semibold text-slate-900">
-                  {requestedSlug || "(empty)"}
-                </span>
-              </p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Available slugs:{" "}
-                <span className="font-semibold text-slate-900">
-                  {availableSlugs.join(", ") || "(none)"}
-                </span>
-              </p>
-
-              <p className="mt-2 text-sm text-slate-700">
-                Match status:{" "}
-                <span className="font-semibold text-rose-600">
-                  NOT FOUND ❌
-                </span>
-              </p>
-            </div>
-
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
                 href="/insights/profitpilot"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
               >
                 Back to ProfitPilot hub
               </Link>
               <Link
                 href="/insights"
-                className="inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:text-slate-900"
+                className="inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 hover:text-slate-900"
               >
                 All Insights →
               </Link>
@@ -196,17 +138,16 @@ export default function ProfitPilotArticlePage({
     );
   }
 
+  const hubTitle = hub?.title || "ProfitPilot";
   const content = getProfitPilotArticleContent(post);
 
   return (
     <main className="bg-white text-slate-900">
       <Container>
         <div className="py-10 sm:py-12">
+          {/* Breadcrumb */}
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <Link
-              href="/insights"
-              className="font-semibold text-slate-600 hover:text-slate-900"
-            >
+            <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
               Insights
             </Link>
             <span className="text-slate-400">/</span>
@@ -220,10 +161,7 @@ export default function ProfitPilotArticlePage({
             <span className="font-semibold text-slate-900">Article</span>
           </div>
 
-          <div className="mt-2 text-xs text-slate-400">
-            Build: {BUILD_STAMP}
-          </div>
-
+          {/* Hero */}
           <div className="mt-8 max-w-3xl">
             <div className="flex flex-wrap gap-2">
               <MetaPill>{post.tag}</MetaPill>
@@ -242,95 +180,87 @@ export default function ProfitPilotArticlePage({
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-700"
               >
                 Talk to us
               </Link>
               <Link
                 href="/insights/profitpilot"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
               >
                 Back to hub
               </Link>
             </div>
           </div>
 
+          {/* Cover */}
           <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white">
             <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
               {post.coverImage ? (
-                <>
-                  <Image
-                    src={post.coverImage}
-                    alt={post.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 1100px"
-                    priority={false}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
-                </>
+                <Image
+                  src={post.coverImage}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 1100px"
+                />
               ) : (
                 <div className={`absolute inset-0 bg-gradient-to-br ${post.accent}`} />
               )}
             </div>
           </div>
 
+          {/* Body */}
           <div className="mt-10">
             <article className="mx-auto max-w-3xl space-y-12">
               {content.sections.map((s) => (
-                <section key={s.id} id={s.id} className="space-y-4">
+                <section key={s.id} className="space-y-4">
                   <SectionLabel>{s.label}</SectionLabel>
-                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                  <h2 className="text-2xl font-semibold sm:text-3xl">
                     {s.title}
                   </h2>
 
-                  <div className="space-y-4 text-base leading-relaxed text-slate-700">
-                    {s.paragraphs.map((p, idx) => (
-                      <p key={idx}>{p}</p>
-                    ))}
-                  </div>
+                  {s.paragraphs.map((p, i) => (
+                    <p key={i} className="text-slate-700">
+                      {p}
+                    </p>
+                  ))}
 
-                  {s.bullets?.length ? (
+                  {s.bullets && (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
-                      <ul className="space-y-2 text-sm text-slate-700">
+                      <ul className="space-y-2 text-sm">
                         {s.bullets.map((b) => (
-                          <li key={b} className="flex items-start gap-2">
+                          <li key={b} className="flex gap-2">
                             <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
-                            <span>{b}</span>
+                            {b}
                           </li>
                         ))}
                       </ul>
                     </div>
-                  ) : null}
+                  )}
 
-                  {s.callout ? (
-                    <Callout title={s.callout.title}>{s.callout.body}</Callout>
-                  ) : null}
+                  {s.callout && (
+                    <Callout title={s.callout.title}>
+                      {s.callout.body}
+                    </Callout>
+                  )}
 
-                  {s.numbers ? (
+                  {s.numbers && (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
-                      <p className="text-sm font-semibold text-slate-900">
-                        Example (simple, decision-ready):
-                      </p>
-                      <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                        <NumberCard
-                          label="Income today"
-                          value={s.numbers.income}
-                          note="What came in today."
-                        />
-                        <NumberCard
-                          label="Expenses today"
-                          value={s.numbers.expenses}
-                          note="What today triggered."
-                        />
-                        <NumberCard
-                          label="You made (today)"
-                          value={s.numbers.made}
-                          note="The result you can act on."
-                        />
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <NumberCard label="Income today" value={s.numbers.income} note="What came in today." />
+                        <NumberCard label="Expenses today" value={s.numbers.expenses} note="What today triggered." />
+                        <NumberCard label="You made (today)" value={s.numbers.made} note="The result you can act on." />
                       </div>
                     </div>
-                  ) : null}
+                  )}
+
+                  {s.cta && (
+                    <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                      <p className="font-semibold">{s.cta.title}</p>
+                      <p className="mt-2 text-sm text-slate-700">{s.cta.body}</p>
+                    </div>
+                  )}
                 </section>
               ))}
             </article>
@@ -341,6 +271,10 @@ export default function ProfitPilotArticlePage({
   );
 }
 
+/* ---------------------------------------------
+ * Article content (local, controlled)
+ * -------------------------------------------- */
+
 function getProfitPilotArticleContent(post: InsightPost) {
   if (post.slug === "why-most-smes-dont-actually-know-how-much-they-made-today") {
     return {
@@ -348,52 +282,30 @@ function getProfitPilotArticleContent(post: InsightPost) {
         {
           id: "hook",
           label: "Start here",
-          title: "As a small business owner, you’ve felt this before",
+          title: "If you’re a small business owner, you’ve felt this before",
           paragraphs: [
-            "We close for the day. We’re tired. Sales happened. Money moved. People worked.",
-            "Then the real question shows up:",
-            "“Did we actually make money today… or did we just stay busy?”",
-            "If the honest answer is “I’m not sure,” you’re not alone — and you’re not doing anything wrong. Most businesses are running with tools that were never built to answer daily profit clearly.",
-          ],
-          callout: {
-            title: "The daily goal",
-            body: (
-              <>
-                At the end of each day, we should be able to say one simple sentence with confidence:{" "}
-                <span className="font-semibold text-slate-900">“We made ₦___ today.”</span>
-              </>
-            ),
-          },
-        },
-        {
-          id: "why-its-hard",
-          label: "Why it happens",
-          title: "Why today’s profit feels hard to know",
-          paragraphs: [
-            "Most of us end the day with data — but not clarity.",
-            "We check bank balance, sales alerts, and customer payments. Helpful… but those don’t answer profit.",
-            "Profit is the difference between what we earned today and what today truly cost us. If our tools don’t show both clearly, we keep guessing.",
-          ],
-          bullets: [
-            "Sales is not profit (we can sell and still lose money).",
-            "Bank balance is not performance (cash moves for many reasons).",
-            "Monthly reports are too late for daily decisions.",
-            "Expenses are often scattered (notes, WhatsApp, memory).",
+            "You close for the day. Sales happened. Money moved. Then the question shows up:",
+            "Did we actually make money today?",
           ],
         },
         {
-          id: "what-clarity-looks-like",
+          id: "numbers",
           label: "What good looks like",
-          title: "What a clear day-end view should show us",
-          paragraphs: [
-            "A good system doesn’t make us feel like we’re doing accounting. It feels like checking the score after a match.",
-            "We want something simple enough to understand fast — but accurate enough to trust.",
-          ],
+          title: "A clear, decision-ready day",
+          paragraphs: [],
           numbers: {
             income: "₦120,000",
             expenses: "₦81,500",
             made: "₦38,500",
           },
+        },
+        {
+          id: "wrap",
+          label: "Wrap up",
+          title: "Clarity beats guesswork",
+          paragraphs: [
+            "You deserve to know how your business performed today — not next month.",
+          ],
         },
       ],
     };
@@ -405,10 +317,7 @@ function getProfitPilotArticleContent(post: InsightPost) {
         id: "coming-soon",
         label: "Coming soon",
         title: "This article is being prepared",
-        paragraphs: [
-          "This piece isn’t published yet.",
-          "Check back soon — or explore other articles in the ProfitPilot hub.",
-        ],
+        paragraphs: ["Check back shortly."],
       },
     ],
   };
