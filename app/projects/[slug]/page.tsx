@@ -186,7 +186,7 @@ export async function generateMetadata({
 
   if (!project) {
     return {
-      title: "Project not found — SOLFLIGH TECH",
+      title: "Project not found  SOLFLIGH TECH",
       description: "This project could not be found.",
       robots: { index: false, follow: true },
     };
@@ -215,7 +215,7 @@ export async function generateMetadata({
   });
 
   return {
-    title: `${name} — SOLFLIGH TECH`,
+    title: `${name} SOLFLIGH TECH`,
     description: safeDescription,
     alternates: { canonical },
     robots,
@@ -288,14 +288,14 @@ export default async function ProjectDetailPage({
           {
             title: "Why Most Business Owners Don’t Actually Know How Much They Made Today",
             description:
-              "A plain-language explanation of why “today’s profit” feels so hard to pin down — and why it isn’t your fault.",
+              "A plain-language explanation of why “today’s profit” feels so hard to pin down and why it isn’t your fault.",
             href: "/insights/profitpilot/why-most-business-owners-dont-know-how-much-they-made-today",
             tag: "Problem Awareness",
           },
           {
             title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
             description:
-              "A simple explanation of cash movement vs real performance — and how to stop confusing the two.",
+              "A simple explanation of cash movement vs real performance and how to stop confusing the two.",
             href: "/insights/profitpilot",
             tag: "Solution Awareness",
           },
