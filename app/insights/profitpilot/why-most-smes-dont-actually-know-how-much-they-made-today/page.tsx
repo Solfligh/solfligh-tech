@@ -1,3 +1,4 @@
+// app/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
@@ -33,61 +34,88 @@ function NumberCard({ label, value, note }: { label: string; value: string; note
   );
 }
 
+type ArticleSection = {
+  id: string;
+  label: string;
+  title: string;
+  paragraphs: string[];
+  bullets?: string[];
+  callout?: { title: string; body: React.ReactNode };
+  numbers?: { income: string; expenses: string; made: string };
+  cta?: { title: string; body: string };
+};
+
 export default function ProfitPilotArticleStaticPage() {
   const post = {
+    title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
+    description:
+      "Many small business owners end the day with activity, sales alerts, and a bank balance — but still can’t confidently answer one question: did we actually make money today?",
     tag: "Problem Awareness",
     readingTime: "4–6 min",
     dateLabel: "Jan 2026",
-    title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
-    description:
-      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
     coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
     accent: "from-sky-500/20 to-blue-500/10",
   };
 
-  const sections = [
+  const sections: ArticleSection[] = [
     {
       id: "hook",
       label: "Start here",
-      title: "If you’re a small business owner, you’ve felt this before",
+      title: "As a small business owner, we’ve all felt this before",
       paragraphs: [
-        "You close for the day. You’re tired. Sales happened. Money moved. People worked. Then the real question shows up:",
-        "“Did we actually make money today… or did we just stay busy?”",
-        "If your honest answer is “I’m not sure”, you’re not alone — and you’re not doing anything wrong. Most small businesses are running with tools that were never built to answer daily profit clearly.",
+        "We close for the day. We’re tired. Sales happened. Money moved. People worked. Then the real question shows up:",
+        "Did we actually make money today… or did we just stay busy?",
+        "If our honest answer is “I’m not sure,” we’re not alone — and we’re not doing anything wrong. Most small businesses are running with tools that were never built to give daily profit clarity.",
       ],
       callout: {
         title: "The goal",
         body: (
           <>
-            At the end of each day, you should be able to say one simple sentence with confidence:{" "}
+            At the end of each day, we should be able to say one simple sentence with confidence:{" "}
             <span className="font-semibold text-slate-900">“We made ₦___ today.”</span>
           </>
         ),
       },
     },
     {
-      id: "why-its-hard",
-      label: "Why it happens",
-      title: "Why today’s profit feels impossible to know",
+      id: "profit-vs-cash",
+      label: "Get the meaning right",
+      title: "Why “money came in” still doesn’t mean “we made profit”",
       paragraphs: [
-        "Most business owners end the day with data — but not clarity.",
-        "We usually check things like bank balance, sales notifications, and customer payments. Those are helpful, but they don’t answer profit.",
-        "Profit is the difference between what you earned today and what today truly cost you. If your tools can’t show both clearly, you’ll keep guessing.",
+        "When we check the business at night, most of us look at three things: sales, bank balance, and customer messages.",
+        "Those signals are useful — but they don’t answer profit.",
+        "Profit is what’s left after today’s income covers today’s real costs. And costs don’t only mean the cash we spent today — it includes things like inventory used, delivery costs triggered by today’s sales, card charges, staff time, and everyday operating expenses.",
       ],
       bullets: [
-        "Sales is not profit (you can sell and still lose money).",
-        "Bank balance is not performance (cash moves for many reasons).",
-        "Monthly reports are too late for daily decisions.",
-        "Receipts and expenses are often scattered (WhatsApp, notes, memory).",
+        "A business can have strong sales and still lose money (pricing, wastage, high costs).",
+        "A business can have cash in the bank and still be unprofitable (debt, deposits, unpaid expenses).",
+        "A business can be profitable and still feel “broke” (customers owe, stock was purchased, cash timing).",
+      ],
+    },
+    {
+      id: "why-its-hard",
+      label: "Why it happens",
+      title: "Why daily profit is hard to see in real life",
+      paragraphs: [
+        "Most SMEs don’t lack effort — we lack a simple daily system.",
+        "Here’s what usually happens: income is tracked (sometimes). Expenses are scattered. And decisions are made from memory or vibes.",
+        "The result is confusion. We feel busy, but we can’t measure performance daily.",
+      ],
+      bullets: [
+        "Sales records live in different places (POS, bank alerts, WhatsApp, notebooks).",
+        "Expenses happen in small, frequent chunks (fuel, data, staff lunch, deliveries, supplies).",
+        "Some costs don’t feel like “today’s costs” but they were triggered by today’s activity.",
+        "Monthly reports come too late — daily decisions need daily clarity.",
       ],
     },
     {
       id: "what-clarity-looks-like",
       label: "What good looks like",
-      title: "What a clear day-end view should show you",
+      title: "What a clean day-end view should show (in 10 seconds)",
       paragraphs: [
-        "A good system doesn’t make you feel like you’re doing accounting. It feels like checking the score after a match.",
-        "We want something simple enough to understand in 10 seconds — but accurate enough to trust.",
+        "A good system shouldn’t make us feel like we’re doing accounting.",
+        "It should feel like checking the score after a match — simple, quick, and decision-ready.",
+        "At minimum, we need three numbers that tell the story of today:",
       ],
       numbers: {
         income: "₦120,000",
@@ -96,16 +124,57 @@ export default function ProfitPilotArticleStaticPage() {
       },
     },
     {
+      id: "how-to-fix",
+      label: "How to fix it",
+      title: "A practical daily routine any small business can run",
+      paragraphs: [
+        "We don’t need complex finance to be clear. We need consistency.",
+        "Here’s a simple routine that works even if we’re starting from scratch:",
+      ],
+      bullets: [
+        "Capture today’s income (sales, transfers, POS receipts) in one place.",
+        "Capture today’s expenses (even the small ones). Don’t trust memory.",
+        "Separate “profit” from “cash movement.” Treat them as different questions.",
+        "End the day with one sentence: “We made ₦___ today.”",
+      ],
+      callout: {
+        title: "If we do only one thing",
+        body: (
+          <>
+            Pick one place to record daily numbers (even a simple sheet) and make it non-negotiable for 14 days.
+            Clarity improves fast when the habit becomes normal.
+          </>
+        ),
+      },
+    },
+    {
+      id: "where-profitpilot-fits",
+      label: "For solution-aware readers",
+      title: "Where ProfitPilot fits (without changing how we run the business)",
+      paragraphs: [
+        "Once the routine is clear, the next step is reducing manual work and mistakes.",
+        "That’s where ProfitPilot helps: it keeps daily income and expenses organized, calculates the day-end result automatically, and gives a clean daily view without accounting jargon.",
+        "The goal isn’t more “reports.” The goal is clarity that supports better pricing, better spending decisions, and better peace of mind.",
+      ],
+      bullets: [
+        "Daily “You made today” view (profit, not confusion).",
+        "Clean separation between profit and cash movement.",
+        "Simple categories that match real SME behavior.",
+        "A clear record we can trust when we want to grow or get funding later.",
+      ],
+    },
+    {
       id: "conclusion",
       label: "Wrap up",
-      title: "So… did we make money today?",
+      title: "We deserve daily clarity — not end-of-month surprises",
       paragraphs: [
-        "That question should not feel scary. It should feel normal.",
-        "If you’re running a business, you deserve clarity that matches your pace — daily, not “maybe at month end.”",
+        "That question — “did we make money today?” — should not feel scary.",
+        "It should feel normal.",
+        "When we can measure today clearly, we stop guessing, we stop arguing with numbers, and we start making calmer decisions.",
       ],
       cta: {
-        title: "Want this level of clarity for your business?",
-        body: "Send us a message. We’ll show you the simplest way to track daily profit clearly — and what ProfitPilot will automate for you.",
+        title: "Want help setting this up the simple way?",
+        body: "Send us a message. We’ll show a clean daily profit setup that fits your business — and what ProfitPilot will automate for you.",
       },
     },
   ];
@@ -193,7 +262,7 @@ export default function ProfitPilotArticleStaticPage() {
                     ))}
                   </div>
 
-                  {"bullets" in s && s.bullets?.length ? (
+                  {s.bullets?.length ? (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
                       <ul className="space-y-2 text-sm text-slate-700">
                         {s.bullets.map((b) => (
@@ -206,24 +275,24 @@ export default function ProfitPilotArticleStaticPage() {
                     </div>
                   ) : null}
 
-                  {"callout" in s && s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
+                  {s.callout ? <Callout title={s.callout.title}>{s.callout.body}</Callout> : null}
 
-                  {"numbers" in s && s.numbers ? (
+                  {s.numbers ? (
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
                       <p className="text-sm font-semibold text-slate-900">Example (simple, decision-ready):</p>
                       <div className="mt-4 grid gap-4 sm:grid-cols-3">
                         <NumberCard label="Income today" value={s.numbers.income} note="What came in today." />
                         <NumberCard label="Expenses today" value={s.numbers.expenses} note="What today triggered." />
-                        <NumberCard label="You made (today)" value={s.numbers.made} note="The result you can act on." />
+                        <NumberCard label="We made (today)" value={s.numbers.made} note="The result we can act on." />
                       </div>
                       <p className="mt-4 text-sm text-slate-700">
                         This is the sentence we want to confidently say every day:{" "}
-                        <span className="font-semibold text-slate-900">“You made {s.numbers.made} today.”</span>
+                        <span className="font-semibold text-slate-900">“We made {s.numbers.made} today.”</span>
                       </p>
                     </div>
                   ) : null}
 
-                  {"cta" in s && s.cta ? (
+                  {s.cta ? (
                     <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
                       <p className="text-sm font-semibold text-slate-900">{s.cta.title}</p>
                       <p className="mt-2 text-sm text-slate-700">{s.cta.body}</p>
