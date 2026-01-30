@@ -109,7 +109,7 @@ export default function ProfitPilotArticlePage() {
     coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
     title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
     subtitle:
-      "Many small business owners end the day with activity, sales alerts, and a bank balance — but still can’t confidently answer one question: did we actually make money today?",
+      "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did we actually make money today?",
   };
 
   // ✅ Waitlist destination (uses your existing contact page)
@@ -231,7 +231,7 @@ export default function ProfitPilotArticlePage() {
                   />
                   <Card
                     title="Daily clarity beats end-of-month surprises"
-                    desc="Small businesses live daily — decisions should be guided by daily truth."
+                    desc="Small businesses live daily decisions should be guided by daily truth."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
                         <path d="M8 7h8M8 12h8M8 17h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -303,7 +303,7 @@ export default function ProfitPilotArticlePage() {
                 <section id="why-its-hard" className="space-y-4">
                   <SectionLabel>Why it happens</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The problem isn’t discipline — it’s visibility
+                    The problem isn’t discipline it’s visibility
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
@@ -368,7 +368,7 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      We don’t need complex finance to be clear. We need consistency — one place, one daily habit.
+                      We don’t need complex finance to be clear. We need consistency one place, one daily habit.
                     </p>
                     <p>Here’s a simple routine any SME can run:</p>
                   </div>
@@ -400,7 +400,7 @@ export default function ProfitPilotArticlePage() {
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>Once the routine is clear, the next step is reducing manual work and mistakes.</p>
                     <p>
-                      That’s where ProfitPilot comes in — not as “more reports,” but as a daily clarity tool. It helps
+                      That’s where ProfitPilot comes in not as “more reports,” but as a daily clarity tool. It helps
                       us keep income and expenses organized, separates cash movement from performance, and gives a clean
                       day-end result in plain language.
                     </p>
