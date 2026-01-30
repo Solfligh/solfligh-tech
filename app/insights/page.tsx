@@ -123,7 +123,7 @@ export default function InsightsIndexPage() {
           <PageHeader
             badge="Library"
             title="Insights"
-            subtitle="We write to make complicated business problems feel simple — and to explain how we think when building products."
+            subtitle="We write to make complicated business problems feel simple and to explain how we think when building products."
           />
 
           <div className="flex flex-wrap gap-2">
