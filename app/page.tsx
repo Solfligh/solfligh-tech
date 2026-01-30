@@ -84,7 +84,7 @@ const features = [
   },
   {
     title: "Web apps built for scale",
-    desc: "Next.js + modern tooling, structured codebases, and production-ready performance from day one.",
+    desc: "Next.js + modern tooling, structured codebases, and production ready performance from day one.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
         <path d="M7 16V8m5 10V6m5 12v-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -166,12 +166,12 @@ const process = [
 const testimonials = [
   {
     quote:
-      "You can feel the difference — everything is clean, premium, and structured. It’s not just a website; it’s a foundation.",
+      "You can feel the difference everything is clean, premium, and structured. It’s not just a website; it’s a foundation.",
     name: "Founder",
     title: "Digital Product",
   },
   {
-    quote: "The UI looks expensive, but it’s still simple. And the workflows are actually practical — no fluff.",
+    quote: "The UI looks expensive, but it’s still simple. And the workflows are actually practical no fluff.",
     name: "Operator",
     title: "SME Team",
   },
@@ -259,7 +259,7 @@ export default function HomePage() {
                 </h1>
 
                 <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">
-                  SOLFLIGH TECH designs and builds premium websites, web apps, and automation systems that make
+                  SOLFLIGH TECH designs and builds premium websites, Apps, web apps, and automation systems that make
                   businesses faster, clearer, and more profitable.
                 </p>
 
@@ -382,7 +382,7 @@ export default function HomePage() {
                 </div>
 
                 <p className="mt-4 text-xs leading-relaxed text-slate-500">
-                  Clean visuals, real structure — designed to feel premium while staying simple and readable.
+                  Clean visuals, real structure designed to feel premium while staying simple and readable.
                 </p>
               </div>
             </div>
@@ -442,7 +442,7 @@ export default function HomePage() {
                       </h2>
 
                       <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                        Our Insights are where we break down real business problems in plain language — so clients can
+                        Our Insights are where we break down real business problems in plain language so clients can
                         trust the approach before they buy.
                       </p>
 
