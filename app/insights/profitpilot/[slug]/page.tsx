@@ -1,3 +1,4 @@
+// build: profitpilot-articles-v3
 // app/insights/profitpilot/[slug]/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
