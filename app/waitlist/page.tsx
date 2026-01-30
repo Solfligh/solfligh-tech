@@ -111,7 +111,7 @@ function WaitlistContent() {
               </h1>
 
               <p className="mt-3 text-base leading-relaxed text-slate-600">
-                Get notified when early access opens. No spam — just product updates and your invite.
+                Get notified when early access opens. No spam just product updates and your invite.
               </p>
 
               <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
