@@ -7,7 +7,7 @@ import Container from "@/app/components/Container";
 export const metadata: Metadata = {
   title: "Why Most SMEs Don’t Actually Know How Much They Made Today | ProfitPilot | SolFligh Tech",
   description:
-    "Many small business owners end the day with activity, sales alerts, and a bank balance — but still can’t confidently answer one question: did we actually make money today? Here’s why, and the simple fix.",
+    "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did we actually make money today? Here’s why, and the simple fix.",
 };
 
 function MetaPill({ children }: { children: React.ReactNode }) {
@@ -252,7 +252,7 @@ export default function ProfitPilotArticlePage() {
                       Did we actually make money today… or did we just stay busy?
                     </p>
                     <p>
-                      If our honest answer is “I’m not sure,” we’re not alone — and we’re not doing anything wrong.
+                      If our honest answer is “I’m not sure,” we’re not alone and we’re not doing anything wrong.
                       Most small businesses are running with tools that were never built to give daily profit clarity.
                     </p>
                   </div>
@@ -260,7 +260,7 @@ export default function ProfitPilotArticlePage() {
                   <Callout title="The goal">
                     <>
                       At the end of each day, we should be able to say one simple sentence with confidence:{" "}
-                      <span className="font-semibold text-slate-900">“We made ₦___ today.”</span>
+                      <span className="font-semibold text-slate-900">“We made ₦ ___ today.”</span>
                     </>
                   </Callout>
                 </section>
@@ -275,11 +275,11 @@ export default function ProfitPilotArticlePage() {
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
                       When we check the business at night, most of us look at sales, bank balance, and cash on hand.
-                      Those signals are useful — but they don’t answer profit.
+                      Those signals are useful but they don’t answer profit.
                     </p>
                     <p>
                       Profit is what’s left after today’s income covers today’s real costs. And costs don’t only mean
-                      the cash we spent today — it includes inventory used, delivery costs triggered by today’s sales,
+                      the cash we spent today it includes inventory used, delivery costs triggered by today’s sales,
                       fees, staff time, and everyday running expenses.
                     </p>
                   </div>
@@ -304,7 +304,7 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      Most SMEs don’t lack effort — we lack a simple daily system. Income is tracked (sometimes),
+                      Most SMEs don’t lack effort we lack a simple daily system. Income is tracked (sometimes),
                       expenses are scattered, and decisions are made from memory or vibes.
                     </p>
                     <p>
@@ -317,7 +317,7 @@ export default function ProfitPilotArticlePage() {
                       "Sales records live in different places (POS, bank alerts, WhatsApp, notebooks).",
                       "Expenses happen in small, frequent chunks (fuel, data, deliveries, supplies).",
                       "Some costs don’t feel like “today’s costs” but they were triggered by today’s activity.",
-                      "Monthly reports come too late — daily decisions need daily truth.",
+                      "Monthly reports come too late daily decisions need daily truth.",
                     ]}
                   />
                 </section>
@@ -332,7 +332,7 @@ export default function ProfitPilotArticlePage() {
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
                       A good system shouldn’t make us feel like we’re doing accounting. It should feel like checking
-                      the score after a match — simple, quick, and decision-ready.
+                      the score after a match simple, quick, and decision-ready.
                     </p>
                     <p>At minimum, we want three numbers that tell the story of today:</p>
                   </div>
@@ -374,7 +374,7 @@ export default function ProfitPilotArticlePage() {
                       "Capture today’s income (sales, transfers, POS receipts) in one place.",
                       "Capture today’s expenses (even small ones). Don’t trust memory.",
                       "Separate “profit” from “cash movement.” Treat them as different questions.",
-                      "End the day with one sentence: “We made ₦___ today.”",
+                      "End the day with one sentence: “We made ₦ ___ today.”",
                     ]}
                   />
 
@@ -421,12 +421,12 @@ export default function ProfitPilotArticlePage() {
                 <section id="closing" className="space-y-4">
                   <SectionLabel>Wrap up</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    We deserve daily clarity — not end-of-month surprises
+                    We deserve daily clarity not end of month surprises
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      That question — “did we make money today?” — should not feel scary. It should feel normal.
+                      That question “did we make money today?” should not feel scary. It should feel normal.
                     </p>
                     <p>
                       When we can measure today clearly, we stop arguing with numbers and we make calmer decisions.
