@@ -39,13 +39,12 @@ export async function POST(req: Request) {
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !serviceKey) {
-      // Hard fail would break your “1%” experience.
-      // So we return a clear error for you to fix, but still 200 for user UX.
+      // Keep UX smooth; still confirm signup to the user.
       return NextResponse.json({
         ok: true,
         stored: false,
         message:
-          "You’re on the waitlist. (Server storage not configured yet — add SUPABASE_SERVICE_ROLE_KEY in Vercel.)",
+          "You’re on the waitlist. (Storage not configured yet — add SUPABASE_SERVICE_ROLE_KEY in Vercel.)",
       });
     }
 
