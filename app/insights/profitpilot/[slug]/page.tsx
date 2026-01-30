@@ -107,6 +107,9 @@ export default function ProfitPilotArticlePage({
         <div className="py-16">
           <div className="rounded-3xl border border-slate-200 bg-white p-8">
             <p className="text-sm font-semibold text-slate-900">
+              <p className="mt-3 text-xs font-semibold text-slate-500">
+  BUILD: profitpilot-article-debug-v2
+</p>
               Article not found
             </p>
             <p className="mt-2 text-sm text-slate-600">
