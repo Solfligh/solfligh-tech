@@ -81,15 +81,7 @@ function BulletList({ items }: { items: string[] }) {
   );
 }
 
-function NumberCard({
-  label,
-  value,
-  note,
-}: {
-  label: string;
-  value: string;
-  note: string;
-}) {
+function NumberCard({ label, value, note }: { label: string; value: string; note: string }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4">
       <p className="text-xs font-semibold text-slate-500">{label}</p>
@@ -113,13 +105,12 @@ export default function ProfitPilotArticlePage() {
       "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did we actually make money today?",
   };
 
-  // ✅ REAL waitlist page
-  const waitlistHref = "/waitlist";
+  // ✅ REAL waitlist page (not contact)
+  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_article";
 
   return (
     <main className="bg-white text-slate-900">
       <section className="relative overflow-hidden">
-        {/* very subtle background */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
           <div className="absolute -left-24 -top-32 h-96 w-96 rounded-full bg-sky-200/25 blur-3xl" />
           <div className="absolute -right-24 top-10 h-[28rem] w-[28rem] rounded-full bg-blue-200/20 blur-3xl" />
@@ -128,7 +119,6 @@ export default function ProfitPilotArticlePage() {
 
         <Container>
           <div className="relative py-10 sm:py-12">
-            {/* Breadcrumb */}
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Link
                 href={meta.insightsHref}
@@ -147,7 +137,6 @@ export default function ProfitPilotArticlePage() {
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
-            {/* HERO */}
             <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
               <div className="space-y-5">
                 <div className="flex flex-wrap items-center gap-2">
@@ -181,14 +170,13 @@ export default function ProfitPilotArticlePage() {
                 </div>
               </div>
 
-              {/* right: small summary box */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
                   In one sentence
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Most small businesses can’t confidently say what they made today because they
-                  track <span className="font-semibold text-slate-900">sales</span> and{" "}
+                  Most small businesses can’t confidently say what they made today because they track{" "}
+                  <span className="font-semibold text-slate-900">sales</span> and{" "}
                   <span className="font-semibold text-slate-900">cash</span>, but not{" "}
                   <span className="font-semibold text-slate-900">daily profit</span>.
                 </p>
@@ -199,20 +187,23 @@ export default function ProfitPilotArticlePage() {
                     <p className="mt-1 text-sm font-bold text-slate-900">
                       Daily performance clarity
                     </p>
-                    <p className="mt-1 text-xs text-slate-600">Simple enough for 10 seconds.</p>
+                    <p className="mt-1 text-xs text-slate-600">
+                      Simple enough for 10 seconds.
+                    </p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
                     <p className="text-xs font-semibold text-slate-500">What we usually get</p>
                     <p className="mt-1 text-sm font-bold text-slate-900">
                       Bank balance + sales alerts
                     </p>
-                    <p className="mt-1 text-xs text-slate-600">Useful, but not the answer.</p>
+                    <p className="mt-1 text-xs text-slate-600">
+                      Useful, but not the answer.
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Cover */}
             <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
                 <Image
@@ -227,21 +218,14 @@ export default function ProfitPilotArticlePage() {
               </div>
             </div>
 
-            {/* BODY */}
             <div className="mt-10">
               <article className="mx-auto max-w-3xl space-y-12">
-                {/* quick takeaways */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Card
                     title="Busy doesn’t always mean profitable"
                     desc="A day can feel successful and still quietly lose money once costs show up."
                     icon={
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-5 w-5"
-                        fill="none"
-                        aria-hidden="true"
-                      >
+                      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
                         <path
                           d="M7 16V8m5 10V6m5 12v-7"
                           stroke="currentColor"
@@ -255,12 +239,7 @@ export default function ProfitPilotArticlePage() {
                     title="Daily clarity beats end-of-month surprises"
                     desc="Small businesses live daily — decisions should be guided by daily truth."
                     icon={
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-5 w-5"
-                        fill="none"
-                        aria-hidden="true"
-                      >
+                      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
                         <path
                           d="M8 7h8M8 12h8M8 17h8"
                           stroke="currentColor"
@@ -278,7 +257,6 @@ export default function ProfitPilotArticlePage() {
                   />
                 </div>
 
-                {/* Section 1 */}
                 <section id="hook" className="space-y-4">
                   <SectionLabel>Start here</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -287,29 +265,26 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      We close for the day. We’re tired. Sales happened. Money moved. People
-                      worked. Then the real question shows up:
+                      We close for the day. We’re tired. Sales happened. Money moved. People worked. Then the real
+                      question shows up:
                     </p>
                     <p className="font-semibold text-slate-900">
                       Did we actually make money today… or did we just stay busy?
                     </p>
                     <p>
-                      If our honest answer is “I’m not sure,” we’re not alone and we’re not
-                      doing anything wrong. Most small businesses are running with tools that
-                      were never built to give daily profit clarity.
+                      If our honest answer is “I’m not sure,” we’re not alone and we’re not doing anything wrong.
+                      Most small businesses are running with tools that were never built to give daily profit clarity.
                     </p>
                   </div>
 
                   <Callout title="The goal">
                     <>
-                      At the end of each day, we should be able to say one simple sentence with
-                      confidence:{" "}
+                      At the end of each day, we should be able to say one simple sentence with confidence:{" "}
                       <span className="font-semibold text-slate-900">“We made ₦ ___ today.”</span>
                     </>
                   </Callout>
                 </section>
 
-                {/* Section 2 */}
                 <section id="profit-vs-cash" className="space-y-4">
                   <SectionLabel>Get the meaning right</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -318,15 +293,13 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      When we check the business at night, most of us look at sales, bank
-                      balance, and cash on hand. Those signals are useful, but they don’t answer
-                      profit.
+                      When we check the business at night, most of us look at sales, bank balance, and cash on hand.
+                      Those signals are useful but they don’t answer profit.
                     </p>
                     <p>
-                      Profit is what’s left after today’s income covers today’s real costs. And
-                      costs don’t only mean the cash we spent today — it includes inventory used,
-                      delivery costs triggered by today’s sales, fees, staff time, and everyday
-                      running expenses.
+                      Profit is what’s left after today’s income covers today’s real costs. And costs don’t only mean
+                      the cash we spent today — it includes inventory used, delivery costs triggered by today’s sales,
+                      fees, staff time, and everyday running expenses.
                     </p>
                   </div>
 
@@ -341,7 +314,6 @@ export default function ProfitPilotArticlePage() {
 
                 <Divider />
 
-                {/* Section 3 */}
                 <section id="why-its-hard" className="space-y-4">
                   <SectionLabel>Why it happens</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -350,13 +322,11 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      Most SMEs don’t lack effort — we lack a simple daily system. Income is
-                      tracked (sometimes), expenses are scattered, and decisions are made from
-                      memory or vibes.
+                      Most SMEs don’t lack effort — we lack a simple daily system. Income is tracked (sometimes),
+                      expenses are scattered, and decisions are made from memory or vibes.
                     </p>
                     <p>
-                      The result is confusion: we feel busy, but we can’t measure daily performance
-                      with confidence.
+                      The result is confusion: we feel busy, but we can’t measure daily performance with confidence.
                     </p>
                   </div>
 
@@ -370,7 +340,6 @@ export default function ProfitPilotArticlePage() {
                   />
                 </section>
 
-                {/* Section 4 */}
                 <section id="what-clarity-looks-like" className="space-y-4">
                   <SectionLabel>What good looks like</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -379,16 +348,14 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      A good system shouldn’t make us feel like we’re doing accounting. It should
-                      feel like checking the score after a match — simple, quick, and decision-ready.
+                      A good system shouldn’t make us feel like we’re doing accounting. It should feel like checking
+                      the score after a match — simple, quick, and decision-ready.
                     </p>
                     <p>At minimum, we want three numbers that tell the story of today:</p>
                   </div>
 
                   <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p className="text-sm font-semibold text-slate-900">
-                      Example (illustrative numbers):
-                    </p>
+                    <p className="text-sm font-semibold text-slate-900">Example (illustrative numbers):</p>
 
                     <div className="mt-4 grid gap-4 sm:grid-cols-3">
                       <NumberCard label="Income today" value="₦120,000" note="What came in today." />
@@ -405,7 +372,6 @@ export default function ProfitPilotArticlePage() {
 
                 <Divider />
 
-                {/* Section 5 */}
                 <section id="simple-routine" className="space-y-4">
                   <SectionLabel>Do this first</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -414,8 +380,7 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      We don’t need complex finance to be clear. We need consistency — one place,
-                      one daily habit.
+                      We don’t need complex finance to be clear. We need consistency — one place, one daily habit.
                     </p>
                     <p>Here’s a simple routine any SME can run:</p>
                   </div>
@@ -437,7 +402,6 @@ export default function ProfitPilotArticlePage() {
                   </Callout>
                 </section>
 
-                {/* Section 6 */}
                 <section id="profitpilot" className="space-y-4">
                   <SectionLabel>Where ProfitPilot fits</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -464,7 +428,6 @@ export default function ProfitPilotArticlePage() {
                   />
                 </section>
 
-                {/* Conclusion + CTA */}
                 <section id="closing" className="space-y-4">
                   <SectionLabel>Wrap up</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -472,20 +435,16 @@ export default function ProfitPilotArticlePage() {
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
-                    <p>
-                      That question “did we make money today?” should not feel scary. It should feel normal.
-                    </p>
-                    <p>
-                      When we can measure today clearly, we stop arguing with numbers and we make calmer decisions.
-                    </p>
+                    <p>That question “did we make money today?” should not feel scary. It should feel normal.</p>
+                    <p>When we can measure today clearly, we stop arguing with numbers and we make calmer decisions.</p>
                   </div>
 
                   <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
                     <p className="text-sm font-semibold text-slate-900">
-                      Want help setting this up the simple way?
+                      Want early access to ProfitPilot?
                     </p>
                     <p className="mt-2 text-sm text-slate-700">
-                      Join the waitlist for ProfitPilot. You’ll get early access updates, and we’ll notify you when it’s ready.
+                      Join the waitlist. You’ll get early access updates, and we’ll notify you when it’s ready.
                     </p>
 
                     <div className="mt-4 flex flex-wrap gap-3">
