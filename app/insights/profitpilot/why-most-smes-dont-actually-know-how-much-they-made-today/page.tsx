@@ -220,7 +220,12 @@ export default function ProfitPilotArticlePage() {
                     desc="A day can feel successful and still quietly lose money once costs show up."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
-                        <path d="M7 16V8m5 10V6m5 12v-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                        <path
+                          d="M7 16V8m5 10V6m5 12v-7"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
                       </svg>
                     }
                   />
@@ -229,7 +234,12 @@ export default function ProfitPilotArticlePage() {
                     desc="Small businesses live daily — decisions should be guided by daily truth."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
-                        <path d="M8 7h8M8 12h8M8 17h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                        <path
+                          d="M8 7h8M8 12h8M8 17h8"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
                         <path d="M5 7h.01M5 12h.01M5 17h.01" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                       </svg>
                     }
@@ -245,15 +255,13 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      We close for the day. We’re tired. Sales happened. Money moved. People worked. Then the real
-                      question shows up:
+                      We close for the day. We’re tired. Sales happened. Money moved. People worked. Then the real question shows up:
                     </p>
                     <p className="font-semibold text-slate-900">
                       Did we actually make money today… or did we just stay busy?
                     </p>
                     <p>
-                      If our honest answer is “I’m not sure,” we’re not alone and we’re not doing anything wrong.
-                      Most small businesses are running with tools that were never built to give daily profit clarity.
+                      If our honest answer is “I’m not sure,” we’re not alone and we’re not doing anything wrong. Most small businesses are running with tools that were never built to give daily profit clarity.
                     </p>
                   </div>
 
@@ -274,13 +282,10 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      When we check the business at night, most of us look at sales, bank balance, and cash on hand.
-                      Those signals are useful but they don’t answer profit.
+                      When we check the business at night, most of us look at sales, bank balance, and cash on hand. Those signals are useful but they don’t answer profit.
                     </p>
                     <p>
-                      Profit is what’s left after today’s income covers today’s real costs. And costs don’t only mean
-                      the cash we spent today it includes inventory used, delivery costs triggered by today’s sales,
-                      fees, staff time, and everyday running expenses.
+                      Profit is what’s left after today’s income covers today’s real costs. And costs don’t only mean the cash we spent today it includes inventory used, delivery costs triggered by today’s sales, fees, staff time, and everyday running expenses.
                     </p>
                   </div>
 
@@ -304,8 +309,7 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      Most SMEs don’t lack effort we lack a simple daily system. Income is tracked (sometimes),
-                      expenses are scattered, and decisions are made from memory or vibes.
+                      Most SMEs don’t lack effort we lack a simple daily system. Income is tracked (sometimes), expenses are scattered, and decisions are made from memory or vibes.
                     </p>
                     <p>
                       The result is confusion: we feel busy, but we can’t measure daily performance with confidence.
@@ -331,8 +335,7 @@ export default function ProfitPilotArticlePage() {
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      A good system shouldn’t make us feel like we’re doing accounting. It should feel like checking
-                      the score after a match simple, quick, and decision-ready.
+                      A good system shouldn’t make us feel like we’re doing accounting. It should feel like checking the score after a match simple, quick, and decision-ready.
                     </p>
                     <p>At minimum, we want three numbers that tell the story of today:</p>
                   </div>
@@ -380,8 +383,7 @@ export default function ProfitPilotArticlePage() {
 
                   <Callout title="If we do only one thing">
                     <>
-                      Pick one place to record daily numbers (even a simple sheet) and make it non-negotiable for 14
-                      days. Clarity improves fast when the habit becomes normal.
+                      Pick one place to record daily numbers (even a simple sheet) and make it non-negotiable for 14 days. Clarity improves fast when the habit becomes normal.
                     </>
                   </Callout>
                 </section>
@@ -394,17 +396,11 @@ export default function ProfitPilotArticlePage() {
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
+                    <p>Once the routine is clear, the next step is reducing manual work and mistakes.</p>
                     <p>
-                      Once the routine is clear, the next step is reducing manual work and mistakes.
+                      That’s where ProfitPilot comes in — not as “more reports,” but as a daily clarity tool. It helps us keep income and expenses organized, separates cash movement from performance, and gives a clean day-end result in plain language.
                     </p>
-                    <p>
-                      That’s where ProfitPilot comes in — not as “more reports,” but as a daily clarity tool. It helps
-                      us keep income and expenses organized, separates cash movement from performance, and gives a clean
-                      day-end result in plain language.
-                    </p>
-                    <p>
-                      The point is simple: we stop guessing, and we start steering.
-                    </p>
+                    <p>The point is simple: we stop guessing, and we start steering.</p>
                   </div>
 
                   <BulletList
@@ -425,29 +421,22 @@ export default function ProfitPilotArticlePage() {
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
-                    <p>
-                      That question “did we make money today?” should not feel scary. It should feel normal.
-                    </p>
-                    <p>
-                      When we can measure today clearly, we stop arguing with numbers and we make calmer decisions.
-                    </p>
+                    <p>That question “did we make money today?” should not feel scary. It should feel normal.</p>
+                    <p>When we can measure today clearly, we stop arguing with numbers and we make calmer decisions.</p>
                   </div>
 
                   <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                    <p className="text-sm font-semibold text-slate-900">
-                      Want help setting this up the simple way?
-                    </p>
+                    <p className="text-sm font-semibold text-slate-900">Want help setting this up the simple way?</p>
                     <p className="mt-2 text-sm text-slate-700">
-                      Send us a message. We’ll show a clean daily profit setup that fits your business — and what
-                      ProfitPilot can automate for you.
+                      Join the waitlist for ProfitPilot. You’ll get early access updates, and we’ll notify you when it’s ready.
                     </p>
 
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Link
-                        href="/contact"
+                        href="/waitlist"
                         className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                       >
-                        Book a quick chat
+                        Join the waitlist
                       </Link>
 
                       <Link
