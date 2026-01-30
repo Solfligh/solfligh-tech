@@ -1,11 +1,48 @@
 // app/insights/profitpilot/[slug]/page.tsx
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
 import { getHub, getPostBySlug, listPostsByHub, type InsightPost } from "@/app/lib/insightsStore";
 
-// ✅ CRITICAL FIX: Ensure params.slug exists at runtime (no static optimization)
-export const dynamic = "force-dynamic";
+/**
+ * ✅ FIX (THE MISSING PIECE):
+ * Because posts are coming from a local in-repo store (no fetch/cookies),
+ * Next can statically optimize this route and drop params at runtime unless
+ * we explicitly tell it which slugs exist.
+ *
+ * So we provide generateStaticParams().
+ */
+export function generateStaticParams() {
+  return listPostsByHub("profitpilot").map((p) => ({ slug: p.slug }));
+}
+
+/**
+ * ✅ Optional, but makes behavior strict:
+ * If someone hits an unknown slug, Next will 404 (instead of trying dynamic fallback).
+ */
+export const dynamicParams = false;
+
+/**
+ * Optional metadata (can improve SEO for article pages)
+ */
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const hubSlug = "profitpilot";
+  const slug = safeDecode((params?.slug ?? "").trim());
+  const post = slug ? getPostBySlug(hubSlug, slug) : null;
+
+  if (!post) {
+    return {
+      title: "Article not found | ProfitPilot Insights",
+      description: "This article isn’t published (or the link is wrong).",
+    };
+  }
+
+  return {
+    title: `${post.title} | ProfitPilot Insights`,
+    description: post.description,
+  };
+}
 
 function MetaPill({ children }: { children: React.ReactNode }) {
   return (
@@ -46,31 +83,27 @@ function safeDecode(value: string) {
   }
 }
 
-function isDebug(searchParams?: Record<string, string | string[] | undefined>) {
-  return (
-    (typeof searchParams?.debug === "string" && searchParams.debug === "1") ||
-    (Array.isArray(searchParams?.debug) && searchParams?.debug?.[0] === "1")
-  );
-}
-
 export default function ProfitPilotArticlePage({
   params,
   searchParams,
 }: {
-  params: { slug?: string };
+  params: { slug: string };
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
-  const hub = getHub("profitpilot");
+  const hubSlug = "profitpilot";
+  const hub = getHub(hubSlug);
 
-  // ✅ Next.js standard: params.slug must exist when dynamic rendering is enabled
+  // ✅ Standard: slug comes from params.slug
   const requestedSlug = safeDecode((params?.slug ?? "").trim());
 
-  const availablePosts = listPostsByHub("profitpilot");
+  const availablePosts = listPostsByHub(hubSlug);
   const availableSlugs = availablePosts.map((p) => p.slug);
 
-  const post = requestedSlug ? getPostBySlug("profitpilot", requestedSlug) : null;
+  const post = requestedSlug ? getPostBySlug(hubSlug, requestedSlug) : null;
 
-  const debug = isDebug(searchParams);
+  const debug =
+    (typeof searchParams?.debug === "string" && searchParams.debug === "1") ||
+    (Array.isArray(searchParams?.debug) && searchParams?.debug?.[0] === "1");
 
   if (!post) {
     return (
@@ -85,14 +118,9 @@ export default function ProfitPilotArticlePage({
                 <p className="text-xs font-semibold text-slate-500">Debug (only when ?debug=1)</p>
 
                 <p className="mt-2 text-sm text-slate-700">
-                  Build stamp:{" "}
-                  <span className="font-semibold text-slate-900">profitpilot-article-debug-v3</span>
-                </p>
-
-                <p className="mt-2 text-sm text-slate-700">
                   Params keys:{" "}
                   <span className="font-semibold text-slate-900">
-                    {params ? Object.keys(params).join(", ") || "(none)" : "(missing params object)"}
+                    {params ? Object.keys(params).join(", ") || "(none)" : "(none)"}
                   </span>
                 </p>
 
@@ -108,9 +136,7 @@ export default function ProfitPilotArticlePage({
 
                 <p className="mt-2 text-sm text-slate-700">
                   Available slugs:{" "}
-                  <span className="font-semibold text-slate-900">
-                    {availableSlugs.join(", ") || "(none)"}
-                  </span>
+                  <span className="font-semibold text-slate-900">{availableSlugs.join(", ") || "(none)"}</span>
                 </p>
 
                 <p className="mt-2 text-sm text-slate-700">
@@ -118,6 +144,11 @@ export default function ProfitPilotArticlePage({
                   <span className={`font-semibold ${post ? "text-emerald-600" : "text-rose-600"}`}>
                     {post ? "FOUND ✅" : "NOT FOUND ❌"}
                   </span>
+                </p>
+
+                <p className="mt-3 text-xs text-slate-500">
+                  Note: This route is now backed by generateStaticParams(), so params.slug should always appear for
+                  valid slugs after deployment.
                 </p>
               </div>
             ) : null}
