@@ -13,7 +13,7 @@ function MiniHero({ title }: { title: string }) {
         <div className="space-y-2">
           <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title} mission</p>
           <p className="text-base font-semibold text-slate-900">
-            Help SMEs know what happened <span className="text-sky-700">today</span> — without accounting confusion.
+            Help SMEs know what happened <span className="text-sky-700">today</span> without accounting confusion.
           </p>
           <p className="text-sm text-slate-600">We start by naming the problem. Then we show the approach.</p>
         </div>
@@ -38,7 +38,7 @@ export default function ProfitPilotInsightsHubPage() {
   const hubTitle = hub?.title || "ProfitPilot";
   const hubDescription =
     hub?.description ||
-    "Clear writing for SMEs who want to understand daily performance — without accounting confusion.";
+    "Clear writing for SMEs who want to understand daily performance without accounting confusion.";
 
   return (
     <div className="space-y-10">
