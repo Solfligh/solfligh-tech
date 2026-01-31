@@ -1,4 +1,3 @@
-// app/components/ProfitLogicClarification.tsx
 import React from "react";
 
 type Tone = "neutral" | "warn" | "success";
@@ -11,26 +10,25 @@ type Props = {
   title?: string;
 
   /**
-   * The default block renders the canonical copy.
-   * If you pass children, it will render your custom content instead.
+   * Canonical copy renders by default.
+   * Pass children to override content for special articles.
    */
   children?: React.ReactNode;
 
   /**
-   * Neutral is best for most articles.
-   * Warn is useful when the article uses formulas or "profit today" language.
-   * Success is useful when reinforcing "proven number" philosophy.
+   * neutral: default for most articles
+   * warn: best when formulas / "profit today" are mentioned
+   * success: best when emphasizing trust/accuracy philosophy
    */
   tone?: Tone;
 
   /**
-   * Size controls spacing + font size.
+   * Controls spacing + typography density.
    */
   size?: Size;
 
   /**
-   * Show the quick one-liner above the full block.
-   * Great for long articles.
+   * Show the short one-liner above the full block.
    */
   showOneLiner?: boolean;
 
@@ -40,7 +38,7 @@ type Props = {
   oneLinerText?: string;
 
   /**
-   * If true, shows a subtle "Why am I seeing this?" hint line.
+   * Show a subtle hint line (optional).
    */
   showHint?: boolean;
 };
@@ -89,8 +87,7 @@ export default function ProfitLogicClarification({
   return (
     <aside
       className={[
-        "rounded-2xl border",
-        "shadow-sm",
+        "rounded-2xl border shadow-sm",
         toneStyles.wrap,
         sizeStyles.wrap,
       ].join(" ")}
@@ -105,29 +102,14 @@ export default function ProfitLogicClarification({
           ].join(" ")}
           aria-hidden="true"
         >
-          {/* simple “info” icon without external deps */}
-          <svg
-            className={["h-4 w-4", toneStyles.icon].join(" ")}
-            viewBox="0 0 24 24"
-            fill="none"
-          >
+          <svg className={["h-4 w-4", toneStyles.icon].join(" ")} viewBox="0 0 24 24" fill="none">
             <path
               d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z"
               stroke="currentColor"
               strokeWidth="2"
             />
-            <path
-              d="M12 10v7"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M12 7h.01"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
+            <path d="M12 10v7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <path d="M12 7h.01" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
           </svg>
         </div>
 
@@ -143,24 +125,18 @@ export default function ProfitLogicClarification({
             </span>
           </div>
 
-          {showOneLiner && (
-            <p className={["mt-2 font-semibold", sizeStyles.body].join(" ")}>
-              {oneLinerText}
-            </p>
-          )}
+          {showOneLiner && <p className={["mt-2 font-semibold", sizeStyles.body].join(" ")}>{oneLinerText}</p>}
 
           <div className={["mt-2", sizeStyles.body].join(" ")}>
             {children ?? (
               <>
                 <p className="m-0">
-                  ProfitPilot treats profit as a <strong>conditional</strong>{" "}
-                  number. Profit is only shown when all required costs (such as
-                  Cost of Goods Sold) are fully recorded.
+                  ProfitPilot treats profit as a <strong>conditional</strong> number. Profit is only shown when all
+                  required costs (such as Cost of Goods Sold) are fully recorded.
                 </p>
                 <p className="mt-3 mb-0">
-                  If any required cost is missing, ProfitPilot does not estimate
-                  or guess — it will show <strong>“— —”</strong> and clearly
-                  explain why profit is unavailable.
+                  If any required cost is missing, ProfitPilot does not estimate or guess — it will show{" "}
+                  <strong>“— —”</strong> and clearly explain why profit is unavailable.
                 </p>
               </>
             )}
@@ -168,8 +144,7 @@ export default function ProfitLogicClarification({
 
           {showHint && (
             <p className="mt-3 mb-0 text-xs text-slate-600">
-              Tip: If you see “— —”, record missing item costs (COGS) for the
-              sales in that period.
+              Tip: If you see “— —”, record missing item costs (COGS) for the sales in that period.
             </p>
           )}
         </div>
