@@ -38,7 +38,7 @@ export default function ArticlePage() {
     coverImage: "/insights/profitpilot/posts/three-numbers.jpg",
     title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
     subtitle:
-      "If you only check one thing before locking up, make it these three numbers. They tell the truth — fast.",
+      "If you only check one thing before locking up, make it these three numbers. They tell the truth fast.",
   };
 
   return (
@@ -115,7 +115,7 @@ export default function ArticlePage() {
                   <li><strong>3. We made today</strong> — the result you can act on.</li>
                 </ul>
               </section>
-
+          
               <section>
                 <SectionLabel>Why this works</SectionLabel>
                 <p className="mt-4">
@@ -129,7 +129,7 @@ export default function ArticlePage() {
                   This is exactly how ProfitPilot works
                 </p>
                 <p className="mt-2">
-                  ProfitPilot turns these three numbers into a daily habit — automatically —
+                  ProfitPilot turns these three numbers into a daily habit automatically
                   so SMEs stop guessing and start steering.
                 </p>
 
