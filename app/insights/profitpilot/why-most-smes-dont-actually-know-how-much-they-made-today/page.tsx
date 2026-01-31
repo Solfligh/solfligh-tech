@@ -6,7 +6,7 @@ import Container from "@/app/components/Container";
 export const metadata: Metadata = {
   title: "Why Most SMEs Don’t Actually Know How Much They Made Today | ProfitPilot | SolFligh Tech",
   description:
-    "Many small business owners end the day with activity, sales alerts, and a bank balance — but still can’t confidently answer one question: did we actually make money today?",
+    "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did we actually make money today?",
 };
 
 function MetaPill({ children }: { children: React.ReactNode }) {
@@ -84,7 +84,7 @@ export default function ProfitPilotArticlePage() {
     coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
     title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
     subtitle:
-      "Many small business owners end the day with activity, sales alerts, and a bank balance — but still can’t confidently answer one question: did we actually make money today?",
+      "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did we actually make money today?",
   };
 
   // ✅ Article 2 (solution awareness) – next step
@@ -208,7 +208,7 @@ export default function ProfitPilotArticlePage() {
                     }
                   />
                   <Card
-                    title="You’re not failing — you’re missing visibility"
+                    title="You’re not failing you’re missing visibility"
                     desc="Most tools show movement (sales/cash), not the truth of daily performance."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
@@ -252,7 +252,7 @@ export default function ProfitPilotArticlePage() {
                   <Callout title="What makes this painful">
                     <>
                       The uncertainty doesn’t just hurt “finance.” It affects pricing, restocking, hiring, and peace of
-                      mind — because we’re making decisions without a clear daily score.
+                      mind because we’re making decisions without a clear daily score.
                     </>
                   </Callout>
                 </section>
@@ -266,11 +266,11 @@ export default function ProfitPilotArticlePage() {
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
                       Most SMEs check things like bank balance, POS totals, transfer alerts, and cash on the table.
-                      Those are useful signals — but they aren’t the same as “we made money today.”
+                      Those are useful signals but they aren’t the same as “we made money today.”
                     </p>
                     <p>
                       That’s why two people can have the same sales day and feel totally different:
-                      one is calm, one is anxious — because neither is sure what today truly meant.
+                      one is calm, one is anxious because neither is sure what today truly meant.
                     </p>
                   </div>
 
@@ -289,7 +289,7 @@ export default function ProfitPilotArticlePage() {
                 <section id="why-its-hard" className="space-y-4">
                   <SectionLabel>Why it happens</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The problem isn’t discipline — it’s visibility
+                    The problem isn’t discipline it’s visibility
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
@@ -308,7 +308,7 @@ export default function ProfitPilotArticlePage() {
                       "Sales records live in different places (POS, bank alerts, WhatsApp, notebooks).",
                       "Expenses happen in small, frequent chunks (fuel, data, deliveries, supplies).",
                       "Some costs don’t feel like “today’s costs” but they were triggered by today’s activity.",
-                      "Month-end summaries come too late — daily businesses need daily truth.",
+                      "Month-end summaries come too late daily businesses need daily truth.",
                     ]}
                   />
                 </section>
@@ -325,7 +325,7 @@ export default function ProfitPilotArticlePage() {
                       We may keep prices too low, restock the wrong items, overhire, or assume “it’s fine.”
                     </p>
                     <p>
-                      And the worst part: we may think we’re doing well — until the month ends and reality hits.
+                      And the worst part: we may think we’re doing well until the month ends and reality hits.
                     </p>
                   </div>
 
@@ -353,7 +353,7 @@ export default function ProfitPilotArticlePage() {
                       <span className="font-semibold text-slate-900">profit</span>.
                     </p>
                     <p>
-                      That mix-up is why “bank balance” and “sales alerts” feel like answers — even when they aren’t.
+                      That mix-up is why “bank balance” and “sales alerts” feel like answers even when they aren’t.
                     </p>
                   </div>
 
