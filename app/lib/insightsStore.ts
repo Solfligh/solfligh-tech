@@ -82,7 +82,7 @@ const POSTS: InsightPost[] = [
   slug: "the-3-numbers-every-sme-should-check-daily",
   title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
   description:
-    "Most business owners end the day tired and unsure. These three simple numbers bring instant clarity — without accounting stress.",
+    "Most business owners end the day tired and unsure. These three simple numbers bring instant clarity without accounting stress.",
   href: "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily",
   tag: "Solution Awareness",
   readingTime: "4–5 min",
