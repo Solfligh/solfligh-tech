@@ -55,13 +55,16 @@ export default function ProfitPilotSolutionArticlePage() {
     readingTime: "5–7 min",
     dateLabel: "Jan 2026",
     coverImage: "/insights/profitpilot/posts/daily-clarity-system.jpg",
-    title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
+    title:
+      "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
     subtitle:
       "Knowing what to track is easy. Doing it consistently is the real challenge. This is where ProfitPilot fits.",
   };
 
   const waitlistHref =
     "/waitlist?product=profitpilot&source=profitpilot_solution_article";
+
+  const projectHref = "/projects/profitpilot";
 
   return (
     <main className="bg-white text-slate-900">
@@ -113,7 +116,6 @@ export default function ProfitPilotSolutionArticlePage() {
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 1100px"
-                  priority={false}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent" />
               </div>
@@ -134,7 +136,7 @@ export default function ProfitPilotSolutionArticlePage() {
                   </p>
 
                   <p>
-                    What breaks down for most SMEs isn’t understanding it’s
+                    What breaks down for most SMEs isn’t understanding it—it’s
                     consistency. After long days, scattered tools, and daily
                     pressure, even simple routines start to slip.
                   </p>
@@ -153,8 +155,8 @@ export default function ProfitPilotSolutionArticlePage() {
                   </p>
 
                   <p>
-                    But doing this manually every single day takes discipline
-                    and discipline fades when systems don’t help.
+                    But doing this manually every single day takes discipline—and
+                    discipline fades when systems don’t help.
                   </p>
                 </section>
 
@@ -199,24 +201,32 @@ export default function ProfitPilotSolutionArticlePage() {
 
                   <p>
                     Over time, this compounds into healthier margins and fewer
-                    surprises not because the business worked harder, but
+                    surprises—not because the business worked harder, but
                     because it saw clearly.
                   </p>
                 </section>
 
+                {/* Final CTA */}
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
                   <p className="text-sm font-semibold text-slate-900">
-                    Ready to stop guessing?
+                    Ready to see ProfitPilot in context?
                   </p>
                   <p className="text-sm text-slate-700">
-                    If daily profit clarity is what you want, ProfitPilot is
-                    built for you.
+                    Explore the ProfitPilot project to see what it does, who it’s
+                    for, and how it fits into your business.
                   </p>
 
                   <div className="flex flex-wrap gap-3">
                     <Link
+                      href={projectHref}
+                      className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                    >
+                      Go to ProfitPilot project
+                    </Link>
+
+                    <Link
                       href={waitlistHref}
-                      className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                      className="inline-flex items-center justify-center rounded-xl border border-sky-600 bg-white px-4 py-2.5 text-sm font-semibold text-sky-700 shadow-sm transition hover:bg-sky-50"
                     >
                       Join the waitlist
                     </Link>
