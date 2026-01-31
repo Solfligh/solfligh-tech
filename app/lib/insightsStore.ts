@@ -14,28 +14,28 @@ export type InsightPost = {
   hubSlug: string;
 
   // ✅ Stable slug for dynamic routes
-  slug: string; // e.g. "why-most-smes-dont-actually-know-how-much-they-made-today"
+  slug: string; // folder name
 
   title: string;
   description: string;
 
   // ✅ Canonical href used for links everywhere
-  href: string; // canonical URL, e.g. "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today"
+  href: string; // MUST match folder route
 
-  tag: string; // "Problem Awareness"
+  tag: string; // "Problem Awareness" | "Solution Awareness" | "Product Solution"
   readingTime: string; // "4–6 min"
   dateLabel: string; // "Jan 2026"
-  dateISO: string; // "2026-01-10" (used for sorting/NEW logic)
+  dateISO: string; // "2026-01-10" (used for sorting)
 
   accent: string; // tailwind gradient class (fallback)
-  coverImage?: string; // "/insights/profitpilot/posts/why-made-today.jpg"
+  coverImage?: string; // "/insights/profitpilot/posts/..."
 };
 
 const HUBS: InsightHub[] = [
   {
     slug: "profitpilot",
     title: "ProfitPilot",
-    description: "Daily profit clarity for SMEs no accounting jargon, just clean decisions.",
+    description: "Daily profit clarity for SMEs — no accounting jargon, just clean decisions.",
     href: "/insights/profitpilot",
     badge: "Project Hub",
     accent: "from-sky-500/20 to-blue-500/10",
@@ -44,6 +44,7 @@ const HUBS: InsightHub[] = [
 ];
 
 const POSTS: InsightPost[] = [
+  // ✅ Article 1 (Problem Aware)
   {
     hubSlug: "profitpilot",
     slug: "why-most-smes-dont-actually-know-how-much-they-made-today",
@@ -59,7 +60,7 @@ const POSTS: InsightPost[] = [
     coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
   },
 
-  // ✅ NEW: Article 2
+  // ✅ Article 2 (Solution Aware)
   {
     hubSlug: "profitpilot",
     slug: "cashflow-vs-profit-why-mixing-them-up-costs-clarity",
@@ -72,44 +73,44 @@ const POSTS: InsightPost[] = [
     dateLabel: "Jan 2026",
     dateISO: "2026-01-12",
     accent: "from-sky-500/20 to-blue-500/10",
-    // ✅ Use an image that exists (you can change later if you create a dedicated cover)
+    // ✅ MUST be the real public path
     coverImage: "/insights/profitpilot/posts/cashflow-vs-profit.jpg",
   },
 
-// ✅ NEW: Article 3
- {
-  hubSlug: "profitpilot",
-  slug: "the-3-numbers-every-sme-should-check-daily",
-  title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
-  description:
-    "Most business owners end the day tired and unsure. These three simple numbers bring instant clarity without accounting stress.",
-  href: "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily",
-  tag: "Solution Awareness",
-  readingTime: "4–5 min",
-  dateLabel: "Jan 2026",
-  dateISO: "2026-01-18",
-  accent: "from-sky-500/20 to-blue-500/10",
-  coverImage: "/insights/profitpilot/posts/three-numbers.jpg",
-},
+  // ✅ Article 3 (Solution Aware)
+  {
+    hubSlug: "profitpilot",
+    slug: "the-3-numbers-every-sme-should-check-daily",
+    title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
+    description:
+      "Daily clarity doesn’t require accounting knowledge. These three numbers tell you exactly how your business performed today.",
+    href: "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily",
+    tag: "Solution Awareness",
+    readingTime: "4–5 min",
+    dateLabel: "Jan 2026",
+    dateISO: "2026-01-14",
+    accent: "from-sky-500/20 to-blue-500/10",
+    coverImage: "/insights/profitpilot/posts/three-numbers.jpg",
+  },
 
-// ✅ NEW: Article 4
-{
-  hubSlug: "profitpilot",
-  slug: "from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
-  title: "From Daily Numbers to Daily Clarity",
-  description:
-    "Knowing what to track is one thing. Doing it consistently is another. Here’s how ProfitPilot turns daily clarity into a habit.",
-  href: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
-  tag: "Product Solution",
-  readingTime: "5–7 min",
-  dateLabel: "Jan 2026",
-  dateISO: "2026-01-18",
-  accent: "from-sky-500/20 to-blue-500/10",
-  coverImage: "/insights/profitpilot/posts/daily-clarity-system.jpg",
-},
-
-
-  
+  // ✅ Product Solution Article (the one giving the “ProfitPilot solution”)
+  {
+    hubSlug: "profitpilot",
+    // ✅ THIS MUST MATCH YOUR FOLDER NAME EXACTLY
+    slug: "from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
+    title: "From Daily Numbers to Daily Clarity",
+    description:
+      "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how ProfitPilot turns daily clarity into a reliable habit.",
+    // ✅ THIS MUST MATCH YOUR FOLDER ROUTE EXACTLY
+    href: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
+    tag: "Product Solution",
+    readingTime: "5–7 min",
+    dateLabel: "Jan 2026",
+    dateISO: "2026-01-16",
+    accent: "from-sky-500/20 to-blue-500/10",
+    // Optional: add when you upload a cover
+    // coverImage: "/insights/profitpilot/posts/from-daily-to-clarity.jpg",
+  },
 ];
 
 /** -----------------------------
@@ -125,11 +126,13 @@ export function getHub(hubSlug: string): InsightHub | null {
 }
 
 export function listAllPosts(): InsightPost[] {
-  return [...POSTS];
+  return [...POSTS].sort((a, b) => safeDate(b.dateISO) - safeDate(a.dateISO));
 }
 
 export function listPostsByHub(hubSlug: string): InsightPost[] {
-  return POSTS.filter((p) => p.hubSlug === hubSlug);
+  return POSTS.filter((p) => p.hubSlug === hubSlug).sort(
+    (a, b) => safeDate(b.dateISO) - safeDate(a.dateISO)
+  );
 }
 
 export function getPostBySlug(hubSlug: string, slug: string): InsightPost | null {
@@ -147,18 +150,17 @@ export function getPostByHref(href: string): InsightPost | null {
  * Falls back safely if date parsing fails.
  */
 export function getLatestPost(): InsightPost | null {
-  const safeDate = (iso: string) => {
-    const d = new Date(`${iso}T00:00:00Z`);
-    return Number.isNaN(d.getTime()) ? 0 : d.getTime();
-  };
-
   const sorted = [...POSTS].sort((a, b) => safeDate(b.dateISO) - safeDate(a.dateISO));
   return sorted[0] || null;
 }
 
+function safeDate(iso: string) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+}
+
 /** -----------------------------
  *  Backward-compatible aliases
- *  (So older imports won’t break.)
  *  ----------------------------- */
 
 export function getHubs(): InsightHub[] {
@@ -167,6 +169,4 @@ export function getHubs(): InsightHub[] {
 
 export function getPostsByHub(hubSlug: string): InsightPost[] {
   return listPostsByHub(hubSlug);
-  // NOTE: If you see a TypeScript error here, delete this line and use:
-  // return listPostsByHub(hubSlug);
 }
