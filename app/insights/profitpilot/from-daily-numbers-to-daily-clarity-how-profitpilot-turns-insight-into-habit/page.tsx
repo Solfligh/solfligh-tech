@@ -6,7 +6,7 @@ import Container from "@/app/components/Container";
 
 export const metadata: Metadata = {
   title:
-    "From Daily Numbers to Daily Clarity How ProfitPilot Turns Insight Into Habit | SolFligh Tech",
+    "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit | SolFligh Tech",
   description:
     "Knowing what to track is one thing. Doing it consistently is another. Here’s how ProfitPilot turns daily profit clarity into a reliable habit for SMEs.",
 };
@@ -55,7 +55,7 @@ export default function ProfitPilotSolutionArticlePage() {
     readingTime: "5–7 min",
     dateLabel: "Jan 2026",
     coverImage: "/insights/profitpilot/posts/daily-clarity-system.jpg",
-    title: "From Daily Numbers to Daily Clarity",
+    title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
     subtitle:
       "Knowing what to track is easy. Doing it consistently is the real challenge. This is where ProfitPilot fits.",
   };
