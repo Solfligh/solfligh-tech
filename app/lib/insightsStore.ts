@@ -35,7 +35,7 @@ const HUBS: InsightHub[] = [
   {
     slug: "profitpilot",
     title: "ProfitPilot",
-    description: "Daily profit clarity for SMEs — no accounting jargon, just clean decisions.",
+    description: "Daily profit clarity for SMEs no accounting jargon, just clean decisions.",
     href: "/insights/profitpilot",
     badge: "Project Hub",
     accent: "from-sky-500/20 to-blue-500/10",
@@ -49,7 +49,7 @@ const POSTS: InsightPost[] = [
     slug: "why-most-smes-dont-actually-know-how-much-they-made-today",
     title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
     description:
-      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
+      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens and why it isn’t your fault.",
     href: "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today",
     tag: "Problem Awareness",
     readingTime: "4–6 min",
