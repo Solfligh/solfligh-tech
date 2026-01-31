@@ -7,7 +7,7 @@ import Container from "@/app/components/Container";
 export const metadata: Metadata = {
   title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity | ProfitPilot | SolFligh Tech",
   description:
-    "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day — and how to separate them for clarity.",
+    "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day and how to separate them for clarity.",
 };
 
 function MetaPill({ children }: { children: React.ReactNode }) {
@@ -154,7 +154,7 @@ export default function ProfitPilotArticle2Page() {
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">In one sentence</p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   <span className="font-semibold text-slate-900">Cashflow</span> tells you what moved, while{" "}
-                  <span className="font-semibold text-slate-900">profit</span> tells you what you truly earned — mixing
+                  <span className="font-semibold text-slate-900">profit</span> tells you what you truly earned mixing
                   them is why “Did we make money today?” feels impossible to answer.
                 </p>
 
@@ -243,7 +243,7 @@ export default function ProfitPilotArticle2Page() {
                     </p>
                     <p>It doesn’t.</p>
                     <p>
-                      Cashflow and profit are not the same thing — even though they often feel like they should be.
+                      Cashflow and profit are not the same thing even though they often feel like they should be.
                       They answer two different questions, and mixing them is why clarity disappears.
                     </p>
                   </div>
@@ -284,7 +284,7 @@ export default function ProfitPilotArticle2Page() {
                       <>After everything it truly cost to run the business, what did we really earn?</>
                     </Callout>
                     <p>
-                      You can have money in the bank and still be losing money as a business — because timing can hide
+                      You can have money in the bank and still be losing money as a business because timing can hide
                       real costs.
                     </p>
                   </div>
@@ -311,7 +311,7 @@ export default function ProfitPilotArticle2Page() {
                 <section className="space-y-4">
                   <SectionLabel>Wrap up</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    Both matter — but for different reasons
+                    Both matter but for different reasons
                   </h2>
 
                   <Callout title="The mindset shift">
