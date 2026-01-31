@@ -83,7 +83,7 @@ export default function ProfitPilotArticle2Page() {
     readingTime: "4–6 min",
     dateLabel: "Jan 2026",
     // ✅ Use an image you already have so it doesn't break
-    coverImage: "/insights/profitpilot/cashflow-vs-profit.jpg",
+    coverImage: "/insights/profitpilot/posts/cashflow-vs-profit.jpg",
     title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
     subtitle:
       "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day.",
