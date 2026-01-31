@@ -98,7 +98,7 @@ const POSTS: InsightPost[] = [
     hubSlug: "profitpilot",
     // ✅ THIS MUST MATCH YOUR FOLDER NAME EXACTLY
     slug: "from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
-    title: "From Daily Numbers to Daily Clarity",
+    title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
     description:
       "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how ProfitPilot turns daily clarity into a reliable habit.",
     // ✅ THIS MUST MATCH YOUR FOLDER ROUTE EXACTLY
