@@ -1,14 +1,12 @@
-// app/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
 
 export const metadata: Metadata = {
-  title:
-    "Why Most SMEs Don’t Actually Know How Much They Made Today | ProfitPilot | SolFligh Tech",
+  title: "Why Most SMEs Don’t Actually Know How Much They Made Today | ProfitPilot | SolFligh Tech",
   description:
-    "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did we actually make money today? Here’s why, and the simple fix.",
+    "Many small business owners end the day with activity, sales alerts, and a bank balance — but still can’t confidently answer one question: did we actually make money today?",
 };
 
 function MetaPill({ children }: { children: React.ReactNode }) {
@@ -20,10 +18,34 @@ function MetaPill({ children }: { children: React.ReactNode }) {
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{children}</p>;
+}
+
+function Callout({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-      {children}
-    </p>
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title}</p>
+      <div className="mt-2 text-sm leading-relaxed text-slate-700">{children}</div>
+    </div>
+  );
+}
+
+function Divider() {
+  return <div className="my-10 h-px w-full bg-slate-200/70" />;
+}
+
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <ul className="space-y-2 text-sm text-slate-700">
+        {items.map((t) => (
+          <li key={t} className="flex items-start gap-2">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -51,46 +73,6 @@ function Card({
   );
 }
 
-function Callout({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-        {title}
-      </p>
-      <div className="mt-2 text-sm leading-relaxed text-slate-700">{children}</div>
-    </div>
-  );
-}
-
-function Divider() {
-  return <div className="my-10 h-px w-full bg-slate-200/70" />;
-}
-
-function BulletList({ items }: { items: string[] }) {
-  return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <ul className="space-y-2 text-sm text-slate-700">
-        {items.map((t) => (
-          <li key={t} className="flex items-start gap-2">
-            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
-            <span>{t}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function NumberCard({ label, value, note }: { label: string; value: string; note: string }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
-      <p className="text-xs font-semibold text-slate-500">{label}</p>
-      <p className="mt-1 text-lg font-bold text-slate-900">{value}</p>
-      <p className="mt-1 text-xs text-slate-600">{note}</p>
-    </div>
-  );
-}
-
 export default function ProfitPilotArticlePage() {
   const meta = {
     hubTitle: "ProfitPilot",
@@ -102,11 +84,12 @@ export default function ProfitPilotArticlePage() {
     coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
     title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
     subtitle:
-      "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did we actually make money today?",
+      "Many small business owners end the day with activity, sales alerts, and a bank balance — but still can’t confidently answer one question: did we actually make money today?",
   };
 
-  // ✅ REAL waitlist page (not contact)
-  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_article";
+  // ✅ Article 2 (solution awareness) – next step
+  const nextArticleHref =
+    "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity";
 
   return (
     <main className="bg-white text-slate-900">
@@ -119,24 +102,20 @@ export default function ProfitPilotArticlePage() {
 
         <Container>
           <div className="relative py-10 sm:py-12">
+            {/* Breadcrumb */}
             <div className="flex flex-wrap items-center gap-2 text-sm">
-              <Link
-                href={meta.insightsHref}
-                className="font-semibold text-slate-600 hover:text-slate-900"
-              >
+              <Link href={meta.insightsHref} className="font-semibold text-slate-600 hover:text-slate-900">
                 Insights
               </Link>
               <span className="text-slate-400">/</span>
-              <Link
-                href={meta.hubHref}
-                className="font-semibold text-slate-600 hover:text-slate-900"
-              >
+              <Link href={meta.hubHref} className="font-semibold text-slate-600 hover:text-slate-900">
                 {meta.hubTitle}
               </Link>
               <span className="text-slate-400">/</span>
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
+            {/* Header */}
             <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
               <div className="space-y-5">
                 <div className="flex flex-wrap items-center gap-2">
@@ -153,12 +132,13 @@ export default function ProfitPilotArticlePage() {
                   {meta.subtitle}
                 </p>
 
+                {/* ✅ Problem-aware CTA: go to next article (no waitlist) */}
                 <div className="flex flex-wrap gap-3">
                   <Link
-                    href={waitlistHref}
-                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                    href={nextArticleHref}
+                    className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                   >
-                    Join the waitlist
+                    Next: Cashflow vs Profit <span className="ml-2" aria-hidden="true">→</span>
                   </Link>
 
                   <Link
@@ -170,40 +150,31 @@ export default function ProfitPilotArticlePage() {
                 </div>
               </div>
 
+              {/* “In one sentence” – still problem-aware */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  In one sentence
-                </p>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">In one sentence</p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Most small businesses can’t confidently say what they made today because they track{" "}
-                  <span className="font-semibold text-slate-900">sales</span> and{" "}
-                  <span className="font-semibold text-slate-900">cash</span>, but not{" "}
-                  <span className="font-semibold text-slate-900">daily profit</span>.
+                  Most SMEs can’t confidently say what they made today because{" "}
+                  <span className="font-semibold text-slate-900">activity</span> is visible, but{" "}
+                  <span className="font-semibold text-slate-900">true performance</span> is not.
                 </p>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <p className="text-xs font-semibold text-slate-500">What we need</p>
-                    <p className="mt-1 text-sm font-bold text-slate-900">
-                      Daily performance clarity
-                    </p>
-                    <p className="mt-1 text-xs text-slate-600">
-                      Simple enough for 10 seconds.
-                    </p>
+                    <p className="text-xs font-semibold text-slate-500">What we see</p>
+                    <p className="mt-1 text-sm font-bold text-slate-900">Sales + bank alerts</p>
+                    <p className="mt-1 text-xs text-slate-600">Movement looks like success.</p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <p className="text-xs font-semibold text-slate-500">What we usually get</p>
-                    <p className="mt-1 text-sm font-bold text-slate-900">
-                      Bank balance + sales alerts
-                    </p>
-                    <p className="mt-1 text-xs text-slate-600">
-                      Useful, but not the answer.
-                    </p>
+                    <p className="text-xs font-semibold text-slate-500">What we can’t answer</p>
+                    <p className="mt-1 text-sm font-bold text-slate-900">Did we really win today?</p>
+                    <p className="mt-1 text-xs text-slate-600">Profit is not obvious.</p>
                   </div>
                 </div>
               </div>
             </div>
 
+            {/* Cover */}
             <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
                 <Image
@@ -218,12 +189,13 @@ export default function ProfitPilotArticlePage() {
               </div>
             </div>
 
+            {/* Article body */}
             <div className="mt-10">
               <article className="mx-auto max-w-3xl space-y-12">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Card
                     title="Busy doesn’t always mean profitable"
-                    desc="A day can feel successful and still quietly lose money once costs show up."
+                    desc="A day can feel successful and still quietly lose money once real costs show up."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
                         <path
@@ -236,8 +208,8 @@ export default function ProfitPilotArticlePage() {
                     }
                   />
                   <Card
-                    title="Daily clarity beats end-of-month surprises"
-                    desc="Small businesses live daily decisions should be guided by daily truth."
+                    title="You’re not failing — you’re missing visibility"
+                    desc="Most tools show movement (sales/cash), not the truth of daily performance."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
                         <path
@@ -260,54 +232,54 @@ export default function ProfitPilotArticlePage() {
                 <section id="hook" className="space-y-4">
                   <SectionLabel>Start here</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    As a small business owner, we’ve all felt this before
+                    The day ends, and the real question shows up
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      We close for the day. We’re tired. Sales happened. Money moved. People worked. Then the real
-                      question shows up:
+                      We close for the day. We’re tired. Sales happened. Money moved. People worked.
+                      Then one question appears:
                     </p>
                     <p className="font-semibold text-slate-900">
                       Did we actually make money today… or did we just stay busy?
                     </p>
                     <p>
-                      If our honest answer is “I’m not sure,” we’re not alone and we’re not doing anything wrong.
-                      Most small businesses are running with tools that were never built to give daily profit clarity.
+                      If the honest answer is “I’m not sure,” it doesn’t mean we’re careless.
+                      It usually means we don’t have a simple way to see daily performance clearly.
                     </p>
                   </div>
 
-                  <Callout title="The goal">
+                  <Callout title="What makes this painful">
                     <>
-                      At the end of each day, we should be able to say one simple sentence with confidence:{" "}
-                      <span className="font-semibold text-slate-900">“We made ₦ ___ today.”</span>
+                      The uncertainty doesn’t just hurt “finance.” It affects pricing, restocking, hiring, and peace of
+                      mind — because we’re making decisions without a clear daily score.
                     </>
                   </Callout>
                 </section>
 
-                <section id="profit-vs-cash" className="space-y-4">
-                  <SectionLabel>Get the meaning right</SectionLabel>
+                <section id="signals" className="space-y-4">
+                  <SectionLabel>What we use instead</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    Sales, cash, and profit are not the same thing
+                    We rely on signals that feel like answers
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      When we check the business at night, most of us look at sales, bank balance, and cash on hand.
-                      Those signals are useful but they don’t answer profit.
+                      Most SMEs check things like bank balance, POS totals, transfer alerts, and cash on the table.
+                      Those are useful signals — but they aren’t the same as “we made money today.”
                     </p>
                     <p>
-                      Profit is what’s left after today’s income covers today’s real costs. And costs don’t only mean
-                      the cash we spent today it includes inventory used, delivery costs triggered by today’s sales,
-                      fees, staff time, and everyday running expenses.
+                      That’s why two people can have the same sales day and feel totally different:
+                      one is calm, one is anxious — because neither is sure what today truly meant.
                     </p>
                   </div>
 
                   <BulletList
                     items={[
-                      "A business can have strong sales and still lose money (pricing, wastage, high costs).",
-                      "A business can have cash in the bank and still be unprofitable (debt, deposits, unpaid expenses).",
-                      "A business can be profitable and still feel “broke” (cash timing, customers owing, restocking).",
+                      "Sales notifications look like profit, but they’re not profit.",
+                      "Bank balance looks like performance, but it includes timing and transfers.",
+                      "Cash on hand looks like success, but it can hide silent costs.",
+                      "Being busy looks like growth, but it can hide bad pricing or wastage.",
                     ]}
                   />
                 </section>
@@ -317,16 +289,17 @@ export default function ProfitPilotArticlePage() {
                 <section id="why-its-hard" className="space-y-4">
                   <SectionLabel>Why it happens</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The problem isn’t discipline it’s visibility
+                    The problem isn’t discipline — it’s visibility
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      Most SMEs don’t lack effort we lack a simple daily system. Income is tracked (sometimes),
-                      expenses are scattered, and decisions are made from memory or vibes.
+                      Most SMEs don’t lack effort. They lack a simple daily system that shows what happened today in a
+                      way humans can trust.
                     </p>
                     <p>
-                      The result is confusion: we feel busy, but we can’t measure daily performance with confidence.
+                      Income is tracked sometimes. Expenses are scattered. Costs show up later. And daily decisions are
+                      made from memory, vibes, or incomplete numbers.
                     </p>
                   </div>
 
@@ -335,124 +308,67 @@ export default function ProfitPilotArticlePage() {
                       "Sales records live in different places (POS, bank alerts, WhatsApp, notebooks).",
                       "Expenses happen in small, frequent chunks (fuel, data, deliveries, supplies).",
                       "Some costs don’t feel like “today’s costs” but they were triggered by today’s activity.",
-                      "Monthly reports come too late daily decisions need daily truth.",
+                      "Month-end summaries come too late — daily businesses need daily truth.",
                     ]}
                   />
                 </section>
 
-                <section id="what-clarity-looks-like" className="space-y-4">
-                  <SectionLabel>What good looks like</SectionLabel>
+                <section id="consequences" className="space-y-4">
+                  <SectionLabel>What it causes</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    A clean day-end view should show three numbers
+                    Confusion creates expensive decisions
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      A good system shouldn’t make us feel like we’re doing accounting. It should feel like checking
-                      the score after a match simple, quick, and decision-ready.
+                      When we don’t know our real daily performance, we can’t confidently improve it.
+                      We may keep prices too low, restock the wrong items, overhire, or assume “it’s fine.”
                     </p>
-                    <p>At minimum, we want three numbers that tell the story of today:</p>
-                  </div>
-
-                  <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p className="text-sm font-semibold text-slate-900">Example (illustrative numbers):</p>
-
-                    <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                      <NumberCard label="Income today" value="₦120,000" note="What came in today." />
-                      <NumberCard label="Expenses today" value="₦81,500" note="What today triggered." />
-                      <NumberCard label="We made (today)" value="₦38,500" note="The result we can act on." />
-                    </div>
-
-                    <p className="mt-4 text-sm text-slate-700">
-                      The goal is one clear sentence we can trust at day end:{" "}
-                      <span className="font-semibold text-slate-900">“We made ₦38,500 today.”</span>
-                    </p>
-                  </div>
-                </section>
-
-                <Divider />
-
-                <section id="simple-routine" className="space-y-4">
-                  <SectionLabel>Do this first</SectionLabel>
-                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    A simple daily routine that works (even without software)
-                  </h2>
-
-                  <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      We don’t need complex finance to be clear. We need consistency one place, one daily habit.
+                      And the worst part: we may think we’re doing well — until the month ends and reality hits.
                     </p>
-                    <p>Here’s a simple routine any SME can run:</p>
                   </div>
 
                   <BulletList
                     items={[
-                      "Capture today’s income (sales, transfers, POS receipts) in one place.",
-                      "Capture today’s expenses (even small ones). Don’t trust memory.",
-                      "Separate “profit” from “cash movement.” Treat them as different questions.",
-                      "End the day with one sentence: “We made ₦ ___ today.”",
+                      "We celebrate sales days that were actually loss days.",
+                      "We confuse cash movement with winning.",
+                      "We keep repeating pricing mistakes because we can’t see the daily truth.",
+                      "We get end-of-month surprises that should never be surprises.",
                     ]}
                   />
-
-                  <Callout title="If we do only one thing">
-                    <>
-                      Pick one place to record daily numbers (even a simple sheet) and make it non-negotiable for 14
-                      days. Clarity improves fast when the habit becomes normal.
-                    </>
-                  </Callout>
                 </section>
 
-                <section id="profitpilot" className="space-y-4">
-                  <SectionLabel>Where ProfitPilot fits</SectionLabel>
+                {/* ✅ Bridge to Article 2 (clean handoff) */}
+                <section id="next" className="space-y-4">
+                  <SectionLabel>Next</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    ProfitPilot is what we use when we want the routine to run itself
+                    The next confusion is the biggest one
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
-                    <p>Once the routine is clear, the next step is reducing manual work and mistakes.</p>
                     <p>
-                      That’s where ProfitPilot comes in not as “more reports,” but as a daily clarity tool. It helps
-                      us keep income and expenses organized, separates cash movement from performance, and gives a clean
-                      day-end result in plain language.
+                      If this article felt familiar, the next step is understanding the exact trap most SMEs fall into:
+                      mixing up <span className="font-semibold text-slate-900">cashflow</span> and{" "}
+                      <span className="font-semibold text-slate-900">profit</span>.
                     </p>
-                    <p>The point is simple: we stop guessing, and we start steering.</p>
-                  </div>
-
-                  <BulletList
-                    items={[
-                      "Daily “We made today” view (profit clarity, not confusion).",
-                      "Clean separation between profit and cash movement.",
-                      "Simple categories that match how SMEs actually operate.",
-                      "A clear record you can trust when you want to scale later.",
-                    ]}
-                  />
-                </section>
-
-                <section id="closing" className="space-y-4">
-                  <SectionLabel>Wrap up</SectionLabel>
-                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    We deserve daily clarity not end of month surprises
-                  </h2>
-
-                  <div className="space-y-4 text-base leading-relaxed text-slate-700">
-                    <p>That question “did we make money today?” should not feel scary. It should feel normal.</p>
-                    <p>When we can measure today clearly, we stop arguing with numbers and we make calmer decisions.</p>
+                    <p>
+                      That mix-up is why “bank balance” and “sales alerts” feel like answers — even when they aren’t.
+                    </p>
                   </div>
 
                   <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                    <p className="text-sm font-semibold text-slate-900">
-                      Want early access to ProfitPilot?
-                    </p>
+                    <p className="text-sm font-semibold text-slate-900">Continue to Article 2</p>
                     <p className="mt-2 text-sm text-slate-700">
-                      Join the waitlist. You’ll get early access updates, and we’ll notify you when it’s ready.
+                      Cashflow vs Profit: why mixing them up is costing you clarity.
                     </p>
 
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Link
-                        href={waitlistHref}
-                        className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                        href={nextArticleHref}
+                        className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                       >
-                        Join the waitlist
+                        Read Article 2 <span className="ml-2" aria-hidden="true">→</span>
                       </Link>
 
                       <Link
