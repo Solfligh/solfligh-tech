@@ -82,22 +82,17 @@ export default function ProfitPilotArticle2Page() {
     tag: "Solution Awareness",
     readingTime: "4–6 min",
     dateLabel: "Jan 2026",
-    // ✅ This must match the file you uploaded in /public/insights/profitpilot/posts/
     coverImage: "/insights/profitpilot/posts/cashflow-vs-profit.jpg",
     title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
     subtitle:
       "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day.",
   };
 
-  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_article_cashflow_vs_profit";
-
-  // ✅ Previous article (problem-aware)
   const prevArticleHref =
     "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
 
-  // ✅ Next article placeholder (we’ll create Article 3 next)
-  const nextArticleHref =
-    "/insights/profitpilot/the-3-numbers-to-close-every-business-day"; // create later
+  // We’ll create this later as Article 3
+  const nextArticleHref = "/insights/profitpilot/the-3-numbers-to-close-every-business-day";
 
   return (
     <main className="bg-white text-slate-900">
@@ -123,6 +118,7 @@ export default function ProfitPilotArticle2Page() {
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
+            {/* ✅ No waitlist CTA — just navigation */}
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href={prevArticleHref}
@@ -131,17 +127,22 @@ export default function ProfitPilotArticle2Page() {
                 ← Previous article
               </Link>
 
-              {/* Optional: we’ll activate when Article 3 exists */}
               <Link
                 href={nextArticleHref}
                 className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
               >
                 Next article →
               </Link>
+
+              <Link
+                href={meta.hubHref}
+                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              >
+                Back to hub
+              </Link>
             </div>
 
             <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
-              {/* Left hero */}
               <div className="space-y-5">
                 <div className="flex flex-wrap items-center gap-2">
                   <MetaPill>{meta.tag}</MetaPill>
@@ -156,25 +157,8 @@ export default function ProfitPilotArticle2Page() {
                 <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
                   {meta.subtitle}
                 </p>
-
-                <div className="flex flex-wrap gap-3">
-                  <Link
-                    href={waitlistHref}
-                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                  >
-                    Join the waitlist
-                  </Link>
-
-                  <Link
-                    href={meta.hubHref}
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-                  >
-                    Back to hub
-                  </Link>
-                </div>
               </div>
 
-              {/* Right “In one sentence” card */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">In one sentence</p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
@@ -213,7 +197,6 @@ export default function ProfitPilotArticle2Page() {
               </div>
             </div>
 
-            {/* Body */}
             <div className="mt-10">
               <article className="mx-auto max-w-3xl space-y-12">
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -351,18 +334,19 @@ export default function ProfitPilotArticle2Page() {
                     </>
                   </Callout>
 
+                  {/* ✅ No waitlist CTA. Just move reader to Article 3 when it exists */}
                   <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                    <p className="text-sm font-semibold text-slate-900">Want early access to ProfitPilot?</p>
+                    <p className="text-sm font-semibold text-slate-900">Next step: make it usable daily.</p>
                     <p className="mt-2 text-sm text-slate-700">
-                      Join the waitlist. You’ll get early access updates, and we’ll notify you when it’s ready.
+                      In the next article, we’ll break down the 3 numbers you should close every business day with.
                     </p>
 
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Link
-                        href={waitlistHref}
-                        className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                        href={nextArticleHref}
+                        className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                       >
-                        Join the waitlist
+                        Read Article 3 →
                       </Link>
 
                       <Link
@@ -374,7 +358,6 @@ export default function ProfitPilotArticle2Page() {
                     </div>
                   </div>
 
-                  {/* ✅ Keep navigation at the bottom too */}
                   <div className="flex flex-wrap gap-3 pt-2">
                     <Link
                       href={prevArticleHref}
