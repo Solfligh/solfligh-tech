@@ -198,7 +198,7 @@ export default function ArticlePage() {
                 <p className="font-semibold text-slate-900">Where ProfitPilot fits (later)</p>
                 <p className="mt-2">
                   The point of these articles is to make daily clarity normal first.
-                  When we introduce the full solution, you’ll see how ProfitPilot makes these numbers automatic —
+                  When we introduce the full solution, you’ll see how ProfitPilot makes these numbers automatic
                   without spreadsheets or stress.
                 </p>
 
