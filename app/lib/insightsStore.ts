@@ -98,7 +98,7 @@ const POSTS: InsightPost[] = [
   slug: "from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
   title: "From Daily Numbers to Daily Clarity",
   description:
-    "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how ProfitPilot turns daily clarity into a habit.",
+    "Knowing what to track is one thing. Doing it consistently is another. Here’s how ProfitPilot turns daily clarity into a habit.",
   href: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
   tag: "Product Solution",
   readingTime: "5–7 min",
@@ -107,6 +107,7 @@ const POSTS: InsightPost[] = [
   accent: "from-sky-500/20 to-blue-500/10",
   coverImage: "/insights/profitpilot/posts/daily-clarity-system.jpg",
 },
+
 
   
 ];
