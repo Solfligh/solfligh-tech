@@ -6,7 +6,7 @@ import Container from "@/app/components/Container";
 
 export const metadata: Metadata = {
   title:
-    "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit | SolFligh Tech",
+    "From Daily Numbers to Daily Clarity How ProfitPilot Turns Insight Into Habit | SolFligh Tech",
   description:
     "Knowing what to track is one thing. Doing it consistently is another. Here’s how ProfitPilot turns daily profit clarity into a reliable habit for SMEs.",
 };
