@@ -17,7 +17,7 @@ export const profitpilotArticles: ProfitPilotArticle[] = [
     slug: "why-most-business-owners-dont-know-how-much-they-made-today",
     title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
     description:
-      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens — and why it isn’t your fault.",
+      "If you’ve ever ended the day unsure whether you really made money, you’re not alone. Here’s why it happens  and why it isn’t your fault.",
     href: "/insights/profitpilot/why-most-business-owners-dont-know-how-much-they-made-today",
     tag: "Problem Awareness",
     date: "Jan 2026",
