@@ -73,7 +73,7 @@ const POSTS: InsightPost[] = [
     dateISO: "2026-01-12",
     accent: "from-sky-500/20 to-blue-500/10",
     // ✅ Use an image that exists (you can change later if you create a dedicated cover)
-    coverImage: "/insights/profitpilot/cashflow-vs-profit.jpg",
+    coverImage: "/insights/profitpilot/posts/cashflow-vs-profit.jpg",
   },
 ];
 
