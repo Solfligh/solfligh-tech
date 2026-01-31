@@ -5,7 +5,7 @@ import PageHeader from "@/app/components/PageHeader";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
 import { listProjects } from "@/app/lib/projectStore";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -165,7 +165,7 @@ function getProjectLink(project: AnyProject) {
     ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
     : ({} as const);
 
-  return { href, isExternal, linkProps };
+  return { href, isExternal, linkProps, externalUrl };
 }
 
 export async function generateMetadata({
@@ -186,7 +186,7 @@ export async function generateMetadata({
 
   if (!project) {
     return {
-      title: "Project not found  SOLFLIGH TECH",
+      title: "Project not found – SOLFLIGH TECH",
       description: "This project could not be found.",
       robots: { index: false, follow: true },
     };
@@ -199,14 +199,8 @@ export async function generateMetadata({
       ? description
       : "Explore SOLFLIGH TECH projects focused on automation, clarity, and real business impact.";
 
-  const internalUrl = `${SITE_URL}/projects/${slug}`;
-  const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
-  const canonical = externalUrl || internalUrl;
-
-  // If this project redirects externally, avoid duplicate indexing
-  const robots = externalUrl
-    ? ({ index: false, follow: true } as const)
-    : ({ index: true, follow: true } as const);
+  // ✅ Always keep canonical INTERNAL to avoid redirect/canonical conflicts
+  const canonical = `${SITE_URL}/projects/${slug}`;
 
   const ogImage = ogUrl({
     title: name,
@@ -215,10 +209,10 @@ export async function generateMetadata({
   });
 
   return {
-    title: `${name} SOLFLIGH TECH`,
+    title: `${name} – SOLFLIGH TECH`,
     description: safeDescription,
     alternates: { canonical },
-    robots,
+    robots: { index: true, follow: true },
     openGraph: {
       title: name,
       description: safeDescription,
@@ -254,14 +248,14 @@ export default async function ProjectDetailPage({
   const project = projects.find((p) => p?.published && p?.slug === slug);
   if (!project) notFound();
 
-  // ✅ externalUrl is first-class: if present, redirect out.
-  const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
-  if (externalUrl) redirect(externalUrl);
+  // ✅ IMPORTANT SEO FIX:
+  // Do NOT redirect to external URLs here.
+  // Redirects are what triggers GSC "Redirect error" if the chain loops/blocks/changes.
+  const { externalUrl } = getProjectLink(project);
+  const hasExternal = !!externalUrl;
 
   const name = project.name || "Untitled project";
   const status = project.status || "Upcoming";
-
-  // ✅ ignore stored statusColor; compute consistent badge color
   const statusColor = getStatusBadgeClasses(status);
 
   const description = project.description || "";
@@ -276,12 +270,10 @@ export default async function ProjectDetailPage({
   const baseMedia = normalizeMedia(name, project.media || []);
   const mediaItems = withDemoInjected(name, baseMedia, project.demo || null);
 
-  // ✅ NEW: Other projects for internal linking
   const otherProjects = projects
     .filter((p) => p?.published && p?.slug && p.slug !== slug)
     .slice(0, 6);
 
-  // ✅ NEW: Related Insights (only show for projects we actually have insights for)
   const relatedInsights =
     slug === "profitpilot"
       ? [
@@ -357,6 +349,23 @@ export default async function ProjectDetailPage({
                   </div>
                 ) : null}
               </div>
+
+              {/* ✅ External link CTA (instead of redirect) */}
+              {hasExternal ? (
+                <div className="mt-6">
+                  <a
+                    href={externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  >
+                    Open project ↗
+                  </a>
+                  <p className="mt-2 text-xs text-slate-500">
+                    This project opens on a separate site.
+                  </p>
+                </div>
+              ) : null}
             </aside>
           </div>
 
@@ -413,7 +422,7 @@ export default async function ProjectDetailPage({
             </section>
           </div>
 
-          {/* ✅ NEW: Related Insights (shows only for ProfitPilot right now) */}
+          {/* Related Insights */}
           {relatedInsights.length > 0 && (
             <section className="mt-16">
               <div className="flex items-center justify-between gap-4">
@@ -447,16 +456,14 @@ export default async function ProjectDetailPage({
 
                     <p className="mt-2 text-sm text-slate-600">{i.description}</p>
 
-                    <div className="mt-3 text-sm font-semibold text-sky-700">
-                      Read →
-                    </div>
+                    <div className="mt-3 text-sm font-semibold text-sky-700">Read →</div>
                   </Link>
                 ))}
               </div>
             </section>
           )}
 
-          {/* ✅ NEW: Other Projects */}
+          {/* Other Projects */}
           {otherProjects.length > 0 && (
             <section className="mt-16">
               <div className="flex items-center justify-between gap-4">
