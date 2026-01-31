@@ -58,6 +58,23 @@ const POSTS: InsightPost[] = [
     accent: "from-sky-500/20 to-blue-500/10",
     coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
   },
+
+  // ✅ NEW: Article 2
+  {
+    hubSlug: "profitpilot",
+    slug: "cashflow-vs-profit-why-mixing-them-up-costs-clarity",
+    title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
+    description:
+      "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day.",
+    href: "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity",
+    tag: "Solution Awareness",
+    readingTime: "4–6 min",
+    dateLabel: "Jan 2026",
+    dateISO: "2026-01-12",
+    accent: "from-sky-500/20 to-blue-500/10",
+    // ✅ Use an image that exists (you can change later if you create a dedicated cover)
+    coverImage: "/insights/profitpilot/cover.jpg",
+  },
 ];
 
 /** -----------------------------
