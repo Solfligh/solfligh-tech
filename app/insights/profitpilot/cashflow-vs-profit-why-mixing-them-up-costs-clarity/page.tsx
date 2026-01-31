@@ -92,7 +92,7 @@ export default function ProfitPilotArticle2Page() {
     "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
 
   // We’ll create this later as Article 3
-  const nextArticleHref = "/insights/profitpilot/the-3-numbers-to-close-every-business-day";
+  const nextArticleHref = "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily";
 
   return (
     <main className="bg-white text-slate-900">
