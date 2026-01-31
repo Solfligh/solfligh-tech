@@ -136,7 +136,7 @@ export default function ProfitPilotSolutionArticlePage() {
                   </p>
 
                   <p>
-                    What breaks down for most SMEs isn’t understanding it—it’s
+                    What breaks down for most SMEs isn’t understanding it. it’s
                     consistency. After long days, scattered tools, and daily
                     pressure, even simple routines start to slip.
                   </p>
@@ -155,7 +155,7 @@ export default function ProfitPilotSolutionArticlePage() {
                   </p>
 
                   <p>
-                    But doing this manually every single day takes discipline—and
+                    But doing this manually every single day takes discipline and
                     discipline fades when systems don’t help.
                   </p>
                 </section>
@@ -201,7 +201,7 @@ export default function ProfitPilotSolutionArticlePage() {
 
                   <p>
                     Over time, this compounds into healthier margins and fewer
-                    surprises—not because the business worked harder, but
+                    surprises not because the business worked harder, but
                     because it saw clearly.
                   </p>
                 </section>
