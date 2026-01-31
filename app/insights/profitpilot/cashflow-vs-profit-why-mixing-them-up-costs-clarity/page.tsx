@@ -1,155 +1,352 @@
 // app/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity/page.tsx
 import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
 import Container from "@/app/components/Container";
-import PageHeader from "@/app/components/PageHeader";
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
-const SITE_URL = "https://solflightech.org";
 
 export const metadata: Metadata = {
-  title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
+  title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity | ProfitPilot | SolFligh Tech",
   description:
-    "Many business owners confuse cashflow with profit, leading to daily uncertainty. Here’s a plain-language explanation of the difference and why it matters.",
-  alternates: {
-    canonical: `${SITE_URL}/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity`,
-  },
-  openGraph: {
-    title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
-    description:
-      "A clear, non-technical explanation of cashflow vs profit — and why confusing them makes it hard to know how your business is really performing.",
-    url: `${SITE_URL}/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity`,
-    type: "article",
-    siteName: "SOLFLIGH TECH",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
-    description:
-      "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day.",
-  },
+    "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day — and how to separate them for clarity.",
 };
 
-export default function ArticlePage() {
+function MetaPill({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+      {children}
+    </span>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{children}</p>;
+}
+
+function Card({
+  title,
+  desc,
+  icon,
+}: {
+  title: string;
+  desc: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-sm">
+          {icon}
+        </div>
+        <div>
+          <p className="text-sm font-bold text-slate-950">{title}</p>
+          <p className="mt-1 text-sm leading-relaxed text-slate-600">{desc}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Callout({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title}</p>
+      <div className="mt-2 text-sm leading-relaxed text-slate-700">{children}</div>
+    </div>
+  );
+}
+
+function Divider() {
+  return <div className="my-10 h-px w-full bg-slate-200/70" />;
+}
+
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <ul className="space-y-2 text-sm text-slate-700">
+        {items.map((t) => (
+          <li key={t} className="flex items-start gap-2">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500" />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default function ProfitPilotArticle2Page() {
+  const meta = {
+    hubTitle: "ProfitPilot",
+    hubHref: "/insights/profitpilot",
+    insightsHref: "/insights",
+    tag: "Solution Awareness",
+    readingTime: "4–6 min",
+    dateLabel: "Jan 2026",
+    // ✅ Use an image you already have so it doesn't break
+    coverImage: "/insights/profitpilot/cover.jpg",
+    title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
+    subtitle:
+      "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day.",
+  };
+
+  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_article_cashflow_vs_profit";
+
   return (
     <main className="bg-white text-slate-900">
-      <section className="py-16 sm:py-20">
+      <section className="relative overflow-hidden">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-24 -top-32 h-96 w-96 rounded-full bg-sky-200/25 blur-3xl" />
+          <div className="absolute -right-24 top-10 h-[28rem] w-[28rem] rounded-full bg-blue-200/20 blur-3xl" />
+          <div className="absolute left-1/2 top-1/2 h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-100/60 blur-3xl" />
+        </div>
+
         <Container>
-          <PageHeader
-            level={1}
-            badge="ProfitPilot Insights"
-            title="Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity"
-            subtitle="A plain-language explanation of the difference — and why confusing them makes daily decisions harder than they need to be."
-          />
+          <div className="relative py-10 sm:py-12">
+            {/* Breadcrumb */}
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <Link href={meta.insightsHref} className="font-semibold text-slate-600 hover:text-slate-900">
+                Insights
+              </Link>
+              <span className="text-slate-400">/</span>
+              <Link href={meta.hubHref} className="font-semibold text-slate-600 hover:text-slate-900">
+                {meta.hubTitle}
+              </Link>
+              <span className="text-slate-400">/</span>
+              <span className="font-semibold text-slate-900">Article</span>
+            </div>
 
-          <article className="prose prose-slate mt-12 max-w-none">
-            <p>
-              If you’re running a business, chances are you’ve had days like this:
-            </p>
+            <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
+              {/* Left hero */}
+              <div className="space-y-5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <MetaPill>{meta.tag}</MetaPill>
+                  <MetaPill>{meta.readingTime}</MetaPill>
+                  <MetaPill>{meta.dateLabel}</MetaPill>
+                </div>
 
-            <p>
-              Money came in.<br />
-              Customers paid.<br />
-              Your phone showed bank alerts.
-            </p>
+                <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
+                  {meta.title}
+                </h1>
 
-            <p>
-              Yet somehow, when the day ended, you still couldn’t confidently
-              answer one simple question:
-            </p>
+                <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                  {meta.subtitle}
+                </p>
 
-            <p>
-              <strong>Did my business actually make money today?</strong>
-            </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href={waitlistHref}
+                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                  >
+                    Join the waitlist
+                  </Link>
 
-            <p>
-              If that sounds familiar, you’re not bad at business — you’re just
-              mixing up <strong>cashflow</strong> and <strong>profit</strong>.
-            </p>
+                  <Link
+                    href={meta.hubHref}
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                  >
+                    Back to hub
+                  </Link>
+                </div>
+              </div>
 
-            <h2>The mistake almost everyone makes</h2>
+              {/* Right “In one sentence” card */}
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">In one sentence</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  <span className="font-semibold text-slate-900">Cashflow</span> tells you what moved, while{" "}
+                  <span className="font-semibold text-slate-900">profit</span> tells you what you truly earned — mixing
+                  them is why “Did we make money today?” feels impossible to answer.
+                </p>
 
-            <p>
-              Most people look at their <strong>bank balance</strong> or
-              <strong> sales notifications</strong> and assume that tells the
-              full story.
-            </p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                    <p className="text-xs font-semibold text-slate-500">Cashflow answers</p>
+                    <p className="mt-1 text-sm font-bold text-slate-900">Can we pay bills?</p>
+                    <p className="mt-1 text-xs text-slate-600">Timing and survival.</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                    <p className="text-xs font-semibold text-slate-500">Profit answers</p>
+                    <p className="mt-1 text-sm font-bold text-slate-900">Are we winning?</p>
+                    <p className="mt-1 text-xs text-slate-600">Performance and health.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <p>
-              It doesn’t.
-            </p>
+            {/* Cover */}
+            <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              <div className="relative h-[220px] w-full sm:h-[320px] md:h-[380px]">
+                <Image
+                  src={meta.coverImage}
+                  alt={meta.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 1100px"
+                  priority={false}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/15 to-transparent" />
+              </div>
+            </div>
 
-            <p>
-              That’s because cashflow and profit are not the same thing, even
-              though they often feel like they should be.
-            </p>
+            {/* Body */}
+            <div className="mt-10">
+              <article className="mx-auto max-w-3xl space-y-12">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Card
+                    title="A bank alert isn’t a profit report"
+                    desc="Money moving is not the same as money earned. The timing can trick you."
+                    icon={
+                      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
+                        <path
+                          d="M4 10h16M7 10V7a5 5 0 0 1 10 0v3"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M6 10l1 11h10l1-11"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    }
+                  />
+                  <Card
+                    title="Separating the two brings clarity"
+                    desc="Once cashflow and profit stop fighting each other, decisions get calmer."
+                    icon={
+                      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
+                        <path
+                          d="M8 7h8M8 12h8M8 17h8"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                        <path d="M5 7h.01M5 12h.01M5 17h.01" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                      </svg>
+                    }
+                  />
+                </div>
 
-            <h2>Cashflow: what’s moving</h2>
+                <section className="space-y-4">
+                  <SectionLabel>Start here</SectionLabel>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    The mistake almost everyone makes
+                  </h2>
 
-            <ul>
-              <li>Money coming into your business</li>
-              <li>Money going out of your business</li>
-              <li>And <em>when</em> that movement happens</li>
-            </ul>
+                  <div className="space-y-4 text-base leading-relaxed text-slate-700">
+                    <p>
+                      Most people look at their <span className="font-semibold text-slate-900">bank balance</span> or{" "}
+                      <span className="font-semibold text-slate-900">sales notifications</span> and assume that tells
+                      the full story.
+                    </p>
+                    <p>It doesn’t.</p>
+                    <p>
+                      Cashflow and profit are not the same thing — even though they often feel like they should be.
+                      They answer two different questions, and mixing them is why clarity disappears.
+                    </p>
+                  </div>
 
-            <p>
-              Cashflow tells you whether you can survive day to day — pay rent,
-              salaries, suppliers, and bills.
-            </p>
+                  <Callout title="Quick definition">
+                    <>
+                      <span className="font-semibold text-slate-900">Cashflow</span> is what moved.{" "}
+                      <span className="font-semibold text-slate-900">Profit</span> is what you earned after real costs.
+                    </>
+                  </Callout>
+                </section>
 
-            <h2>Profit: what you actually earned</h2>
+                <section className="space-y-4">
+                  <SectionLabel>Cashflow</SectionLabel>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    Cashflow is what’s moving
+                  </h2>
 
-            <p>
-              Profit answers a different question:
-            </p>
+                  <BulletList
+                    items={[
+                      "Money coming into your business.",
+                      "Money going out of your business.",
+                      "And when that movement happens.",
+                      "Cashflow tells you if you can pay rent, salaries, suppliers, and bills.",
+                    ]}
+                  />
+                </section>
 
-            <blockquote>
-              After everything it truly cost to run the business, what did we
-              really earn?
-            </blockquote>
+                <section className="space-y-4">
+                  <SectionLabel>Profit</SectionLabel>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    Profit is what you actually earned
+                  </h2>
 
-            <p>
-              You can have money in the bank and still be losing money as a
-              business.
-            </p>
+                  <div className="space-y-4 text-base leading-relaxed text-slate-700">
+                    <p>Profit answers a different question:</p>
+                    <Callout title="Profit question">
+                      <>After everything it truly cost to run the business, what did we really earn?</>
+                    </Callout>
+                    <p>
+                      You can have money in the bank and still be losing money as a business — because timing can hide
+                      real costs.
+                    </p>
+                  </div>
+                </section>
 
-            <h2>Why this creates daily confusion</h2>
+                <Divider />
 
-            <p>
-              When cashflow and profit are blended together, business owners end
-              each day with activity — not understanding.
-            </p>
+                <section className="space-y-4">
+                  <SectionLabel>Why it confuses people</SectionLabel>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    This is why “today’s profit” feels hard to answer
+                  </h2>
 
-            <ul>
-              <li>Sales alerts don’t equal profit</li>
-              <li>Bank balances don’t equal performance</li>
-              <li>Being busy doesn’t mean being profitable</li>
-            </ul>
+                  <BulletList
+                    items={[
+                      "Sales alerts don’t equal profit.",
+                      "Bank balances don’t equal performance.",
+                      "Being busy doesn’t mean being profitable.",
+                      "Costs can show up later even when the sales happened today.",
+                    ]}
+                  />
+                </section>
 
-            <h2>Both matter — but for different reasons</h2>
+                <section className="space-y-4">
+                  <SectionLabel>Wrap up</SectionLabel>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    Both matter — but for different reasons
+                  </h2>
 
-            <p>
-              <strong>Cashflow keeps you alive.</strong><br />
-              <strong>Profit tells you if you’re winning.</strong>
-            </p>
+                  <Callout title="The mindset shift">
+                    <>
+                      <span className="font-semibold text-slate-900">Cashflow keeps you alive.</span>{" "}
+                      <span className="font-semibold text-slate-900">Profit tells you if you’re winning.</span>
+                    </>
+                  </Callout>
 
-            <h2>What’s coming next</h2>
+                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+                    <p className="text-sm font-semibold text-slate-900">Want early access to ProfitPilot?</p>
+                    <p className="mt-2 text-sm text-slate-700">
+                      Join the waitlist. You’ll get early access updates, and we’ll notify you when it’s ready.
+                    </p>
 
-            <p>
-              Once you clearly separate cashflow from profit, a new question
-              becomes possible:
-            </p>
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <Link
+                        href={waitlistHref}
+                        className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                      >
+                        Join the waitlist
+                      </Link>
 
-            <blockquote>
-              How much did my business actually make today — in plain language?
-            </blockquote>
-
-            <p>
-              That’s what the next article will tackle.
-            </p>
-          </article>
+                      <Link
+                        href={meta.hubHref}
+                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                      >
+                        Back to ProfitPilot hub
+                      </Link>
+                    </div>
+                  </div>
+                </section>
+              </article>
+            </div>
+          </div>
         </Container>
       </section>
     </main>
