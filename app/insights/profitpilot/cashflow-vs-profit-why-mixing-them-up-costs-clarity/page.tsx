@@ -82,7 +82,7 @@ export default function ProfitPilotArticle2Page() {
     tag: "Solution Awareness",
     readingTime: "4–6 min",
     dateLabel: "Jan 2026",
-    // ✅ Use an image you already have so it doesn't break
+    // ✅ This must match the file you uploaded in /public/insights/profitpilot/posts/
     coverImage: "/insights/profitpilot/posts/cashflow-vs-profit.jpg",
     title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
     subtitle:
@@ -90,6 +90,14 @@ export default function ProfitPilotArticle2Page() {
   };
 
   const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_article_cashflow_vs_profit";
+
+  // ✅ Previous article (problem-aware)
+  const prevArticleHref =
+    "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
+
+  // ✅ Next article placeholder (we’ll create Article 3 next)
+  const nextArticleHref =
+    "/insights/profitpilot/the-3-numbers-to-close-every-business-day"; // create later
 
   return (
     <main className="bg-white text-slate-900">
@@ -113,6 +121,23 @@ export default function ProfitPilotArticle2Page() {
               </Link>
               <span className="text-slate-400">/</span>
               <span className="font-semibold text-slate-900">Article</span>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href={prevArticleHref}
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+              >
+                ← Previous article
+              </Link>
+
+              {/* Optional: we’ll activate when Article 3 exists */}
+              <Link
+                href={nextArticleHref}
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+              >
+                Next article →
+              </Link>
             </div>
 
             <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
@@ -154,7 +179,7 @@ export default function ProfitPilotArticle2Page() {
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">In one sentence</p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   <span className="font-semibold text-slate-900">Cashflow</span> tells you what moved, while{" "}
-                  <span className="font-semibold text-slate-900">profit</span> tells you what you truly earned mixing
+                  <span className="font-semibold text-slate-900">profit</span> tells you what you truly earned — mixing
                   them is why “Did we make money today?” feels impossible to answer.
                 </p>
 
@@ -223,7 +248,12 @@ export default function ProfitPilotArticle2Page() {
                           strokeWidth="1.8"
                           strokeLinecap="round"
                         />
-                        <path d="M5 7h.01M5 12h.01M5 17h.01" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                        <path
+                          d="M5 7h.01M5 12h.01M5 17h.01"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                        />
                       </svg>
                     }
                   />
@@ -243,7 +273,7 @@ export default function ProfitPilotArticle2Page() {
                     </p>
                     <p>It doesn’t.</p>
                     <p>
-                      Cashflow and profit are not the same thing even though they often feel like they should be.
+                      Cashflow and profit are not the same thing — even though they often feel like they should be.
                       They answer two different questions, and mixing them is why clarity disappears.
                     </p>
                   </div>
@@ -284,7 +314,7 @@ export default function ProfitPilotArticle2Page() {
                       <>After everything it truly cost to run the business, what did we really earn?</>
                     </Callout>
                     <p>
-                      You can have money in the bank and still be losing money as a business because timing can hide
+                      You can have money in the bank and still be losing money as a business — because timing can hide
                       real costs.
                     </p>
                   </div>
@@ -311,7 +341,7 @@ export default function ProfitPilotArticle2Page() {
                 <section className="space-y-4">
                   <SectionLabel>Wrap up</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    Both matter but for different reasons
+                    Both matter — but for different reasons
                   </h2>
 
                   <Callout title="The mindset shift">
@@ -342,6 +372,23 @@ export default function ProfitPilotArticle2Page() {
                         Back to ProfitPilot hub
                       </Link>
                     </div>
+                  </div>
+
+                  {/* ✅ Keep navigation at the bottom too */}
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    <Link
+                      href={prevArticleHref}
+                      className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                    >
+                      ← Previous article
+                    </Link>
+
+                    <Link
+                      href={nextArticleHref}
+                      className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Next article →
+                    </Link>
                   </div>
                 </section>
               </article>
