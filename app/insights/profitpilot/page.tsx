@@ -50,21 +50,58 @@ export default function ProfitPilotInsightsHubPage() {
   // Later, we’ll move these into insightsStore for one true source of truth.
   const localPosts: InsightPost[] = [
     {
+      href: "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today",
+      title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
+      description:
+        "Most SMEs see activity (sales and bank alerts) but can’t confidently prove daily performance without complete costs.",
+      tag: "Problem Awareness",
+      readingTime: "4–6 min",
+      dateLabel: "Jan 2026",
+      coverImage: "/insights/profitpilot/cover.jpg",
+      accent: "from-sky-200 to-blue-200",
+    } as any,
+
+    {
       href: "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity",
       title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
       description:
-        "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day.",
+        "Cashflow and profit answer different questions. Learn the difference—and why ProfitPilot refuses to guess profit when costs are incomplete.",
       tag: "Solution Awareness",
       readingTime: "4–6 min",
       dateLabel: "Jan 2026",
       coverImage: "/insights/profitpilot/cover.jpg",
       accent: "from-sky-200 to-blue-200",
     } as any,
+
+    {
+      href: "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily",
+      title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
+      description:
+        "Three daily checks for SMEs: revenue recorded, operating expenses recorded, and profit status (proven or unavailable).",
+      tag: "Daily Routine",
+      readingTime: "4–5 min",
+      dateLabel: "Jan 2026",
+      coverImage: "/insights/profitpilot/cover.jpg",
+      accent: "from-sky-200 to-blue-200",
+    } as any,
+
+    {
+      href: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
+      title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
+      description:
+        "Daily clarity is easy to understand but hard to maintain. ProfitPilot turns it into a habit—without guessing profit.",
+      tag: "Product Solution",
+      readingTime: "5–7 min",
+      dateLabel: "Jan 2026",
+      coverImage: "/insights/profitpilot/cover.jpg",
+      accent: "from-sky-200 to-blue-200",
+    } as any,
+
     {
       href: "/insights/profitpilot/from-daily-number-to-daily-clarity",
       title: "From Daily Number to Daily Clarity",
       description:
-        "ProfitPilot treats profit as conditional: if costs are incomplete, it refuses to guess. Here’s the logic and what you see instead.",
+        "ProfitPilot’s core philosophy: profit is conditional. If costs are incomplete, it shows “— —” and explains why.",
       tag: "Profit Logic",
       readingTime: "5–7 min",
       dateLabel: "Jan 2026",
@@ -109,7 +146,7 @@ export default function ProfitPilotInsightsHubPage() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold text-slate-900">Featured</h2>
+          <h2 className="text-lg font-semibold text-slate-900">All articles</h2>
           <Link href="/insights" className="text-sm font-semibold text-sky-700 hover:underline">
             All hubs →
           </Link>
