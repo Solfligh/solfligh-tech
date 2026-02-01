@@ -46,7 +46,7 @@ export default function ProfitPilotInsightsHubPage() {
   const hub = getHub("profitpilot");
   const storePosts = listPostsByHub("profitpilot") as InsightPost[];
 
-  // ✅ Local posts list: ensures everything shows even if insightsStore is incomplete
+  // ✅ TEMP: ensure articles show even if not yet added to insightsStore.
   const localPosts: InsightPost[] = [
     {
       href: "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today",
@@ -84,6 +84,7 @@ export default function ProfitPilotInsightsHubPage() {
       accent: "from-sky-200 to-blue-200",
     } as any,
 
+    // ✅ The “habit” article (this is the one you said is showing)
     {
       href: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
       title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
@@ -96,6 +97,20 @@ export default function ProfitPilotInsightsHubPage() {
       accent: "from-sky-200 to-blue-200",
     } as any,
 
+    // ✅ The older “from-daily-number-to-daily-clarity” (add it back)
+    {
+      href: "/insights/profitpilot/from-daily-number-to-daily-clarity",
+      title: "From Daily Number to Daily Clarity",
+      description:
+        "A practical shift: stop chasing vibes. Build a daily routine that turns insight into action.",
+      tag: "Daily Clarity",
+      readingTime: "5–7 min",
+      dateLabel: "Jan 2026",
+      coverImage: "/insights/profitpilot/posts/daily-number-to-clarity.jpg",
+      accent: "from-sky-200 to-blue-200",
+    } as any,
+
+    // ✅ The new “profit philosophy” article
     {
       href: "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer",
       title: "When Profit Is Unknown, That’s Still an Answer",
@@ -109,7 +124,6 @@ export default function ProfitPilotInsightsHubPage() {
     } as any,
   ];
 
-  // Combine store + local, dedupe by href
   const posts = dedupeByHref([...(storePosts || []), ...localPosts]);
 
   const hubTitle = hub?.title || "ProfitPilot";
