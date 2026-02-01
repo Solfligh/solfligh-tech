@@ -2,11 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
+import ProfitLogicClarification from "@/app/components/ProfitLogicClarification";
 
 export const metadata: Metadata = {
   title: "Why Most SMEs Don’t Actually Know How Much They Made Today | ProfitPilot | SolFligh Tech",
   description:
     "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did we actually make money today?",
+  alternates: {
+    canonical: "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today",
+  },
+  openGraph: {
+    title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
+    description:
+      "Most SMEs see activity (sales and bank alerts) but can’t prove true performance because key costs are often missing or recorded later.",
+    url: "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today",
+    type: "article",
+  },
 };
 
 function MetaPill({ children }: { children: React.ReactNode }) {
@@ -88,8 +99,7 @@ export default function ProfitPilotArticlePage() {
   };
 
   // ✅ Article 2 (solution awareness) – next step
-  const nextArticleHref =
-    "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity";
+  const nextArticleHref = "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity";
 
   return (
     <main className="bg-white text-slate-900">
@@ -128,9 +138,7 @@ export default function ProfitPilotArticlePage() {
                   {meta.title}
                 </h1>
 
-                <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                  {meta.subtitle}
-                </p>
+                <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">{meta.subtitle}</p>
 
                 {/* ✅ Problem-aware CTA: go to next article (no waitlist) */}
                 <div className="flex flex-wrap gap-3">
@@ -138,7 +146,9 @@ export default function ProfitPilotArticlePage() {
                     href={nextArticleHref}
                     className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                   >
-                    Next: Cashflow vs Profit <span className="ml-2" aria-hidden="true">→</span>
+                    Next: Cashflow vs Profit <span className="ml-2" aria-hidden="true">
+                      →
+                    </span>
                   </Link>
 
                   <Link
@@ -156,7 +166,7 @@ export default function ProfitPilotArticlePage() {
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   Most SMEs can’t confidently say what they made today because{" "}
                   <span className="font-semibold text-slate-900">activity</span> is visible, but{" "}
-                  <span className="font-semibold text-slate-900">true performance</span> is not.
+                  <span className="font-semibold text-slate-900">true performance</span> requires complete costs.
                 </p>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
@@ -166,9 +176,9 @@ export default function ProfitPilotArticlePage() {
                     <p className="mt-1 text-xs text-slate-600">Movement looks like success.</p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <p className="text-xs font-semibold text-slate-500">What we can’t answer</p>
-                    <p className="mt-1 text-sm font-bold text-slate-900">Did we really win today?</p>
-                    <p className="mt-1 text-xs text-slate-600">Profit is not obvious.</p>
+                    <p className="text-xs font-semibold text-slate-500">What we can’t prove</p>
+                    <p className="mt-1 text-sm font-bold text-slate-900">Did we actually win today?</p>
+                    <p className="mt-1 text-xs text-slate-600">Profit isn’t automatic.</p>
                   </div>
                 </div>
               </div>
@@ -208,7 +218,7 @@ export default function ProfitPilotArticlePage() {
                     }
                   />
                   <Card
-                    title="You’re not failing you’re missing visibility"
+                    title="You’re not failing — you’re missing visibility"
                     desc="Most tools show movement (sales/cash), not the truth of daily performance."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
@@ -245,7 +255,8 @@ export default function ProfitPilotArticlePage() {
                     </p>
                     <p>
                       If the honest answer is “I’m not sure,” it doesn’t mean we’re careless.
-                      It usually means we don’t have a simple way to see daily performance clearly.
+                      It usually means we don’t have a simple way to see daily performance clearly — especially when
+                      key costs are recorded late or not recorded at all.
                     </p>
                   </div>
 
@@ -257,6 +268,9 @@ export default function ProfitPilotArticlePage() {
                   </Callout>
                 </section>
 
+                {/* ✅ Align with ProfitPilot’s philosophy (without turning this into a solution article) */}
+                <ProfitLogicClarification tone="neutral" showOneLiner />
+
                 <section id="signals" className="space-y-4">
                   <SectionLabel>What we use instead</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -266,11 +280,11 @@ export default function ProfitPilotArticlePage() {
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
                       Most SMEs check things like bank balance, POS totals, transfer alerts, and cash on the table.
-                      Those are useful signals but they aren’t the same as “we made money today.”
+                      Those are useful signals — but they aren’t the same as “profit today.”
                     </p>
                     <p>
                       That’s why two people can have the same sales day and feel totally different:
-                      one is calm, one is anxious because neither is sure what today truly meant.
+                      one is calm, one is anxious — because neither is sure what today truly meant.
                     </p>
                   </div>
 
@@ -289,7 +303,7 @@ export default function ProfitPilotArticlePage() {
                 <section id="why-its-hard" className="space-y-4">
                   <SectionLabel>Why it happens</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The problem isn’t discipline it’s visibility
+                    The problem isn’t discipline — it’s visibility
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
@@ -298,8 +312,8 @@ export default function ProfitPilotArticlePage() {
                       way humans can trust.
                     </p>
                     <p>
-                      Income is tracked sometimes. Expenses are scattered. Costs show up later. And daily decisions are
-                      made from memory, vibes, or incomplete numbers.
+                      Sales get recorded. Expenses are scattered. Some costs show up later (especially costs tied to
+                      sales). And daily decisions are made from memory, vibes, or incomplete numbers.
                     </p>
                   </div>
 
@@ -308,7 +322,7 @@ export default function ProfitPilotArticlePage() {
                       "Sales records live in different places (POS, bank alerts, WhatsApp, notebooks).",
                       "Expenses happen in small, frequent chunks (fuel, data, deliveries, supplies).",
                       "Some costs don’t feel like “today’s costs” but they were triggered by today’s activity.",
-                      "Month-end summaries come too late daily businesses need daily truth.",
+                      "Month-end summaries come too late — daily businesses need daily truth.",
                     ]}
                   />
                 </section>
@@ -324,16 +338,14 @@ export default function ProfitPilotArticlePage() {
                       When we don’t know our real daily performance, we can’t confidently improve it.
                       We may keep prices too low, restock the wrong items, overhire, or assume “it’s fine.”
                     </p>
-                    <p>
-                      And the worst part: we may think we’re doing well until the month ends and reality hits.
-                    </p>
+                    <p>And the worst part: we may think we’re doing well until the month ends and reality hits.</p>
                   </div>
 
                   <BulletList
                     items={[
-                      "We celebrate sales days that were actually loss days.",
+                      "We celebrate sales days that were actually loss days once costs are fully known.",
                       "We confuse cash movement with winning.",
-                      "We keep repeating pricing mistakes because we can’t see the daily truth.",
+                      "We repeat pricing mistakes because we can’t see the daily truth.",
                       "We get end-of-month surprises that should never be surprises.",
                     ]}
                   />
@@ -352,9 +364,7 @@ export default function ProfitPilotArticlePage() {
                       mixing up <span className="font-semibold text-slate-900">cashflow</span> and{" "}
                       <span className="font-semibold text-slate-900">profit</span>.
                     </p>
-                    <p>
-                      That mix-up is why “bank balance” and “sales alerts” feel like answers even when they aren’t.
-                    </p>
+                    <p>That mix-up is why “bank balance” and “sales alerts” feel like answers even when they aren’t.</p>
                   </div>
 
                   <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
@@ -368,7 +378,9 @@ export default function ProfitPilotArticlePage() {
                         href={nextArticleHref}
                         className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                       >
-                        Read Article 2 <span className="ml-2" aria-hidden="true">→</span>
+                        Read Article 2 <span className="ml-2" aria-hidden="true">
+                          →
+                        </span>
                       </Link>
 
                       <Link
