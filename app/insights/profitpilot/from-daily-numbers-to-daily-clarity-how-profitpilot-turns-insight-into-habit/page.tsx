@@ -57,6 +57,10 @@ export default function ProfitPilotSolutionArticlePage() {
       "Knowing what to track is easy. Doing it consistently is the real challenge. This is where ProfitPilot fits.",
   };
 
+  // ✅ Seamless chain
+  const prevArticleHref = "/insights/profitpilot/from-daily-number-to-daily-clarity";
+  const nextArticleHref = "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer";
+
   const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_solution_article";
   const projectHref = "/projects/profitpilot";
 
@@ -76,6 +80,30 @@ export default function ProfitPilotSolutionArticlePage() {
               </Link>
               <span className="text-slate-400">/</span>
               <span className="font-semibold text-slate-900">Article</span>
+            </div>
+
+            {/* ✅ Top nav */}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href={prevArticleHref}
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+              >
+                ← Previous article
+              </Link>
+
+              <Link
+                href={nextArticleHref}
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+              >
+                Next article →
+              </Link>
+
+              <Link
+                href={meta.hubHref}
+                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              >
+                Back to hub
+              </Link>
             </div>
 
             {/* Header */}
@@ -191,10 +219,9 @@ export default function ProfitPilotSolutionArticlePage() {
                   </p>
 
                   <p>
-                     Over time, this compounds into healthier margins and fewer surprises — not because the business
-                     worked harder, but because it saw clearly.
+                    Over time, this compounds into healthier margins and fewer surprises — not because the business
+                    worked harder, but because it saw clearly.
                   </p>
-
                 </section>
 
                 {/* Final CTA */}
@@ -228,6 +255,30 @@ export default function ProfitPilotSolutionArticlePage() {
                     </Link>
                   </div>
                 </section>
+
+                {/* ✅ Bottom nav (seamless continue) */}
+                <div className="flex flex-wrap gap-3 border-t border-slate-200 pt-6">
+                  <Link
+                    href={prevArticleHref}
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                  >
+                    ← Previous article
+                  </Link>
+
+                  <Link
+                    href={nextArticleHref}
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                  >
+                    Next article →
+                  </Link>
+
+                  <Link
+                    href={meta.hubHref}
+                    className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                  >
+                    Back to hub
+                  </Link>
+                </div>
               </article>
             </div>
           </div>
