@@ -1,4 +1,3 @@
-// app/insights/profitpilot/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import PageHeader from "@/app/components/PageHeader";
@@ -57,6 +56,17 @@ export default function ProfitPilotInsightsHubPage() {
         "Cashflow and profit answer different questions. Mixing them up is why many business owners feel unsure at the end of the day.",
       tag: "Solution Awareness",
       readingTime: "4–6 min",
+      dateLabel: "Jan 2026",
+      coverImage: "/insights/profitpilot/cover.jpg",
+      accent: "from-sky-200 to-blue-200",
+    } as any,
+    {
+      href: "/insights/profitpilot/from-daily-number-to-daily-clarity",
+      title: "From Daily Number to Daily Clarity",
+      description:
+        "ProfitPilot treats profit as conditional: if costs are incomplete, it refuses to guess. Here’s the logic and what you see instead.",
+      tag: "Profit Logic",
+      readingTime: "5–7 min",
       dateLabel: "Jan 2026",
       coverImage: "/insights/profitpilot/cover.jpg",
       accent: "from-sky-200 to-blue-200",
