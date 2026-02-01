@@ -87,7 +87,7 @@ export default function ArticlePage() {
   const prevArticleHref = "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity";
 
   // ✅ You referenced this as “next” — we’ll create it later.
-  const nextArticleHref = "/insights/profitpilot/how-profitpilot-makes-daily-profit-clarity-automatic";
+  const nextArticleHref =  "/insights/profitpilot/from-daily-number-to-daily-clarity";
 
   return (
     <main className="bg-white text-slate-900">
