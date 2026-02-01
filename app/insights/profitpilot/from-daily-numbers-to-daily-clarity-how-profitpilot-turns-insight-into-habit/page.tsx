@@ -191,9 +191,10 @@ export default function ProfitPilotSolutionArticlePage() {
                   </p>
 
                   <p>
-                    Over time, this compounds into healthier margins and fewer surprises — not because the business
-                    worked harder, but because it saw clearly.
-                  </>
+                     Over time, this compounds into healthier margins and fewer surprises — not because the business
+                     worked harder, but because it saw clearly.
+                  </p>
+
                 </section>
 
                 {/* Final CTA */}
