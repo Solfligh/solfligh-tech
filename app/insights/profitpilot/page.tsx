@@ -46,6 +46,7 @@ export default function ProfitPilotInsightsHubPage() {
   const hub = getHub("profitpilot");
   const storePosts = listPostsByHub("profitpilot") as InsightPost[];
 
+  // ✅ Local posts list: ensures everything shows even if insightsStore is incomplete
   const localPosts: InsightPost[] = [
     {
       href: "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today",
@@ -108,6 +109,7 @@ export default function ProfitPilotInsightsHubPage() {
     } as any,
   ];
 
+  // Combine store + local, dedupe by href
   const posts = dedupeByHref([...(storePosts || []), ...localPosts]);
 
   const hubTitle = hub?.title || "ProfitPilot";
@@ -117,6 +119,7 @@ export default function ProfitPilotInsightsHubPage() {
 
   return (
     <div className="space-y-10">
+      {/* Breadcrumb */}
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
           Insights
@@ -129,47 +132,104 @@ export default function ProfitPilotInsightsHubPage() {
         badge={hub?.badge || "Project Hub"}
         title={`${hubTitle} Insights`}
         subtitle={hubDescription}
+        actions={
+          <Link
+            href="/projects"
+            className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+          >
+            View projects
+          </Link>
+        }
       />
 
       <MiniHero title={hubTitle} />
 
-      <section className="grid gap-6 sm:grid-cols-2">
-        {posts.map((p) => (
-          <Link
-            key={p.href}
-            href={p.href}
-            className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
-          >
-            <div className="relative h-36 w-full overflow-hidden">
-              <Image
-                src={p.coverImage}
-                alt={p.title}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                sizes="(max-width: 768px) 100vw, 520px"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/30 to-transparent" />
-            </div>
+      <section className="space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-lg font-semibold text-slate-900">All articles</h2>
+          <Link href="/insights" className="text-sm font-semibold text-sky-700 hover:underline">
+            All hubs →
+          </Link>
+        </div>
 
-            <div className="p-6">
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <span className="rounded-full border border-slate-200 bg-white px-3 py-1 font-semibold text-slate-700">
-                  {p.tag}
-                </span>
-                <span>{p.readingTime}</span>
-                <span>•</span>
-                <span>{p.dateLabel}</span>
+        <div className="grid gap-6 sm:grid-cols-2">
+          {posts.map((p: InsightPost) => (
+            <Link
+              key={p.href}
+              href={p.href}
+              className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
+            >
+              {/* Cover (safe) */}
+              <div className="relative h-36 w-full overflow-hidden">
+                {p.coverImage ? (
+                  <>
+                    <Image
+                      src={p.coverImage}
+                      alt={p.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 100vw, 520px"
+                      priority={false}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/30 to-transparent" />
+                  </>
+                ) : (
+                  <div className={`absolute inset-0 bg-gradient-to-br ${p.accent || "from-sky-200 to-blue-200"}`} />
+                )}
               </div>
 
-              <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:underline">
-                {p.title}
-              </h3>
+              <div className="p-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                    {p.tag}
+                  </span>
+                  <span className="text-xs font-semibold text-slate-600">{p.readingTime}</span>
+                  <span className="text-xs text-slate-400">•</span>
+                  <span className="text-xs font-semibold text-slate-600">{p.dateLabel}</span>
+                </div>
 
-              <p className="mt-2 text-sm text-slate-600">{p.description}</p>
-            </div>
-          </Link>
-        ))}
+                <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:underline">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.description}</p>
+
+                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sky-700">
+                  Read <span aria-hidden="true">→</span>
+                </div>
+              </div>
+
+              {/* Hover glow */}
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="absolute -left-24 -top-28 h-80 w-80 rounded-full bg-sky-200/25 blur-3xl" />
+                <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/25 blur-3xl" />
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
+
+      <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-slate-900">Want the product version?</p>
+            <p className="mt-1 text-sm text-slate-600">
+              ProfitPilot turns these ideas into a dashboard SMEs can understand instantly.
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Link
+              href="/projects"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+            >
+              Projects
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+            >
+              Contact us
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
