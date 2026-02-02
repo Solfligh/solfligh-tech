@@ -7,14 +7,14 @@ import ProfitLogicClarification from "@/app/components/ProfitLogicClarification"
 export const metadata: Metadata = {
   title: "When Profit Is Unknown, That’s Still an Answer | ProfitPilot | SolFligh Tech",
   description:
-    "ProfitPilot won’t guess profit when costs are incomplete. If profit can’t be proven, it shows “— —” and explains what’s missing but still helps you close the day knowing whether today helped or hurt your business.",
+    "ProfitPilot won’t guess profit when costs are incomplete. If profit can’t be proven, it shows “— —”, explains what’s missing, and still helps you close the day with a truthful direction signal.",
   alternates: {
     canonical: "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer",
   },
   openGraph: {
     title: "When Profit Is Unknown, That’s Still an Answer",
     description:
-      "ProfitPilot refuses to guess profit. If costs are incomplete, it shows “— —”, explains what’s missing, and still gives a truthful daily verdict signal.",
+      "ProfitPilot refuses to guess profit. If costs are incomplete, it shows “— —”, explains what’s missing, and still gives a truthful daily direction signal.",
     url: "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer",
     type: "article",
   },
@@ -46,7 +46,7 @@ export default function ProfitUnknownArticlePage() {
     hubTitle: "ProfitPilot",
     hubHref: "/insights/profitpilot",
     insightsHref: "/insights",
-    tag: "Solution Awareness",
+    tag: "Product Solution",
     readingTime: "4–6 min",
     dateLabel: "Jan 2026",
     coverImage: "/insights/profitpilot/posts/profit-unknown.jpg",
@@ -55,7 +55,7 @@ export default function ProfitUnknownArticlePage() {
       "Sometimes the most honest number is: “we don’t know yet.” ProfitPilot treats profit as a proven number not a guess.",
   };
 
-  // ✅ Correct chain: this is Article 6 (intro-product moment)
+  // ✅ Correct chain: final article follows the “habit” article
   const prevArticleHref =
     "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit";
 
@@ -100,7 +100,7 @@ export default function ProfitUnknownArticlePage() {
 
               <Link
                 href={waitlistHref}
-                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
               >
                 Join waitlist
               </Link>
@@ -144,12 +144,14 @@ export default function ProfitUnknownArticlePage() {
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
                     Most “profit today” numbers are guesses
                   </h2>
+
                   <p>
-                    A lot of businesses can tell you what they sold today. Some can tell you what they spent today.
+                    Many businesses can tell you what they sold today. Some can tell you what they spent today.
                     But profit is different: profit depends on whether the costs tied to those sales are fully recorded.
                   </p>
+
                   <p>
-                    If costs are missing (especially costs directly tied to each sale), any profit number is not a
+                    If key costs are missing (especially costs tied to each sale), any “profit today” number isn’t a
                     measurement it’s a story.
                   </p>
 
@@ -158,13 +160,12 @@ export default function ProfitUnknownArticlePage() {
                   </p>
                 </section>
 
-                <ProfitLogicClarification tone="warn" showOneLiner />
-
                 <section className="space-y-4">
                   <SectionLabel>Why “unknown” is useful</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
                     “— —” protects you from confident mistakes
                   </h2>
+
                   <p>
                     When ProfitPilot shows <strong>“— —”</strong>, it’s not failing to calculate. It’s refusing to
                     mislead you.
@@ -176,12 +177,12 @@ export default function ProfitUnknownArticlePage() {
                         <span className="font-semibold text-slate-900">
                           We will not tell you profit unless the data supports it
                         </span>{" "}
-                        but we’ll still tell you if today helped or hurt your business.
+                       but we’ll still help you close the day with truth.
                       </p>
                     </>
                   </Callout>
 
-                  <Callout title="What ProfitPilot is really saying">
+                  <Callout title="What “— —” really means">
                     <>
                       <p className="m-0">
                         “You have recorded revenue, but profit can’t be proven yet because required costs are missing.
@@ -196,18 +197,19 @@ export default function ProfitUnknownArticlePage() {
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
                     A truthful fallback: operating surplus/deficit (recorded)
                   </h2>
+
                   <p>
                     Even when profit is unknown, you can still get a useful daily signal that helps you manage overhead
                     and pricing decisions without pretending it’s profit.
                   </p>
+
                   <Callout title="Operating surplus / deficit (recorded)">
                     <>
                       <p className="m-0">
                         <strong>Operating surplus / deficit (recorded)</strong> = Revenue − Operating Expenses (recorded)
                       </p>
                       <p className="mt-3 mb-0">
-                        This is <strong>not profit</strong>. It’s a direction signal while you complete the required
-                        sale costs.
+                        This is <strong>not profit</strong>. It’s a direction signal while you complete the required sale costs.
                       </p>
                     </>
                   </Callout>
@@ -218,17 +220,25 @@ export default function ProfitUnknownArticlePage() {
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
                     If it can’t be proven, ProfitPilot won’t show it
                   </h2>
+
                   <p>
-                    ProfitPilot treats profit as a conditional number. When costs are complete, profit is shown. When
-                    they aren’t, the UI explains exactly what’s missing.
+                    ProfitPilot treats profit as conditional: when costs are complete, profit is shown. When they aren’t,
+                    the UI explains what’s missing.
                   </p>
+
                   <p>
-                    That single design choice changes behavior: people stop relying on vibes and start recording what’s
-                    needed to unlock real clarity.
+                    That single design choice changes behavior: owners stop relying on vibes and start recording what’s
+                    required to unlock real clarity.
                   </p>
                 </section>
 
-                {/* Intro-product CTA (this is the right article for it) */}
+                {/* ✅ Move clarification to the bottom (per your rule) */}
+                <section className="space-y-4 border-t border-slate-200 pt-8">
+                  <SectionLabel>Quick clarity note</SectionLabel>
+                  <ProfitLogicClarification tone="warn" showOneLiner showHint />
+                </section>
+
+                {/* ✅ Final CTA (this is the right article for it) */}
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
                   <p className="text-sm font-semibold text-slate-900">Want to follow ProfitPilot as we build it?</p>
                   <p className="text-sm text-slate-700">
@@ -239,7 +249,7 @@ export default function ProfitUnknownArticlePage() {
                   <div className="flex flex-wrap gap-3">
                     <Link
                       href={waitlistHref}
-                      className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                      className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                     >
                       Join waitlist
                     </Link>
