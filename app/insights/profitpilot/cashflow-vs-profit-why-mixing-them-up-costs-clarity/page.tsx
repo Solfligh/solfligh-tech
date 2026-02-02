@@ -7,14 +7,14 @@ import ProfitLogicClarification from "@/app/components/ProfitLogicClarification"
 export const metadata: Metadata = {
   title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity | ProfitPilot | SolFligh Tech",
   description:
-    "Cashflow and profit answer different questions. ProfitPilot treats profit as conditional and refuses to guess when costs are incomplete—so you always know what’s true.",
+    "Cashflow and profit answer different questions. Cashflow tells you whether money moved. Profit tells you whether today created value after costs. ProfitPilot won’t guess profit but it can still help you judge whether today helped or hurt.",
   alternates: {
     canonical: "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity",
   },
   openGraph: {
     title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
     description:
-      "Cashflow and profit answer different questions. ProfitPilot treats profit as conditional and refuses to guess when costs are incomplete.",
+      "Cashflow shows movement. Profit shows value after costs. Mixing them creates false confidence and late surprises especially when costs arrive later.",
     url: "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity",
     type: "article",
   },
@@ -50,6 +50,10 @@ function Card({
       <div className="mt-4 text-sm leading-7 text-slate-700">{children}</div>
     </div>
   );
+}
+
+function Divider() {
+  return <div className="h-px w-full bg-slate-200/70" />;
 }
 
 export default function Page() {
@@ -119,11 +123,11 @@ export default function Page() {
               </h1>
 
               <p className="text-base leading-7 text-slate-700">
-                Many business owners end the day with a “good feeling” because money came in — then feel confused a week
+                Many business owners end the day with a “good feeling” because money came in then feel confused a week
                 later when bills hit and nothing is left.
                 <br />
-                That confusion usually has one root cause: treating <strong>cashflow</strong> and <strong>profit</strong>{" "}
-                as the same thing.
+                That confusion usually has one root cause: treating <strong>cashflow</strong> and{" "}
+                <strong>profit</strong> as the same thing.
               </p>
 
               {/* Cover */}
@@ -143,28 +147,43 @@ export default function Page() {
 
               {/* Clarification block (canonical) */}
               <ProfitLogicClarification tone="warn" showOneLiner showHint />
+
+              {/* ✅ Align with locked philosophy (brief, not salesy) */}
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 text-sm leading-7 text-slate-700 shadow-sm">
+                <p className="m-0 font-semibold text-slate-900">
+                  Here’s the simple outcome we’re chasing:
+                </p>
+                <p className="mt-2 mb-0">
+                  You should be able to end most days with a clear verdict:{" "}
+                  <span className="font-semibold text-slate-900">did today help or hurt the business?</span>
+                  <br />
+                  Cashflow can’t answer that. Profit can but only when the costs are actually known.
+                </p>
+              </div>
             </header>
 
             {/* Body */}
             <section className="space-y-8">
               <SectionTitle>Cashflow answers “did money move?”</SectionTitle>
               <p className="text-sm leading-7 text-slate-700">
-                Cashflow is about movement of cash — what came in and what went out.
+                Cashflow is the movement of cash what came in and what went out.
                 <br />
-                It’s useful for day-to-day survival: paying salaries, restocking, and avoiding “no cash” emergencies.
+                It’s essential for survival: paying bills, restocking, and avoiding “no cash” emergencies.
+                <br />
+                But cashflow is not a verdict. It’s a movement report.
               </p>
 
               <div className="grid gap-6 sm:grid-cols-2">
-                <Card title="Cash inflow examples" subtitle="Cash increased, but this doesn’t automatically mean profit.">
+                <Card title="Cash inflow examples" subtitle="Cash increased, but this doesn’t automatically mean you “won” today.">
                   <ul className="m-0 list-disc pl-5">
-                    <li>Customer paid today (even if sale costs aren’t fully recorded)</li>
+                    <li>Customer paid today (even if costs tied to that sale aren’t fully recorded yet)</li>
                     <li>Owner added money to the business</li>
                     <li>A loan or advance landed</li>
                     <li>Old debts finally got paid</li>
                   </ul>
                 </Card>
 
-                <Card title="Cash outflow examples" subtitle="Cash decreased, but you might still be profitable overall.">
+                <Card title="Cash outflow examples" subtitle="Cash decreased, but you might still be doing well overall.">
                   <ul className="m-0 list-disc pl-5">
                     <li>Buying inventory for future sales</li>
                     <li>Paying rent for the month upfront</li>
@@ -174,47 +193,93 @@ export default function Page() {
                 </Card>
               </div>
 
+              <Divider />
+
               <SectionTitle>Profit answers “did we create value after costs?”</SectionTitle>
               <p className="text-sm leading-7 text-slate-700">
-                Profit is what remains after the costs required to generate revenue are accounted for.
+                Profit is what remains after the costs required to generate revenue are included.
                 <br />
-                The key phrase is <strong>accounted for</strong>. If some required costs are missing, then profit isn’t
-                known — and a guess can be more harmful than silence.
+                The key phrase is <strong>included</strong>. If required costs are missing, profit isn’t known.
               </p>
 
-              <Card title="Why ProfitPilot treats profit as conditional" subtitle="If a number cannot be proven, it is not shown.">
+              <Card
+                title="This is where most SMEs get trapped"
+                subtitle="A day can look good in cash and still be a bad day in profit."
+              >
+                <p className="m-0">
+                  Cashflow can make a day feel successful because money moved.
+                  <br />
+                  Profit asks the harder question: once the real costs settle, did that day still stand as a win?
+                </p>
+                <p className="mt-3 mb-0">
+                  That’s why owners get “end-of-month surprises.” The business ran daily, but truth arrived late.
+                </p>
+              </Card>
+
+              <Card
+                title="Why ProfitPilot treats profit as conditional"
+                subtitle="A number is shown only when it’s defensible."
+              >
                 <p className="m-0">
                   Profit is a chain:
                   <br />
-                  <strong>Revenue</strong> → subtract <strong>COGS</strong> → you get <strong>Gross Profit</strong>.
+                  <strong>Revenue</strong> → subtract <strong>sale-linked costs</strong> (often called COGS) → you get{" "}
+                  <strong>Gross Profit</strong>.
                   <br />
                   Then subtract <strong>Operating Expenses</strong> → you get <strong>Operating Profit</strong>.
                 </p>
 
                 <p className="mt-3 mb-0">
-                  If any required cost is missing (especially COGS tied to specific sales), ProfitPilot refuses to
-                  estimate. You’ll see <strong>“— —”</strong> and a clear explanation of what’s missing.
+                  If required costs are missing (especially sale-linked costs), ProfitPilot refuses to guess.
+                  <br />
+                  <span className="font-semibold text-slate-900">
+                    We won’t tell you profit unless the data supports it
+                  </span>{" "}
+                  but we’ll still help you understand what’s true and what’s missing.
                 </p>
               </Card>
+
+              <Divider />
 
               <SectionTitle>“But I still want a daily signal”</SectionTitle>
               <p className="text-sm leading-7 text-slate-700">
-                That’s reasonable. When COGS is incomplete but operating expenses are recorded, ProfitPilot can show a
-                separate metric:
+                That’s reasonable. Decisions don’t wait.
                 <br />
-                <strong>Operating surplus / deficit (recorded)</strong> = Revenue − Operating Expenses (recorded)
+                And this is the honest tension:
+                <br />
+                <span className="font-semibold text-slate-900">
+                  Daily verdict never waits for COGS. Profit numbers always do.
+                </span>
               </p>
+
+              <Card
+                title="A daily signal that doesn’t pretend to be profit"
+                subtitle="A truthful way to check direction when some costs arrive later."
+              >
+                <p className="m-0">
+                  When sale-linked costs aren’t complete but operating expenses are recorded, a useful signal is:
+                </p>
+                <p className="mt-3 mb-0">
+                  <strong>Operating surplus / deficit (recorded)</strong> = Revenue − Operating Expenses (recorded)
+                </p>
+                <p className="mt-3 mb-0">
+                  This helps you see whether your overhead is being covered by recorded revenue even when sale-linked
+                  costs are incomplete.
+                </p>
+              </Card>
 
               <Card title="Important: this is not profit" subtitle="It’s labeled explicitly so you don’t confuse the two.">
                 <p className="m-0">
-                  Operating surplus / deficit (recorded) helps you understand whether your overhead is being covered by
-                  recorded revenue — even when COGS is missing.
+                  This signal helps you answer a practical question:
+                  <br />
+                  <span className="font-semibold text-slate-900">“Did today likely help or hurt based on what we know?”</span>
                 </p>
                 <p className="mt-3 mb-0">
-                  But it is not profit. Profit requires sale-linked costs to be complete. ProfitPilot won’t pretend
-                  otherwise.
+                  Profit is shown later, only when the missing pieces are filled in. That’s how you avoid fake certainty.
                 </p>
               </Card>
+
+              <Divider />
 
               <SectionTitle>The practical takeaway</SectionTitle>
               <div className="grid gap-6 sm:grid-cols-2">
@@ -229,7 +294,7 @@ export default function Page() {
 
                 <Card title="Use profit for truth" subtitle="Did the business create value after real costs?">
                   <ul className="m-0 list-disc pl-5">
-                    <li>Gross profit (only when COGS is complete)</li>
+                    <li>Gross profit (only when sale-linked costs are complete)</li>
                     <li>Operating profit (only when gross profit is known)</li>
                     <li>Confidence in decisions</li>
                     <li>Pricing and margin reality</li>
@@ -238,10 +303,12 @@ export default function Page() {
               </div>
 
               <Card title="ProfitPilot’s stance" subtitle="Trust over comfort.">
-                <p className="m-0">Many tools always show a number. ProfitPilot shows a number only when it’s defensible.</p>
+                <p className="m-0">
+                  Many tools always show a number. ProfitPilot shows a number only when it can be defended.
+                </p>
                 <p className="mt-3 mb-0">
-                  If your costs are incomplete, you won’t get a fake profit figure — you’ll get clarity on what’s
-                  missing, and a truthful signal where possible.
+                  If your costs are incomplete, you won’t get a fake profit figure
+                  you’ll get clarity on what’s missing, and a truthful daily signal where possible.
                 </p>
               </Card>
 
