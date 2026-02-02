@@ -8,7 +8,7 @@ import ProfitLogicClarification from "@/app/components/ProfitLogicClarification"
 export const metadata: Metadata = {
   title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit | SolFligh Tech",
   description:
-    "Knowing what to track is one thing. Doing it consistently is another. Here’s how ProfitPilot turns daily performance clarity into a reliable habit for SMEs—without guessing profit when costs are incomplete.",
+    "Knowing what to track is one thing. Doing it consistently is another. ProfitPilot turns daily clarity into a habit without guessing profit when costs are incomplete. It answers the one daily question SMEs actually need: did today help or hurt?",
   alternates: {
     canonical:
       "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
     description:
-      "ProfitPilot turns daily clarity into a habit—and refuses to guess profit when costs are incomplete.",
+      "ProfitPilot turns daily clarity into a habit and refuses to guess profit when costs are incomplete. Daily verdict first. Profit only when proven.",
     url: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
     type: "article",
   },
@@ -43,22 +43,38 @@ function Callout({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+function BulletCard({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <p className="text-sm font-semibold text-slate-900">{title}</p>
+      <ul className="mt-3 space-y-2 text-sm text-slate-700">
+        {items.map((t) => (
+          <li key={t} className="flex items-start gap-2">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-300" />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function ProfitPilotSolutionArticlePage() {
   const meta = {
     hubTitle: "ProfitPilot",
     hubHref: "/insights/profitpilot",
     insightsHref: "/insights",
-    tag: "Product Solution",
+    tag: "Habit System",
     readingTime: "5–7 min",
     dateLabel: "Jan 2026",
     coverImage: "/insights/profitpilot/posts/daily-clarity-system.jpg",
     title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
     subtitle:
-      "Knowing what to track is easy. Doing it consistently is the real challenge. This is where ProfitPilot fits.",
+      "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how daily verdict becomes automatic without guessing profit.",
   };
 
-  // ✅ Seamless chain
-  const prevArticleHref = "/insights/profitpilot/from-daily-number-to-daily-clarity";
+  // ✅ Seamless chain (use corrected slug)
+  const prevArticleHref = "/insights/profitpilot/from-daily-numbers-to-daily-clarity";
   const nextArticleHref = "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer";
 
   const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_solution_article";
@@ -139,70 +155,126 @@ export default function ProfitPilotSolutionArticlePage() {
             <div className="mt-10">
               <article className="mx-auto max-w-3xl space-y-12 text-base leading-relaxed text-slate-700">
                 <section className="space-y-4">
-                  <SectionLabel>The real challenge</SectionLabel>
+                  <SectionLabel>The unavoidable truth</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The problem isn’t knowing what to track
+                    Daily decisions don’t wait for perfect accounting
                   </h2>
 
                   <p>
-                    Most SME owners already know the “types” of numbers that matter: what was sold, what was spent, and
-                    whether the business is moving in the right direction.
+                    You can teach the right concepts all day revenue, expenses, margin, profit and still watch the
+                    same thing happen:
+                    <br />
+                    the day ends, fatigue wins, and nothing gets recorded consistently.
                   </p>
 
-                  <p>
-                    What breaks down isn’t understanding. It’s consistency. After long days, scattered tools, and daily
-                    pressure, even simple routines start to slip.
+                  <p className="font-semibold text-slate-900">
+                    The real problem isn’t knowing what to track. It’s closing the day with a verdict you can trust.
                   </p>
                 </section>
 
-                {/* ✅ Clarification block (fits this article because it references "what we made") */}
+                {/* ✅ Clarification block (this article references profit) */}
                 <ProfitLogicClarification tone="neutral" showOneLiner />
 
+                <Callout title="ProfitPilot’s thesis">
+                  <>
+                    <p className="m-0 font-semibold text-slate-900">
+                      ProfitPilot doesn’t ask how complex your business is.
+                    </p>
+                    <p className="mt-2 mb-0">
+                      It asks whether <span className="font-semibold text-slate-900">today moved it forward</span>.
+                    </p>
+                  </>
+                </Callout>
+
                 <section className="space-y-4">
-                  <SectionLabel>What already works</SectionLabel>
+                  <SectionLabel>The habit</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The method is simple, but habits need support
+                    The habit is simple: close the day with what’s true
                   </h2>
 
                   <p>
-                    Daily clarity works when it separates movement from performance and replaces vibes with a consistent
-                    process.
+                    The routine we’ve been building through the previous articles is intentionally small:
+                    record what you can, separate movement from performance, and never confuse “a number” with “the
+                    truth.”
                   </p>
 
                   <p>
-                    But doing it manually every single day takes discipline — and discipline fades when systems don’t
-                    help.
+                    But here’s the tension every SME faces:
+                    <br />
+                    <span className="font-semibold text-slate-900">
+                      Daily verdict never waits for COGS. Profit numbers always do.
+                    </span>
+                  </p>
+
+                  <p>
+                    So the habit has to support both realities:
+                    <strong> direction today</strong>, and <strong>accuracy when costs are complete</strong>.
                   </p>
                 </section>
 
                 <section className="space-y-4">
-                  <SectionLabel>Where ProfitPilot fits</SectionLabel>
+                  <SectionLabel>The trust boundary</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    ProfitPilot exists to make clarity automatic
+                    “We will not tell you profit unless the data supports it.”
                   </h2>
 
                   <p>
-                    ProfitPilot isn’t accounting software and it isn’t built to overwhelm. It’s designed to quietly run
-                    the daily routine in the background — capture what happened, keep categories clean, and keep the
-                    truth consistent.
+                    This is where ProfitPilot draws a hard line because trust compounds.
+                    If sale-linked costs are missing, ProfitPilot refuses to guess. No estimates. No averages. No “close
+                    enough.”
                   </p>
 
-                  <p>
-                    Revenue and operating expenses can be recorded in one place. Cash movement stays separate from
-                    performance. And when sale-linked costs (like COGS) are complete, profit becomes a proven number —
-                    not a guess.
-                  </p>
+                  <Callout title="But you still get a daily answer">
+                    <>
+                      <p className="m-0">
+                        <span className="font-semibold text-slate-900">
+                          We will not tell you profit unless the data supports it
+                        </span>{" "}
+                        but we’ll still tell you if today helped or hurt your business.
+                      </p>
+                      <p className="mt-3 mb-0">
+                        When profit is unknown, you see what’s missing and you get a truthful signal where possible
+                        clearly labeled.
+                      </p>
+                    </>
+                  </Callout>
+                </section>
+
+                <section className="space-y-4">
+                  <SectionLabel>How it becomes automatic</SectionLabel>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    ProfitPilot exists to remove friction, not add complexity
+                  </h2>
 
                   <p>
-                    On days where required costs are missing, ProfitPilot doesn’t pretend. It shows <strong>“— —”</strong>{" "}
-                    and tells you exactly what needs to be recorded to unlock the real profit number.
+                    ProfitPilot isn’t trying to be everything. It’s not built to overwhelm you with dashboards.
+                    It’s built to make one routine easy enough to do daily even when you’re tired.
                   </p>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <BulletCard
+                      title="It reduces daily effort"
+                      items={[
+                        "Record revenue and operating expenses in one place.",
+                        "Keep cash movement separate from performance so you don’t confuse the two.",
+                        "Keep categories consistent so reports don’t drift over time.",
+                      ]}
+                    />
+                    <BulletCard
+                      title="It protects truth"
+                      items={[
+                        "Profit is shown only when sale-linked costs are complete.",
+                        "If something required is missing, profit shows “— —” with a reason.",
+                        "You see exactly what to fix to unlock a proven profit number.",
+                      ]}
+                    />
+                  </div>
                 </section>
 
                 <Callout title="The shift">
                   <>
                     Instead of relying on memory, guesswork, or end-of-month reports, ProfitPilot turns daily clarity
-                    into a habit you don’t have to fight for — and it protects you from making decisions on numbers that
+                    into a habit you don’t have to fight for and protects you from decisions based on numbers that
                     can’t be proven.
                   </>
                 </Callout>
@@ -210,26 +282,26 @@ export default function ProfitPilotSolutionArticlePage() {
                 <section className="space-y-4">
                   <SectionLabel>Why this compounds</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    Daily clarity leads to better decisions
+                    When you can trust “today,” decisions get calmer
                   </h2>
 
                   <p>
-                    When business owners can trust what “today” actually means, pricing improves, waste becomes visible,
+                    When business owners can trust what today actually meant, pricing improves, waste becomes visible,
                     and growth decisions become calmer.
                   </p>
 
                   <p>
-                    Over time, this compounds into healthier margins and fewer surprises — not because the business
-                    worked harder, but because it saw clearly.
+                    This compounds into healthier margins and fewer surprises not because the business worked harder,
+                    but because it saw clearly, daily.
                   </p>
                 </section>
 
                 {/* Final CTA */}
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
-                  <p className="text-sm font-semibold text-slate-900">Ready to see ProfitPilot in context?</p>
+                  <p className="text-sm font-semibold text-slate-900">If you want to see the product context</p>
                   <p className="text-sm text-slate-700">
-                    Explore the ProfitPilot project to see what it does, who it’s for, and how it fits into your
-                    business.
+                    Explore the ProfitPilot project page to see what it does, who it’s for, and how the daily verdict
+                    logic shows up in the product.
                   </p>
 
                   <div className="flex flex-wrap gap-3">
