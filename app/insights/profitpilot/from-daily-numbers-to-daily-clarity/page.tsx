@@ -5,17 +5,17 @@ import Container from "@/app/components/Container";
 import ProfitLogicClarification from "@/app/components/ProfitLogicClarification";
 
 export const metadata: Metadata = {
-  title: "From Daily Number to Daily Clarity: ProfitPilot’s Conditional Profit Logic | SolFligh Tech",
+  title: "From Daily Numbers to Daily Clarity: The Logic Behind ProfitPilot | SolFligh Tech",
   description:
-    "ProfitPilot treats profit as a conditional number: if costs are incomplete, it refuses to guess. Learn how Revenue, COGS, Gross Profit, and Operating Profit work—and what you see instead when data is missing.",
+    "Daily decisions can’t wait for perfect accounting. ProfitPilot won’t show profit unless the data supports it but it will still help you close each day knowing whether today helped or hurt your business, and what’s missing when profit is unknown.",
   alternates: {
-    canonical: "/insights/profitpilot/from-daily-number-to-daily-clarity",
+    canonical: "/insights/profitpilot/from-daily-numbers-to-daily-clarity",
   },
   openGraph: {
-    title: "From Daily Number to Daily Clarity: ProfitPilot’s Conditional Profit Logic",
+    title: "From Daily Numbers to Daily Clarity: The Logic Behind ProfitPilot",
     description:
-      "ProfitPilot refuses to guess profit. If costs aren’t recorded, it shows “— —” and explains why.",
-    url: "/insights/profitpilot/from-daily-number-to-daily-clarity",
+      "ProfitPilot refuses to guess profit. When costs are missing, it shows what’s missing and still helps you judge the day with honest signals.",
+    url: "/insights/profitpilot/from-daily-numbers-to-daily-clarity",
     type: "article",
   },
 };
@@ -76,7 +76,7 @@ export default function Page() {
     <main className="bg-white text-slate-900">
       <section className="relative overflow-hidden">
         <Container>
-          <article className="mx-auto max-w-3xl py-10 space-y-10">
+          <article className="mx-auto max-w-3xl space-y-10 py-10">
             {/* Breadcrumb */}
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
@@ -117,19 +117,23 @@ export default function Page() {
             {/* Header */}
             <header className="space-y-4">
               <div className="flex flex-wrap items-center gap-2">
-                <Pill>Profit Logic</Pill>
+                <Pill>Teaching</Pill>
                 <Pill>5–7 min</Pill>
                 <Pill>Jan 2026</Pill>
               </div>
 
               <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-                From daily number to daily clarity
+                From daily numbers to daily clarity
               </h1>
 
               <p className="text-base leading-7 text-slate-700">
-                Most business owners end the day with sales alerts, transfers, and a bank balance — and still can’t
-                answer one simple question:{" "}
-                <span className="font-semibold text-slate-900">did we actually make money today?</span>
+                Most business owners end the day with sales alerts, transfers, and a bank balance and still can’t
+                close the day with confidence.
+                <br />
+                The real question isn’t “did money move?”
+                <br />
+                It’s:{" "}
+                <span className="font-semibold text-slate-900">did today help the business or hurt it?</span>
               </p>
 
               {/* Cover */}
@@ -137,7 +141,7 @@ export default function Page() {
                 <div className="relative h-[240px] w-full sm:h-[320px]">
                   <Image
                     src={coverImage}
-                    alt="From daily number to daily clarity cover"
+                    alt="From daily numbers to daily clarity cover"
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 1100px"
@@ -149,6 +153,15 @@ export default function Page() {
 
               {/* Canonical clarification block */}
               <ProfitLogicClarification tone="success" showOneLiner showHint />
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-700">
+                <p className="m-0 font-semibold text-slate-900">
+                  ProfitPilot doesn’t ask how complex your business is.
+                </p>
+                <p className="mt-2 mb-0">
+                  It asks whether <span className="font-semibold text-slate-900">today moved it forward</span>.
+                </p>
+              </div>
             </header>
 
             {/* Body */}
@@ -157,8 +170,10 @@ export default function Page() {
                 Why “a number” can be more dangerous than “no number”
               </h2>
               <p className="leading-7 text-slate-700">
-                Many tools always show profit — even when key costs are missing. That feels helpful, but it’s often a
-                guess dressed up as certainty. The result: owners make decisions using a number that isn’t true.
+                The fastest way to lose trust is fake certainty.
+                Many tools always show “profit” even when key costs are missing. It feels helpful, but it can be a
+                guess dressed up as truth. The result is worse than confusion: owners make decisions using a number that
+                isn’t real.
               </p>
 
               <Callout title="What ProfitPilot refuses to do" tone="warn">
@@ -169,24 +184,37 @@ export default function Page() {
                 </ul>
               </Callout>
 
+              <Callout title="The trust boundary (locked)" tone="neutral">
+                <p className="m-0">
+                  <span className="font-semibold text-slate-900">
+                    We won’t tell you profit unless the data supports it
+                  </span>{" "}
+                  but we’ll still tell you what’s true about today, and what’s missing.
+                </p>
+              </Callout>
+
               <h2 className="text-xl font-bold text-slate-900">
-                Profit is a chain — and costs are the missing link
+                Profit is a chain and costs are the missing link
               </h2>
               <p className="leading-7 text-slate-700">
-                Revenue alone doesn’t tell you profit. You need the costs tied to those sales. If some sale costs
-                aren’t recorded, the profit number cannot be proven — so ProfitPilot won’t show it.
+                Revenue alone doesn’t tell you profit. To know whether the day truly created value, you need the costs
+                tied to those sales. If required sale-linked costs aren’t recorded, the profit number cannot be proven
+                so ProfitPilot won’t show it.
               </p>
 
               <div className="space-y-3">
                 <FormulaRow left="Revenue" right="Total value of sales recorded for the period" />
-                <FormulaRow left="COGS (Cost of Goods Sold)" right="Costs directly tied to each sale (inventory or direct costs)" />
+                <FormulaRow
+                  left="Sale-linked costs (often called COGS)"
+                  right="Costs directly tied to each sale (inventory or direct costs)"
+                />
                 <FormulaRow
                   left="Gross Profit"
                   right={
                     <>
-                      Revenue − COGS{" "}
+                      Revenue − sale-linked costs{" "}
                       <span className="ml-2 inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                        only when ALL sale costs are recorded
+                        only when costs are recorded
                       </span>
                     </>
                   }
@@ -201,34 +229,45 @@ export default function Page() {
                     <>
                       Gross Profit − Operating Expenses{" "}
                       <span className="ml-2 inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                        only when Gross Profit is known
+                        only when gross profit is known
                       </span>
                     </>
                   }
                 />
               </div>
 
-              <h2 className="text-xl font-bold text-slate-900">What happens when required costs are missing?</h2>
+              <h2 className="text-xl font-bold text-slate-900">
+                What happens when required costs are missing?
+              </h2>
               <p className="leading-7 text-slate-700">
-                If any required cost is missing, ProfitPilot does not “fill in the blanks.” Instead, it shows{" "}
-                <strong>“— —”</strong> and explains why profit is unavailable — clearly and in plain language.
+                If any required cost is missing, ProfitPilot does not “fill in the blanks.”
+                Instead, it shows <strong>“— —”</strong> and explains why profit is unavailable clearly and in plain
+                language.
               </p>
 
-              <Callout title="Example: when COGS is incomplete" tone="neutral">
+              <Callout title="Example: when sale-linked costs are incomplete" tone="neutral">
                 <p className="m-0">
                   You may see profit displayed as <strong>“— —”</strong>.
                   <br />
-                  The UI will tell you what’s missing (for example: “3 sales are missing item costs”).
+                  The UI tells you what’s missing (for example: “3 sales are missing item costs”).
                 </p>
               </Callout>
 
               <h2 className="text-xl font-bold text-slate-900">
-                When costs are incomplete, you can still get a useful signal
+                You can still get daily clarity without guessing profit
               </h2>
               <p className="leading-7 text-slate-700">
-                If COGS is incomplete but operating expenses are recorded, ProfitPilot may show a separate metric:{" "}
-                <strong>Operating surplus / deficit (recorded)</strong>. This is not profit — and it is labeled
-                explicitly as such.
+                Here’s the honest tension of small business:
+                <br />
+                <span className="font-semibold text-slate-900">
+                  Daily verdict never waits for COGS. Profit numbers always do.
+                </span>
+              </p>
+              <p className="leading-7 text-slate-700">
+                So when sale-linked costs are incomplete but operating expenses are recorded, ProfitPilot can show a
+                separate metric:
+                <strong> Operating surplus / deficit (recorded)</strong>.
+                It’s not profit and it is labeled explicitly.
               </p>
 
               <div className="space-y-3">
@@ -251,14 +290,19 @@ export default function Page() {
                   <br />
                   A guessed number builds confusion.
                   <br />
-                  ProfitPilot chooses trust — even if that means showing “— —” until the data is complete.
+                  ProfitPilot chooses trust even if that means showing “— —” until the data is complete.
                 </p>
               </Callout>
 
-              <h2 className="text-xl font-bold text-slate-900">Turning insight into a daily habit</h2>
+              <h2 className="text-xl font-bold text-slate-900">
+                Daily clarity is a habit, not a report
+              </h2>
               <p className="leading-7 text-slate-700">
-                ProfitPilot isn’t trying to impress you with dashboards. It’s trying to make your daily decisions more
-                accurate. When profit is available, you see it. When it’s not, you see exactly what to fix.
+                The point isn’t to impress you with dashboards. It’s to help you close the day with a truthful summary:
+                what you know, what you don’t, and what to fix next.
+                <br />
+                When profit is available, you see it. When it’s not, you see exactly what’s missing and you still get
+                a clear daily signal where possible.
               </p>
 
               {/* Bottom nav */}
