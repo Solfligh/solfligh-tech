@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * SOLFLIGH TECH — Maintenance Mode Middleware (SEO-safe)
+ * SOLFLIGH TECH  Maintenance Mode Middleware (SEO-safe)
  *
  * IMPORTANT:
  * - Only the literal string "true" enables maintenance mode.
