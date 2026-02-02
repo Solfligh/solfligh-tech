@@ -6,14 +6,14 @@ import Container from "@/app/components/Container";
 export const metadata: Metadata = {
   title: "From Daily Number to Daily Clarity: ProfitPilot’s Conditional Profit Logic | SolFligh Tech",
   description:
-    "ProfitPilot treats profit as a conditional number: if costs are incomplete, it refuses to guess. Learn how Revenue, COGS, Gross Profit, and Operating Profit work and what you see instead when data is missing.",
+    "ProfitPilot treats profit as a conditional number: if required costs are incomplete, it refuses to guess. Learn how Revenue, COGS, Gross Profit, and Operating Profit work and what you see instead when data is missing.",
   alternates: {
     canonical: "/insights/profitpilot/from-daily-number-to-daily-clarity",
   },
   openGraph: {
     title: "From Daily Number to Daily Clarity: ProfitPilot’s Conditional Profit Logic",
     description:
-      "ProfitPilot refuses to guess profit. If costs aren’t recorded, it shows “— —” and explains why.",
+      "ProfitPilot refuses to guess profit. If required costs aren’t recorded, it shows “— —” and explains what’s missing.",
     url: "/insights/profitpilot/from-daily-number-to-daily-clarity",
     type: "article",
   },
@@ -60,6 +60,34 @@ function FormulaRow({ left, right }: { left: React.ReactNode; right: React.React
   );
 }
 
+function SmallLabel({ children }: { children: React.ReactNode }) {
+  return <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{children}</p>;
+}
+
+function StateCard({
+  title,
+  tone = "neutral",
+  children,
+}: {
+  title: string;
+  tone?: "neutral" | "warn" | "success";
+  children: React.ReactNode;
+}) {
+  const styles =
+    tone === "warn"
+      ? "border-amber-200 bg-amber-50"
+      : tone === "success"
+      ? "border-emerald-200 bg-emerald-50"
+      : "border-slate-200 bg-white";
+
+  return (
+    <div className={`rounded-2xl border p-4 ${styles}`}>
+      <p className="text-sm font-semibold text-slate-900">{title}</p>
+      <div className="mt-2 text-sm leading-6 text-slate-700">{children}</div>
+    </div>
+  );
+}
+
 export default function Page() {
   const hubHref = "/insights/profitpilot";
 
@@ -74,7 +102,7 @@ export default function Page() {
     <main className="bg-white text-slate-900">
       <section className="relative overflow-hidden">
         <Container>
-          <article className="mx-auto max-w-3xl py-10 space-y-10">
+          <article className="mx-auto max-w-3xl space-y-10 py-10">
             {/* Breadcrumb */}
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Link href="/insights" className="font-semibold text-slate-600 hover:text-slate-900">
@@ -125,9 +153,12 @@ export default function Page() {
               </h1>
 
               <p className="text-base leading-7 text-slate-700">
-                Most business owners end the day with sales alerts, transfers, and a bank balance and still can’t
-                answer one simple question:{" "}
-                <span className="font-semibold text-slate-900">did we actually make money today?</span>
+                This article explains one thing clearly:{" "}
+                <span className="font-semibold text-slate-900">when is “profit” actually a proven number?</span>
+                <br />
+                Not when money moved. Not when sales happened.
+                <br />
+                Profit is only real when the required costs are included.
               </p>
 
               {/* Cover */}
@@ -148,105 +179,152 @@ export default function Page() {
 
             {/* Body */}
             <section className="space-y-8">
-              <h2 className="text-xl font-bold text-slate-900">
-                The mistake isn’t “not knowing profit” it’s showing profit too early
-              </h2>
-              <p className="leading-7 text-slate-700">
-                Many tools always show profit even when key costs are missing. That feels helpful, but it quietly
-                trains owners to trust numbers that aren’t proven.
-              </p>
-
-              <Callout title="The rule in this article" tone="warn">
-                <p className="m-0">
-                  Profit is only real when the costs required to produce the revenue are included.
-                  <br />
-                  If required costs are missing, the correct answer is: profit is not known yet.
+              <section className="space-y-3">
+                <SmallLabel>The trap</SmallLabel>
+                <h2 className="text-xl font-bold text-slate-900">
+                  The mistake isn’t “not knowing profit” it’s showing profit too early
+                </h2>
+                <p className="leading-7 text-slate-700">
+                  Many tools always show a profit number even when key costs are missing. That feels helpful, but it
+                  creates a dangerous habit: trusting numbers that can’t be defended.
                 </p>
-              </Callout>
 
-              <h2 className="text-xl font-bold text-slate-900">Profit is a chain</h2>
-              <p className="leading-7 text-slate-700">
-                Think of profit like a chain of proof. If any link is missing, the final number can’t be defended.
-              </p>
+                <Callout title="Rule of proof" tone="warn">
+                  <p className="m-0">
+                    Profit is only real when the costs required to produce the revenue are included.
+                    <br />
+                    If required costs are missing, the honest answer is: <strong>profit is not known yet.</strong>
+                  </p>
+                </Callout>
+              </section>
 
-              <div className="space-y-3">
-                <FormulaRow left="Revenue" right="Total value of sales recorded for the period" />
-                <FormulaRow
-                  left="COGS (Cost of Goods Sold)"
-                  right="Costs directly tied to each sale (inventory or direct costs)"
-                />
-                <FormulaRow
-                  left="Gross Profit"
-                  right={
-                    <>
-                      Revenue − COGS{" "}
-                      <span className="ml-2 inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                        only when ALL sale costs are recorded
-                      </span>
-                    </>
-                  }
-                />
-                <FormulaRow
-                  left="Operating Expenses"
-                  right="Overhead costs allocated to the period (rent, utilities, subscriptions, etc.)"
-                />
-                <FormulaRow
-                  left="Operating Profit"
-                  right={
-                    <>
-                      Gross Profit − Operating Expenses{" "}
-                      <span className="ml-2 inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                        only when Gross Profit is known
-                      </span>
-                    </>
-                  }
-                />
-              </div>
-
-              <h2 className="text-xl font-bold text-slate-900">What happens when required costs are missing?</h2>
-              <p className="leading-7 text-slate-700">
-                If any required cost is missing, ProfitPilot does not fill in blanks. Instead, profit becomes
-                unavailable until the chain is complete.
-              </p>
-
-              <Callout title="Example: when COGS is incomplete" tone="neutral">
-                <p className="m-0">
-                  You may see profit displayed as <strong>“— —”</strong>.
-                  <br />
-                  The UI can tell you what’s missing (for example: “3 sales are missing item costs”).
+              <section className="space-y-3">
+                <SmallLabel>Definitions</SmallLabel>
+                <h2 className="text-xl font-bold text-slate-900">Profit is a chain</h2>
+                <p className="leading-7 text-slate-700">
+                  Think of profit like a chain of proof. If any link is missing, the final number cannot be trusted.
                 </p>
-              </Callout>
 
-              <h2 className="text-xl font-bold text-slate-900">
-                You can still get a useful daily signal while the chain completes
-              </h2>
-              <p className="leading-7 text-slate-700">
-                When COGS is incomplete but operating expenses are recorded, you can still track a separate metric:
-                <strong> operating surplus / deficit (recorded)</strong>. It is not profit it’s a direction signal.
-              </p>
+                <div className="space-y-3">
+                  <FormulaRow left="Revenue" right="Total value of sales recorded for the period" />
+                  <FormulaRow
+                    left="COGS (Cost of Goods Sold)"
+                    right="Costs directly tied to each sale (inventory or direct costs)"
+                  />
+                  <FormulaRow
+                    left="Gross Profit"
+                    right={
+                      <>
+                        Revenue − COGS{" "}
+                        <span className="ml-2 inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                          only when sale costs are complete
+                        </span>
+                      </>
+                    }
+                  />
+                  <FormulaRow
+                    left="Operating Expenses"
+                    right="Overhead costs for the period (rent, utilities, data, subscriptions, etc.)"
+                  />
+                  <FormulaRow
+                    left="Operating Profit"
+                    right={
+                      <>
+                        Gross Profit − Operating Expenses{" "}
+                        <span className="ml-2 inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                          only when gross profit is known
+                        </span>
+                      </>
+                    }
+                  />
+                </div>
+              </section>
 
-              <div className="space-y-3">
-                <FormulaRow
-                  left={
-                    <>
-                      Operating surplus / deficit{" "}
-                      <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800">
-                        recorded (NOT profit)
-                      </span>
-                    </>
-                  }
-                  right="Revenue − Operating Expenses (recorded)"
-                />
-              </div>
-
-              <Callout title="Why this matters" tone="success">
-                <p className="m-0">
-                  This article’s point is simple:
-                  <br />
-                  <span className="font-semibold">a proven number builds trust</span>, and a guessed number builds
-                  confusion.
+              <section className="space-y-3">
+                <SmallLabel>What counts as required</SmallLabel>
+                <h2 className="text-xl font-bold text-slate-900">“Required costs” are not optional</h2>
+                <p className="leading-7 text-slate-700">
+                  The most common missing link is sale-linked cost (COGS). If you sold something today but the cost of
+                  that thing is not recorded, the profit number is incomplete.
                 </p>
-              </Callout>
+
+                <Callout title="A simple test" tone="neutral">
+                  <p className="m-0">
+                    If you remove a cost and your “profit” changes that cost is required.
+                    <br />
+                    If it’s missing, profit cannot be proven.
+                  </p>
+                </Callout>
+              </section>
+
+              <section className="space-y-3">
+                <SmallLabel>What ProfitPilot shows</SmallLabel>
+                <h2 className="text-xl font-bold text-slate-900">3 states: proven, unknown, and “here’s what’s missing”</h2>
+                <p className="leading-7 text-slate-700">
+                  ProfitPilot doesn’t fill blanks. Instead, it makes the state of the number explicit.
+                </p>
+
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <StateCard title="Proven profit" tone="success">
+                    Profit can be shown because required costs are complete.
+                    <br />
+                    The chain holds.
+                  </StateCard>
+
+                  <StateCard title="Profit unknown" tone="warn">
+                    Profit displays as <strong>“— —”</strong> because required costs are missing.
+                    <br />
+                    No guessing.
+                  </StateCard>
+
+                  <StateCard title="Actionable gap" tone="neutral">
+                    You see what’s missing (example: “3 sales missing item costs”) so you know exactly what to fix.
+                  </StateCard>
+                </div>
+
+                <Callout title="Example: when COGS is incomplete" tone="neutral">
+                  <p className="m-0">
+                    You may see profit displayed as <strong>“— —”</strong>.
+                    <br />
+                    The UI can tell you what’s missing and which records need costs added.
+                  </p>
+                </Callout>
+              </section>
+
+              <section className="space-y-3">
+                <SmallLabel>Useful while you complete costs</SmallLabel>
+                <h2 className="text-xl font-bold text-slate-900">
+                  A separate signal while the profit chain completes
+                </h2>
+                <p className="leading-7 text-slate-700">
+                  When sale-linked costs are incomplete but operating expenses are recorded, you can still track a
+                  clearly labeled direction signal:
+                  <strong> operating surplus / deficit (recorded).</strong> It is not profit.
+                </p>
+
+                <div className="space-y-3">
+                  <FormulaRow
+                    left={
+                      <>
+                        Operating surplus / deficit{" "}
+                        <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800">
+                          recorded (NOT profit)
+                        </span>
+                      </>
+                    }
+                    right="Revenue − Operating Expenses (recorded)"
+                  />
+                </div>
+
+                <Callout title="Why this matters" tone="success">
+                  <p className="m-0">
+                    This article’s point is simple:
+                    <br />
+                    <span className="font-semibold">a proven number builds trust</span>, and a guessed number builds
+                    confusion.
+                  </p>
+                </Callout>
+              </section>
 
               {/* Bottom nav */}
               <div className="mt-10 flex flex-wrap gap-3 border-t border-slate-200 pt-6">
