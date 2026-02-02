@@ -92,11 +92,11 @@ export default function ProfitPilotSolutionArticlePage() {
     coverImage: "/insights/profitpilot/posts/daily-clarity-system.jpg",
     title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
     subtitle:
-      "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how daily verdict becomes automatic without guessing profit.",
+      "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how daily clarity becomes automatic without forcing fake profit.",
   };
 
   // ✅ Seamless chain (your corrected slug)
-  const prevArticleHref = "/insights/profitpilot/from-daily-numbers-to-daily-clarity";
+  const prevArticleHref = "/insights/profitpilot/from-daily-number-to-daily-clarity";
   const nextArticleHref = "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer";
 
   const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_solution_article";
@@ -179,59 +179,59 @@ export default function ProfitPilotSolutionArticlePage() {
                 <section className="space-y-4">
                   <SectionLabel>The real enemy</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The day ends whether your records are complete or not
+                    Habits don’t collapse from ignorance they collapse from friction
                   </h2>
 
                   <p>
-                    Most SMEs don’t fail because they “don’t understand profit.”
-                    They fail because the day is exhausting, the tools are scattered, and the routine is too hard to
-                    repeat.
+                    Most SMEs already “know” what they should track. The failure happens later: the day gets busy,
+                    records are scattered, and the routine becomes too hard to repeat.
                   </p>
 
                   <p className="font-semibold text-slate-900">
-                    If clarity requires effort every night, it won’t survive real life.
+                    If clarity requires heavy effort every night, it won’t survive real life.
                   </p>
                 </section>
 
-                <Callout title="ProfitPilot’s thesis">
+                <Callout title="What ProfitPilot is actually solving">
                   <>
-                    <p className="m-0 font-semibold text-slate-900">
-                      ProfitPilot doesn’t ask how complex your business is.
-                    </p>
-                    <p className="mt-2 mb-0">
-                      It asks whether <span className="font-semibold text-slate-900">today moved it forward</span> and
-                      it makes that answer repeatable.
+                    <p className="m-0">
+                      Not “teach accounting.”
+                      <br />
+                      Not “show more charts.”
+                      <br />
+                      <span className="font-semibold text-slate-900">
+                        Make a daily close small enough to repeat and honest enough to trust.
+                      </span>
                     </p>
                   </>
                 </Callout>
 
                 <section className="space-y-4">
-                  <SectionLabel>What makes a habit stick</SectionLabel>
+                  <SectionLabel>What makes it repeatable</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    Habits don’t fail from laziness they fail from friction
+                    A habit survives when the steps are tiny and the output is calm
                   </h2>
 
                   <p>
-                    If the daily routine has too many steps, you’ll skip it.
-                    If it uses confusing terms, you’ll avoid it.
-                    If it asks you to “calculate profit” with missing costs, you’ll stop trusting it.
+                    A daily routine fails when it has too many steps. It also fails when it produces numbers that feel
+                    confident but aren’t defensible.
                   </p>
 
                   <div className="grid gap-4 sm:grid-cols-3">
                     <StepCard
                       step="1"
                       title="Tiny daily close"
-                      desc="End the day with one small action: record what happened today in plain language."
+                      desc="End the day by recording what happened today in plain language, not accounting jargon."
                     />
                     <StepCard
                       step="2"
-                      title="Clear separation"
-                      desc="Keep movement (cash) separate from performance (profit/status), so you don’t mix questions."
+                      title="Separate questions"
+                      desc="Keep movement (cash) separate from performance (profit/status), so you don’t mix meaning."
                     />
                     <StepCard
                       step="3"
-                      title="Honest output"
-                      desc="Always show what’s true; never show a confident number that can’t be proven."
+                      title="Trust boundary"
+                      desc="Never show a confident profit number if required costs are missing show status instead."
                     />
                   </div>
                 </section>
@@ -239,12 +239,13 @@ export default function ProfitPilotSolutionArticlePage() {
                 <section className="space-y-4">
                   <SectionLabel>The system</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    ProfitPilot turns the routine into a repeatable “daily close”
+                    ProfitPilot turns the routine into a “daily close” workflow
                   </h2>
 
                   <p>
-                    The goal isn’t to “do accounting every night.”
-                    The goal is to make the daily close easy enough that it becomes automatic.
+                    The goal isn’t “do accounting every night.”
+                    The goal is: open the app, close the day, and walk away with clarity even when not everything is
+                    recorded yet.
                   </p>
 
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -252,26 +253,26 @@ export default function ProfitPilotSolutionArticlePage() {
                       title="It reduces daily effort"
                       items={[
                         "Record revenue and operating expenses in one place.",
-                        "Use consistent categories so your data doesn’t drift.",
-                        "Make the daily close feel like checking a dashboard, not doing admin.",
+                        "Keep categories consistent so your reports don’t drift.",
+                        "Make the daily close feel like a 60-second check, not admin work.",
                       ]}
                     />
                     <BulletCard
                       title="It protects trust"
                       items={[
-                        "If required sale-linked costs are missing, it refuses to guess profit.",
-                        "It can show profit status clearly (proven vs unknown).",
-                        "It tells you what to fix to unlock a proven profit number.",
+                        "Profit is shown only when sale-linked costs are complete.",
+                        "If something required is missing, it shows profit status clearly.",
+                        "It tells you exactly what to fix to unlock a proven profit number.",
                       ]}
                     />
                   </div>
                 </section>
 
-                <Callout title="The habit you’re actually building">
+                <Callout title="The habit you’re building">
                   <>
-                    Instead of hoping the month-end report tells you what happened, you build a daily rhythm:
-                    <span className="font-semibold text-slate-900"> close the day with truth</span> then let accuracy
-                    arrive when the required costs are complete.
+                    Instead of waiting for month-end feedback, you build a daily rhythm:
+                    <span className="font-semibold text-slate-900"> close the day with what’s true</span>, then let
+                    accuracy arrive when the missing pieces are filled in.
                   </>
                 </Callout>
 
@@ -297,7 +298,7 @@ export default function ProfitPilotSolutionArticlePage() {
                   <p className="text-sm font-semibold text-slate-900">Want to follow ProfitPilot as we build it?</p>
                   <p className="text-sm text-slate-700">
                     Join the waitlist for updates and early access. ProfitPilot is built around a simple standard:
-                    daily clarity first, profit only when proven.
+                    daily clarity first profit only when proven.
                   </p>
 
                   <div className="flex flex-wrap gap-3">
@@ -331,8 +332,8 @@ export default function ProfitPilotSolutionArticlePage() {
                     Profit is shown only when it’s provable
                   </h2>
                   <p>
-                    This is the trust boundary ProfitPilot won’t cross. If the required costs aren’t recorded, profit
-                    stays unknown and the UI tells you what’s missing instead of guessing.
+                    This is the trust boundary ProfitPilot won’t cross. If required costs aren’t recorded, profit stays
+                    unknown and the UI tells you what’s missing instead of guessing.
                   </p>
 
                   <ProfitLogicClarification tone="neutral" showOneLiner />
