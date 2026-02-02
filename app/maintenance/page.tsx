@@ -1,5 +1,22 @@
 // app/maintenance/page.tsx
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Maintenance | Solfligh Tech",
+  description:
+    "Solfligh Tech is temporarily unavailable due to scheduled maintenance. Please check back shortly.",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
+};
 
 export default function MaintenancePage() {
   return (
@@ -15,13 +32,18 @@ export default function MaintenancePage() {
         </h1>
 
         <p className="mt-4 text-base leading-relaxed text-slate-600">
-          SOLFLIGH TECH is currently undergoing updates to improve performance and stability.
-          Please check back shortly.
+          SOLFLIGH TECH is currently undergoing updates to improve performance and
+          stability. Please check back shortly.
         </p>
 
         <div className="mt-8 rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
-          <p className="text-sm font-semibold text-slate-900">Estimated downtime</p>
-          <p className="mt-1 text-sm text-slate-600">We’re applying fixes now.</p>
+          <p className="text-sm font-semibold text-slate-900">
+            Estimated downtime
+          </p>
+          <p className="mt-1 text-sm text-slate-600">
+            We’re applying fixes now.
+          </p>
+
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <a
               href="mailto:support@solflightech.com"
@@ -29,6 +51,7 @@ export default function MaintenancePage() {
             >
               Contact support
             </a>
+
             <Link
               href="/"
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
