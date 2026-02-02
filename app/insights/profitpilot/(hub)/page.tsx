@@ -9,13 +9,37 @@ function MiniHero({ title }: { title: string }) {
     <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.22),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.16),transparent_50%)]" />
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4">
         <div className="space-y-2">
           <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title} mission</p>
           <p className="text-base font-semibold text-slate-900">
             Help SMEs know what happened <span className="text-sky-700">today</span> without accounting confusion.
           </p>
-          <p className="text-sm text-slate-600">We start by naming the problem. Then we show the approach.</p>
+
+          <p className="text-sm text-slate-600">
+            ProfitPilot doesn’t ask how complex your business is it asks whether <span className="font-semibold text-slate-900">today moved it forward</span>.
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The rule</p>
+            <p className="mt-2 text-sm text-slate-700">
+              <span className="font-semibold text-slate-900">
+                We will not tell you profit unless the data supports it
+              </span>{" "}
+              but we’ll still tell you if today helped or hurt your business.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The reality</p>
+            <p className="mt-2 text-sm text-slate-700">
+              <span className="font-semibold text-slate-900">Daily verdict</span> never waits for COGS.
+              <br />
+              <span className="font-semibold text-slate-900">Profit numbers</span> always do.
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -23,8 +47,52 @@ function MiniHero({ title }: { title: string }) {
             Problem-aware
           </span>
           <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+            Teaching
+          </span>
+          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
             Solution-aware
           </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StartHere({ firstHref }: { firstHref: string }) {
+  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_hub";
+  const projectHref = "/projects/profitpilot";
+
+  return (
+    <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-slate-900">Start here</p>
+          <p className="mt-1 text-sm text-slate-600">
+            Read the series in order it’s designed to move from daily confusion → daily clarity → the ProfitPilot habit.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href={firstHref}
+            className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+          >
+            Read Article 1 →
+          </Link>
+
+          <Link
+            href={waitlistHref}
+            className="inline-flex items-center justify-center rounded-xl border border-sky-600 bg-white px-4 py-2.5 text-sm font-semibold text-sky-700 shadow-sm transition hover:bg-sky-50"
+          >
+            Join waitlist
+          </Link>
+
+          <Link
+            href={projectHref}
+            className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+          >
+            View project
+          </Link>
         </div>
       </div>
     </div>
@@ -39,6 +107,10 @@ export default function ProfitPilotInsightsHubPage() {
   const hubDescription =
     hub?.description ||
     "Clear writing for SMEs who want to understand daily performance without accounting confusion.";
+
+  // We’ll treat the first post as “Article 1” based on your articles.ts ordering.
+  const firstPostHref =
+    posts.length > 0 ? posts[0].href : "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
 
   return (
     <div className="space-y-10">
@@ -67,9 +139,11 @@ export default function ProfitPilotInsightsHubPage() {
 
       <MiniHero title={hubTitle} />
 
+      <StartHere firstHref={firstPostHref} />
+
       <section className="space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold text-slate-900">Featured</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Articles</h2>
           <Link href="/insights" className="text-sm font-semibold text-sky-700 hover:underline">
             All hubs →
           </Link>
@@ -140,21 +214,21 @@ export default function ProfitPilotInsightsHubPage() {
           <div>
             <p className="text-sm font-semibold text-slate-900">Want the product version?</p>
             <p className="mt-1 text-sm text-slate-600">
-              ProfitPilot turns these ideas into a dashboard SMEs can understand instantly.
+              ProfitPilot turns these ideas into a daily verdict workflow SMEs can use without guessing profit.
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Link
-              href="/projects"
+              href="/projects/profitpilot"
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
             >
-              Projects
+              ProfitPilot project
             </Link>
             <Link
-              href="/contact"
+              href="/waitlist?product=profitpilot&source=profitpilot_hub_footer"
               className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
             >
-              Contact us
+              Join waitlist
             </Link>
           </div>
         </div>
