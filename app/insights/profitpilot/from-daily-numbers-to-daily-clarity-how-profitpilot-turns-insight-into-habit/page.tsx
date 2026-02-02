@@ -59,6 +59,28 @@ function BulletCard({ title, items }: { title: string; items: string[] }) {
   );
 }
 
+function StepCard({
+  step,
+  title,
+  desc,
+}: {
+  step: string;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex items-center gap-3">
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white shadow-sm">
+          {step}
+        </span>
+        <p className="text-sm font-semibold text-slate-900">{title}</p>
+      </div>
+      <p className="mt-3 text-sm leading-relaxed text-slate-700">{desc}</p>
+    </div>
+  );
+}
+
 export default function ProfitPilotSolutionArticlePage() {
   const meta = {
     hubTitle: "ProfitPilot",
@@ -73,7 +95,7 @@ export default function ProfitPilotSolutionArticlePage() {
       "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how daily verdict becomes automatic without guessing profit.",
   };
 
-  // ✅ Seamless chain (use corrected slug)
+  // ✅ Seamless chain (your corrected slug)
   const prevArticleHref = "/insights/profitpilot/from-daily-numbers-to-daily-clarity";
   const nextArticleHref = "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer";
 
@@ -98,7 +120,7 @@ export default function ProfitPilotSolutionArticlePage() {
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
-            {/* ✅ Top nav */}
+            {/* Top nav */}
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href={prevArticleHref}
@@ -155,25 +177,21 @@ export default function ProfitPilotSolutionArticlePage() {
             <div className="mt-10">
               <article className="mx-auto max-w-3xl space-y-12 text-base leading-relaxed text-slate-700">
                 <section className="space-y-4">
-                  <SectionLabel>The unavoidable truth</SectionLabel>
+                  <SectionLabel>The real enemy</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    Daily decisions don’t wait for perfect accounting
+                    The day ends whether your records are complete or not
                   </h2>
 
                   <p>
-                    You can teach the right concepts all day revenue, expenses, margin, profit and still watch the
-                    same thing happen:
-                    <br />
-                    the day ends, fatigue wins, and nothing gets recorded consistently.
+                    Most SMEs don’t fail because they “don’t understand profit.”
+                    They fail because the day is exhausting, the tools are scattered, and the routine is too hard to
+                    repeat.
                   </p>
 
                   <p className="font-semibold text-slate-900">
-                    The real problem isn’t knowing what to track. It’s closing the day with a verdict you can trust.
+                    If clarity requires effort every night, it won’t survive real life.
                   </p>
                 </section>
-
-                {/* ✅ Clarification block (this article references profit) */}
-                <ProfitLogicClarification tone="neutral" showOneLiner />
 
                 <Callout title="ProfitPilot’s thesis">
                   <>
@@ -181,74 +199,52 @@ export default function ProfitPilotSolutionArticlePage() {
                       ProfitPilot doesn’t ask how complex your business is.
                     </p>
                     <p className="mt-2 mb-0">
-                      It asks whether <span className="font-semibold text-slate-900">today moved it forward</span>.
+                      It asks whether <span className="font-semibold text-slate-900">today moved it forward</span> and
+                      it makes that answer repeatable.
                     </p>
                   </>
                 </Callout>
 
                 <section className="space-y-4">
-                  <SectionLabel>The habit</SectionLabel>
+                  <SectionLabel>What makes a habit stick</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The habit is simple: close the day with what’s true
+                    Habits don’t fail from laziness they fail from friction
                   </h2>
 
                   <p>
-                    The routine we’ve been building through the previous articles is intentionally small:
-                    record what you can, separate movement from performance, and never confuse “a number” with “the
-                    truth.”
+                    If the daily routine has too many steps, you’ll skip it.
+                    If it uses confusing terms, you’ll avoid it.
+                    If it asks you to “calculate profit” with missing costs, you’ll stop trusting it.
                   </p>
 
-                  <p>
-                    But here’s the tension every SME faces:
-                    <br />
-                    <span className="font-semibold text-slate-900">
-                      Daily verdict never waits for COGS. Profit numbers always do.
-                    </span>
-                  </p>
-
-                  <p>
-                    So the habit has to support both realities:
-                    <strong> direction today</strong>, and <strong>accuracy when costs are complete</strong>.
-                  </p>
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <StepCard
+                      step="1"
+                      title="Tiny daily close"
+                      desc="End the day with one small action: record what happened today in plain language."
+                    />
+                    <StepCard
+                      step="2"
+                      title="Clear separation"
+                      desc="Keep movement (cash) separate from performance (profit/status), so you don’t mix questions."
+                    />
+                    <StepCard
+                      step="3"
+                      title="Honest output"
+                      desc="Always show what’s true; never show a confident number that can’t be proven."
+                    />
+                  </div>
                 </section>
 
                 <section className="space-y-4">
-                  <SectionLabel>The trust boundary</SectionLabel>
+                  <SectionLabel>The system</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    “We will not tell you profit unless the data supports it.”
+                    ProfitPilot turns the routine into a repeatable “daily close”
                   </h2>
 
                   <p>
-                    This is where ProfitPilot draws a hard line because trust compounds.
-                    If sale-linked costs are missing, ProfitPilot refuses to guess. No estimates. No averages. No “close
-                    enough.”
-                  </p>
-
-                  <Callout title="But you still get a daily answer">
-                    <>
-                      <p className="m-0">
-                        <span className="font-semibold text-slate-900">
-                          We will not tell you profit unless the data supports it
-                        </span>{" "}
-                        but we’ll still tell you if today helped or hurt your business.
-                      </p>
-                      <p className="mt-3 mb-0">
-                        When profit is unknown, you see what’s missing and you get a truthful signal where possible
-                        clearly labeled.
-                      </p>
-                    </>
-                  </Callout>
-                </section>
-
-                <section className="space-y-4">
-                  <SectionLabel>How it becomes automatic</SectionLabel>
-                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    ProfitPilot exists to remove friction, not add complexity
-                  </h2>
-
-                  <p>
-                    ProfitPilot isn’t trying to be everything. It’s not built to overwhelm you with dashboards.
-                    It’s built to make one routine easy enough to do daily even when you’re tired.
+                    The goal isn’t to “do accounting every night.”
+                    The goal is to make the daily close easy enough that it becomes automatic.
                   </p>
 
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -256,79 +252,93 @@ export default function ProfitPilotSolutionArticlePage() {
                       title="It reduces daily effort"
                       items={[
                         "Record revenue and operating expenses in one place.",
-                        "Keep cash movement separate from performance so you don’t confuse the two.",
-                        "Keep categories consistent so reports don’t drift over time.",
+                        "Use consistent categories so your data doesn’t drift.",
+                        "Make the daily close feel like checking a dashboard, not doing admin.",
                       ]}
                     />
                     <BulletCard
-                      title="It protects truth"
+                      title="It protects trust"
                       items={[
-                        "Profit is shown only when sale-linked costs are complete.",
-                        "If something required is missing, profit shows “— —” with a reason.",
-                        "You see exactly what to fix to unlock a proven profit number.",
+                        "If required sale-linked costs are missing, it refuses to guess profit.",
+                        "It can show profit status clearly (proven vs unknown).",
+                        "It tells you what to fix to unlock a proven profit number.",
                       ]}
                     />
                   </div>
                 </section>
 
-                <Callout title="The shift">
+                <Callout title="The habit you’re actually building">
                   <>
-                    Instead of relying on memory, guesswork, or end-of-month reports, ProfitPilot turns daily clarity
-                    into a habit you don’t have to fight for and protects you from decisions based on numbers that
-                    can’t be proven.
+                    Instead of hoping the month-end report tells you what happened, you build a daily rhythm:
+                    <span className="font-semibold text-slate-900"> close the day with truth</span> then let accuracy
+                    arrive when the required costs are complete.
                   </>
                 </Callout>
 
                 <section className="space-y-4">
                   <SectionLabel>Why this compounds</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    When you can trust “today,” decisions get calmer
+                    When “today” becomes trustworthy, decisions get calmer
                   </h2>
 
                   <p>
-                    When business owners can trust what today actually meant, pricing improves, waste becomes visible,
-                    and growth decisions become calmer.
+                    When owners can trust what “today” meant, pricing improves, waste becomes visible, and growth
+                    decisions become calmer.
                   </p>
 
                   <p>
-                    This compounds into healthier margins and fewer surprises not because the business worked harder,
-                    but because it saw clearly, daily.
+                    That’s the compounding effect: fewer surprises, healthier margins, and more control not from more
+                    effort, but from clearer feedback.
                   </p>
                 </section>
 
-                {/* Final CTA */}
+                {/* Product CTA (keep Join waitlist here ✅) */}
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
-                  <p className="text-sm font-semibold text-slate-900">If you want to see the product context</p>
+                  <p className="text-sm font-semibold text-slate-900">Want to follow ProfitPilot as we build it?</p>
                   <p className="text-sm text-slate-700">
-                    Explore the ProfitPilot project page to see what it does, who it’s for, and how the daily verdict
-                    logic shows up in the product.
+                    Join the waitlist for updates and early access. ProfitPilot is built around a simple standard:
+                    daily clarity first, profit only when proven.
                   </p>
 
                   <div className="flex flex-wrap gap-3">
                     <Link
-                      href={projectHref}
+                      href={waitlistHref}
                       className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                     >
-                      Go to ProfitPilot project
+                      Join the waitlist
                     </Link>
 
                     <Link
-                      href={waitlistHref}
-                      className="inline-flex items-center justify-center rounded-xl border border-sky-600 bg-white px-4 py-2.5 text-sm font-semibold text-sky-700 shadow-sm transition hover:bg-sky-50"
+                      href={projectHref}
+                      className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
                     >
-                      Join the waitlist
+                      View project
                     </Link>
 
                     <Link
                       href={meta.hubHref}
                       className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
                     >
-                      Back to ProfitPilot hub
+                      Back to hub
                     </Link>
                   </div>
                 </section>
 
-                {/* ✅ Bottom nav (seamless continue) */}
+                {/* ✅ Profit clarification moved to the bottom (per your rule) */}
+                <section className="space-y-4">
+                  <SectionLabel>Quick reminder</SectionLabel>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    Profit is shown only when it’s provable
+                  </h2>
+                  <p>
+                    This is the trust boundary ProfitPilot won’t cross. If the required costs aren’t recorded, profit
+                    stays unknown and the UI tells you what’s missing instead of guessing.
+                  </p>
+
+                  <ProfitLogicClarification tone="neutral" showOneLiner />
+                </section>
+
+                {/* Bottom nav */}
                 <div className="flex flex-wrap gap-3 border-t border-slate-200 pt-6">
                   <Link
                     href={prevArticleHref}
