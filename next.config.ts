@@ -58,8 +58,17 @@ const nextConfig: NextConfig = {
       },
 
       // -----------------------------
-      // ✅ ProfitPilot article redirect (CRITICAL FIX)
+      // ✅ ProfitPilot article redirects
       // -----------------------------
+
+      // Slug cleanup: daily number -> daily numbers
+      {
+        source: "/insights/profitpilot/from-daily-number-to-daily-clarity",
+        destination: "/insights/profitpilot/from-daily-numbers-to-daily-clarity",
+        permanent: true,
+      },
+
+      // Legacy ProfitPilot article -> habit article
       {
         source: "/insights/profitpilot/how-profitpilot-makes-daily-profit-clarity-automatic",
         destination:
