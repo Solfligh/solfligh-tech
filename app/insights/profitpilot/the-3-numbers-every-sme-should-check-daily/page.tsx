@@ -8,14 +8,14 @@ import ProfitLogicClarification from "@/app/components/ProfitLogicClarification"
 export const metadata: Metadata = {
   title: "The 3 Numbers Every SME Should Check Before Closing for the Day | ProfitPilot | SolFligh Tech",
   description:
-    "Daily clarity doesn’t require accounting knowledge. These three checks tell you what happened today—and when profit is unavailable because costs are incomplete.",
+    "Daily clarity doesn’t require accounting knowledge. These three checks help you end each day knowing what’s true, what’s missing, and whether today likely helped or hurt your business without guessing profit.",
   alternates: {
     canonical: "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily",
   },
   openGraph: {
     title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
     description:
-      "Three daily checks for SMEs: revenue, operating expenses, and profit status (proven or unavailable). No guessing.",
+      "Three daily checks for SMEs: revenue recorded, operating expenses recorded, and profit status (proven or unavailable). Direction first, accuracy when data supports it.",
     url: "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily",
     type: "article",
   },
@@ -74,20 +74,21 @@ export default function ArticlePage() {
     hubTitle: "ProfitPilot",
     hubHref: "/insights/profitpilot",
     insightsHref: "/insights",
-    tag: "Solution Awareness",
+    tag: "Teaching",
     readingTime: "4–5 min",
     dateLabel: "Jan 2026",
     coverImage: "/insights/profitpilot/posts/three-numbers.jpg",
     title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
     subtitle:
-      "If you only do one daily check, do this. It gives clarity without accounting confusion—and it avoids fake profit numbers.",
+      "A simple end-of-day routine: know what moved, what was recorded, and whether profit is proven or still unknown. No guessing.",
   };
 
   // ✅ Navigation
-  const prevArticleHref = "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity";
+  const prevArticleHref =
+    "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity";
 
-  // ✅ You referenced this as “next” — we’ll create it later.
-  const nextArticleHref =  "/insights/profitpilot/from-daily-number-to-daily-clarity";
+  // ✅ Use the corrected slug (redirect covers the old one too)
+  const nextArticleHref = "/insights/profitpilot/from-daily-numbers-to-daily-clarity";
 
   return (
     <main className="bg-white text-slate-900">
@@ -139,7 +140,9 @@ export default function ArticlePage() {
                 <MetaPill>{meta.dateLabel}</MetaPill>
               </div>
 
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">{meta.title}</h1>
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+                {meta.title}
+              </h1>
 
               <p className="text-lg text-slate-600">{meta.subtitle}</p>
             </div>
@@ -162,44 +165,55 @@ export default function ArticlePage() {
             {/* Article */}
             <article className="mx-auto mt-12 max-w-3xl space-y-10 text-base leading-relaxed text-slate-700">
               <section>
-                <SectionLabel>The daily reality</SectionLabel>
-                <h2 className="mt-2 text-2xl font-semibold text-slate-900">Most SMEs close the day without real clarity</h2>
+                <SectionLabel>The daily goal</SectionLabel>
+                <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+                  Close the day with a verdict, not a vibe
+                </h2>
+
                 <p className="mt-4">
-                  At the end of the day, many owners feel tired, busy, and unsure. Sales happened. Money moved. But the
-                  real question remains unanswered: <strong>did today actually go well?</strong>
+                  Most SMEs end the day with activity sales alerts, transfers, and a bank balance but still can’t
+                  answer the only question that matters for momentum:
                 </p>
 
-                <Callout title="The goal">
+                <p className="mt-3 font-semibold text-slate-900">
+                  Did today help the business or hurt it?
+                </p>
+
+                <Callout title="The calm sentence">
                   <>
-                    At day end, you should be able to say one calm sentence:
+                    At day end, you should be able to say:
                     <br />
                     <span className="font-semibold text-slate-900">
-                      “I know what’s true about today — and what’s still missing.”
+                      “I know what’s true about today and what’s still missing.”
                     </span>
                   </>
                 </Callout>
               </section>
 
-              {/* ✅ Canonical clarification (this article talks about “what we made”, so we must anchor truth) */}
+              {/* ✅ Anchor honesty (no fake certainty) */}
               <ProfitLogicClarification tone="warn" showOneLiner />
 
               <section>
-                <SectionLabel>The fix</SectionLabel>
-                <h2 className="mt-2 text-2xl font-semibold text-slate-900">Three daily checks tell the full story</h2>
+                <SectionLabel>The routine</SectionLabel>
+                <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+                  Three daily checks tell the story without confusion
+                </h2>
+
                 <p className="mt-4">
                   You don’t need spreadsheets or accounting language. You need three checks that answer three different
-                  questions — and that stay honest even when some costs haven’t been recorded yet.
+                  questions and stay honest even when some costs haven’t been recorded yet.
                 </p>
 
                 <ul className="mt-6 space-y-3">
                   <li>
-                    <strong>1. Revenue recorded today</strong> — what sales were recorded for the day.
+                    <strong>1) Revenue recorded today</strong> what sales were recorded for the day.
                   </li>
                   <li>
-                    <strong>2. Operating expenses recorded</strong> — what overhead costs were recorded/allocated.
+                    <strong>2) Operating expenses recorded</strong> what overhead costs were recorded today (or allocated
+                    to today).
                   </li>
                   <li>
-                    <strong>3. Profit status</strong> — either a proven profit number, or “— —” with a clear reason.
+                    <strong>3) Profit status</strong> either a proven profit number, or “— —” with a clear reason.
                   </li>
                 </ul>
 
@@ -207,28 +221,68 @@ export default function ArticlePage() {
                   <NumberCard
                     label="Revenue recorded today"
                     value="₦120,000"
-                    note="Sales value recorded for the day (not profit)."
+                    note="Recorded sales value for the day (not profit)."
                   />
                   <NumberCard
                     label="Operating expenses (recorded)"
                     value="₦18,500"
-                    note="Overhead recorded/allocated (rent, data, utilities, subscriptions)."
+                    note="Recorded overhead (rent, data, utilities, subscriptions, etc.)."
                   />
                   <NumberCard
                     label="Profit status"
                     value="— —"
-                    note="Profit is unavailable until required sale costs (COGS) are recorded."
+                    note="Profit is unknown until required sale-linked costs (COGS) are recorded."
                     tone="warn"
                   />
                 </div>
               </section>
 
               <section>
-                <SectionLabel>When profit is unavailable</SectionLabel>
-                <h2 className="mt-2 text-2xl font-semibold text-slate-900">You can still get a useful daily signal</h2>
+                <SectionLabel>The meaning</SectionLabel>
+                <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+                  What these three numbers actually give you
+                </h2>
+
                 <p className="mt-4">
-                  If your sale-linked costs (like COGS) aren’t complete yet, ProfitPilot won’t guess profit. But it can
-                  still show a truthful signal that helps you make calmer decisions:
+                  They separate what most SMEs accidentally mix:
+                  <strong> movement</strong> (money moving) vs <strong>performance</strong> (value created after costs).
+                </p>
+
+                <p className="mt-3">
+                  When the profit status says “unknown,” that’s not a failure. It’s a signal:
+                  the day happened, revenue is recorded, overhead is recorded but the sale-linked costs aren’t complete
+                  yet.
+                </p>
+
+                <Callout title="Trust rule (locked)">
+                  <>
+                    <p className="m-0">
+                      <span className="font-semibold text-slate-900">
+                        We won’t tell you profit unless the data supports it
+                      </span>{" "}
+                      but we can still tell you what today likely meant based on what’s recorded.
+                    </p>
+                  </>
+                </Callout>
+              </section>
+
+              <section>
+                <SectionLabel>When profit is unknown</SectionLabel>
+                <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+                  You can still get a useful daily signal
+                </h2>
+
+                <p className="mt-4">
+                  Decisions don’t wait for perfect books. And that’s the honest tension:
+                  <br />
+                  <span className="font-semibold text-slate-900">
+                    Daily verdict never waits for COGS. Profit numbers always do.
+                  </span>
+                </p>
+
+                <p className="mt-3">
+                  So when sale-linked costs aren’t complete yet, the best “today” signal is not profit it’s a clearly
+                  labeled indicator based on recorded overhead:
                 </p>
 
                 <Callout title="Operating surplus / deficit (recorded)">
@@ -238,43 +292,46 @@ export default function ArticlePage() {
                     </p>
                     <p className="mt-3 mb-0">
                       This is <strong>not profit</strong>. It simply tells you whether recorded revenue is covering
-                      recorded overhead — while you finish recording required sale costs.
+                      recorded overhead while you finish recording required sale-linked costs.
                     </p>
                   </>
                 </Callout>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                  <NumberCard label="Revenue recorded today" value="₦120,000" note="Recorded sales value." />
+                  <NumberCard
+                    label="Revenue recorded today"
+                    value="₦120,000"
+                    note="Recorded sales value."
+                  />
                   <NumberCard
                     label="Operating expenses (recorded)"
                     value="₦18,500"
-                    note="Recorded overhead for the period/day."
+                    note="Recorded overhead for the day/period."
                   />
                   <NumberCard
                     label="Operating surplus/deficit (recorded)"
                     value="₦101,500"
-                    note="A signal while profit is unavailable (NOT profit)."
+                    note="A direction signal while profit is unknown (NOT profit)."
                     tone="success"
                   />
                 </div>
               </section>
 
               <section>
-                <SectionLabel>Why this works</SectionLabel>
+                <SectionLabel>Why this becomes a habit</SectionLabel>
                 <p className="mt-4">
-                  These checks separate <strong>movement</strong> from <strong>performance</strong>. They remove
-                  guessing and replace it with calm, confident decisions — because you know what is proven, and what is
-                  still missing.
+                  This routine is small enough to do daily, and honest enough to trust.
+                  It gives you a daily close:
+                  you know what moved, what was recorded, what’s missing, and what today likely did to the business.
                 </p>
               </section>
 
-              {/* ✅ NO WAITLIST CTA yet */}
+              {/* ✅ NO waitlist; keep teaching */}
               <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-                <p className="font-semibold text-slate-900">Where ProfitPilot fits (later)</p>
+                <p className="font-semibold text-slate-900">Keep going</p>
                 <p className="mt-2">
-                  The point of these articles is to make daily clarity normal first. When we introduce the full
-                  solution, you’ll see how ProfitPilot makes this routine automatic — and how it refuses to show profit
-                  until costs are complete.
+                  Next, we’ll connect these daily checks to a simple habit:
+                  turning daily numbers into daily clarity without pretending profit exists when costs are incomplete.
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-3">
