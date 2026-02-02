@@ -7,14 +7,14 @@ import ProfitLogicClarification from "@/app/components/ProfitLogicClarification"
 export const metadata: Metadata = {
   title: "When Profit Is Unknown, That’s Still an Answer | ProfitPilot | SolFligh Tech",
   description:
-    "ProfitPilot treats profit as a proven number—not a guess. When required costs are missing, it shows “— —” and explains what’s needed.",
+    "ProfitPilot won’t guess profit when costs are incomplete. If profit can’t be proven, it shows “— —” and explains what’s missing but still helps you close the day knowing whether today helped or hurt your business.",
   alternates: {
     canonical: "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer",
   },
   openGraph: {
     title: "When Profit Is Unknown, That’s Still an Answer",
     description:
-      "ProfitPilot refuses to guess profit. If costs are incomplete, it shows “— —” and explains why.",
+      "ProfitPilot refuses to guess profit. If costs are incomplete, it shows “— —”, explains what’s missing, and still gives a truthful daily verdict signal.",
     url: "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer",
     type: "article",
   },
@@ -46,17 +46,21 @@ export default function ProfitUnknownArticlePage() {
     hubTitle: "ProfitPilot",
     hubHref: "/insights/profitpilot",
     insightsHref: "/insights",
-    tag: "Profit Philosophy",
+    tag: "Solution Awareness",
     readingTime: "4–6 min",
     dateLabel: "Jan 2026",
     coverImage: "/insights/profitpilot/posts/profit-unknown.jpg",
     title: "When Profit Is Unknown, That’s Still an Answer",
     subtitle:
-      "Sometimes the most honest number is: “we don’t know yet.” ProfitPilot treats profit as a proven number—not a guess.",
+      "Sometimes the most honest number is: “we don’t know yet.” ProfitPilot treats profit as a proven number not a guess.",
   };
 
-  // Optional nav (keep simple)
-  const prevArticleHref = "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily";
+  // ✅ Correct chain: this is Article 6 (intro-product moment)
+  const prevArticleHref =
+    "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit";
+
+  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_article_6";
+  const projectHref = "/projects/profitpilot";
 
   return (
     <main className="bg-white text-slate-900">
@@ -76,8 +80,8 @@ export default function ProfitUnknownArticlePage() {
               <span className="font-semibold text-slate-900">Article</span>
             </div>
 
-            {/* Nav */}
-            <div className="mt-6 flex flex-wrap gap-3">
+            {/* Nav + CTA */}
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
                 href={prevArticleHref}
                 className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
@@ -90,6 +94,15 @@ export default function ProfitUnknownArticlePage() {
                 className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
               >
                 Back to hub
+              </Link>
+
+              <div className="flex-1" />
+
+              <Link
+                href={waitlistHref}
+                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              >
+                Join waitlist
               </Link>
             </div>
 
@@ -137,7 +150,11 @@ export default function ProfitUnknownArticlePage() {
                   </p>
                   <p>
                     If costs are missing (especially costs directly tied to each sale), any profit number is not a
-                    measurement — it’s a story.
+                    measurement it’s a story.
+                  </p>
+
+                  <p className="font-semibold text-slate-900">
+                    Daily verdict never waits for COGS. Profit numbers always do.
                   </p>
                 </section>
 
@@ -152,6 +169,18 @@ export default function ProfitUnknownArticlePage() {
                     When ProfitPilot shows <strong>“— —”</strong>, it’s not failing to calculate. It’s refusing to
                     mislead you.
                   </p>
+
+                  <Callout title="The promise (locked)">
+                    <>
+                      <p className="m-0">
+                        <span className="font-semibold text-slate-900">
+                          We will not tell you profit unless the data supports it
+                        </span>{" "}
+                        but we’ll still tell you if today helped or hurt your business.
+                      </p>
+                    </>
+                  </Callout>
+
                   <Callout title="What ProfitPilot is really saying">
                     <>
                       <p className="m-0">
@@ -169,7 +198,7 @@ export default function ProfitUnknownArticlePage() {
                   </h2>
                   <p>
                     Even when profit is unknown, you can still get a useful daily signal that helps you manage overhead
-                    and pricing decisions—without pretending it’s profit.
+                    and pricing decisions without pretending it’s profit.
                   </p>
                   <Callout title="Operating surplus / deficit (recorded)">
                     <>
@@ -177,7 +206,8 @@ export default function ProfitUnknownArticlePage() {
                         <strong>Operating surplus / deficit (recorded)</strong> = Revenue − Operating Expenses (recorded)
                       </p>
                       <p className="mt-3 mb-0">
-                        This is <strong>not profit</strong>. It’s a signal while you complete the required sale costs.
+                        This is <strong>not profit</strong>. It’s a direction signal while you complete the required
+                        sale costs.
                       </p>
                     </>
                   </Callout>
@@ -196,6 +226,38 @@ export default function ProfitUnknownArticlePage() {
                     That single design choice changes behavior: people stop relying on vibes and start recording what’s
                     needed to unlock real clarity.
                   </p>
+                </section>
+
+                {/* Intro-product CTA (this is the right article for it) */}
+                <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
+                  <p className="text-sm font-semibold text-slate-900">Want to follow ProfitPilot as we build it?</p>
+                  <p className="text-sm text-slate-700">
+                    Join the waitlist for updates and early access. ProfitPilot is built around one daily promise:
+                    show profit only when it’s proven but always help you close the day with truth.
+                  </p>
+
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      href={waitlistHref}
+                      className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                    >
+                      Join waitlist
+                    </Link>
+
+                    <Link
+                      href={projectHref}
+                      className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                    >
+                      View project
+                    </Link>
+
+                    <Link
+                      href={meta.hubHref}
+                      className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Back to hub
+                    </Link>
+                  </div>
                 </section>
 
                 {/* Bottom nav */}
