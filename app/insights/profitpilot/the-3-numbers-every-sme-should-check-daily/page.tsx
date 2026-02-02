@@ -1,21 +1,19 @@
-// app/insights/profitpilot/the-3-numbers-every-sme-should-check-daily/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
-import ProfitLogicClarification from "@/app/components/ProfitLogicClarification";
 
 export const metadata: Metadata = {
   title: "The 3 Numbers Every SME Should Check Before Closing for the Day | ProfitPilot | SolFligh Tech",
   description:
-    "Daily clarity doesn’t require accounting knowledge. These three checks help you end each day knowing what’s true, what’s missing, and whether today likely helped or hurt your business without guessing profit.",
+    "A simple end-of-day routine for SMEs. Three numbers to check before closing so you know what moved, what was recorded, and whether today likely helped or hurt your business.",
   alternates: {
     canonical: "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily",
   },
   openGraph: {
     title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
     description:
-      "Three daily checks for SMEs: revenue recorded, operating expenses recorded, and profit status (proven or unavailable). Direction first, accuracy when data supports it.",
+      "A practical daily routine: three numbers to check before closing so you end the day with clarity, not guesses.",
     url: "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily",
     type: "article",
   },
@@ -46,22 +44,13 @@ function NumberCard({
   label,
   value,
   note,
-  tone = "neutral",
 }: {
   label: string;
   value: string;
   note: string;
-  tone?: "neutral" | "warn" | "success";
 }) {
-  const styles =
-    tone === "warn"
-      ? "border-amber-200 bg-amber-50"
-      : tone === "success"
-      ? "border-emerald-200 bg-emerald-50"
-      : "border-slate-200 bg-white";
-
   return (
-    <div className={`rounded-2xl border p-4 ${styles}`}>
+    <div className="rounded-2xl border border-slate-200 bg-white p-4">
       <p className="text-xs font-semibold text-slate-500">{label}</p>
       <p className="mt-1 text-lg font-bold text-slate-900">{value}</p>
       <p className="mt-1 text-xs text-slate-600">{note}</p>
@@ -74,21 +63,19 @@ export default function ArticlePage() {
     hubTitle: "ProfitPilot",
     hubHref: "/insights/profitpilot",
     insightsHref: "/insights",
-    tag: "Teaching",
+    tag: "Daily Routine",
     readingTime: "4–5 min",
     dateLabel: "Jan 2026",
     coverImage: "/insights/profitpilot/posts/three-numbers.jpg",
     title: "The 3 Numbers Every SME Should Check Before Closing for the Day",
     subtitle:
-      "A simple end-of-day routine: know what moved, what was recorded, and whether profit is proven or still unknown. No guessing.",
+      "A simple end-of-day routine. No accounting language. Just three checks that tell you what happened today.",
   };
 
-  // ✅ Navigation
   const prevArticleHref =
     "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity";
-
-  // ✅ Use the corrected slug (redirect covers the old one too)
-  const nextArticleHref = "/insights/profitpilot/from-daily-numbers-to-daily-clarity";
+  const nextArticleHref =
+    "/insights/profitpilot/from-daily-numbers-to-daily-clarity";
 
   return (
     <main className="bg-white text-slate-900">
@@ -106,30 +93,6 @@ export default function ArticlePage() {
               </Link>
               <span className="text-slate-400">/</span>
               <span className="font-semibold text-slate-900">Article</span>
-            </div>
-
-            {/* Nav (no waitlist) */}
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href={prevArticleHref}
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-              >
-                ← Previous article
-              </Link>
-
-              <Link
-                href={nextArticleHref}
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-              >
-                Next article →
-              </Link>
-
-              <Link
-                href={meta.hubHref}
-                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
-              >
-                Back to hub
-              </Link>
             </div>
 
             {/* Header */}
@@ -156,7 +119,6 @@ export default function ArticlePage() {
                   fill
                   className="object-cover"
                   sizes="100vw"
-                  priority={false}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-white/20 to-transparent" />
               </div>
@@ -165,55 +127,42 @@ export default function ArticlePage() {
             {/* Article */}
             <article className="mx-auto mt-12 max-w-3xl space-y-10 text-base leading-relaxed text-slate-700">
               <section>
-                <SectionLabel>The daily goal</SectionLabel>
+                <SectionLabel>The goal</SectionLabel>
                 <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-                  Close the day with a verdict, not a vibe
+                  End the day with a verdict, not a vibe
                 </h2>
 
                 <p className="mt-4">
-                  Most SMEs end the day with activity sales alerts, transfers, and a bank balance but still can’t
-                  answer the only question that matters for momentum:
+                  Before you close for the day, you should be able to answer one question calmly:
                 </p>
 
                 <p className="mt-3 font-semibold text-slate-900">
-                  Did today help the business or hurt it?
+                  Did today likely help the business or hurt it?
                 </p>
 
-                <Callout title="The calm sentence">
+                <Callout title="Important">
                   <>
-                    At day end, you should be able to say:
-                    <br />
-                    <span className="font-semibold text-slate-900">
-                      “I know what’s true about today and what’s still missing.”
-                    </span>
+                    This routine does not require perfect books.  
+                    It only requires honesty about what is recorded and what is not.
                   </>
                 </Callout>
               </section>
 
-              {/* ✅ Anchor honesty (no fake certainty) */}
-              <ProfitLogicClarification tone="warn" showOneLiner />
-
               <section>
                 <SectionLabel>The routine</SectionLabel>
                 <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-                  Three daily checks tell the story without confusion
+                  Check these three numbers before closing
                 </h2>
-
-                <p className="mt-4">
-                  You don’t need spreadsheets or accounting language. You need three checks that answer three different
-                  questions and stay honest even when some costs haven’t been recorded yet.
-                </p>
 
                 <ul className="mt-6 space-y-3">
                   <li>
-                    <strong>1) Revenue recorded today</strong> what sales were recorded for the day.
+                    <strong>1) Revenue recorded today</strong> — what sales were recorded for the day.
                   </li>
                   <li>
-                    <strong>2) Operating expenses recorded</strong> what overhead costs were recorded today (or allocated
-                    to today).
+                    <strong>2) Operating expenses recorded</strong> — what overhead costs were recorded for today.
                   </li>
                   <li>
-                    <strong>3) Profit status</strong> either a proven profit number, or “— —” with a clear reason.
+                    <strong>3) Profit status</strong> — known or unknown (no guessing).
                   </li>
                 </ul>
 
@@ -221,117 +170,48 @@ export default function ArticlePage() {
                   <NumberCard
                     label="Revenue recorded today"
                     value="₦120,000"
-                    note="Recorded sales value for the day (not profit)."
+                    note="Sales value recorded for the day."
                   />
                   <NumberCard
                     label="Operating expenses (recorded)"
                     value="₦18,500"
-                    note="Recorded overhead (rent, data, utilities, subscriptions, etc.)."
+                    note="Overhead recorded for the day."
                   />
                   <NumberCard
                     label="Profit status"
-                    value="— —"
-                    note="Profit is unknown until required sale-linked costs (COGS) are recorded."
-                    tone="warn"
+                    value="Unknown"
+                    note="Profit depends on costs that may be recorded later."
                   />
                 </div>
               </section>
 
               <section>
-                <SectionLabel>The meaning</SectionLabel>
+                <SectionLabel>How to use it</SectionLabel>
                 <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-                  What these three numbers actually give you
+                  This is about direction, not perfection
                 </h2>
 
                 <p className="mt-4">
-                  They separate what most SMEs accidentally mix:
-                  <strong> movement</strong> (money moving) vs <strong>performance</strong> (value created after costs).
+                  These three numbers separate movement from performance.
+                  They tell you what you know today and what you don’t.
                 </p>
 
-                <p className="mt-3">
-                  When the profit status says “unknown,” that’s not a failure. It’s a signal:
-                  the day happened, revenue is recorded, overhead is recorded but the sale-linked costs aren’t complete
-                  yet.
-                </p>
-
-                <Callout title="Trust rule (locked)">
+                <Callout title="The calm close">
                   <>
-                    <p className="m-0">
-                      <span className="font-semibold text-slate-900">
-                        We won’t tell you profit unless the data supports it
-                      </span>{" "}
-                      but we can still tell you what today likely meant based on what’s recorded.
-                    </p>
+                    At the end of the day, you should be able to say:
+                    <br />
+                    <span className="font-semibold text-slate-900">
+                      “This is what happened today, based on what’s recorded.”
+                    </span>
                   </>
                 </Callout>
               </section>
 
-              <section>
-                <SectionLabel>When profit is unknown</SectionLabel>
-                <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-                  You can still get a useful daily signal
-                </h2>
-
-                <p className="mt-4">
-                  Decisions don’t wait for perfect books. And that’s the honest tension:
-                  <br />
-                  <span className="font-semibold text-slate-900">
-                    Daily verdict never waits for COGS. Profit numbers always do.
-                  </span>
-                </p>
-
-                <p className="mt-3">
-                  So when sale-linked costs aren’t complete yet, the best “today” signal is not profit it’s a clearly
-                  labeled indicator based on recorded overhead:
-                </p>
-
-                <Callout title="Operating surplus / deficit (recorded)">
-                  <>
-                    <p className="m-0">
-                      <strong>Operating surplus / deficit (recorded)</strong> = Revenue − Operating Expenses (recorded)
-                    </p>
-                    <p className="mt-3 mb-0">
-                      This is <strong>not profit</strong>. It simply tells you whether recorded revenue is covering
-                      recorded overhead while you finish recording required sale-linked costs.
-                    </p>
-                  </>
-                </Callout>
-
-                <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                  <NumberCard
-                    label="Revenue recorded today"
-                    value="₦120,000"
-                    note="Recorded sales value."
-                  />
-                  <NumberCard
-                    label="Operating expenses (recorded)"
-                    value="₦18,500"
-                    note="Recorded overhead for the day/period."
-                  />
-                  <NumberCard
-                    label="Operating surplus/deficit (recorded)"
-                    value="₦101,500"
-                    note="A direction signal while profit is unknown (NOT profit)."
-                    tone="success"
-                  />
-                </div>
-              </section>
-
-              <section>
-                <SectionLabel>Why this becomes a habit</SectionLabel>
-                <p className="mt-4">
-                  This routine is small enough to do daily, and honest enough to trust.
-                  It gives you a daily close:
-                  you know what moved, what was recorded, what’s missing, and what today likely did to the business.
-                </p>
-              </section>
-
-              {/* ✅ NO waitlist; keep teaching */}
               <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-                <p className="font-semibold text-slate-900">Keep going</p>
+                <p className="font-semibold text-slate-900">Next</p>
                 <p className="mt-2">
-                  Next, we’ll connect these daily checks to a simple habit:
-                  turning daily numbers into daily clarity without pretending profit exists when costs are incomplete.
+                  Now that the routine is clear, the next step is understanding *why* profit sometimes stays unknown
+                  and why that’s not a failure.
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-3">
@@ -350,23 +230,6 @@ export default function ArticlePage() {
                   </Link>
                 </div>
               </section>
-
-              {/* Bottom nav (no waitlist) */}
-              <div className="flex flex-wrap gap-3 pt-2">
-                <Link
-                  href={prevArticleHref}
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-                >
-                  ← Previous article
-                </Link>
-
-                <Link
-                  href={nextArticleHref}
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-                >
-                  Next article →
-                </Link>
-              </div>
             </article>
           </div>
         </Container>
