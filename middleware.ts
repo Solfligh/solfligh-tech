@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * SOLFLIGH TECH — Maintenance Mode Middleware
+ * SOLFLIGH TECH — Maintenance Mode Middleware (SEO-safe)
  *
  * IMPORTANT:
  * - Only the literal string "true" enables maintenance mode.
@@ -34,7 +34,7 @@ const ALLOW_EXACT = new Set([
 ]);
 
 function isStaticAsset(pathname: string) {
-  return /\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|map|txt|xml|json|woff2?|ttf|eot|webmanifest)$/i.test(
+  return /\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|map|txt|xml|json|woff2?|ttf|eot)$/i.test(
     pathname
   );
 }
@@ -44,28 +44,47 @@ export function middleware(req: NextRequest) {
 
   // Always allow Next internals, admin, maintenance page, and static assets
   if (
+    ALLOW_PREFIXES.some((p) => pathname.startsWith(p)) ||
     ALLOW_EXACT.has(pathname) ||
-    ALLOW_PREFIXES.some((p) => pathname === p || pathname.startsWith(p)) ||
     isStaticAsset(pathname)
   ) {
     return NextResponse.next();
   }
 
-  // ONLY "true" turns maintenance on (prevents "false" being treated as truthy)
-  const maintenanceOn =
-    (process.env.MAINTENANCE_MODE || "").trim().toLowerCase() === "true";
+  const isMaintenanceOn = process.env.MAINTENANCE_MODE === "true";
 
-  if (maintenanceOn) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/maintenance";
-    url.search = "";
-    return NextResponse.redirect(url);
+  if (!isMaintenanceOn) {
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  // ✅ SEO-safe: serve the maintenance page with 503 (temporary downtime)
+  const url = req.nextUrl.clone();
+  url.pathname = "/maintenance";
+
+  const res = NextResponse.rewrite(url, { status: 503 });
+
+  // Tell crawlers to come back later (pick a value that fits your maintenance window)
+  // 3600 seconds = 1 hour
+  res.headers.set("Retry-After", "3600");
+
+  // Extra safety: prevent caching of the maintenance response
+  res.headers.set("Cache-Control", "no-store, max-age=0");
+
+  // Optional: hint "don't index this response"
+  // (The 503 already does the heavy lifting, but this is fine.)
+  res.headers.set("X-Robots-Tag", "noindex, nofollow");
+
+  return res;
 }
 
-// Apply middleware to all non-API routes
+// Optional: limit middleware to routes that matter (keeps it fast & predictable)
 export const config = {
-  matcher: ["/((?!api).*)"],
+  matcher: [
+    /*
+      Match all paths except:
+      - _next (Next.js internals)
+      - static files (handled above too, but this helps reduce runs)
+    */
+    "/((?!_next/).*)",
+  ],
 };
