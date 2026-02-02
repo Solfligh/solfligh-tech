@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
-import ProfitLogicClarification from "@/app/components/ProfitLogicClarification";
 
 export const metadata: Metadata = {
   title: "Why Most SMEs Don’t Actually Know If Today Helped or Hurt Their Business | ProfitPilot | SolFligh Tech",
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Why Most SMEs Don’t Actually Know If Today Helped or Hurt Their Business",
     description:
-      "Most SMEs see activity (sales and bank alerts) but still can’t prove daily performance because key costs often arrive later or live in scattered places.",
+      "Most SMEs see activity (sales and bank alerts) but still can’t prove daily performance because key information often lives in scattered places and arrives at different times.",
     url: "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today",
     type: "article",
   },
@@ -140,7 +139,7 @@ export default function ProfitPilotArticlePage() {
 
                 <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">{meta.subtitle}</p>
 
-                {/* ✅ Problem-aware CTA: go to next article (no waitlist) */}
+                {/* ✅ Problem-aware CTA: go to next article */}
                 <div className="flex flex-wrap gap-3">
                   <Link
                     href={nextArticleHref}
@@ -161,26 +160,25 @@ export default function ProfitPilotArticlePage() {
                 </div>
               </div>
 
-              {/* “In one sentence” – still problem-aware */}
+              {/* “In one sentence” – purely problem-aware */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">In one sentence</p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Most SMEs can’t confidently end the day with a clear verdict because{" "}
-                  <span className="font-semibold text-slate-900">activity</span> is visible, but{" "}
-                  <span className="font-semibold text-slate-900">daily outcome</span> depends on costs that are often
-                  incomplete.
+                  Most SMEs can’t end the day with a clear verdict because{" "}
+                  <span className="font-semibold text-slate-900">activity is visible</span>, but{" "}
+                  <span className="font-semibold text-slate-900">outcome isn’t summarized</span>.
                 </p>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <p className="text-xs font-semibold text-slate-500">What we see</p>
-                    <p className="mt-1 text-sm font-bold text-slate-900">Sales + bank alerts</p>
-                    <p className="mt-1 text-xs text-slate-600">Movement looks like progress.</p>
+                    <p className="text-xs font-semibold text-slate-500">What we get instantly</p>
+                    <p className="mt-1 text-sm font-bold text-slate-900">Noise + movement</p>
+                    <p className="mt-1 text-xs text-slate-600">Sales alerts. Transfers. Messages. Busyness.</p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <p className="text-xs font-semibold text-slate-500">What we can’t prove</p>
-                    <p className="mt-1 text-sm font-bold text-slate-900">Did today help or hurt?</p>
-                    <p className="mt-1 text-xs text-slate-600">A verdict needs the missing pieces.</p>
+                    <p className="text-xs font-semibold text-slate-500">What we don’t get</p>
+                    <p className="mt-1 text-sm font-bold text-slate-900">A daily verdict</p>
+                    <p className="mt-1 text-xs text-slate-600">Did today help… or quietly hurt?</p>
                   </div>
                 </div>
               </div>
@@ -206,8 +204,8 @@ export default function ProfitPilotArticlePage() {
               <article className="mx-auto max-w-3xl space-y-12">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Card
-                    title="Busy doesn’t always mean forward"
-                    desc="A day can feel successful and still quietly move you backward once real costs show up."
+                    title="Busy can be a trap"
+                    desc="A day can feel successful simply because it was loud, active, and exhausting."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
                         <path
@@ -220,8 +218,8 @@ export default function ProfitPilotArticlePage() {
                     }
                   />
                   <Card
-                    title="You’re not failing you’re missing a daily verdict"
-                    desc="Most tools show movement (sales/cash). But movement isn’t the same as daily outcome."
+                    title="You’re not failing you’re missing feedback"
+                    desc="Most small businesses run daily, but the feedback arrives late, scattered, or unclear."
                     icon={
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
                         <path
@@ -244,62 +242,60 @@ export default function ProfitPilotArticlePage() {
                 <section id="hook" className="space-y-4">
                   <SectionLabel>Start here</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The day ends, and the real question shows up
+                    The shop closes but your brain stays open
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      We close for the day. We’re tired. Sales happened. Money moved. People worked.
-                      Then one question appears:
+                      You close for the day and everything looks like movement: customers came, messages flew, money
+                      entered, money left, people worked.
                     </p>
                     <p className="font-semibold text-slate-900">
-                      Did today move the business forward… or backward?
+                      Then the real question shows up quietly:
+                      <br />
+                      Did today help the business… or hurt it?
                     </p>
                     <p>
-                      If the honest answer is “I’m not sure,” it doesn’t mean we’re careless.
-                      It usually means we don’t have a simple way to see daily performance clearly especially when
-                      key costs arrive later, are recorded inconsistently, or live in different places.
+                      If your honest answer is “I’m not sure,” that’s not incompetence.
+                      It’s what happens when a daily business runs without a daily scoreboard.
                     </p>
                     <p>
-                      That’s the daily problem: the business doesn’t pause while the numbers settle.
-                      The day ends whether our costs are complete or not.
+                      The day ends on schedule.
+                      But clarity doesn’t.
                     </p>
                   </div>
 
-                  <Callout title="What makes this painful">
+                  <Callout title="What makes this so tiring">
                     <>
-                      The uncertainty doesn’t just hurt “finance.” It affects pricing, restocking, hiring, and peace of
-                      mind because decisions keep happening even when the daily truth is unclear.
+                      You’re forced to make tomorrow’s decisions with yesterday’s uncertainty pricing, restocking,
+                      hiring, even peace of mind without a clear verdict on what just happened.
                     </>
                   </Callout>
                 </section>
 
-                {/* ✅ Keep neutral and problem-aware: clarify the *gap* without pitching a solution */}
-                <ProfitLogicClarification tone="neutral" showOneLiner />
-
                 <section id="signals" className="space-y-4">
-                  <SectionLabel>What we use instead</SectionLabel>
+                  <SectionLabel>What we mistake for answers</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    We rely on signals that feel like answers
+                    We rely on signals that feel like truth
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      Most SMEs check things like bank balance, POS totals, transfer alerts, and cash on the table.
-                      Those are useful signals but they aren’t the same as a daily verdict.
+                      Most SMEs look at bank balance, POS totals, transfer alerts, and cash in hand.
+                      Those signals are real but they can’t carry the full meaning of a day.
                     </p>
                     <p>
                       That’s why two people can have the same “sales day” and feel totally different:
-                      one is calm, one is anxious because neither can confidently say what today truly meant.
+                      one is calm, one is anxious because neither has a reliable daily verdict.
                     </p>
                   </div>
 
                   <BulletList
                     items={[
-                      "Sales notifications look like progress, but they don’t include the costs that make or break a day.",
-                      "Bank balance looks like performance, but it includes timing, transfers, and delays.",
-                      "Cash on hand looks like success, but it can hide silent expenses already triggered by today.",
-                      "Being busy looks like growth, but it can hide bad pricing, wastage, or untracked spending.",
+                      "Sales alerts can feel like success, even when the day created new obligations you haven’t felt yet.",
+                      "A rising bank balance can mask timing effects (late payments, delayed expenses, transfers).",
+                      "Cash in hand can feel like winning while hidden drains accumulate quietly.",
+                      "Busyness can look like growth when it may just be chaos repeating itself.",
                     ]}
                   />
                 </section>
@@ -307,23 +303,22 @@ export default function ProfitPilotArticlePage() {
                 <Divider />
 
                 <section id="why-its-hard" className="space-y-4">
-                  <SectionLabel>Why it happens</SectionLabel>
+                  <SectionLabel>Why this keeps happening</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The problem isn’t discipline it’s visibility
+                    Small business data is naturally scattered
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      Most SMEs don’t lack effort. They lack a simple daily system that turns a messy day into a verdict
-                      humans can trust.
+                      Most SMEs don’t run on one clean system. They run on reality.
                     </p>
                     <p>
-                      Sales get recorded. Expenses are scattered. Some costs show up later especially costs tied to
-                      sales (stock, supplies, deliveries, packaging, wastage).
-                      So daily decisions get made from memory, vibes, or incomplete numbers.
+                      Sales might live in a POS or messages. Expenses happen in tiny, frequent decisions.
+                      Inventory and supplier payments have their own timing. Some details show up late.
                     </p>
                     <p>
-                      And this is the brutal part: the day is already over by the time the full cost picture is clear.
+                      So even when you try your best, your “day” ends up spread across places and the verdict gets
+                      postponed.
                     </p>
                   </div>
 
@@ -331,8 +326,8 @@ export default function ProfitPilotArticlePage() {
                     items={[
                       "Sales records live in different places (POS, bank alerts, WhatsApp, notebooks).",
                       "Expenses happen in small, frequent chunks (fuel, data, deliveries, supplies).",
-                      "Some costs don’t show up immediately but they were triggered by today’s activity.",
-                      "Month-end summaries come too late, daily businesses need daily truth.",
+                      "Some parts of the day show up later (confirmations, receipts, reconciliations).",
+                      "Month-end summaries arrive after the damage (or success) has already repeated for weeks.",
                     ]}
                   />
                 </section>
@@ -340,27 +335,27 @@ export default function ProfitPilotArticlePage() {
                 <section id="consequences" className="space-y-4">
                   <SectionLabel>What it causes</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    Unclear days create expensive decisions
+                    Unclear days create expensive confidence
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      When we can’t confidently tell whether today helped or hurt the business, we can’t reliably
-                      improve tomorrow.
-                      We may keep prices too low, restock the wrong items, overhire, or assume “it’s fine.”
+                      When the business doesn’t get daily feedback, it starts operating on stories:
+                      “We’re doing fine.” “We’re growing.” “Sales were good.”
                     </p>
                     <p>
-                      And the worst part: we may feel like we’re doing well until the month ends and reality hits.
-                      That’s what happens when the business runs daily, but feedback arrives monthly.
+                      Sometimes those stories are true.
+                      But when they’re wrong, they become expensive because you repeat decisions with no daily signal
+                      telling you to stop.
                     </p>
                   </div>
 
                   <BulletList
                     items={[
-                      "We celebrate sales days that were actually bad days once the real costs show up.",
-                      "We confuse cash movement with winning.",
-                      "We repeat pricing mistakes because we can’t see daily outcome clearly.",
-                      "We get end-of-month surprises that should never be surprises.",
+                      "You keep pricing the same way because nothing is clearly telling you it’s failing.",
+                      "You restock what moves, not what actually strengthens the business.",
+                      "You assume the business is okay until a deadline forces a painful reality check.",
+                      "You work harder, not smarter because you can’t see what’s really happening daily.",
                     ]}
                   />
                 </section>
@@ -369,18 +364,18 @@ export default function ProfitPilotArticlePage() {
                 <section id="next" className="space-y-4">
                   <SectionLabel>Next</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    The next confusion is the biggest one
+                    The most common trap is a simple one
                   </h2>
 
                   <div className="space-y-4 text-base leading-relaxed text-slate-700">
                     <p>
-                      If this article felt familiar, the next step is understanding the exact trap most SMEs fall into:
+                      The next article covers one confusion that keeps SMEs stuck in uncertainty:
                       mixing up <span className="font-semibold text-slate-900">cashflow</span> and{" "}
                       <span className="font-semibold text-slate-900">profit</span>.
                     </p>
                     <p>
-                      That mix-up is why “bank balance” and “sales alerts” feel like answers even when they aren’t
-                      and why daily clarity keeps slipping away.
+                      It’s the reason bank balance and sales alerts feel like answers even when they can’t give you a
+                      daily verdict.
                     </p>
                   </div>
 
