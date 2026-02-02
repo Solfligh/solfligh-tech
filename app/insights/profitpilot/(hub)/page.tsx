@@ -1,4 +1,4 @@
-// app/insights/profitpilot/page.tsx
+// app/insights/profitpilot/(hub)/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import PageHeader from "@/app/components/PageHeader";
@@ -12,6 +12,7 @@ function MiniHero({ title }: { title: string }) {
       <div className="flex flex-col gap-4">
         <div className="space-y-2">
           <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{title} mission</p>
+
           <p className="text-base font-semibold text-slate-900">
             Help SMEs know what happened <span className="text-sky-700">today</span> without accounting confusion.
           </p>
@@ -59,7 +60,7 @@ function MiniHero({ title }: { title: string }) {
   );
 }
 
-function StartHere({ firstHref }: { firstHref: string }) {
+function StartHere({ firstHref, total }: { firstHref: string; total: number }) {
   const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_hub";
   const projectHref = "/projects/profitpilot";
 
@@ -71,6 +72,7 @@ function StartHere({ firstHref }: { firstHref: string }) {
           <p className="mt-1 text-sm text-slate-600">
             Read the series in order. It’s designed to move from daily confusion → daily clarity → the ProfitPilot habit.
           </p>
+          <p className="mt-2 text-xs font-semibold text-slate-500">{total} articles • ~25 minutes total</p>
         </div>
 
         <div className="flex flex-wrap gap-3">
@@ -102,7 +104,7 @@ function StartHere({ firstHref }: { firstHref: string }) {
 
 export default function ProfitPilotInsightsHubPage() {
   const hub = getHub("profitpilot");
-  const posts = listPostsByHub("profitpilot"); // OLD → NEW (series order)
+  const posts = listPostsByHub("profitpilot");
 
   const hubTitle = hub?.title || "ProfitPilot";
   const hubDescription =
@@ -131,21 +133,21 @@ export default function ProfitPilotInsightsHubPage() {
         subtitle={hubDescription}
         actions={
           <Link
-            href="/projects"
+            href="/projects/profitpilot"
             className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
           >
-            View projects
+            View project
           </Link>
         }
       />
 
       <MiniHero title={hubTitle} />
 
-      <StartHere firstHref={firstPostHref} />
+      <StartHere firstHref={firstPostHref} total={posts.length || 6} />
 
       <section className="space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold text-slate-900">Articles</h2>
+          <h2 className="text-lg font-semibold text-slate-900">All articles</h2>
           <Link href="/insights" className="text-sm font-semibold text-sky-700 hover:underline">
             All hubs →
           </Link>
@@ -173,7 +175,7 @@ export default function ProfitPilotInsightsHubPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/30 to-transparent" />
                   </>
                 ) : (
-                  <div className={`absolute inset-0 bg-gradient-to-br ${p.accent}`} />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${p.accent || "from-sky-200 to-blue-200"}`} />
                 )}
               </div>
 
