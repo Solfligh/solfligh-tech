@@ -78,7 +78,8 @@ export default function Page() {
   const hubHref = "/insights/profitpilot";
 
   // ✅ Seamless chain
-  const prevArticleHref = "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
+  const prevArticleHref =
+    "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
   const nextArticleHref = "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily";
 
   // ✅ Cover
@@ -139,11 +140,11 @@ export default function Page() {
               </h1>
 
               <p className="text-base leading-7 text-slate-700">
-                Many business owners end the day feeling good because money came in then feel confused later when bills
-                hit and nothing is left.
+                Many business owners end the day feeling good because money came in then feel confused later when
+                bills hit and nothing is left.
                 <br />
-                That confusion usually has one root cause: treating <strong>cashflow</strong> and <strong>profit</strong>{" "}
-                as the same thing.
+                That confusion usually has one root cause: treating <strong>cashflow</strong> and{" "}
+                <strong>profit</strong> as the same thing.
               </p>
 
               {/* Cover */}
@@ -161,16 +162,15 @@ export default function Page() {
                 </div>
               </div>
 
-              {/* Outcome box (still not teaching formulas) */}
+              {/* Outcome box (no formulas, no “— —” talk keep it unique to Q separation) */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6 text-sm leading-7 text-slate-700 shadow-sm">
-                <p className="m-0 font-semibold text-slate-900">The simple clarity we want</p>
+                <p className="m-0 font-semibold text-slate-900">The clarity shift</p>
                 <p className="mt-2 mb-0">
-                  At the end of most days, you should be able to say one calm sentence:
+                  Stop forcing one number to answer two different questions.
                   <br />
-                  <span className="font-semibold text-slate-900">“Today helped the business”</span> or{" "}
-                  <span className="font-semibold text-slate-900">“Today hurt the business.”</span>
+                  <span className="font-semibold text-slate-900">Cashflow</span> tells you if money moved.
                   <br />
-                  Cashflow can’t reliably answer that. Profit tries to but only when you’re not mixing the questions.
+                  <span className="font-semibold text-slate-900">Profit</span> tells you if value was created after costs.
                 </p>
               </div>
             </header>
@@ -184,14 +184,14 @@ export default function Page() {
                 leftBody={
                   <>
                     <p className="m-0">
-                      Cashflow is about movement: what came in and what went out.
+                      Cashflow is movement: what came in and what went out.
                       <br />
-                      It’s essential for survival paying rent, restocking, avoiding “no cash” moments.
+                      It’s essential for survival paying bills, restocking, avoiding “no cash” moments.
                     </p>
                     <ul className="mt-4 m-0 list-disc pl-5">
                       <li>It tells you <strong>liquidity</strong>.</li>
-                      <li>It helps you avoid <strong>cash shortages</strong>.</li>
-                      <li>It’s a <strong>timing view</strong> of the business.</li>
+                      <li>It helps you manage <strong>timing</strong>.</li>
+                      <li>It answers: <strong>“Can we operate tomorrow?”</strong></li>
                     </ul>
                   </>
                 }
@@ -199,13 +199,12 @@ export default function Page() {
                 rightBody={
                   <>
                     <p className="m-0">
-                      Profit is about outcome: after the business did its work, did it actually create value or did it
-                      burn value?
+                      Profit is outcome: after the work of the day, did the business actually keep value or burn it?
                     </p>
                     <ul className="mt-4 m-0 list-disc pl-5">
                       <li>It tells you <strong>performance</strong>.</li>
-                      <li>It informs <strong>pricing</strong> and <strong>margin reality</strong>.</li>
-                      <li>It’s a <strong>truth view</strong> of the business.</li>
+                      <li>It reveals <strong>pricing</strong> and <strong>margin reality</strong>.</li>
+                      <li>It answers: <strong>“Was today actually worth it?”</strong></li>
                     </ul>
                   </>
                 }
@@ -228,7 +227,7 @@ export default function Page() {
                     <p className="m-0">
                       Money came in, so it feels like a good day.
                       <br />
-                      But cash inflow can happen for reasons that don’t mean the business actually performed well.
+                      But inflow can happen for reasons that don’t reflect performance.
                     </p>
                     <ul className="mt-4 m-0 list-disc pl-5">
                       <li>A customer paid an old balance.</li>
@@ -244,29 +243,25 @@ export default function Page() {
                     <p className="m-0">
                       Money went out, so it feels like a bad day.
                       <br />
-                      But cash outflow can happen for reasons that are healthy even strategic.
+                      But outflow can be healthy even strategic.
                     </p>
                     <ul className="mt-4 m-0 list-disc pl-5">
                       <li>You bought inventory for future sales.</li>
                       <li>You paid rent upfront.</li>
                       <li>You invested in equipment.</li>
-                      <li>You cleaned up past obligations.</li>
+                      <li>You cleared past obligations.</li>
                     </ul>
                   </>
                 }
               />
 
-              <Card
-                title="The pattern behind “end-of-month surprises”"
-                subtitle="The business runs daily but clarity arrives late."
-              >
+              <Card title="The pattern behind “end-of-month surprises”" subtitle="The business runs daily but clarity arrives late.">
                 <p className="m-0">
-                  If daily decisions are made using the wrong question (“Did money move?”) you can repeat the same
-                  mistake for weeks before reality hits.
+                  If daily decisions are made using the wrong question (“Did money move?”), you can repeat the same
+                  mistake for weeks before reality shows up.
                 </p>
                 <p className="mt-3 mb-0">
-                  The surprise isn’t magic it’s delayed feedback. Mixing cashflow and profit delays feedback even
-                  more.
+                  The surprise isn’t magic it’s delayed feedback caused by measuring the wrong thing.
                 </p>
               </Card>
 
@@ -274,18 +269,18 @@ export default function Page() {
 
               <SectionTitle>So what should you do daily?</SectionTitle>
               <p className="text-sm leading-7 text-slate-700">
-                Don’t try to force one number to answer both questions.
+                Don’t try to collapse everything into one number.
                 <br />
-                Instead, use a simple daily check that keeps movement separate from performance.
+                Use a simple daily check that keeps <strong>movement</strong> separate from <strong>performance</strong>.
               </p>
 
               <Card title="Next: the simple daily check" subtitle="Three numbers that remove confusion.">
                 <p className="m-0">
-                  In the next article, we’ll break it down into a daily routine three checks that give clarity without
+                  In the next article, we’ll break it down into a daily routine: three checks that give clarity without
                   accounting jargon.
                 </p>
                 <p className="mt-3 mb-0">
-                  Once you separate “money moved” from “value created,” daily decisions get calmer.
+                  Once you stop mixing questions, daily decisions get calmer and mistakes get visible faster.
                 </p>
               </Card>
 
