@@ -35,7 +35,7 @@ const HUBS: InsightHub[] = [
   {
     slug: "profitpilot",
     title: "ProfitPilot",
-    description: "Daily profit clarity for SMEs — no accounting jargon, just clean decisions.",
+    description: "Daily profit clarity for SMEs no accounting jargon, just clean decisions.",
     href: "/insights/profitpilot",
     badge: "Project Hub",
     accent: "from-sky-500/20 to-blue-500/10",
@@ -50,7 +50,7 @@ const POSTS: InsightPost[] = [
     slug: "why-most-smes-dont-actually-know-how-much-they-made-today",
     title: "Why Most SMEs Don’t Actually Know How Much They Made Today",
     description:
-      "Sales happened and money moved, but the day ends with the same question: did we actually make money today — or just stay busy?",
+      "Sales happened and money moved, but the day ends with the same question: did we actually make money today or just stay busy?",
     href: "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today",
     tag: "Problem Awareness",
     readingTime: "4–6 min",
@@ -114,7 +114,7 @@ const POSTS: InsightPost[] = [
     slug: "from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
     title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit",
     description:
-      "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how ProfitPilot turns daily clarity into a reliable habit — without guessing profit.",
+      "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how ProfitPilot turns daily clarity into a reliable habit without guessing profit.",
     href: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
     tag: "Product Solution",
     readingTime: "5–7 min",
@@ -130,7 +130,7 @@ const POSTS: InsightPost[] = [
     slug: "when-profit-is-unknown-thats-still-an-answer",
     title: "When Profit Is Unknown, That’s Still an Answer",
     description:
-      "If profit can’t be proven because required costs are missing, “unknown” is still a truthful answer — and you can still close the day with clarity.",
+      "If profit can’t be proven because required costs are missing, “unknown” is still a truthful answer and you can still close the day with clarity.",
     href: "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer",
     tag: "Solution Awareness",
     readingTime: "4–6 min",
@@ -154,14 +154,14 @@ export function getHub(hubSlug: string): InsightHub | null {
 }
 
 /**
- * Global list (newest first) — useful for /insights index pages.
+ * Global list (newest first) useful for /insights index pages.
  */
 export function listAllPosts(): InsightPost[] {
   return [...POSTS].sort((a, b) => safeDate(b.dateISO) - safeDate(a.dateISO));
 }
 
 /**
- * Hub list (OLD → NEW) — best for series reading order.
+ * Hub list (OLD → NEW) best for series reading order.
  * This makes your hub page naturally show Article 1 → 6.
  */
 export function listPostsByHub(hubSlug: string): InsightPost[] {
