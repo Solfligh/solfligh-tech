@@ -18,7 +18,7 @@ function MiniHero({ title }: { title: string }) {
           </p>
 
           <p className="text-sm text-slate-600">
-            ProfitPilot doesn’t ask how complex your business is — it asks whether{" "}
+            ProfitPilot doesn’t ask how complex your business is it asks whether{" "}
             <span className="font-semibold text-slate-900">today moved it forward</span>.
           </p>
         </div>
@@ -28,7 +28,7 @@ function MiniHero({ title }: { title: string }) {
             <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The rule</p>
             <p className="mt-2 text-sm text-slate-700">
               <span className="font-semibold text-slate-900">
-                We will not tell you profit unless the data supports it —
+                We will not tell you profit unless the data supports it
               </span>{" "}
               but we’ll still tell you if today helped or hurt your business.
             </p>
@@ -223,7 +223,7 @@ export default function ProfitPilotInsightsHubPage() {
           <div>
             <p className="text-sm font-semibold text-slate-900">Want the product version?</p>
             <p className="mt-1 text-sm text-slate-600">
-              ProfitPilot turns these ideas into a daily verdict workflow SMEs can use — without guessing profit.
+              ProfitPilot turns these ideas into a daily verdict workflow SMEs can use without guessing profit.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
