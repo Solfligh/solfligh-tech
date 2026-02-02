@@ -17,7 +17,8 @@ function MiniHero({ title }: { title: string }) {
           </p>
 
           <p className="text-sm text-slate-600">
-            ProfitPilot doesn’t ask how complex your business is it asks whether <span className="font-semibold text-slate-900">today moved it forward</span>.
+            ProfitPilot doesn’t ask how complex your business is — it asks whether{" "}
+            <span className="font-semibold text-slate-900">today moved it forward</span>.
           </p>
         </div>
 
@@ -26,7 +27,7 @@ function MiniHero({ title }: { title: string }) {
             <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The rule</p>
             <p className="mt-2 text-sm text-slate-700">
               <span className="font-semibold text-slate-900">
-                We will not tell you profit unless the data supports it
+                We will not tell you profit unless the data supports it —
               </span>{" "}
               but we’ll still tell you if today helped or hurt your business.
             </p>
@@ -68,7 +69,7 @@ function StartHere({ firstHref }: { firstHref: string }) {
         <div>
           <p className="text-sm font-semibold text-slate-900">Start here</p>
           <p className="mt-1 text-sm text-slate-600">
-            Read the series in order it’s designed to move from daily confusion → daily clarity → the ProfitPilot habit.
+            Read the series in order. It’s designed to move from daily confusion → daily clarity → the ProfitPilot habit.
           </p>
         </div>
 
@@ -101,16 +102,17 @@ function StartHere({ firstHref }: { firstHref: string }) {
 
 export default function ProfitPilotInsightsHubPage() {
   const hub = getHub("profitpilot");
-  const posts = listPostsByHub("profitpilot");
+  const posts = listPostsByHub("profitpilot"); // OLD → NEW (series order)
 
   const hubTitle = hub?.title || "ProfitPilot";
   const hubDescription =
     hub?.description ||
     "Clear writing for SMEs who want to understand daily performance without accounting confusion.";
 
-  // We’ll treat the first post as “Article 1” based on your articles.ts ordering.
   const firstPostHref =
-    posts.length > 0 ? posts[0].href : "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
+    posts.length > 0
+      ? posts[0].href
+      : "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
 
   return (
     <div className="space-y-10">
@@ -150,7 +152,7 @@ export default function ProfitPilotInsightsHubPage() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
-          {posts.map((p: InsightPost) => (
+          {posts.map((p: InsightPost, idx: number) => (
             <Link
               key={p.href}
               href={p.href}
@@ -180,6 +182,11 @@ export default function ProfitPilotInsightsHubPage() {
                   <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
                     {p.tag}
                   </span>
+
+                  <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+                    {idx + 1} / {posts.length}
+                  </span>
+
                   <span className="text-xs font-semibold text-slate-600">{p.readingTime}</span>
                   <span className="text-xs text-slate-400">•</span>
                   <span className="text-xs font-semibold text-slate-600">{p.dateLabel}</span>
@@ -214,7 +221,7 @@ export default function ProfitPilotInsightsHubPage() {
           <div>
             <p className="text-sm font-semibold text-slate-900">Want the product version?</p>
             <p className="mt-1 text-sm text-slate-600">
-              ProfitPilot turns these ideas into a daily verdict workflow SMEs can use without guessing profit.
+              ProfitPilot turns these ideas into a daily verdict workflow SMEs can use — without guessing profit.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
