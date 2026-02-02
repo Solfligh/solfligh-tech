@@ -67,6 +67,12 @@ const nextConfig: NextConfig = {
         destination: "/insights/profitpilot/from-daily-numbers-to-daily-clarity",
         permanent: true,
       },
+      // Optional guard (rare, but safe)
+      {
+        source: "/insights/profitpilot/from-daily-number-to-daily-clarity/:path*",
+        destination: "/insights/profitpilot/from-daily-numbers-to-daily-clarity",
+        permanent: true,
+      },
 
       // Legacy ProfitPilot article -> habit article
       {
