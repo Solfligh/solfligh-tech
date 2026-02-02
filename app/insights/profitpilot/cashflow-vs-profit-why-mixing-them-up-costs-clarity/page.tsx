@@ -2,19 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
-import ProfitLogicClarification from "@/app/components/ProfitLogicClarification";
 
 export const metadata: Metadata = {
   title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity | ProfitPilot | SolFligh Tech",
   description:
-    "Cashflow and profit answer different questions. Cashflow tells you whether money moved. Profit tells you whether today created value after costs. ProfitPilot won’t guess profit but it can still help you judge whether today helped or hurt.",
+    "Cashflow answers “did money move?” Profit answers “did we create value after costs?” Mixing them creates false confidence and late surprises even when sales look strong.",
   alternates: {
     canonical: "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity",
   },
   openGraph: {
     title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
     description:
-      "Cashflow shows movement. Profit shows value after costs. Mixing them creates false confidence and late surprises especially when costs arrive later.",
+      "Cashflow shows movement. Profit shows value after costs. Mixing them creates false confidence and late surprises.",
     url: "/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity",
     type: "article",
   },
@@ -56,16 +55,33 @@ function Divider() {
   return <div className="h-px w-full bg-slate-200/70" />;
 }
 
+function TwoCol({
+  leftTitle,
+  leftBody,
+  rightTitle,
+  rightBody,
+}: {
+  leftTitle: string;
+  leftBody: React.ReactNode;
+  rightTitle: string;
+  rightBody: React.ReactNode;
+}) {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2">
+      <Card title={leftTitle}>{leftBody}</Card>
+      <Card title={rightTitle}>{rightBody}</Card>
+    </div>
+  );
+}
+
 export default function Page() {
   const hubHref = "/insights/profitpilot";
 
   // ✅ Seamless chain
-  const prevArticleHref =
-    "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
-  const nextArticleHref =
-    "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily";
+  const prevArticleHref = "/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today";
+  const nextArticleHref = "/insights/profitpilot/the-3-numbers-every-sme-should-check-daily";
 
-  // ✅ Cover (match your hub + header images)
+  // ✅ Cover
   const coverImage = "/insights/profitpilot/posts/cashflow-vs-profit.jpg";
 
   return (
@@ -123,11 +139,11 @@ export default function Page() {
               </h1>
 
               <p className="text-base leading-7 text-slate-700">
-                Many business owners end the day with a “good feeling” because money came in then feel confused a week
-                later when bills hit and nothing is left.
+                Many business owners end the day feeling good because money came in then feel confused later when bills
+                hit and nothing is left.
                 <br />
-                That confusion usually has one root cause: treating <strong>cashflow</strong> and{" "}
-                <strong>profit</strong> as the same thing.
+                That confusion usually has one root cause: treating <strong>cashflow</strong> and <strong>profit</strong>{" "}
+                as the same thing.
               </p>
 
               {/* Cover */}
@@ -145,170 +161,131 @@ export default function Page() {
                 </div>
               </div>
 
-              {/* Clarification block (canonical) */}
-              <ProfitLogicClarification tone="warn" showOneLiner showHint />
-
-              {/* ✅ Align with locked philosophy (brief, not salesy) */}
+              {/* Outcome box (still not teaching formulas) */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6 text-sm leading-7 text-slate-700 shadow-sm">
-                <p className="m-0 font-semibold text-slate-900">
-                  Here’s the simple outcome we’re chasing:
-                </p>
+                <p className="m-0 font-semibold text-slate-900">The simple clarity we want</p>
                 <p className="mt-2 mb-0">
-                  You should be able to end most days with a clear verdict:{" "}
-                  <span className="font-semibold text-slate-900">did today help or hurt the business?</span>
+                  At the end of most days, you should be able to say one calm sentence:
                   <br />
-                  Cashflow can’t answer that. Profit can but only when the costs are actually known.
+                  <span className="font-semibold text-slate-900">“Today helped the business”</span> or{" "}
+                  <span className="font-semibold text-slate-900">“Today hurt the business.”</span>
+                  <br />
+                  Cashflow can’t reliably answer that. Profit tries to but only when you’re not mixing the questions.
                 </p>
               </div>
             </header>
 
             {/* Body */}
             <section className="space-y-8">
-              <SectionTitle>Cashflow answers “did money move?”</SectionTitle>
-              <p className="text-sm leading-7 text-slate-700">
-                Cashflow is the movement of cash what came in and what went out.
-                <br />
-                It’s essential for survival: paying bills, restocking, and avoiding “no cash” emergencies.
-                <br />
-                But cashflow is not a verdict. It’s a movement report.
-              </p>
+              <SectionTitle>Two numbers. Two different questions.</SectionTitle>
 
-              <div className="grid gap-6 sm:grid-cols-2">
-                <Card title="Cash inflow examples" subtitle="Cash increased, but this doesn’t automatically mean you “won” today.">
-                  <ul className="m-0 list-disc pl-5">
-                    <li>Customer paid today (even if costs tied to that sale aren’t fully recorded yet)</li>
-                    <li>Owner added money to the business</li>
-                    <li>A loan or advance landed</li>
-                    <li>Old debts finally got paid</li>
-                  </ul>
-                </Card>
-
-                <Card title="Cash outflow examples" subtitle="Cash decreased, but you might still be doing well overall.">
-                  <ul className="m-0 list-disc pl-5">
-                    <li>Buying inventory for future sales</li>
-                    <li>Paying rent for the month upfront</li>
-                    <li>Repaying a loan</li>
-                    <li>Purchasing equipment</li>
-                  </ul>
-                </Card>
-              </div>
-
-              <Divider />
-
-              <SectionTitle>Profit answers “did we create value after costs?”</SectionTitle>
-              <p className="text-sm leading-7 text-slate-700">
-                Profit is what remains after the costs required to generate revenue are included.
-                <br />
-                The key phrase is <strong>included</strong>. If required costs are missing, profit isn’t known.
-              </p>
-
-              <Card
-                title="This is where most SMEs get trapped"
-                subtitle="A day can look good in cash and still be a bad day in profit."
-              >
-                <p className="m-0">
-                  Cashflow can make a day feel successful because money moved.
-                  <br />
-                  Profit asks the harder question: once the real costs settle, did that day still stand as a win?
-                </p>
-                <p className="mt-3 mb-0">
-                  That’s why owners get “end-of-month surprises.” The business ran daily, but truth arrived late.
-                </p>
-              </Card>
-
-              <Card
-                title="Why ProfitPilot treats profit as conditional"
-                subtitle="A number is shown only when it’s defensible."
-              >
-                <p className="m-0">
-                  Profit is a chain:
-                  <br />
-                  <strong>Revenue</strong> → subtract <strong>sale-linked costs</strong> (often called COGS) → you get{" "}
-                  <strong>Gross Profit</strong>.
-                  <br />
-                  Then subtract <strong>Operating Expenses</strong> → you get <strong>Operating Profit</strong>.
-                </p>
-
-                <p className="mt-3 mb-0">
-                  If required costs are missing (especially sale-linked costs), ProfitPilot refuses to guess.
-                  <br />
-                  <span className="font-semibold text-slate-900">
-                    We won’t tell you profit unless the data supports it
-                  </span>{" "}
-                  but we’ll still help you understand what’s true and what’s missing.
-                </p>
-              </Card>
+              <TwoCol
+                leftTitle="Cashflow asks: “Did money move?”"
+                leftBody={
+                  <>
+                    <p className="m-0">
+                      Cashflow is about movement: what came in and what went out.
+                      <br />
+                      It’s essential for survival paying rent, restocking, avoiding “no cash” moments.
+                    </p>
+                    <ul className="mt-4 m-0 list-disc pl-5">
+                      <li>It tells you <strong>liquidity</strong>.</li>
+                      <li>It helps you avoid <strong>cash shortages</strong>.</li>
+                      <li>It’s a <strong>timing view</strong> of the business.</li>
+                    </ul>
+                  </>
+                }
+                rightTitle="Profit asks: “Did we create value after costs?”"
+                rightBody={
+                  <>
+                    <p className="m-0">
+                      Profit is about outcome: after the business did its work, did it actually create value or did it
+                      burn value?
+                    </p>
+                    <ul className="mt-4 m-0 list-disc pl-5">
+                      <li>It tells you <strong>performance</strong>.</li>
+                      <li>It informs <strong>pricing</strong> and <strong>margin reality</strong>.</li>
+                      <li>It’s a <strong>truth view</strong> of the business.</li>
+                    </ul>
+                  </>
+                }
+              />
 
               <Divider />
 
-              <SectionTitle>“But I still want a daily signal”</SectionTitle>
+              <SectionTitle>Why mixing them hurts</SectionTitle>
               <p className="text-sm leading-7 text-slate-700">
-                That’s reasonable. Decisions don’t wait.
+                When you treat cashflow like profit, you give yourself “wins” that may not be real.
                 <br />
-                And this is the honest tension:
-                <br />
-                <span className="font-semibold text-slate-900">
-                  Daily verdict never waits for COGS. Profit numbers always do.
-                </span>
+                When you treat profit like cashflow, you panic even when the business is fine just temporarily tight
+                on cash.
               </p>
 
+              <TwoCol
+                leftTitle="The false win"
+                leftBody={
+                  <>
+                    <p className="m-0">
+                      Money came in, so it feels like a good day.
+                      <br />
+                      But cash inflow can happen for reasons that don’t mean the business actually performed well.
+                    </p>
+                    <ul className="mt-4 m-0 list-disc pl-5">
+                      <li>A customer paid an old balance.</li>
+                      <li>You borrowed money or got an advance.</li>
+                      <li>You injected personal money.</li>
+                      <li>You delayed paying something important.</li>
+                    </ul>
+                  </>
+                }
+                rightTitle="The false panic"
+                rightBody={
+                  <>
+                    <p className="m-0">
+                      Money went out, so it feels like a bad day.
+                      <br />
+                      But cash outflow can happen for reasons that are healthy even strategic.
+                    </p>
+                    <ul className="mt-4 m-0 list-disc pl-5">
+                      <li>You bought inventory for future sales.</li>
+                      <li>You paid rent upfront.</li>
+                      <li>You invested in equipment.</li>
+                      <li>You cleaned up past obligations.</li>
+                    </ul>
+                  </>
+                }
+              />
+
               <Card
-                title="A daily signal that doesn’t pretend to be profit"
-                subtitle="A truthful way to check direction when some costs arrive later."
+                title="The pattern behind “end-of-month surprises”"
+                subtitle="The business runs daily but clarity arrives late."
               >
                 <p className="m-0">
-                  When sale-linked costs aren’t complete but operating expenses are recorded, a useful signal is:
+                  If daily decisions are made using the wrong question (“Did money move?”) you can repeat the same
+                  mistake for weeks before reality hits.
                 </p>
                 <p className="mt-3 mb-0">
-                  <strong>Operating surplus / deficit (recorded)</strong> = Revenue − Operating Expenses (recorded)
-                </p>
-                <p className="mt-3 mb-0">
-                  This helps you see whether your overhead is being covered by recorded revenue even when sale-linked
-                  costs are incomplete.
-                </p>
-              </Card>
-
-              <Card title="Important: this is not profit" subtitle="It’s labeled explicitly so you don’t confuse the two.">
-                <p className="m-0">
-                  This signal helps you answer a practical question:
-                  <br />
-                  <span className="font-semibold text-slate-900">“Did today likely help or hurt based on what we know?”</span>
-                </p>
-                <p className="mt-3 mb-0">
-                  Profit is shown later, only when the missing pieces are filled in. That’s how you avoid fake certainty.
+                  The surprise isn’t magic it’s delayed feedback. Mixing cashflow and profit delays feedback even
+                  more.
                 </p>
               </Card>
 
               <Divider />
 
-              <SectionTitle>The practical takeaway</SectionTitle>
-              <div className="grid gap-6 sm:grid-cols-2">
-                <Card title="Use cashflow for survival" subtitle="Can I pay? Can I restock? Will I run out of cash?">
-                  <ul className="m-0 list-disc pl-5">
-                    <li>Cash on hand</li>
-                    <li>Upcoming bills</li>
-                    <li>Timing of payments</li>
-                    <li>Short-term runway</li>
-                  </ul>
-                </Card>
+              <SectionTitle>So what should you do daily?</SectionTitle>
+              <p className="text-sm leading-7 text-slate-700">
+                Don’t try to force one number to answer both questions.
+                <br />
+                Instead, use a simple daily check that keeps movement separate from performance.
+              </p>
 
-                <Card title="Use profit for truth" subtitle="Did the business create value after real costs?">
-                  <ul className="m-0 list-disc pl-5">
-                    <li>Gross profit (only when sale-linked costs are complete)</li>
-                    <li>Operating profit (only when gross profit is known)</li>
-                    <li>Confidence in decisions</li>
-                    <li>Pricing and margin reality</li>
-                  </ul>
-                </Card>
-              </div>
-
-              <Card title="ProfitPilot’s stance" subtitle="Trust over comfort.">
+              <Card title="Next: the simple daily check" subtitle="Three numbers that remove confusion.">
                 <p className="m-0">
-                  Many tools always show a number. ProfitPilot shows a number only when it can be defended.
+                  In the next article, we’ll break it down into a daily routine three checks that give clarity without
+                  accounting jargon.
                 </p>
                 <p className="mt-3 mb-0">
-                  If your costs are incomplete, you won’t get a fake profit figure
-                  you’ll get clarity on what’s missing, and a truthful daily signal where possible.
+                  Once you separate “money moved” from “value created,” daily decisions get calmer.
                 </p>
               </Card>
 
