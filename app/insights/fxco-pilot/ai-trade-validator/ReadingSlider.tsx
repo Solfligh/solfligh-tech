@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Slide = {
   title: string;
@@ -64,46 +64,145 @@ export default function ReadingSlider() {
     []
   );
 
+  const total = slides.length;
+
   const [index, setIndex] = useState(0);
   const [elapsed, setElapsed] = useState(0); // seconds into current slide
-  const total = slides.length;
+
+  // animation state
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [dir, setDir] = useState<1 | -1>(1); // 1 next, -1 prev
+  const animTimerRef = useRef<number | null>(null);
+
+  // swipe state
+  const startXRef = useRef<number | null>(null);
+  const startYRef = useRef<number | null>(null);
+  const draggingRef = useRef(false);
+
   const current = slides[index];
+  const progress = clamp((elapsed / 15) * 100, 0, 100);
+
+  function safeSetIndex(nextIndex: number, direction: 1 | -1) {
+    if (animTimerRef.current) window.clearTimeout(animTimerRef.current);
+
+    setDir(direction);
+    setIsAnimating(true);
+
+    // wait a bit so fade-out begins, then swap content, then fade-in
+    animTimerRef.current = window.setTimeout(() => {
+      setIndex(nextIndex);
+      setElapsed(0);
+      // allow fade-in
+      window.setTimeout(() => setIsAnimating(false), 160);
+    }, 160);
+  }
+
+  function goNext() {
+    const next = (index + 1) % total;
+    safeSetIndex(next, 1);
+  }
+
+  function goPrev() {
+    const prev = (index - 1 + total) % total;
+    safeSetIndex(prev, -1);
+  }
+
+  function goTo(i: number) {
+    if (i === index) return;
+    const direction: 1 | -1 = i > index ? 1 : -1;
+    safeSetIndex(i, direction);
+  }
 
   // Auto-advance every 15 seconds + progress
   useEffect(() => {
-    const tick = setInterval(() => {
+    const tick = window.setInterval(() => {
       setElapsed((s) => {
         const next = s + 1;
         if (next >= 15) {
-          setIndex((i) => (i + 1) % total);
+          // trigger animated next
+          const nextIdx = (index + 1) % total;
+          safeSetIndex(nextIdx, 1);
           return 0;
         }
         return next;
       });
     }, 1000);
 
-    return () => clearInterval(tick);
-  }, [total]);
+    return () => window.clearInterval(tick);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, total]);
 
-  // Reset progress when slide changes manually
   useEffect(() => {
-    setElapsed(0);
+    return () => {
+      if (animTimerRef.current) window.clearTimeout(animTimerRef.current);
+    };
+  }, []);
+
+  // Swipe handlers (touch + trackpad pointer)
+  function onPointerDown(e: React.PointerEvent) {
+    // only left-click/touch
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+
+    draggingRef.current = true;
+    startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
+
+    // capture so we keep receiving events
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+  }
+
+  function onPointerMove(e: React.PointerEvent) {
+    if (!draggingRef.current) return;
+    // We don’t visually drag; just detect swipe on end.
+    // (Keeping UI “premium” and not jittery.)
+  }
+
+  function onPointerUp(e: React.PointerEvent) {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+
+    const startX = startXRef.current;
+    const startY = startYRef.current;
+    if (startX == null || startY == null) return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    startXRef.current = null;
+    startYRef.current = null;
+
+    // Ignore mostly-vertical gestures (scroll)
+    if (Math.abs(dy) > Math.abs(dx)) return;
+
+    // threshold
+    const TH = 55;
+    if (dx <= -TH) goNext(); // swipe left -> next
+    if (dx >= TH) goPrev(); // swipe right -> prev
+  }
+
+  // Keyboard support (nice-to-have)
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrev();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
-  const progress = clamp((elapsed / 15) * 100, 0, 100);
-
-  function go(next: number) {
-    setIndex((i) => {
-      const n = (i + next + total) % total;
-      return n;
-    });
-  }
+  const contentAnimClass = isAnimating
+    ? dir === 1
+      ? "opacity-0 translate-x-2"
+      : "opacity-0 -translate-x-2"
+    : "opacity-100 translate-x-0";
 
   return (
     <section className="mx-auto max-w-5xl px-4 pb-14">
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <Pill>Reading mode</Pill>
+          <Pill>Swipe on mobile</Pill>
           <Pill>Auto slide: 15s</Pill>
           <Pill>
             Section {index + 1}/{total}
@@ -113,7 +212,7 @@ export default function ReadingSlider() {
         <div className="hidden items-center gap-2 sm:flex">
           <button
             type="button"
-            onClick={() => go(-1)}
+            onClick={goPrev}
             className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
             aria-label="Previous section"
           >
@@ -121,7 +220,7 @@ export default function ReadingSlider() {
           </button>
           <button
             type="button"
-            onClick={() => go(1)}
+            onClick={goNext}
             className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
             aria-label="Next section"
           >
@@ -130,97 +229,121 @@ export default function ReadingSlider() {
         </div>
       </div>
 
-      {/* Square-ish reading box */}
-      <div className="mt-5 overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
-        {/* Color header */}
-        <div className={`bg-gradient-to-br ${current.accentClass} p-6 sm:p-7`}>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold text-slate-600">FXCO-Pilot — Article Reader</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-                {current.title}
-              </h2>
-              {current.subtitle ? (
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-700">
-                  {current.subtitle}
+      {/* Swipe surface */}
+      <div
+        className="mt-5"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        role="group"
+        aria-label="Article reader slider"
+      >
+        {/* Square-ish reading box */}
+        <div className="overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
+          {/* Color header */}
+          <div className={`bg-gradient-to-br ${current.accentClass} p-6 sm:p-7`}>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div
+                className={`transition-all duration-300 ease-out ${contentAnimClass}`}
+              >
+                <p className="text-xs font-semibold text-slate-600">
+                  FXCO-Pilot — Article Reader
                 </p>
-              ) : null}
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                  {current.title}
+                </h2>
+                {current.subtitle ? (
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-700">
+                    {current.subtitle}
+                  </p>
+                ) : null}
+              </div>
+
+              {/* Progress bar */}
+              <div className="w-full max-w-[260px] rounded-2xl border border-slate-200 bg-white/70 p-3 shadow-sm backdrop-blur sm:w-[260px]">
+                <div className="flex items-center justify-between text-[11px] font-semibold text-slate-600">
+                  <span>Auto-advance</span>
+                  <span>{15 - elapsed}s</span>
+                </div>
+                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    className="h-full rounded-full bg-slate-900 transition-[width] duration-300"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Progress bar */}
-            <div className="w-full max-w-[260px] rounded-2xl border border-slate-200 bg-white/70 p-3 shadow-sm backdrop-blur sm:w-[260px]">
-              <div className="flex items-center justify-between text-[11px] font-semibold text-slate-600">
-                <span>Auto-advance</span>
-                <span>{15 - elapsed}s</span>
-              </div>
-              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className="h-full w-full rounded-full bg-slate-900 transition-[width]"
-                  style={{ width: `${progress}%` }}
+            {/* Dots */}
+            <div className="mt-5 flex items-center gap-2">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => goTo(i)}
+                  className={`h-2.5 w-2.5 rounded-full border transition ${
+                    i === index
+                      ? "border-slate-900 bg-slate-900"
+                      : "border-slate-300 bg-white hover:bg-slate-50"
+                  }`}
+                  aria-label={`Go to section ${i + 1}`}
                 />
+              ))}
+              <span className="ml-2 text-xs font-semibold text-slate-600">
+                Swipe ← / → to switch
+              </span>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div
+            className={`grid gap-6 p-6 transition-all duration-300 ease-out sm:p-7 lg:grid-cols-[0.95fr_1.05fr] ${contentAnimClass}`}
+          >
+            {/* Left: quick bullets */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-semibold text-slate-500">Key points</p>
+              <ul className="mt-3 space-y-2 text-sm text-slate-700">
+                {(current.bullets || []).map((b) => (
+                  <li key={b} className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Mobile controls */}
+              <div className="mt-5 flex items-center gap-2 sm:hidden">
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                >
+                  ← Prev
+                </button>
+                <button
+                  type="button"
+                  onClick={goNext}
+                  className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                >
+                  Next →
+                </button>
+              </div>
+            </div>
+
+            {/* Right: readable text */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-semibold text-slate-500">Section text</p>
+              <div className="mt-3 space-y-4 text-sm leading-relaxed text-slate-700">
+                {current.paragraphs.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Dots */}
-          <div className="mt-5 flex items-center gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setIndex(i)}
-                className={`h-2.5 w-2.5 rounded-full border transition ${
-                  i === index
-                    ? "border-slate-900 bg-slate-900"
-                    : "border-slate-300 bg-white hover:bg-slate-50"
-                }`}
-                aria-label={`Go to section ${i + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="grid gap-6 p-6 sm:p-7 lg:grid-cols-[0.95fr_1.05fr]">
-          {/* Left: quick bullets */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-xs font-semibold text-slate-500">Key points</p>
-            <ul className="mt-3 space-y-2 text-sm text-slate-700">
-              {(current.bullets || []).map((b) => (
-                <li key={b} className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-
-            {/* Mobile controls */}
-            <div className="mt-5 flex items-center gap-2 sm:hidden">
-              <button
-                type="button"
-                onClick={() => go(-1)}
-                className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-              >
-                ← Prev
-              </button>
-              <button
-                type="button"
-                onClick={() => go(1)}
-                className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-              >
-                Next →
-              </button>
-            </div>
-          </div>
-
-          {/* Right: readable text */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-xs font-semibold text-slate-500">Section text</p>
-            <div className="mt-3 space-y-4 text-sm leading-relaxed text-slate-700">
-              {current.paragraphs.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
-            </div>
+          {/* Tiny footer hint */}
+          <div className="border-t border-slate-200 bg-white/70 px-6 py-4 text-xs text-slate-600 sm:px-7">
+            Tip: swipe left/right on mobile • use ← → keys on desktop • dots jump between sections
           </div>
         </div>
       </div>
