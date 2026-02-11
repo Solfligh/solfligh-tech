@@ -7,12 +7,12 @@ import ReadingSlider from "./ReadingSlider";
 export const metadata: Metadata = {
   title: "FXCO-Pilot AI Trade Validator: Decision Support Before You Enter a Forex Trade | SolFligh Tech",
   description:
-    "FXCO-Pilot is an AI trade validator for forex traders—built to reduce emotional entries and rule-breaking losses. Validate trade context, risk, and assumptions before execution.",
+    "FXCO-Pilot is an AI trade validator for forex traders built to reduce emotional entries and rule-breaking losses. Validate trade context, risk, and assumptions before execution.",
   alternates: { canonical: "/insights/fxco-pilot/ai-trade-validator" },
   openGraph: {
     title: "FXCO-Pilot AI Trade Validator (Forex Decision Support)",
     description:
-      "Validate a trade before you click Buy/Sell. FXCO-Pilot focuses on context, risk, and discipline—not signals or predictions.",
+      "Validate a trade before you click Buy/Sell. FXCO-Pilot focuses on context, risk, and discipline not signals or predictions.",
     url: "/insights/fxco-pilot/ai-trade-validator",
     type: "article",
     images: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         url: "/insights/fxco-pilot/cover.jpg",
         width: 1536,
         height: 599,
-        alt: "FXCO-Pilot — AI Trade Validator",
+        alt: "FXCO-Pilot | AI Trade Validator",
       },
     ],
   },
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "FXCO-Pilot AI Trade Validator",
     description:
-      "A second brain before execution—context, risk, and discipline. Not signals. Not predictions.",
+      "A second brain before execution context, risk, and discipline. Not signals. Not predictions.",
     images: ["/insights/fxco-pilot/cover.jpg"],
   },
   keywords: [
@@ -89,7 +89,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
     "@type": "Article",
     headline: "FXCO-Pilot AI Trade Validator: Decision Support Before You Enter a Forex Trade",
     description:
-      "FXCO-Pilot is an AI trade validator for forex traders—built to reduce emotional entries and rule-breaking losses. Validate trade context, risk, and assumptions before execution.",
+      "FXCO-Pilot is an AI trade validator for forex traders built to reduce emotional entries and rule-breaking losses. Validate trade context, risk, and assumptions before execution.",
     datePublished: publishedISO,
     dateModified: publishedISO,
     mainEntityOfPage: canonical,
@@ -162,7 +162,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               <Image
                 src="/insights/fxco-pilot/cover.jpg"
-                alt="FXCO-Pilot — AI Trade Validator"
+                alt="FXCO-Pilot | AI Trade Validator"
                 width={1536}
                 height={599}
                 priority
@@ -182,10 +182,10 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
               <div>
                 <p className="text-sm font-semibold text-slate-200">Decision checkpoint</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
-                  Validate your next trade — before you pay for it.
+                  Validate your next trade before you pay for it.
                 </h2>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-200">
-                  Use FXCO-Pilot right before execution to check context, risk, and assumptions—so you
+                  Use FXCO-Pilot right before execution to check context, risk, and assumptions so you
                   stop paying for emotional entries.
                 </p>
               </div>
