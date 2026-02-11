@@ -28,7 +28,7 @@ export default function ReadingSlider() {
     () => [
       {
         title: "The real problem isn’t strategy. It’s the moment before the trade.",
-        subtitle: "Most losses are decision failures — not knowledge failures.",
+        subtitle: "Most losses are decision failures not knowledge failures.",
         accentClass: "from-emerald-500/20 via-white to-sky-500/15",
         bullets: [
           "Over-leveraging after a loss",
@@ -39,14 +39,14 @@ export default function ReadingSlider() {
         paragraphs: [
           "If you’ve traded long enough, you already know the uncomfortable truth: most losses don’t come from not knowing how to trade. They come from breaking your own rules.",
           "That’s why most trading tools miss the point. Charts give information, not discipline. Indicators explain what price did, not whether you should act. Journals help you after the damage is done.",
-          "The real damage usually happens in one short window — right before execution — when emotion, bias, and urgency hijack your process.",
-          "FXCO-Pilot exists to interrupt that window and turn trading back into a repeatable decision process — not a reaction.",
+          "The real damage usually happens in one short window right before execution when emotion, bias, and urgency hijack your process.",
+          "FXCO-Pilot exists to interrupt that window and turn trading back into a repeatable decision process not a reaction.",
         ],
         mood: "default",
       },
 
       {
-        title: "Near-live data is a feature — because context beats speed.",
+        title: "Near-live data is a feature because context beats speed.",
         subtitle: "FXCO-Pilot validates decision quality, not hype timing.",
         accentClass: "from-sky-500/20 via-white to-indigo-500/15",
         bullets: [
@@ -56,9 +56,9 @@ export default function ReadingSlider() {
           "Risk-to-reward logic + assumptions",
         ],
         paragraphs: [
-          "Many traders obsess over “real-time” data — but real-time data doesn’t prevent bad decisions. Context does.",
+          "Many traders obsess over “real-time” data but real-time data doesn’t prevent bad decisions. Context does.",
           "FXCO-Pilot uses near-live data intentionally because it isn’t trying to be a broker or a signal service. It’s built to answer a more important question: does this trade make sense right now given market conditions, risk, and your input?",
-          "You input your trade idea (pair, direction, timeframe, intent). FXCO-Pilot analyzes structure, volatility, and risk logic — then returns an explainable checkpoint: what you’re assuming, what could invalidate the setup, and whether the risk is justified at this price.",
+          "You input your trade idea (pair, direction, timeframe, intent). FXCO-Pilot analyzes structure, volatility, and risk logic then returns an explainable checkpoint: what you’re assuming, what could invalidate the setup, and whether the risk is justified at this price.",
           "This isn’t about winning every trade. It’s about taking better trades, avoiding unnecessary losses, and building decision consistency you can repeat.",
         ],
         mood: "default",
@@ -76,9 +76,9 @@ export default function ReadingSlider() {
         ],
         paragraphs: [
           "You see the alert. Your heart speeds up. You’re halfway into the trade before you’ve checked whether the market still agrees.",
-          "That’s not a signal problem — it’s an execution problem. Signals don’t know your account size, your current drawdown, your risk tolerance, or whether volatility and structure just shifted.",
-          "FXCO-Pilot becomes your filter. Paste the pair, direction, timeframe, and your intended risk — and validate the trade before you commit capital: is the entry late, is structure still intact, is the stop realistic, and does the reward still justify the risk at this exact price?",
-          "Sometimes it confirms the signal and you execute with clarity. Other times it saves you from paying for a screenshot — because context already changed. That one checkpoint is the difference between using signals… and being controlled by them.",
+          "That’s not a signal problem it’s an execution problem. Signals don’t know your account size, your current drawdown, your risk tolerance, or whether volatility and structure just shifted.",
+          "FXCO-Pilot becomes your filter. Paste the pair, direction, timeframe, and your intended risk and validate the trade before you commit capital: is the entry late, is structure still intact, is the stop realistic, and does the reward still justify the risk at this exact price?",
+          "Sometimes it confirms the signal and you execute with clarity. Other times it saves you from paying for a screenshot because context already changed. That one checkpoint is the difference between using signals… and being controlled by them.",
         ],
         mood: "warning",
       },
@@ -385,7 +385,7 @@ export default function ReadingSlider() {
                 <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-4">
                   <p className="text-xs font-semibold text-rose-700">Signal user takeaway</p>
                   <p className="mt-2 text-sm font-medium leading-relaxed text-slate-900">
-                    Keep the signals if you like them — just stop executing them without context.
+                    Keep the signals if you like them just stop executing them without context.
                     FXCO-Pilot is the checkpoint that keeps you in control.
                   </p>
                 </div>
