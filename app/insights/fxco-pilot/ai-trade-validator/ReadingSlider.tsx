@@ -27,48 +27,58 @@ export default function ReadingSlider() {
   const slides: Slide[] = useMemo(
     () => [
       {
-        title: "Why most trading tools don’t stop the real damage",
-        subtitle: "The loss usually happens before the trade in the decision.",
+        title: "The real problem isn’t strategy. It’s the moment before the trade.",
+        subtitle: "Most losses are decision failures — not knowledge failures.",
         accentClass: "from-emerald-500/20 via-white to-sky-500/15",
         bullets: [
-          "Charts give information, not discipline",
-          "Signals give entries, not understanding",
-          "Journals help after the damage is done",
-          "Indicators explain price, not decision quality",
+          "Over-leveraging after a loss",
+          "Entering without confirmation",
+          "Ignoring news / volatility shifts",
+          "Revenge trading & overconfidence",
         ],
         paragraphs: [
-          "Most losses don’t come from not knowing how to trade. They come from breaking your own rules.",
-          "Over-leveraging after a loss. Entering without confirmation because price is 'about to move.' Ignoring news. Revenge trading. Overconfidence after a win.",
-          "None of these are strategy problems. They’re decision problems.",
-          "FXCO-Pilot exists to force a pre-trade pause to validate your reasoning before you place the trade.",
-          "Real-time data doesn’t prevent bad decisions. Context does.",
+          "If you’ve traded long enough, you already know the uncomfortable truth: most losses don’t come from not knowing how to trade. They come from breaking your own rules.",
+          "That’s why most trading tools miss the point. Charts give information, not discipline. Indicators explain what price did, not whether you should act. Journals help you after the damage is done.",
+          "The real damage usually happens in one short window — right before execution — when emotion, bias, and urgency hijack your process.",
+          "FXCO-Pilot exists to interrupt that window and turn trading back into a repeatable decision process — not a reaction.",
         ],
         mood: "default",
       },
 
       {
-        title: "What FXCO-Pilot actually does",
-        subtitle: "Not signals. Not predictions. Explainable validation.",
+        title: "Near-live data is a feature — because context beats speed.",
+        subtitle: "FXCO-Pilot validates decision quality, not hype timing.",
         accentClass: "from-sky-500/20 via-white to-indigo-500/15",
-        bullets: ["You input the trade idea", "It analyzes structure + volatility + risk", "It returns clear, explainable insight"],
+        bullets: [
+          "Recent price action + market structure",
+          "Momentum vs consolidation",
+          "Volatility awareness",
+          "Risk-to-reward logic + assumptions",
+        ],
         paragraphs: [
-          "FXCO-Pilot is an AI trade validation tool. It doesn’t place trades for you. It doesn’t promise guaranteed profits. It doesn’t replace your strategy.",
-          "It acts like a second brain before execution checking structure, momentum, volatility, and risk-to-reward alignment.",
-          "Instead of telling you 'Buy' or 'Sell,' it answers what matters: Does this trade make sense right now? What assumptions are you making? What could invalidate it?",
+          "Many traders obsess over “real-time” data — but real-time data doesn’t prevent bad decisions. Context does.",
+          "FXCO-Pilot uses near-live data intentionally because it isn’t trying to be a broker or a signal service. It’s built to answer a more important question: does this trade make sense right now given market conditions, risk, and your input?",
+          "You input your trade idea (pair, direction, timeframe, intent). FXCO-Pilot analyzes structure, volatility, and risk logic — then returns an explainable checkpoint: what you’re assuming, what could invalidate the setup, and whether the risk is justified at this price.",
+          "This isn’t about winning every trade. It’s about taking better trades, avoiding unnecessary losses, and building decision consistency you can repeat.",
         ],
         mood: "default",
       },
 
       {
-        title: "If you buy signals, read this.",
+        title: "If you buy signals, this is how you stop paying for screenshots.",
         subtitle: "Signals aren’t the problem. Blind execution is.",
         accentClass: "from-rose-500/25 via-slate-950/10 to-amber-500/15",
-        bullets: ["Signals don’t know your account size", "Signals don’t adjust to shifting structure", "Signals don’t manage your psychology"],
+        bullets: [
+          "Signals don’t know your account size",
+          "Signals don’t see your drawdown state",
+          "Signals don’t adapt to structure shifts",
+          "Signals don’t manage your psychology",
+        ],
         paragraphs: [
-          "You see the alert. Your heart speeds up. You’re halfway into the trade before you’ve checked if the market still agrees.",
-          "FXCO-Pilot becomes your filter. Drop in the pair, direction, timeframe, and your risk. It tells you whether the entry is late, whether structure still supports it, and whether the reward justifies the risk at this price.",
-          "Sometimes it confirms the signal. Other times it saves you from paying for a screenshot.",
-          "That single checkpoint is the difference between following signals… and being controlled by them.",
+          "You see the alert. Your heart speeds up. You’re halfway into the trade before you’ve checked whether the market still agrees.",
+          "That’s not a signal problem — it’s an execution problem. Signals don’t know your account size, your current drawdown, your risk tolerance, or whether volatility and structure just shifted.",
+          "FXCO-Pilot becomes your filter. Paste the pair, direction, timeframe, and your intended risk — and validate the trade before you commit capital: is the entry late, is structure still intact, is the stop realistic, and does the reward still justify the risk at this exact price?",
+          "Sometimes it confirms the signal and you execute with clarity. Other times it saves you from paying for a screenshot — because context already changed. That one checkpoint is the difference between using signals… and being controlled by them.",
         ],
         mood: "warning",
       },
@@ -131,7 +141,6 @@ export default function ReadingSlider() {
       setElapsed((s) => {
         const next = s + 1;
         if (next >= 15) {
-          // trigger animated next
           const nextIdx = (index + 1) % total;
           safeSetIndex(nextIdx, 1);
           return 0;
@@ -152,20 +161,17 @@ export default function ReadingSlider() {
 
   // Swipe handlers (touch + trackpad pointer)
   function onPointerDown(e: React.PointerEvent) {
-    // only left-click/touch
     if (e.pointerType === "mouse" && e.button !== 0) return;
 
     draggingRef.current = true;
     startXRef.current = e.clientX;
     startYRef.current = e.clientY;
 
-    // capture so we keep receiving events
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
   }
 
   function onPointerMove(_e: React.PointerEvent) {
     if (!draggingRef.current) return;
-    // We don’t visually drag; just detect swipe on end.
   }
 
   function onPointerUp(e: React.PointerEvent) {
@@ -185,13 +191,12 @@ export default function ReadingSlider() {
     // Ignore mostly-vertical gestures (scroll)
     if (Math.abs(dy) > Math.abs(dx)) return;
 
-    // threshold
     const TH = 55;
-    if (dx <= -TH) goNext(); // swipe left -> next
-    if (dx >= TH) goPrev(); // swipe right -> prev
+    if (dx <= -TH) goNext();
+    if (dx >= TH) goPrev();
   }
 
-  // Keyboard support (nice-to-have)
+  // Keyboard support
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "ArrowRight") goNext();
@@ -242,7 +247,6 @@ export default function ReadingSlider() {
         </div>
       </div>
 
-      {/* Swipe surface */}
       <div
         className="mt-5"
         onPointerDown={onPointerDown}
@@ -251,13 +255,12 @@ export default function ReadingSlider() {
         role="group"
         aria-label="Article reader slider"
       >
-        {/* Square-ish reading box */}
         <div
           className={`overflow-hidden rounded-3xl border shadow-sm backdrop-blur ${
             isWarning ? "border-rose-200/70 bg-white/75" : "border-slate-200/70 bg-white/70"
           }`}
         >
-          {/* Color header */}
+          {/* Header */}
           <div className={`bg-gradient-to-br ${current.accentClass} p-6 sm:p-7`}>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className={`transition-all duration-300 ease-out ${contentAnimClass}`}>
@@ -274,7 +277,11 @@ export default function ReadingSlider() {
                 </h2>
 
                 {current.subtitle ? (
-                  <p className={`mt-2 max-w-2xl text-sm leading-relaxed ${isWarning ? "text-slate-800" : "text-slate-700"}`}>
+                  <p
+                    className={`mt-2 max-w-2xl text-sm leading-relaxed ${
+                      isWarning ? "text-slate-800" : "text-slate-700"
+                    }`}
+                  >
                     {current.subtitle}
                   </p>
                 ) : null}
@@ -286,7 +293,7 @@ export default function ReadingSlider() {
                 ) : null}
               </div>
 
-              {/* Progress bar */}
+              {/* Progress */}
               <div
                 className={`w-full max-w-[260px] rounded-2xl border p-3 shadow-sm backdrop-blur sm:w-[260px] ${
                   isWarning ? "border-rose-200 bg-white/80" : "border-slate-200 bg-white/70"
@@ -324,11 +331,10 @@ export default function ReadingSlider() {
             </div>
           </div>
 
-          {/* Content */}
+          {/* Body */}
           <div
             className={`grid gap-6 p-6 transition-all duration-300 ease-out sm:p-7 lg:grid-cols-[0.95fr_1.05fr] ${contentAnimClass}`}
           >
-            {/* Left: quick bullets */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="text-xs font-semibold text-slate-500">Key points</p>
               <ul className="mt-3 space-y-2 text-sm text-slate-700">
@@ -340,7 +346,6 @@ export default function ReadingSlider() {
                 ))}
               </ul>
 
-              {/* Mobile controls */}
               <div className="mt-5 flex items-center gap-2 sm:hidden">
                 <button
                   type="button"
@@ -359,7 +364,6 @@ export default function ReadingSlider() {
               </div>
             </div>
 
-            {/* Right: readable text */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="text-xs font-semibold text-slate-500">Section text</p>
 
@@ -381,7 +385,7 @@ export default function ReadingSlider() {
                 <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-4">
                   <p className="text-xs font-semibold text-rose-700">Signal user takeaway</p>
                   <p className="mt-2 text-sm font-medium leading-relaxed text-slate-900">
-                    Don’t stop using signals if you like them. Stop executing them without context.
+                    Keep the signals if you like them — just stop executing them without context.
                     FXCO-Pilot is the checkpoint that keeps you in control.
                   </p>
                 </div>
@@ -389,7 +393,6 @@ export default function ReadingSlider() {
             </div>
           </div>
 
-          {/* Tiny footer hint */}
           <div className="border-t border-slate-200 bg-white/70 px-6 py-4 text-xs text-slate-600 sm:px-7">
             Tip: swipe left/right on mobile • use ← → keys on desktop • dots jump between sections
           </div>
