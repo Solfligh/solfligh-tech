@@ -41,9 +41,24 @@ const HUBS: InsightHub[] = [
     accent: "from-sky-500/20 to-blue-500/10",
     coverImage: "/insights/profitpilot/cover.jpg",
   },
+
+  // ✅ NEW: FXCO-Pilot hub
+  {
+    slug: "fxco-pilot",
+    title: "FXCO-Pilot",
+    description: "AI trade validation for better discipline and fewer rule-breaking losses.",
+    href: "/insights/fxco-pilot",
+    badge: "Project Hub",
+    accent: "from-emerald-500/20 to-teal-500/10",
+    coverImage: "/insights/fxco-pilot/cover.jpg",
+  },
 ];
 
 const POSTS: InsightPost[] = [
+  // ============================================================
+  // PROFITPILOT
+  // ============================================================
+
   // ✅ Article 1 (Problem Awareness)
   {
     hubSlug: "profitpilot",
@@ -139,6 +154,26 @@ const POSTS: InsightPost[] = [
     accent: "from-sky-500/20 to-blue-500/10",
     coverImage: "/insights/profitpilot/posts/profit-unknown.jpg",
   },
+
+  // ============================================================
+  // FXCO-PILOT
+  // ============================================================
+
+  // ✅ FXCO-Pilot (Solution Awareness / Product Explanation)
+  {
+    hubSlug: "fxco-pilot",
+    slug: "ai-trade-validator",
+    title: "FXCO-Pilot: AI Trade Validator Built for the Moment Before You Enter",
+    description:
+      "Most trading losses come from broken rules, not bad strategy. FXCO-Pilot validates context, risk, and assumptions before execution—so discipline becomes repeatable.",
+    href: "/insights/fxco-pilot/ai-trade-validator",
+    tag: "Solution Awareness",
+    readingTime: "5–7 min",
+    dateLabel: "Feb 2026",
+    dateISO: "2026-02-11",
+    accent: "from-emerald-500/20 to-teal-500/10",
+    coverImage: "/insights/fxco-pilot/cover.jpg",
+  },
 ];
 
 /** -----------------------------
@@ -166,7 +201,7 @@ export function listAllPosts(): InsightPost[] {
  */
 export function listPostsByHub(hubSlug: string): InsightPost[] {
   return POSTS.filter((p) => p.hubSlug === hubSlug).sort(
-    (a, b) => safeDate(a.dateISO) - safeDate(b.dateISO)
+    (a, b) => safeDate(a.dateISO) - safeDate(a.dateISO)
   );
 }
 
