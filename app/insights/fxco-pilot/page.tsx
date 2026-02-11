@@ -105,7 +105,7 @@ export default function FxcoPilotHubPage() {
               <p className="mt-4 text-lg leading-relaxed text-slate-700">{hub.description}</p>
 
               <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                Built for the moment before execution — where most preventable losses happen:
+                Built for the moment before execution where most preventable losses happen:
                 impulsive entries, revenge trading, overconfidence, and risk blind spots.
               </p>
 
