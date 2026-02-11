@@ -165,7 +165,7 @@ const POSTS: InsightPost[] = [
     slug: "ai-trade-validator",
     title: "FXCO-Pilot: AI Trade Validator Built for the Moment Before You Enter",
     description:
-      "Most trading losses come from broken rules, not bad strategy. FXCO-Pilot validates context, risk, and assumptions before execution—so discipline becomes repeatable.",
+      "Most trading losses come from broken rules, not bad strategy. FXCO-Pilot validates context, risk, and assumptions before execution so discipline becomes repeatable.",
     href: "/insights/fxco-pilot/ai-trade-validator",
     tag: "Solution Awareness",
     readingTime: "5–7 min",
