@@ -27,7 +27,7 @@ export default function ReadingSlider() {
     () => [
       {
         title: "Why most trading tools don’t stop the real damage",
-        subtitle: "The loss usually happens before the trade — in the decision.",
+        subtitle: "The loss usually happens before the trade in the decision.",
         accentClass: "from-emerald-500/20 via-white to-sky-500/15",
         bullets: [
           "Charts give information, not discipline",
@@ -39,8 +39,8 @@ export default function ReadingSlider() {
           "Most losses don’t come from not knowing how to trade. They come from breaking your own rules.",
           "Over-leveraging after a loss. Entering without confirmation because price is “about to move.” Ignoring news. Revenge trading. Overconfidence after a win.",
           "None of these are strategy problems. They’re decision problems.",
-          "FXCO-Pilot exists to force a pre-trade pause — to validate your reasoning before you place the trade.",
-          "Real-time data doesn’t prevent bad decisions — context does. That’s why near-live data is a feature: it’s enough to evaluate market conditions and risk without pretending to be a broker.",
+          "FXCO-Pilot exists to force a pre-trade pause to validate your reasoning before you place the trade.",
+          "Real-time data doesn’t prevent bad decisions context does. That’s why near-live data is a feature: it’s enough to evaluate market conditions and risk without pretending to be a broker.",
         ],
       },
       {
@@ -56,7 +56,7 @@ export default function ReadingSlider() {
           "FXCO-Pilot is an AI trade validation and decision-support tool. It doesn’t place trades for you. It doesn’t promise guaranteed profits. It doesn’t replace your strategy.",
           "Instead, it acts like a second brain before execution: market direction & structure, momentum vs consolidation, volatility conditions, risk-to-reward logic, and alignment (or conflict) with your bias.",
           "Instead of “Buy” or “Sell,” it gives you what matters: Is the trade aligned with current conditions? Is the risk justified? What assumptions are you making? What could invalidate the setup?",
-          "The psychology angle most apps ignore: most traders already know what they should do — they just don’t do it consistently. FXCO-Pilot is built to interrupt impulsive entries, emotional overconfidence, confirmation bias, and “just one more trade.”",
+          "The psychology angle most apps ignore: most traders already know what they should do they just don’t do it consistently. FXCO-Pilot is built to interrupt impulsive entries, emotional overconfidence, confirmation bias, and “just one more trade.”",
           "This isn’t about winning every trade. It’s about fewer stupid losses, better decision consistency, and discipline you can repeat. Profit becomes a side effect of that.",
         ],
       },
@@ -247,7 +247,7 @@ export default function ReadingSlider() {
                 className={`transition-all duration-300 ease-out ${contentAnimClass}`}
               >
                 <p className="text-xs font-semibold text-slate-600">
-                  FXCO-Pilot — Article Reader
+                  FXCO-Pilot | Article Reader
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
                   {current.title}
@@ -333,11 +333,20 @@ export default function ReadingSlider() {
             {/* Right: readable text */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="text-xs font-semibold text-slate-500">Section text</p>
-              <div className="mt-3 space-y-4 text-sm leading-relaxed text-slate-700">
-                {current.paragraphs.map((p) => (
-                  <p key={p}>{p}</p>
-                ))}
-              </div>
+              <div className="mt-4 space-y-6 text-[15px] leading-[1.75] text-slate-900">
+  {current.paragraphs.map((p, i) => (
+    <p
+      key={p}
+      className={`
+        font-medium
+        ${i === 0 ? "text-base font-semibold tracking-tight" : ""}
+      `}
+    >
+      {p}
+    </p>
+  ))}
+</div>
+
             </div>
           </div>
 
