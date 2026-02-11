@@ -56,6 +56,9 @@ export default function ReadingSlider() {
           "FXCO-Pilot is an AI trade validation and decision-support tool. It doesn’t place trades for you. It doesn’t promise guaranteed profits. It doesn’t replace your strategy.",
           "Instead, it acts like a second brain before execution: market direction & structure, momentum vs consolidation, volatility conditions, risk-to-reward logic, and alignment (or conflict) with your bias.",
           "Instead of “Buy” or “Sell,” it gives you what matters: Is the trade aligned with current conditions? Is the risk justified? What assumptions are you making? What could invalidate the setup?",
+          "If you use paid or free signal groups, FXCO-Pilot becomes your filter. Signals don’t know your account size, your drawdown, your risk tolerance, or whether volatility and structure just shifted.",
+          "Before you execute a signal, input the pair, direction, timeframe, and intended risk. Then validate the context: is the entry late, is the stop realistic, does structure still support the idea, and does the risk-to-reward still make sense at this price.",
+          "Sometimes FXCO-Pilot confirms the signal. Sometimes it exposes what a screenshot won’t: the trade is misaligned right now. That one pause is the difference between following a signal and blindly following a signal.",
           "The psychology angle most apps ignore: most traders already know what they should do they just don’t do it consistently. FXCO-Pilot is built to interrupt impulsive entries, emotional overconfidence, confirmation bias, and “just one more trade.”",
           "This isn’t about winning every trade. It’s about fewer stupid losses, better decision consistency, and discipline you can repeat. Profit becomes a side effect of that.",
         ],
@@ -243,12 +246,8 @@ export default function ReadingSlider() {
           {/* Color header */}
           <div className={`bg-gradient-to-br ${current.accentClass} p-6 sm:p-7`}>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div
-                className={`transition-all duration-300 ease-out ${contentAnimClass}`}
-              >
-                <p className="text-xs font-semibold text-slate-600">
-                  FXCO-Pilot | Article Reader
-                </p>
+              <div className={`transition-all duration-300 ease-out ${contentAnimClass}`}>
+                <p className="text-xs font-semibold text-slate-600">FXCO-Pilot | Article Reader</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
                   {current.title}
                 </h2>
@@ -289,9 +288,7 @@ export default function ReadingSlider() {
                   aria-label={`Go to section ${i + 1}`}
                 />
               ))}
-              <span className="ml-2 text-xs font-semibold text-slate-600">
-                Swipe ← / → to switch
-              </span>
+              <span className="ml-2 text-xs font-semibold text-slate-600">Swipe ← / → to switch</span>
             </div>
           </div>
 
@@ -334,19 +331,18 @@ export default function ReadingSlider() {
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="text-xs font-semibold text-slate-500">Section text</p>
               <div className="mt-4 space-y-6 text-[15px] leading-[1.75] text-slate-900">
-  {current.paragraphs.map((p, i) => (
-    <p
-      key={p}
-      className={`
-        font-medium
-        ${i === 0 ? "text-base font-semibold tracking-tight" : ""}
-      `}
-    >
-      {p}
-    </p>
-  ))}
-</div>
-
+                {current.paragraphs.map((p, i) => (
+                  <p
+                    key={p}
+                    className={`
+                      font-medium
+                      ${i === 0 ? "text-base font-semibold tracking-tight" : ""}
+                    `}
+                  >
+                    {p}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
 
