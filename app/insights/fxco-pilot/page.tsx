@@ -12,6 +12,9 @@ export const revalidate = 0;
 const SITE_URL = "https://solfightech.org";
 const HUB_SLUG = "fxco-pilot";
 
+// ✅ FIX: use direct external URL so the button never depends on /fxco-pilot route behavior
+const FXCO_APP_URL = "https://fxco-pilot.solflightech.org";
+
 export async function generateMetadata(): Promise<Metadata> {
   const hub = getHub(HUB_SLUG);
 
@@ -105,17 +108,21 @@ export default function FxcoPilotHubPage() {
               <p className="mt-4 text-lg leading-relaxed text-slate-700">{hub.description}</p>
 
               <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                Built for the moment before execution where most preventable losses happen:
-                impulsive entries, revenge trading, overconfidence, and risk blind spots.
+                Built for the moment before execution where most preventable losses happen: impulsive
+                entries, revenge trading, overconfidence, and risk blind spots.
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link
-                  href="/fxco-pilot?source=hub&campaign=fxco_pilot&medium=cta_top"
+                {/* ✅ FIX: external anchor to live app */}
+                <a
+                  href={`${FXCO_APP_URL}/?source=hub&campaign=fxco_pilot&medium=cta_top`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                 >
-                  Open FXCO-Pilot
-                </Link>
+                  Open FXCO-Pilot <span className="ml-2 text-slate-300">↗</span>
+                </a>
+
                 <Link
                   href="/insights"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
@@ -141,7 +148,9 @@ export default function FxcoPilotHubPage() {
                   <p className="text-sm font-semibold text-slate-700">Cover image placeholder</p>
                   <p className="mt-2 text-sm text-slate-600">
                     Add a cover at{" "}
-                    <code className="rounded bg-white px-1 py-0.5">public/insights/fxco-pilot/cover.jpg</code>
+                    <code className="rounded bg-white px-1 py-0.5">
+                      public/insights/fxco-pilot/cover.jpg
+                    </code>
                   </p>
                 </div>
               )}
@@ -159,9 +168,16 @@ export default function FxcoPilotHubPage() {
                   Problem-aware → solution-aware writing, focused on decision quality.
                 </p>
               </div>
-              <Link href="/fxco-pilot?source=hub&campaign=fxco_pilot&medium=cta_corner" className="text-sm font-semibold text-sky-700 hover:underline">
-                Open app →
-              </Link>
+
+              {/* ✅ FIX: external anchor to live app */}
+              <a
+                href={`${FXCO_APP_URL}/?source=hub&campaign=fxco_pilot&medium=cta_corner`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-semibold text-sky-700 hover:underline"
+              >
+                Open app → <span className="text-slate-400">↗</span>
+              </a>
             </div>
 
             {posts.length === 0 ? (
@@ -206,13 +222,18 @@ export default function FxcoPilotHubPage() {
                 If you’re already trading, you don’t need more signals. You need a repeatable way to
                 validate context + risk + assumptions before you commit capital.
               </p>
+
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/fxco-pilot?source=hub&campaign=fxco_pilot&medium=cta_bottom"
+                {/* ✅ FIX: external anchor to live app */}
+                <a
+                  href={`${FXCO_APP_URL}/?source=hub&campaign=fxco_pilot&medium=cta_bottom`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                 >
-                  Open FXCO-Pilot
-                </Link>
+                  Open FXCO-Pilot <span className="ml-2 text-slate-300">↗</span>
+                </a>
+
                 <Link
                   href="/insights/fxco-pilot/ai-trade-validator"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
