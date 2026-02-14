@@ -111,6 +111,10 @@ export default function FxcoPilotHubPage() {
                 Built for the moment before execution where most preventable losses happen: impulsive
                 entries, revenge trading, overconfidence, and risk blind spots.
               </p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                 If you’ve ever entered a trade and immediately questioned yourself, this hub is for you.
+              </p>
+
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
                 {/* ✅ FIX: external anchor to live app */}
@@ -120,7 +124,7 @@ export default function FxcoPilotHubPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                 >
-                  Open FXCO-Pilot <span className="ml-2 text-slate-300">↗</span>
+                  Validate a Trade with FXCO-Pilo <span className="ml-2 text-slate-300">↗</span>
                 </a>
 
                 <Link
@@ -132,6 +136,11 @@ export default function FxcoPilotHubPage() {
               </div>
             </div>
 
+              <p className="mt-3 text-xs text-slate-500">
+                No signals. No predictions. Just structured validation before execution.
+              </p>
+
+            
             {/* Cover */}
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               {hub.coverImage ? (
