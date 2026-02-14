@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "FXCO-Pilot AI Trade Validator (Forex Decision Support)",
     description:
-      "Validate a trade before you click Buy/Sell. FXCO-Pilot focuses on context, risk, and discipline—not signals or predictions.",
+      "Validate a trade before you click Buy/Sell. FXCO-Pilot focuses on context, risk, and discipline not signals or predictions.",
     url: "/insights/fxco-pilot/ai-trade-validator",
     type: "article",
     images: [
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "FXCO-Pilot AI Trade Validator",
     description:
-      "A second brain before execution—context, risk, and discipline. Not signals. Not predictions.",
+      "A second brain before execution. Context, risk, and discipline. Not signals. Not predictions.",
     images: ["/insights/fxco-pilot/cover.jpg"],
   },
   keywords: [
@@ -135,7 +135,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
 
               <p className="mt-3 text-sm leading-relaxed text-slate-600">
                 That’s where the damage happens: late entries, “let me just adjust the stop loss,” forcing a setup,
-                revenge trading, or entering because a signal came in — not because the context is clean.
+                revenge trading, or entering because a signal came in not because the context is clean.
                 <br />
                 FXCO-Pilot is built as a decision checkpoint for that moment.
               </p>
@@ -205,14 +205,14 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 FXCO-Pilot is not here to predict price. It’s a checkpoint that helps you answer:
                 <br />
                 <span className="font-semibold text-slate-800">
-                  “Does this trade deserve my money right now — based on structure, liquidity, and risk?”
+                  “Does this trade deserve my money right now based on structure, liquidity, and risk?”
                 </span>
               </p>
 
               <div className="mt-4 space-y-3 text-sm text-slate-700">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                   <p className="font-semibold text-slate-900">1) Paste a signal (or your own plan)</p>
-                  <p className="mt-1 text-slate-600">Entry, SL, TP(s), timeframe — and the context you’re using.</p>
+                  <p className="mt-1 text-slate-600">Entry, SL, TP(s), timeframe and the context you’re using.</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                   <p className="font-semibold text-slate-900">2) Validate execution quality</p>
@@ -223,13 +223,13 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                   <p className="font-semibold text-slate-900">3) Get a decision tier</p>
                   <p className="mt-1 text-slate-600">
-                    TAKE TRADE, TAKE IF…, WAIT, or AVOID — with reasons you can actually follow.
+                    TAKE TRADE, TAKE IF…, WAIT, or AVOID with reasons you can actually follow.
                   </p>
                 </div>
               </div>
 
               <p className="mt-4 text-xs leading-relaxed text-slate-500">
-                The goal is simple: reduce preventable losses caused by impatience, bias, and rule-breaking — especially
+                The goal is simple: reduce preventable losses caused by impatience, bias, and rule-breaking especially
                 when a signal “looks good” but the context isn’t clean.
               </p>
             </div>
@@ -241,7 +241,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
                   <p className="font-semibold text-slate-900">If you buy signals</p>
                   <p className="mt-1 text-slate-600">
-                    Validate before you enter — so you stop paying for screenshots and start paying for execution quality.
+                    Validate before you enter so you stop paying for screenshots and start paying for execution quality.
                   </p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
@@ -253,7 +253,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
                   <p className="font-semibold text-slate-900">If you’re rebuilding discipline</p>
                   <p className="mt-1 text-slate-600">
-                    It forces clarity: entry, invalidation, RR, conditions — no more “I think it’s fine.”
+                    It forces clarity: entry, invalidation, RR, conditions no more “I think it’s fine.”
                   </p>
                 </div>
               </div>
@@ -280,7 +280,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 </div>
 
                 <p className="mt-3 text-xs text-slate-500">
-                  Inside the app, you’ll see the “Start Free Trial” step clearly — no confusion.
+                  Inside the app, you’ll see the “Start Free Trial” step clearly no confusion.
                 </p>
               </div>
             </div>
