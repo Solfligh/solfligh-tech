@@ -225,7 +225,8 @@ export default function FxcoPilotHubPage() {
             {/* Bottom CTA */}
             <div className="mt-12 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <h3 className="text-lg font-semibold tracking-tight">
-                Use FXCO-Pilot as a decision checkpoint before execution
+                You don’t need more signals. You need a structured pause before execution.
+                FXCO-Pilot helps you validate context, risk, and assumptions so you don’t commit capital impulsively.
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 If you’re already trading, you don’t need more signals. You need a repeatable way to
