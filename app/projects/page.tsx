@@ -155,6 +155,35 @@ export default async function ProjectsPage() {
             subtitle="A selection of platforms designed to solve real operational and business problems."
           />
 
+          {/* ✅ NEW: Insight Hub CTA */}
+          <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-7">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-slate-900">Want deeper context?</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  Visit our Insights page to read detailed breakdowns of our projects—what they solve, who they’re for,
+                  and updates as we build.
+                </p>
+              </div>
+
+              <div className="flex shrink-0 flex-wrap gap-3">
+                <Link
+                  href="/insights"
+                  className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                >
+                  Go to Insights
+                </Link>
+
+                <Link
+                  href="/insights"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                >
+                  Read more ↗
+                </Link>
+              </div>
+            </div>
+          </div>
+
           {projects.length === 0 ? (
             <div className="mt-12 rounded-3xl border border-slate-200 bg-slate-50 p-8 text-center">
               <p className="text-sm text-slate-600">No projects published yet.</p>
@@ -253,6 +282,29 @@ export default async function ProjectsPage() {
               })}
             </div>
           )}
+
+          {/* ✅ NEW: Bottom CTA (for people who scroll) */}
+          <div className="mt-14 rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+            <p className="text-base font-semibold text-slate-900">Read more about our projects</p>
+            <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+              Want the full story behind each product? The Insights page shares deeper explanations, progress updates,
+              and the thinking behind what we’re building.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/insights"
+                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              >
+                Visit Insights
+              </Link>
+              <Link
+                href="/insights"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100"
+              >
+                Browse articles ↗
+              </Link>
+            </div>
+          </div>
         </Container>
       </section>
     </main>
