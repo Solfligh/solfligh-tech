@@ -59,10 +59,12 @@ function ExtButton({
   href,
   children,
   variant = "primary",
+  showIcon = true,
 }: {
   href: string;
   children: React.ReactNode;
   variant?: "primary" | "secondary";
+  showIcon?: boolean;
 }) {
   const base =
     "inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold shadow-sm transition";
@@ -75,7 +77,8 @@ function ExtButton({
       rel="noopener noreferrer"
       className={`${base} ${variant === "primary" ? primary : secondary}`}
     >
-      {children} <span className="ml-2 text-slate-300">↗</span>
+      {children}
+      {showIcon ? <span className="ml-2 text-slate-300">↗</span> : null}
     </a>
   );
 }
@@ -122,25 +125,45 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 Validate the trade <span className="text-slate-600">before</span> you enter.
               </h1>
 
+              {/* Refinement #1: punchier mini-story bridge (still your voice) */}
               <p className="mt-4 text-lg leading-relaxed text-slate-700">
                 Most forex losses don’t come from not knowing how to trade. They come from{" "}
-                <strong>breaking your own rules</strong>. FXCO-Pilot is built for the one moment that
-                matters most: right before you click <em>Buy</em> or <em>Sell</em>.
+                <strong>breaking your own rules</strong> in the one moment that matters: right before you click{" "}
+                <em>Buy</em> or <em>Sell</em>.
               </p>
 
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                That “small” decision gets expensive fast: late entries, moving stop loss, forcing a setup that isn’t
+                there, taking trades because a signal came in, or because the last trade hurt.
+                <br />
+                FXCO-Pilot is built as a decision checkpoint for that moment.
+              </p>
+
+              {/* Refinement #2 + #3: concept-first path + softer CTA language */}
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <a
+                  href="#how-it-works"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                >
+                  Understand the concept (60 seconds) →
+                </a>
+
                 <ExtButton
                   href={`${APP_URL}/?utm_source=solflightech&utm_medium=insights&utm_campaign=ai_trade_validator&utm_content=cta_top`}
                 >
-                  Open FXCO-Pilot
+                  Open FXCO-Pilot (Start Free Trial inside)
                 </ExtButton>
 
                 <Link
                   href="/insights/fxco-pilot"
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                  className="text-sm font-semibold text-sky-700 hover:underline"
                 >
                   FXCO-Pilot hub →
                 </Link>
+              </div>
+
+              <div className="mt-3 text-xs leading-relaxed text-slate-500">
+                No hype, no promises. Use it to validate context + risk + assumptions before execution.
               </div>
 
               <div className="mt-7 grid gap-3 sm:grid-cols-3">
@@ -172,8 +195,98 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
           </div>
         </section>
 
-        {/* ✅ Lively slider replaces the “basic” long text */}
+        {/* ✅ Lively slider */}
         <ReadingSlider />
+
+        {/* Refinement #4: add a clear “how it works” + who it’s for section before the hard CTA */}
+        <section id="how-it-works" className="mx-auto max-w-5xl px-4 pb-10">
+          <div className="grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:grid-cols-2">
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight">The concept (in plain English)</h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                FXCO-Pilot is not here to “tell you where price will go.” It’s a checkpoint that helps you answer:
+                <br />
+                <span className="font-semibold text-slate-800">
+                  “Does this trade deserve my money right now — based on structure, liquidity, and risk?”
+                </span>
+              </p>
+
+              <div className="mt-4 space-y-3 text-sm text-slate-700">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <p className="font-semibold text-slate-900">1) You paste a signal (or your own plan)</p>
+                  <p className="mt-1 text-slate-600">Entry, SL, TP(s), timeframe, and anything you’re using.</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <p className="font-semibold text-slate-900">2) It validates execution quality</p>
+                  <p className="mt-1 text-slate-600">
+                    Structure + liquidity context, risk/reward, and the “this gets invalidated if…” warnings.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <p className="font-semibold text-slate-900">3) You get a decision tier</p>
+                  <p className="mt-1 text-slate-600">
+                    TAKE TRADE, TAKE IF…, WAIT, or AVOID — with reasons you can actually follow.
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-4 text-xs leading-relaxed text-slate-500">
+                The goal is simple: reduce preventable losses caused by impatience, bias, and rule-breaking — especially
+                when a signal “looks good” but the context is wrong.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold tracking-tight">Who this is for</h3>
+              <div className="mt-3 space-y-3 text-sm text-slate-700">
+                <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                  <p className="font-semibold text-slate-900">If you buy signals</p>
+                  <p className="mt-1 text-slate-600">
+                    FXCO-Pilot helps you validate the signal before you enter — so you stop paying for “maybe.”
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                  <p className="font-semibold text-slate-900">If you already have a strategy</p>
+                  <p className="mt-1 text-slate-600">
+                    Use it as a second brain to check your plan when emotions are loud.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                  <p className="font-semibold text-slate-900">If you’re rebuilding discipline</p>
+                  <p className="mt-1 text-slate-600">
+                    The checkpoint forces clarity: “Where’s entry, where’s invalidation, is RR acceptable?”
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-900">Then do the obvious next step:</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  If the concept makes sense, start the free trial and validate your next trade before execution.
+                </p>
+
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                  <ExtButton
+                    href={`${APP_URL}/?utm_source=solflightech&utm_medium=insights&utm_campaign=ai_trade_validator&utm_content=cta_mid`}
+                  >
+                    Open FXCO-Pilot (Start Free Trial)
+                  </ExtButton>
+
+                  <Link
+                    href="/insights/fxco-pilot"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                  >
+                    Read more FXCO-Pilot articles →
+                  </Link>
+                </div>
+
+                <p className="mt-3 text-xs text-slate-500">
+                  You’ll see the “Start Free Trial” inside the app. No need to guess what to do.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Bottom CTA */}
         <section className="mx-auto max-w-5xl px-4 pb-16">
@@ -185,16 +298,16 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                   Validate your next trade before you pay for it.
                 </h2>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-200">
-                  Use FXCO-Pilot right before execution to check context, risk, and assumptions so you
-                  stop paying for emotional entries.
+                  If you’re already trading, you don’t need more noise. You need a repeatable way to validate context +
+                  risk + assumptions before you commit capital.
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3 sm:min-w-[260px]">
+              <div className="flex flex-col gap-3 sm:min-w-[300px]">
                 <ExtButton
                   href={`${APP_URL}/?utm_source=solflightech&utm_medium=insights&utm_campaign=ai_trade_validator&utm_content=cta_bottom`}
                 >
-                  Open FXCO-Pilot
+                  Open FXCO-Pilot (Start Free Trial)
                 </ExtButton>
 
                 <Link
