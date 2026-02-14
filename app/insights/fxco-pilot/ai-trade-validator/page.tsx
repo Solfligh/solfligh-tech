@@ -124,6 +124,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
               <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
                 Validate the trade <span className="text-slate-600">before</span> you enter.
               </h1>
+              <p className="text-xs font-bold text-red-600">DEPLOY TEST 12345</p>
 
               {/* Refinement #1: punchier mini-story bridge */}
               <p className="mt-4 text-lg leading-relaxed text-slate-700">
