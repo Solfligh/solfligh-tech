@@ -355,7 +355,7 @@ export default function HomePage() {
                         <p className="text-xs text-slate-500">Net</p>
                         <p className="mt-1 text-sm font-semibold text-slate-900">$24.4k</p>
                         <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100">
-                          <div className="h-1.5 w-1/2 rounded-full bg-sky-600/70" />
+                          <div className="h-1.5 w-1/2 rounded-full bg-sky-800/70" />
                         </div>
                       </div>
                     </div>
