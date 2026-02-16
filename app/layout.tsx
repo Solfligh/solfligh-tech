@@ -1,11 +1,11 @@
 // app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
-import Analytics from "@/app/components/Analytics";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,6 +15,10 @@ const inter = Inter({
 
 const SITE_URL = "https://solflightech.org";
 const ORG_NAME = "SOLFLIGH TECH";
+
+// If you have Google Analytics enabled, set this in Vercel/Render:
+// NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
 
 // ✅ Organization Schema (JSON-LD)
 const organizationJsonLd = {
@@ -39,7 +43,6 @@ export const metadata: Metadata = {
     "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
 
   // ✅ Use standard, predictable favicon paths
-  // IMPORTANT: these files must exist in /public
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },
@@ -78,7 +81,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   themeColor: "#0284c7",
 };
 
@@ -87,19 +90,48 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const hasGA = Boolean(GA_ID);
+
   return (
     <html lang="en" className={inter.variable}>
-      <body className="min-h-screen bg-white font-sans text-slate-900 antialiased">
-        {/* ✅ Organization schema injected site-wide */}
+      <head>
+        {/* ✅ Optional preconnects (only if GA is enabled) */}
+        {hasGA ? (
+          <>
+            <link rel="preconnect" href="https://www.googletagmanager.com" />
+            <link rel="preconnect" href="https://www.google-analytics.com" />
+          </>
+        ) : null}
+
+        {/* ✅ Organization schema injected site-wide (in head is ideal) */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
+      </head>
+
+      <body className="min-h-screen bg-white font-sans text-slate-900 antialiased">
+        {/* ✅ Google Analytics — lazy loaded to protect performance */}
+        {hasGA ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="lazyOnload"
+            />
+            <Script id="ga-init" strategy="lazyOnload">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}', { send_page_view: true });
+              `}
+            </Script>
+          </>
+        ) : null}
 
         <Navbar />
         {children}
         <Footer />
-        <Analytics />
       </body>
     </html>
   );
