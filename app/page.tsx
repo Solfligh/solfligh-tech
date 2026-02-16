@@ -143,10 +143,7 @@ const features = [
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
         <path d="M4 12h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M12 4v16" stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
+        <path d="M12 4v16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -190,7 +187,7 @@ function isNewPost(dateISO: string) {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-slate-200/80 bg-white/70 px-3 py-1 text-sm text-slate-700 shadow-sm backdrop-blur">
+    <span className="inline-flex items-center rounded-full border border-slate-200/80 bg-white/70 px-3 py-1 text-sm text-slate-700 shadow-sm sm:backdrop-blur">
       {children}
     </span>
   );
@@ -198,14 +195,14 @@ function Chip({ children }: { children: React.ReactNode }) {
 
 function Card({ title, desc, icon }: { title: string; desc: string; icon: React.ReactNode }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-lg">
+    <div className="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/80 p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-lg sm:backdrop-blur">
       <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="absolute -left-20 -top-20 h-56 w-56 rounded-full bg-blue-200/30 blur-2xl" />
-        <div className="absolute -bottom-24 -right-24 h-56 w-56 rounded-full bg-sky-200/30 blur-2xl" />
+        <div className="absolute -left-20 -top-20 hidden h-56 w-56 rounded-full bg-blue-200/30 blur-2xl md:block" />
+        <div className="absolute -bottom-24 -right-24 hidden h-56 w-56 rounded-full bg-sky-200/30 blur-2xl md:block" />
       </div>
 
       <div className="relative">
-        <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/70 bg-white/80 text-slate-900 shadow-sm">
+        <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/70 bg-white/90 text-slate-900 shadow-sm">
           {icon}
         </div>
         <h3 className="text-base font-semibold tracking-tight text-slate-900">{title}</h3>
@@ -220,22 +217,29 @@ export default function HomePage() {
   const latestHub = latest ? getHub(latest.hubSlug) : null;
   const showNew = latest ? isNewPost(latest.dateISO) : false;
 
-  // ✅ Prefer the post cover; fallback to the hub cover; fallback to gradient
   const latestCover = latest?.coverImage || latestHub?.coverImage || "";
+
+  // Used to defer below-the-fold rendering in browsers that support it
+  const deferBelowFold = {
+    contentVisibility: "auto" as const,
+    containIntrinsicSize: "900px" as const,
+  };
 
   return (
     <main className="bg-white text-slate-900">
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        {/* ✅ Heavy blur blobs are expensive on mobile; only render from md+ */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-24 -top-32 h-96 w-96 rounded-full bg-blue-200/35 blur-3xl" />
-          <div className="absolute -right-24 top-10 h-[28rem] w-[28rem] rounded-full bg-sky-200/35 blur-3xl" />
-          <div className="absolute left-1/2 top-1/2 h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-100/60 blur-3xl" />
+          <div className="absolute -left-24 -top-32 hidden h-96 w-96 rounded-full bg-blue-200/35 blur-3xl md:block" />
+          <div className="absolute -right-24 top-10 hidden h-[28rem] w-[28rem] rounded-full bg-sky-200/35 blur-3xl md:block" />
+          <div className="absolute left-1/2 top-1/2 hidden h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-100/60 blur-3xl md:block" />
         </div>
 
+        {/* ✅ Grid overlay paint cost; hide on xs, show from sm+ */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          className="pointer-events-none absolute inset-0 hidden opacity-[0.07] sm:block"
           style={{
             backgroundImage:
               "linear-gradient(to right, rgba(15,23,42,0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(15,23,42,0.25) 1px, transparent 1px)",
@@ -285,7 +289,7 @@ export default function HomePage() {
 
                   <Link
                     href="/projects"
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-slate-300/40"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-slate-300/40 sm:backdrop-blur"
                   >
                     View projects
                   </Link>
@@ -316,9 +320,10 @@ export default function HomePage() {
 
               {/* Right-side mock dashboard card */}
               <div className="lg:max-w-md">
-                <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-lg backdrop-blur">
-                  <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-200/35 blur-2xl" />
-                  <div className="absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-sky-200/35 blur-2xl" />
+                <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-lg sm:backdrop-blur">
+                  {/* ✅ expensive blur blobs only on md+ */}
+                  <div className="absolute -right-16 -top-16 hidden h-56 w-56 rounded-full bg-blue-200/35 blur-2xl md:block" />
+                  <div className="absolute -bottom-20 -left-20 hidden h-56 w-56 rounded-full bg-sky-200/35 blur-2xl md:block" />
 
                   <div className="relative">
                     <div className="flex items-center justify-between">
@@ -326,27 +331,27 @@ export default function HomePage() {
                         <p className="text-xs font-semibold tracking-wide text-slate-500">LIVE OVERVIEW</p>
                         <p className="mt-1 text-base font-semibold text-slate-900">Operations snapshot</p>
                       </div>
-                      <span className="inline-flex items-center rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 text-xs font-semibold text-slate-700">
+                      <span className="inline-flex items-center rounded-full border border-slate-200 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700">
                         Premium
                       </span>
                     </div>
 
                     <div className="mt-6 grid grid-cols-3 gap-3">
-                      <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-3">
+                      <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:backdrop-blur">
                         <p className="text-xs text-slate-500">Revenue</p>
                         <p className="mt-1 text-sm font-semibold text-slate-900">$42.8k</p>
                         <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100">
                           <div className="h-1.5 w-2/3 rounded-full bg-emerald-500/70" />
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-3">
+                      <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:backdrop-blur">
                         <p className="text-xs text-slate-500">Costs</p>
                         <p className="mt-1 text-sm font-semibold text-slate-900">$18.4k</p>
                         <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100">
                           <div className="h-1.5 w-1/3 rounded-full bg-rose-500/70" />
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-3">
+                      <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:backdrop-blur">
                         <p className="text-xs text-slate-500">Net</p>
                         <p className="mt-1 text-sm font-semibold text-slate-900">$24.4k</p>
                         <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100">
@@ -355,7 +360,7 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    <div className="mt-5 rounded-2xl border border-slate-200/70 bg-white/70 p-4">
+                    <div className="mt-5 rounded-2xl border border-slate-200/70 bg-white/80 p-4 sm:backdrop-blur">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-semibold text-slate-900">Activity</p>
                         <p className="text-xs text-slate-500">Today</p>
@@ -368,7 +373,7 @@ export default function HomePage() {
                         ].map((row) => (
                           <div
                             key={row.t}
-                            className="flex items-center justify-between rounded-xl border border-slate-200/60 bg-white/70 px-3 py-2"
+                            className="flex items-center justify-between rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2 sm:backdrop-blur"
                           >
                             <div>
                               <p className="text-xs font-semibold text-slate-900">{row.t}</p>
@@ -398,9 +403,9 @@ export default function HomePage() {
                 {capabilities.map((c) => (
                   <div
                     key={c.title}
-                    className="flex items-start gap-3 rounded-2xl border border-slate-200/70 bg-white/70 p-4 shadow-sm backdrop-blur transition hover:bg-white hover:shadow-md"
+                    className="flex items-start gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-4 shadow-sm transition hover:bg-white hover:shadow-md sm:backdrop-blur"
                   >
-                    <div className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/70 bg-white/80 text-slate-900">
+                    <div className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/70 bg-white/90 text-slate-900">
                       {c.icon}
                     </div>
                     <div>
@@ -414,7 +419,7 @@ export default function HomePage() {
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
                 <Link
                   href="/projects"
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2 font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   Explore projects
                 </Link>
@@ -430,10 +435,11 @@ export default function HomePage() {
             {/* ✅ Latest from Insights (premium cover) */}
             {latest ? (
               <div className="mt-12">
-                <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur sm:p-8">
+                <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm sm:p-8 sm:backdrop-blur">
+                  {/* ✅ heavy blur blobs only on md+ */}
                   <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute -left-24 -top-28 h-80 w-80 rounded-full bg-sky-200/30 blur-3xl" />
-                    <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-blue-200/30 blur-3xl" />
+                    <div className="absolute -left-24 -top-28 hidden h-80 w-80 rounded-full bg-sky-200/30 blur-3xl md:block" />
+                    <div className="absolute -right-24 -bottom-28 hidden h-80 w-80 rounded-full bg-blue-200/30 blur-3xl md:block" />
                   </div>
 
                   <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -486,9 +492,8 @@ export default function HomePage() {
 
                     <Link
                       href={latest.href}
-                      className="group relative w-full overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md lg:max-w-md"
+                      className="group relative w-full overflow-hidden rounded-3xl border border-slate-200/70 bg-white/90 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md lg:max-w-md"
                     >
-                      {/* Cover image */}
                       <div className="relative h-44 w-full overflow-hidden">
                         {latestCover ? (
                           <>
@@ -529,13 +534,12 @@ export default function HomePage() {
                 </div>
               </div>
             ) : null}
-            {/* ✅ END Latest from Insights */}
           </div>
         </Container>
       </section>
 
-      {/* Features */}
-      <section className="py-14 sm:py-18">
+      {/* Features (defer) */}
+      <section className="py-14 sm:py-18" style={deferBelowFold}>
         <Container>
           <PageHeader
             level={2}
@@ -546,13 +550,13 @@ export default function HomePage() {
               <>
                 <Link
                   href="/services"
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   Services
                 </Link>
                 <Link
                   href="/projects"
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   Projects
                 </Link>
@@ -566,9 +570,9 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="mt-12 grid gap-4 rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-4 rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm sm:grid-cols-2 lg:grid-cols-4 sm:backdrop-blur">
             {stats.map((s) => (
-              <div key={s.label} className="rounded-2xl border border-slate-200/70 bg-white/70 p-4">
+              <div key={s.label} className="rounded-2xl border border-slate-200/70 bg-white/80 p-4 sm:backdrop-blur">
                 <p className="text-xs font-semibold tracking-wide text-slate-500">{s.label}</p>
                 <p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">{s.value}</p>
               </div>
@@ -577,8 +581,8 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Process */}
-      <section className="bg-gradient-to-b from-white to-slate-50 py-14 sm:py-18">
+      {/* Process (defer) */}
+      <section className="bg-gradient-to-b from-white to-slate-50 py-14 sm:py-18" style={deferBelowFold}>
         <Container>
           <PageHeader
             level={2}
@@ -588,7 +592,7 @@ export default function HomePage() {
             actions={
               <Link
                 href="/partner"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
               >
                 Partner
               </Link>
@@ -599,9 +603,9 @@ export default function HomePage() {
             {process.map((p) => (
               <div
                 key={p.step}
-                className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-lg"
+                className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-lg sm:backdrop-blur"
               >
-                <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-200/25 blur-3xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="absolute -right-16 -top-16 hidden h-56 w-56 rounded-full bg-blue-200/25 blur-3xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block" />
                 <div className="relative">
                   <p className="text-xs font-bold tracking-wider text-slate-500">STEP {p.step}</p>
                   <p className="mt-2 text-base font-semibold text-slate-900">{p.title}</p>
@@ -614,13 +618,13 @@ export default function HomePage() {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-sm">
             <Link
               href="/services"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2 font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
             >
               See services
             </Link>
             <Link
               href="/projects"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2 font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
             >
               View projects
             </Link>
@@ -628,8 +632,8 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Proof / Testimonials */}
-      <section className="py-14 sm:py-18">
+      {/* Proof / Testimonials (defer) */}
+      <section className="py-14 sm:py-18" style={deferBelowFold}>
         <Container>
           <PageHeader
             level={2}
@@ -639,7 +643,7 @@ export default function HomePage() {
             actions={
               <Link
                 href="/projects"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
               >
                 View projects
               </Link>
@@ -650,9 +654,9 @@ export default function HomePage() {
             {testimonials.map((t) => (
               <div
                 key={t.name}
-                className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-7 shadow-sm backdrop-blur transition hover:shadow-lg"
+                className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-7 shadow-sm transition hover:shadow-lg sm:backdrop-blur"
               >
-                <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-200/30 blur-3xl" />
+                <div className="absolute -right-24 -top-24 hidden h-64 w-64 rounded-full bg-blue-200/30 blur-3xl md:block" />
                 <div className="relative">
                   <p className="text-sm leading-relaxed text-slate-700">“{t.quote}”</p>
                   <div className="mt-6">
@@ -664,7 +668,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-col items-center justify-between gap-3 rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur sm:flex-row">
+          <div className="mt-10 flex flex-col items-center justify-between gap-3 rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm sm:flex-row sm:backdrop-blur">
             <div>
               <p className="text-base font-semibold tracking-tight text-slate-900">Want your product to feel premium?</p>
               <p className="mt-1 text-sm text-slate-600">See the work then reach out when you’re ready.</p>
@@ -672,13 +676,13 @@ export default function HomePage() {
             <div className="flex gap-3">
               <Link
                 href="/partner"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
               >
                 Partner
               </Link>
               <Link
                 href="/projects"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
               >
                 Projects
               </Link>
@@ -687,13 +691,13 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-14 sm:py-18">
+      {/* Final CTA (defer) */}
+      <section className="py-14 sm:py-18" style={deferBelowFold}>
         <Container>
           <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-white to-blue-50 p-8 shadow-sm sm:p-10">
             <div className="pointer-events-none absolute inset-0">
-              <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl" />
-              <div className="absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-sky-200/30 blur-3xl" />
+              <div className="absolute -left-20 -top-24 hidden h-72 w-72 rounded-full bg-blue-200/30 blur-3xl md:block" />
+              <div className="absolute -right-24 -bottom-28 hidden h-80 w-80 rounded-full bg-sky-200/30 blur-3xl md:block" />
             </div>
 
             <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -709,13 +713,13 @@ export default function HomePage() {
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/services"
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   Services
                 </Link>
                 <Link
                   href="/projects"
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   Projects
                 </Link>
