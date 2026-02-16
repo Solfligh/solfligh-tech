@@ -143,7 +143,10 @@ const features = [
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
         <path d="M4 12h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M12 4v16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M12 4v16" stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
       </svg>
     ),
   },
@@ -266,7 +269,7 @@ export default function HomePage() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                   <Link
                     href="/contact"
-                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                    className="inline-flex items-center justify-center rounded-xl bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
                   >
                     Contact us
                     <svg className="ml-2 h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -495,7 +498,9 @@ export default function HomePage() {
                               fill
                               className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                               sizes="(max-width: 1024px) 100vw, 420px"
-                              priority={false}
+                              priority
+                              fetchPriority="high"
+                              quality={75}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/25 to-transparent" />
                           </>
@@ -716,7 +721,7 @@ export default function HomePage() {
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                  className="inline-flex items-center justify-center rounded-xl bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
                 >
                   Contact us
                 </Link>
