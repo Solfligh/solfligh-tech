@@ -2,9 +2,28 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import PageHeader from '@/app/components/PageHeader';
-import { BlogPost, Category, getPosts, getCategories } from '@/lib/posts';
+
+interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  tags: string[];
+  coverImage: string;
+  author: string;
+  publishedAt: string;
+  readTime: number;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+}
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -15,12 +34,16 @@ export default function BlogPage() {
 
   useEffect(() => {
     async function loadData() {
-      const [postsData, categoriesData] = await Promise.all([
-        fetch('/data/posts.json').then(res => res.json()),
-        fetch('/data/categories.json').then(res => res.json()),
-      ]);
-      setPosts(postsData);
-      setCategories(categoriesData);
+      try {
+        const [postsData, categoriesData] = await Promise.all([
+          fetch('/data/posts.json').then(res => res.json()).catch(() => []),
+          fetch('/data/categories.json').then(res => res.json()).catch(() => []),
+        ]);
+        setPosts(postsData);
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
       setLoading(false);
     }
     loadData();
@@ -46,7 +69,7 @@ export default function BlogPage() {
           <PageHeader
             badge="Our Journal"
             title="SolFligh Blog"
-            subtitle="Insights, breakthroughs, and stories from the frontier of sustainable technology and aviation."
+            subtitle="Insights on software engineering, AI automation, web & mobile development, and digital innovation."
             level={1}
           />
         </div>
@@ -109,6 +132,11 @@ export default function BlogPage() {
         ) : filteredPosts.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-slate-500">No articles found.</p>
+            {posts.length === 0 && (
+              <Link href="/admin/blog" className="mt-4 inline-block text-sky-600 hover:underline">
+                Write your first article →
+              </Link>
+            )}
           </div>
         ) : (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -118,23 +146,23 @@ export default function BlogPage() {
                 href={`/blog/${post.slug}`}
                 className="group card-premium overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl"
               >
-                <div className="relative h-48 overflow-hidden bg-slate-200">
-                  {post.coverImage ? (
-                    <Image
-                      src={post.coverImage}
-                      alt={post.title}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-sky-100 to-indigo-100">
-                      <span className="text-4xl">📄</span>
-                    </div>
-                  )}
-                  <div className="absolute left-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
-                    {getCategoryName(post.category)}
-                  </div>
-                </div>
+ <div className="relative h-48 overflow-hidden bg-slate-200">
+  {post.coverImage ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={post.coverImage}
+      alt={post.title}
+      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+    />
+  ) : (
+    <div className="flex h-full items-center justify-center bg-gradient-to-br from-sky-100 to-indigo-100">
+      <span className="text-4xl">📄</span>
+    </div>
+  )}
+  <div className="absolute left-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
+    {getCategoryName(post.category)}
+  </div>
+</div>
                 <div className="p-5">
                   <div className="mb-2 flex items-center gap-3 text-xs text-slate-500">
                     <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
