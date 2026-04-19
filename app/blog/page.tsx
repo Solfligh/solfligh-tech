@@ -45,7 +45,7 @@ export default function BlogPage() {
         <div className="mx-auto max-w-6xl px-4">
           <PageHeader
             badge="Our Journal"
-            title="SolFlight Blog"
+            title="SolFligh Blog"
             subtitle="Insights, breakthroughs, and stories from the frontier of sustainable technology and aviation."
             level={1}
           />
