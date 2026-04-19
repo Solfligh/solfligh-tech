@@ -14,7 +14,7 @@ export interface Comment {
 
 // Google Apps Script Web App URL (you'll create this)
 // Follow instructions below to set this up
-const GOOGLE_SHEETS_WEBHOOK = process.env.NEXT_PUBLIC_COMMENTS_WEBHOOK || '';
+const GOOGLE_SHEETS_WEBHOOK = https://script.google.com/macros/s/AKfycbzYA-6YuygtFrugTv1MBInPQtevRCFqTxkPU95TfNW-cT20tix9MWVtWZi-_YZnfwB_/exec';
 
 export async function fetchComments(postSlug: string): Promise<Comment[]> {
   try {
