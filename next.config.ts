@@ -9,16 +9,24 @@ const nextConfig: NextConfig = {
 
   /**
    * ✅ Images
-   * DO NOT use hostname: "**" — it breaks builds.
-   *
-   * If you use Next/Image with Supabase:
-   * 1) Look at your NEXT_PUBLIC_SUPABASE_URL (example: https://abcdxyz.supabase.co)
-   * 2) Add that hostname to `domains` below (example: "abcdxyz.supabase.co")
+   * Added Google Drive support for blog images
    */
   images: {
     domains: [
       // "YOURPROJECT.supabase.co",
       "fxco-pilot.solflightech.com",
+      "drive.google.com",
+      "lh3.googleusercontent.com",
+    ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "drive.google.com",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
     ],
   },
 
