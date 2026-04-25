@@ -4,5 +4,17 @@
     "name": "Opinion/Analysis",
     "slug": "opinion-analysis",
     "description": "Editor's Perspective"
+  },
+  {
+    "id": "1776846740518",
+    "name": "Medicine & Culture",
+    "slug": "medicine-culture",
+    "description": ""
+  },
+  {
+    "id": "1777139392189",
+    "name": "Political Economy ",
+    "slug": "political-economy-",
+    "description": ""
   }
 ]
