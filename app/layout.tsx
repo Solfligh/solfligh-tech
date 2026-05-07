@@ -40,7 +40,7 @@ const organizationJsonLd = {
       hasMenuItem: [
         {
           "@type": "MenuItem",
-          name: "Books",
+          name: "eBooks",
           url: `${SITE_URL}/books`
         },
         {

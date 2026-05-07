@@ -75,7 +75,7 @@ export default function BookPage() {
         <h1 className="mb-4 text-3xl font-bold">Book Not Found</h1>
         <p className="mb-8 text-slate-600">The book you're looking for doesn't exist.</p>
         <Link href="/books" className="text-sky-600 hover:underline">
-          ← Back to all books
+          ← Back to all eBooks
         </Link>
       </div>
     );

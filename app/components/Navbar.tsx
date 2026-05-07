@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const primaryLinks = [
-  { href: "/books", label: "Books" },
+  { href: "/ebooks", label: "eBooks" },
   { href: "/blog", label: "Blog" },
   { href: "/projects", label: "Projects" },
   { href: "/services", label: "Services" },
@@ -24,7 +24,7 @@ function isActive(pathname: string, href: string) {
   if (href === "/blog" && pathname.startsWith("/blog/")) {
     return true;
   }
-  if (href === "/books" && pathname.startsWith("/books/")) {
+  if (href === "/ebooks" && pathname.startsWith("/ebooks/")) {
     return true;
   }
   return pathname === href || pathname.startsWith(href + "/");

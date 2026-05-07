@@ -33,7 +33,7 @@ export default async function BooksPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
-      <h1 className="mb-8 text-4xl font-bold">📚 My Books</h1>
+      <h1 className="mb-8 text-4xl font-bold">📚 My eBooks</h1>
       
       {books.length === 0 ? (
         <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-slate-500">
