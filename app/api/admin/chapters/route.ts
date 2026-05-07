@@ -3,15 +3,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-const dataDir = path.join(process.cwd(), 'data');
-const chaptersFilePath = path.join(dataDir, 'chapters.json');
+// CORRECTED PATH - using public/data/
+const chaptersFilePath = path.join(process.cwd(), 'public', 'data', 'chapters.json');
 
+// Helper to ensure data directory exists
 function ensureDataDir() {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+  const dir = path.join(process.cwd(), 'public', 'data');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
 }
 
+// Helper function to read chapters from file
 function readChapters(): any[] {
   ensureDataDir();
   try {
@@ -27,6 +30,7 @@ function readChapters(): any[] {
   }
 }
 
+// Helper function to write chapters to file
 function writeChapters(chapters: any[]): boolean {
   try {
     fs.writeFileSync(chaptersFilePath, JSON.stringify(chapters, null, 2));

@@ -3,13 +3,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-const dataDir = path.join(process.cwd(), 'data');
-const booksFilePath = path.join(dataDir, 'books.json');
+// CORRECTED PATH - using public/data/
+const booksFilePath = path.join(process.cwd(), 'public', 'data', 'books.json');
 
 // Helper to ensure data directory exists
 function ensureDataDir() {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+  const dir = path.join(process.cwd(), 'public', 'data');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
 }
 
@@ -55,7 +56,6 @@ export async function POST(request: NextRequest) {
   let books = readBooks();
   
   if (book.id) {
-    // Update existing book
     const index = books.findIndex((b: any) => b.id === book.id);
     if (index !== -1) {
       books[index] = { ...books[index], ...book, updatedAt: new Date().toISOString() };
@@ -63,7 +63,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Book not found' }, { status: 404 });
     }
   } else {
-    // Create new book
     const newBook = {
       id: Date.now().toString(),
       title: book.title,

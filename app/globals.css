@@ -49,3 +49,269 @@ h1, h2, h3 {
 p {
   line-height: 1.75;
 }
+
+/* ========================================
+   CHAPTER STYLES FOR BOOKS
+   ======================================== */
+
+/* Chapter container */
+.chapter-container {
+  max-width: 750px;
+  margin: 0 auto;
+  font-family: 'Georgia', 'Times New Roman', Times, serif;
+  line-height: 1.75;
+  color: #1e1b17;
+}
+
+/* Typography */
+.chapter-number {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #b87b4f;
+}
+
+/* Chapter headings */
+.chapter-container h1 {
+  font-size: 2.8rem;
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #2a241e;
+  margin: 0.5rem 0 0.5rem 0;
+  border-left: 4px solid #b87b4f;
+  padding-left: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.subhead {
+  font-size: 1.2rem;
+  color: #6b5842;
+  font-style: italic;
+  margin-bottom: 2rem;
+  padding-left: 1.6rem;
+}
+
+.chapter-container h2 {
+  font-size: 1.6rem;
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #3b2e24;
+  margin: 2rem 0 1rem 0;
+  letter-spacing: -0.02em;
+}
+
+.chapter-container p {
+  margin-bottom: 1.2rem;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #2c2823;
+}
+
+/* Images */
+.chapter-image {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.chapter-image img {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.image-caption {
+  font-size: 0.75rem;
+  color: #a28c72;
+  margin-top: 0.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Pull quote */
+.pull-quote {
+  font-size: 1.3rem;
+  line-height: 1.4;
+  font-style: italic;
+  color: #6b5842;
+  text-align: center;
+  margin: 2rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid #e2d8cd;
+  border-bottom: 1px solid #e2d8cd;
+}
+
+/* Healing boxes */
+.healing-box {
+  background: #faf7f2;
+  border-left: 5px solid #b87b4f;
+  padding: 1.2rem 1.8rem;
+  margin: 1.8rem 0;
+  border-radius: 12px;
+}
+
+.healing-box h4 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #b87b4f;
+  margin-bottom: 0.8rem;
+}
+
+.healing-box p {
+  margin-bottom: 0.75rem;
+}
+
+/* Journal */
+.journal {
+  background: #2a241e;
+  color: #f2e9de;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  margin: 2rem 0;
+}
+
+.journal h4 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #e6c8a7;
+  margin-bottom: 1rem;
+}
+
+.journal p {
+  color: #f2e9de;
+  margin-bottom: 0.5rem;
+}
+
+.journal-note {
+  font-style: italic;
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}
+
+/* Lists */
+.chapter-container ul,
+.chapter-container ol {
+  margin: 1rem 0 1.5rem 2rem;
+}
+
+.chapter-container li {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.strategy-list {
+  margin: 1rem 0 1.5rem 2rem;
+}
+
+/* Divider */
+.divider {
+  text-align: center;
+  margin: 2rem 0;
+  color: #d4c6b8;
+  letter-spacing: 6px;
+  font-size: 1.2rem;
+}
+
+/* Horizontal rule */
+.chapter-container hr {
+  margin: 2rem 0;
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e2d8cd, transparent);
+}
+
+/* Next chapter teaser */
+.next-chapter-teaser {
+  text-align: center;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  color: #b87b4f;
+  font-family: monospace;
+  font-size: 0.85rem;
+  border-top: 1px solid #e2d8cd;
+}
+
+/* Blockquotes */
+.chapter-container blockquote {
+  border-left: 4px solid #b87b4f;
+  margin: 1.5rem 0;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  font-style: italic;
+  color: #6b5842;
+}
+
+/* Strong/emphasis */
+.chapter-container strong {
+  font-weight: 600;
+  color: #2a241e;
+}
+
+.chapter-container em {
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chapter-container h1 {
+    font-size: 2rem;
+    padding-left: 1rem;
+  }
+  
+  .subhead {
+    font-size: 1rem;
+    padding-left: 1.2rem;
+  }
+  
+  .chapter-container h2 {
+    font-size: 1.3rem;
+  }
+  
+  .chapter-container p {
+    font-size: 1rem;
+  }
+  
+  .pull-quote {
+    font-size: 1.1rem;
+  }
+  
+  .healing-box {
+    padding: 1rem 1.2rem;
+  }
+  
+  .journal {
+    padding: 1rem 1.2rem;
+  }
+}
+
+/* Force chapter styles to apply */
+.chapter-container .pull-quote,
+.pull-quote {
+  font-size: 1.3rem !important;
+  line-height: 1.4 !important;
+  font-style: italic !important;
+  color: #6b5842 !important;
+  text-align: center !important;
+  margin: 2rem 0 !important;
+  padding: 1rem 0 !important;
+  border-top: 1px solid #e2d8cd !important;
+  border-bottom: 1px solid #e2d8cd !important;
+}
+
+.chapter-container .healing-box,
+.healing-box {
+  background: #faf7f2 !important;
+  border-left: 5px solid #b87b4f !important;
+  padding: 1.2rem 1.8rem !important;
+  margin: 1.8rem 0 !important;
+  border-radius: 12px !important;
+}
+
+.chapter-container .journal,
+.journal {
+  background: #2a241e !important;
+  color: #f2e9de !important;
+  padding: 1.5rem 2rem !important;
+  border-radius: 16px !important;
+  margin: 2rem 0 !important;
+}

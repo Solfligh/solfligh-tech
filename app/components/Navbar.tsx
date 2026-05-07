@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const primaryLinks = [
+  { href: "/books", label: "Books" },
+  { href: "/blog", label: "Blog" },
   { href: "/projects", label: "Projects" },
   { href: "/services", label: "Services" },
 ];
@@ -18,6 +20,13 @@ const moreLinks = [
 ];
 
 function isActive(pathname: string, href: string) {
+  // Special handling for blog and books to highlight on subpages
+  if (href === "/blog" && pathname.startsWith("/blog/")) {
+    return true;
+  }
+  if (href === "/books" && pathname.startsWith("/books/")) {
+    return true;
+  }
   return pathname === href || pathname.startsWith(href + "/");
 }
 

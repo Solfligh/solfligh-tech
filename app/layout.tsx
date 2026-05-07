@@ -20,17 +20,37 @@ const ORG_NAME = "SOLFLIGH TECH";
 // NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
 
-// ✅ Organization Schema (JSON-LD)
+// ✅ Organization Schema (JSON-LD) - Updated with Books
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: ORG_NAME,
   url: SITE_URL,
-  logo: `${SITE_URL}/logo.png`, // must exist in /public
-  image: `${SITE_URL}/og.png`, // must exist in /public
+  logo: `${SITE_URL}/logo.png`,
+  image: `${SITE_URL}/og.png`,
   description:
-    "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
+    "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact. Read our books on psychology, trauma recovery, and personal growth.",
   sameAs: [],
+  hasMenu: {
+    "@type": "Menu",
+    name: "Main Navigation",
+    hasMenuSection: {
+      "@type": "MenuSection",
+      name: "Content",
+      hasMenuItem: [
+        {
+          "@type": "MenuItem",
+          name: "Books",
+          url: `${SITE_URL}/books`
+        },
+        {
+          "@type": "MenuItem",
+          name: "Blog",
+          url: `${SITE_URL}/blog`
+        }
+      ]
+    }
+  }
 };
 
 export const metadata: Metadata = {
@@ -107,6 +127,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          key="org-jsonld"
         />
       </head>
 
