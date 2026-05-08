@@ -37,8 +37,8 @@ export default async function BooksPage() {
       
       {books.length === 0 ? (
         <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-slate-500">
-          <p className="text-lg">No books available yet.</p>
-          <p className="mt-2 text-sm">Check back soon for new releases!</p>
+          <p className="text-lg">No eBooks available yet.</p>
+          <p className="mt-2 text-sm">Check back soon for new eBooks!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
