@@ -41,6 +41,16 @@ const HUBS: InsightHub[] = [
     accent: "from-sky-500/20 to-blue-500/10",
     coverImage: "/insights/profitpilot/cover.jpg",
   },
+  {
+    slug: "fxco-pilot",
+    title: "FXCopilot",
+    description:
+      "Decision support for forex traders — validate context, risk, and assumptions before you execute.",
+    href: "/insights/fxco-pilot",
+    badge: "Project Hub",
+    accent: "from-emerald-500/20 to-sky-500/10",
+    coverImage: "/insights/fxco-pilot/cover.jpg",
+  },
 ];
 
 const POSTS: InsightPost[] = [
@@ -58,6 +68,21 @@ const POSTS: InsightPost[] = [
     dateISO: "2026-01-10",
     accent: "from-sky-500/20 to-blue-500/10",
     coverImage: "/insights/profitpilot/posts/why-made-today.jpg",
+  },
+
+  {
+    hubSlug: "fxco-pilot",
+    slug: "ai-trade-validator",
+    title: "FXCopilot AI Trade Validator: Decision Support Before You Enter a Forex Trade",
+    description:
+      "FXCopilot is an AI trade validator for forex traders — validate context, risk, and assumptions before execution instead of relying on signals or predictions.",
+    href: "/insights/fxco-pilot/ai-trade-validator",
+    tag: "Product Solution",
+    readingTime: "6–8 min",
+    dateLabel: "Jan 2026",
+    dateISO: "2026-01-15",
+    accent: "from-emerald-500/20 to-sky-500/10",
+    coverImage: "/insights/fxco-pilot/cover.jpg",
   },
 
   // ✅ Article 2 (Solution Awareness)

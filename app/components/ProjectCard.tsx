@@ -69,7 +69,7 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
     ? "bg-emerald-100 text-emerald-700 border-emerald-200"
     : project.statusColor || "bg-slate-100 text-slate-700 border-slate-200";
 
-  const ctaLabel = isFxcoPilot ? "Open FXCO-PILOT" : project.ctaLabel || "View project";
+  const ctaLabel = isFxcoPilot ? "Open FXCopilot" : project.ctaLabel || "View project";
 
   const linkProps = isFxcoPilot
     ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
@@ -78,7 +78,11 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
   // Decide if we should show a small "Coming soon" hint
   const isUpcoming = useMemo(() => {
     const s = String(status || "").toLowerCase();
-    return s.includes("upcoming") || s.includes("coming soon");
+    return (
+      s.includes("upcoming") ||
+      s.includes("coming soon") ||
+      s.includes("in development")
+    );
   }, [status]);
 
   // Normalize and also harden images against missing files:
@@ -157,7 +161,7 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
 
         {isFxcoPilot && (
           <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-            <strong>Disclaimer:</strong> FXCO-PILOT provides AI-assisted analysis for educational purposes only.
+            <strong>Disclaimer:</strong> FXCopilot provides AI-assisted analysis for educational purposes only.
             It is not financial or investment advice. Trading involves risk.
           </div>
         )}

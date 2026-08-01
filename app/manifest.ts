@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "SOLFLIGH TECH",
     short_name: "SOLFLIGH",
     description:
-      "SOLFLIGH TECH builds modern platforms like ProfitPilot, ProfitFX, and RebirthAgro — focused on automation, clarity, and real business impact.",
+      "SOLFLIGH TECH builds modern platforms like ProfitPilot, FXCopilot, and RebirthAgro — focused on automation, clarity, and real business impact.",
     start_url: "/",
     scope: "/",
     display: "standalone",

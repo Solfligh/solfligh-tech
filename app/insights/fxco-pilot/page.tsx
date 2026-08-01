@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const SITE_URL = "https://solfightech.org";
+const SITE_URL = "https://solflightech.org";
 const HUB_SLUG = "fxco-pilot";
 
 // ✅ FIX: use direct external URL so the button never depends on /fxco-pilot route behavior
@@ -124,7 +124,7 @@ export default function FxcoPilotHubPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                 >
-                  Validate a Trade with FXCO-Pilo <span className="ml-2 text-slate-300">↗</span>
+                  Validate a Trade with FXCopilot <span className="ml-2 text-slate-300">↗</span>
                 </a>
 
                 <Link
@@ -226,7 +226,7 @@ export default function FxcoPilotHubPage() {
             <div className="mt-12 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <h3 className="text-lg font-semibold tracking-tight">
                 You don’t need more signals. You need a structured pause before execution.
-                FXCO-Pilot helps you validate context, risk, and assumptions so you don’t commit capital impulsively.
+                FXCopilot helps you validate context, risk, and assumptions so you don’t commit capital impulsively.
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 If you’re already trading, you don’t need more signals. You need a repeatable way to
@@ -241,7 +241,7 @@ export default function FxcoPilotHubPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                 >
-                  Open FXCO-Pilot <span className="ml-2 text-slate-300">↗</span>
+                  Open FXCopilot <span className="ml-2 text-slate-300">↗</span>
                 </a>
 
                 <Link

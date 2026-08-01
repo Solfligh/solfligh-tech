@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       // -----------------------------
-      // ProfitFX legacy -> FXCO-PILOT
+      // ProfitFX legacy -> FXCopilot (external subdomain)
       // -----------------------------
       {
         source: "/profitfx",

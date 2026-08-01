@@ -55,7 +55,7 @@
     },
     {
       "slug": "fxco-pilot",
-      "name": "FXCO-PILOT",
+      "name": "FXCopilot",
       "status": "Live",
       "statusColor": "bg-sky-100 text-sky-700 border-sky-200",
       "description": "An FX co-pilot platform focused on decision support, clarity, and workflow automation for traders and teams.",
@@ -64,7 +64,7 @@
         "Decision-support tooling",
         "Automation-ready design"
       ],
-      "ctaLabel": "Open FXCO-PILOT",
+      "ctaLabel": "Open FXCopilot",
       "href": "/projects/fxco-pilot",
       "externalUrl": "https://fxco-pilot.solflightech.org",
       "demo": {
@@ -75,11 +75,11 @@
         {
           "type": "image",
           "src": "/projects/fxco-pilot/1.jpg",
-          "alt": "FXCO-PILOT interface"
+          "alt": "FXCopilot interface"
         }
       ],
       "problem": "FX traders rely on scattered tools for analysis, notes, and execution, slowing down decisions.",
-      "solution": "FXCO-PILOT centralizes trading workflows and decision support into a clean, focused interface.",
+      "solution": "FXCopilot centralizes trading workflows and decision support into a clean, focused interface.",
       "keyFeatures": [
         "Workflow organization",
         "Decision journaling",
@@ -100,7 +100,7 @@
     {
       "slug": "rebirthagro",
       "name": "RebirthAgro",
-      "status": "Upcoming",
+      "status": "In Development",
       "statusColor": "bg-amber-100 text-amber-700 border-amber-200",
       "description": "A digital agriculture platform connecting farmers, buyers, and logistics for better access and transparency.",
       "highlights": [

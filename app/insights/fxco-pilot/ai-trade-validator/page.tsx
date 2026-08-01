@@ -5,14 +5,14 @@ import Container from "@/app/components/Container";
 import ReadingSlider from "./ReadingSlider";
 
 export const metadata: Metadata = {
-  title: "FXCO-Pilot AI Trade Validator: Decision Support Before You Enter a Forex Trade | SolFligh Tech",
+  title: "FXCopilot AI Trade Validator: Decision Support Before You Enter a Forex Trade | SolFligh Tech",
   description:
-    "FXCO-Pilot is an AI trade validator for forex traders built to reduce emotional entries and rule-breaking losses. Validate trade context, risk, and assumptions before execution.",
+    "FXCopilot is an AI trade validator for forex traders built to reduce emotional entries and rule-breaking losses. Validate trade context, risk, and assumptions before execution.",
   alternates: { canonical: "/insights/fxco-pilot/ai-trade-validator" },
   openGraph: {
-    title: "FXCO-Pilot AI Trade Validator (Forex Decision Support)",
+    title: "FXCopilot AI Trade Validator (Forex Decision Support)",
     description:
-      "Validate a trade before you click Buy/Sell. FXCO-Pilot focuses on context, risk, and discipline not signals or predictions.",
+      "Validate a trade before you click Buy/Sell. FXCopilot focuses on context, risk, and discipline not signals or predictions.",
     url: "/insights/fxco-pilot/ai-trade-validator",
     type: "article",
     images: [
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
         url: "/insights/fxco-pilot/cover.jpg",
         width: 1536,
         height: 599,
-        alt: "FXCO-Pilot | AI Trade Validator",
+        alt: "FXCopilot | AI Trade Validator",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "FXCO-Pilot AI Trade Validator",
+    title: "FXCopilot AI Trade Validator",
     description:
       "A second brain before execution. Context, risk, and discipline. Not signals. Not predictions.",
     images: ["/insights/fxco-pilot/cover.jpg"],
@@ -85,20 +85,20 @@ function ExtButton({
 
 export default function FxcoPilotAiTradeValidatorArticlePage() {
   const publishedISO = "2026-02-11T00:00:00.000Z";
-  const canonical = "https://solfightech.org/insights/fxco-pilot/ai-trade-validator";
+  const canonical = "https://solflightech.org/insights/fxco-pilot/ai-trade-validator";
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "FXCO-Pilot AI Trade Validator: Decision Support Before You Enter a Forex Trade",
+    headline: "FXCopilot AI Trade Validator: Decision Support Before You Enter a Forex Trade",
     description:
-      "FXCO-Pilot is an AI trade validator for forex traders built to reduce emotional entries and rule-breaking losses. Validate trade context, risk, and assumptions before execution.",
+      "FXCopilot is an AI trade validator for forex traders built to reduce emotional entries and rule-breaking losses. Validate trade context, risk, and assumptions before execution.",
     datePublished: publishedISO,
     dateModified: publishedISO,
     mainEntityOfPage: canonical,
     author: { "@type": "Organization", name: "SolFligh Tech" },
     publisher: { "@type": "Organization", name: "SolFligh Tech" },
-    image: "https://solfightech.org/insights/fxco-pilot/cover.jpg",
+    image: "https://solflightech.org/insights/fxco-pilot/cover.jpg",
   };
 
   return (
@@ -114,7 +114,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
         <section className="mx-auto max-w-5xl px-4 pb-10 pt-10 sm:pt-14">
           <div className="flex flex-wrap items-center gap-2">
             <Pill>Insights</Pill>
-            <Pill>FXCO-Pilot</Pill>
+            <Pill>FXCopilot</Pill>
             <Pill>Forex</Pill>
             <Pill>Decision Quality</Pill>
           </div>
@@ -136,7 +136,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 That’s where the damage happens: late entries, “let me just adjust the stop loss,” forcing a setup,
                 revenge trading, or entering because a signal came in not because the context is clean.
                 <br />
-                FXCO-Pilot is built as a decision checkpoint for that moment.
+                FXCopilot is built as a decision checkpoint for that moment.
               </p>
 
               {/* Refinement #2 + #3: concept-first path + clearer CTA wording */}
@@ -151,16 +151,16 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 <ExtButton
                   href={`${APP_URL}/?utm_source=solflightech&utm_medium=insights&utm_campaign=ai_trade_validator&utm_content=cta_top`}
                 >
-                  Start Free Trial in FXCO-Pilot
+                  Start Free Trial in FXCopilot
                 </ExtButton>
 
                 <Link href="/insights/fxco-pilot" className="text-sm font-semibold text-sky-700 hover:underline">
-                  FXCO-Pilot hub →
+                  FXCopilot hub →
                 </Link>
               </div>
 
               <div className="mt-3 text-xs leading-relaxed text-slate-500">
-                FXCO-Pilot doesn’t give signals. It helps you validate context + risk + assumptions before execution.
+                FXCopilot doesn’t give signals. It helps you validate context + risk + assumptions before execution.
               </div>
 
               <div className="mt-7 grid gap-3 sm:grid-cols-3">
@@ -182,7 +182,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               <Image
                 src="/insights/fxco-pilot/cover.jpg"
-                alt="FXCO-Pilot | AI Trade Validator"
+                alt="FXCopilot | AI Trade Validator"
                 width={1536}
                 height={599}
                 priority
@@ -201,7 +201,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
             <div>
               <h2 className="text-xl font-semibold tracking-tight">The concept (in plain English)</h2>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                FXCO-Pilot is not here to predict price. It’s a checkpoint that helps you answer:
+                FXCopilot is not here to predict price. It’s a checkpoint that helps you answer:
                 <br />
                 <span className="font-semibold text-slate-800">
                   “Does this trade deserve my money right now based on structure, liquidity, and risk?”
@@ -267,14 +267,14 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                   <ExtButton
                     href={`${APP_URL}/?utm_source=solflightech&utm_medium=insights&utm_campaign=ai_trade_validator&utm_content=cta_mid`}
                   >
-                    Start Free Trial in FXCO-Pilot
+                    Start Free Trial in FXCopilot
                   </ExtButton>
 
                   <Link
                     href="/insights/fxco-pilot"
                     className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
                   >
-                    Read more FXCO-Pilot →
+                    Read more FXCopilot →
                   </Link>
                 </div>
 
@@ -296,7 +296,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                   Validate your next trade before you pay for it.
                 </h2>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-200">
-                  Use FXCO-Pilot right before execution to check context, risk, and assumptions so you stop paying for
+                  Use FXCopilot right before execution to check context, risk, and assumptions so you stop paying for
                   emotional entries.
                 </p>
               </div>
@@ -305,7 +305,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
                 <ExtButton
                   href={`${APP_URL}/?utm_source=solflightech&utm_medium=insights&utm_campaign=ai_trade_validator&utm_content=cta_bottom`}
                 >
-                  Start Free Trial in FXCO-Pilot
+                  Start Free Trial in FXCopilot
                 </ExtButton>
 
                 <Link
