@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: [
       // "YOURPROJECT.supabase.co",
-      "fxco-pilot.solflightech.com",
+      "fxco-pilot.solflightech.org",
       "drive.google.com",
       "lh3.googleusercontent.com",
     ],
@@ -37,31 +37,31 @@ const nextConfig: NextConfig = {
       // -----------------------------
       {
         source: "/profitfx",
-        destination: "https://fxco-pilot.solflightech.com",
+        destination: "https://fxco-pilot.solflightech.org",
         permanent: true,
       },
       {
         source: "/profitfx/:path*",
-        destination: "https://fxco-pilot.solflightech.com",
+        destination: "https://fxco-pilot.solflightech.org",
         permanent: true,
       },
 
       // Old project slug -> new project slug
       {
         source: "/projects/profitfx",
-        destination: "https://fxco-pilot.solflightech.com",
+        destination: "https://fxco-pilot.solflightech.org",
         permanent: true,
       },
       {
         source: "/projects/profitfx/:path*",
-        destination: "https://fxco-pilot.solflightech.com",
+        destination: "https://fxco-pilot.solflightech.org",
         permanent: true,
       },
 
       // Nice short link
       {
         source: "/fxco-pilot",
-        destination: "https://fxco-pilot.solflightech.com",
+        destination: "https://fxco-pilot.solflightech.org",
         permanent: true,
       },
 
