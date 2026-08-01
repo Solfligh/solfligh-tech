@@ -4,6 +4,14 @@ import Image from "next/image";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import { getHub, getLatestPost } from "@/app/lib/insightsStore";
+import { listProjects, type ProjectPayload } from "@/app/lib/projectStore";
+
+const pillars = [
+  { emoji: "☁️", title: "Solfligh Cloud", desc: "The infrastructure layer our software is built on", href: "/cloud" },
+  { emoji: "🚀", title: "Products", desc: "Software solving real business problems today", href: "/projects" },
+  { emoji: "💼", title: "Services", desc: "Expert teams building custom technology for your business", href: "/services" },
+  { emoji: "🤖", title: "AI", desc: "AI built for people and autonomous agents alike", href: "/ai" },
+];
 
 const capabilities = [
   {
@@ -163,20 +171,6 @@ const process = [
   { step: "04", title: "Launch", desc: "We deploy, test, and make sure you’re ready to ship with confidence." },
 ];
 
-const testimonials = [
-  {
-    quote:
-      "You can feel the difference everything is clean, premium, and structured. It’s not just a website; it’s a foundation.",
-    name: "Founder",
-    title: "Digital Product",
-  },
-  {
-    quote: "The UI looks expensive, but it’s still simple. And the workflows are actually practical no fluff.",
-    name: "Operator",
-    title: "SME Team",
-  },
-];
-
 function isNewPost(dateISO: string) {
   if (typeof dateISO !== "string" || !dateISO.trim()) return false;
   const d = new Date(`${dateISO.trim()}T00:00:00Z`);
@@ -212,12 +206,20 @@ function Card({ title, desc, icon }: { title: string; desc: string; icon: React.
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
   const latest = getLatestPost();
   const latestHub = latest ? getHub(latest.hubSlug) : null;
   const showNew = latest ? isNewPost(latest.dateISO) : false;
 
   const latestCover = latest?.coverImage || latestHub?.coverImage || "";
+
+  let products: ProjectPayload[] = [];
+  try {
+    const all = (await listProjects()) as ProjectPayload[];
+    products = (Array.isArray(all) ? all : []).filter((p) => p?.published);
+  } catch {
+    products = [];
+  }
 
   // Used to defer below-the-fold rendering in browsers that support it
   const deferBelowFold = {
@@ -252,30 +254,31 @@ export default function HomePage() {
             <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-2xl">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Chip>Technology</Chip>
-                  <Chip>Innovation</Chip>
-                  <Chip>Getting you back your time</Chip>
+                  <Chip>Cloud</Chip>
+                  <Chip>Products</Chip>
+                  <Chip>Services</Chip>
+                  <Chip>AI</Chip>
                 </div>
 
                 <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl md:text-6xl">
-                  Build modern products that{" "}
+                  Building{" "}
                   <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                    save time
+                    Africa&apos;s next
                   </span>{" "}
-                  and scale.
+                  technology infrastructure.
                 </h1>
 
                 <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">
-                  SOLFLIGH TECH designs and builds premium websites, Apps, web apps, and automation systems that make
-                  businesses faster, clearer, and more profitable.
+                  We build cloud infrastructure, AI platforms, enterprise software, and digital
+                  products powering the future of African businesses.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                   <Link
-                    href="/contact"
+                    href="/cloud"
                     className="inline-flex items-center justify-center rounded-xl bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
                   >
-                    Contact us
+                    Explore Solfligh Cloud
                     <svg className="ml-2 h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path
                         d="M5 12h14M13 6l6 6-6 6"
@@ -291,7 +294,7 @@ export default function HomePage() {
                     href="/projects"
                     className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-slate-300/40 sm:backdrop-blur"
                   >
-                    View projects
+                    See our Products
                   </Link>
 
                   <Link
@@ -318,79 +321,52 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Right-side mock dashboard card */}
+              {/* Right-side platform status card */}
               <div className="lg:max-w-md">
                 <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-lg sm:backdrop-blur">
-                  {/* ✅ expensive blur blobs only on md+ */}
                   <div className="absolute -right-16 -top-16 hidden h-56 w-56 rounded-full bg-blue-200/35 blur-2xl md:block" />
                   <div className="absolute -bottom-20 -left-20 hidden h-56 w-56 rounded-full bg-sky-200/35 blur-2xl md:block" />
 
                   <div className="relative">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs font-semibold tracking-wide text-slate-500">LIVE OVERVIEW</p>
-                        <p className="mt-1 text-base font-semibold text-slate-900">Operations snapshot</p>
-                      </div>
-                      <span className="inline-flex items-center rounded-full border border-slate-200 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700">
-                        Premium
-                      </span>
+                    <div>
+                      <p className="text-xs font-semibold tracking-wide text-slate-500">PLATFORM STATUS</p>
+                      <p className="mt-1 text-base font-semibold text-slate-900">What&apos;s live right now</p>
                     </div>
 
-                    <div className="mt-6 grid grid-cols-3 gap-3">
-                      <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:backdrop-blur">
-                        <p className="text-xs text-slate-500">Revenue</p>
-                        <p className="mt-1 text-sm font-semibold text-slate-900">$42.8k</p>
-                        <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100">
-                          <div className="h-1.5 w-2/3 rounded-full bg-emerald-500/70" />
-                        </div>
-                      </div>
-                      <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:backdrop-blur">
-                        <p className="text-xs text-slate-500">Costs</p>
-                        <p className="mt-1 text-sm font-semibold text-slate-900">$18.4k</p>
-                        <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100">
-                          <div className="h-1.5 w-1/3 rounded-full bg-rose-500/70" />
-                        </div>
-                      </div>
-                      <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:backdrop-blur">
-                        <p className="text-xs text-slate-500">Net</p>
-                        <p className="mt-1 text-sm font-semibold text-slate-900">$24.4k</p>
-                        <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100">
-                          <div className="h-1.5 w-1/2 rounded-full bg-sky-800/70" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-5 rounded-2xl border border-slate-200/70 bg-white/80 p-4 sm:backdrop-blur">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-semibold text-slate-900">Activity</p>
-                        <p className="text-xs text-slate-500">Today</p>
-                      </div>
-                      <div className="mt-3 space-y-2">
-                        {[
-                          { t: "Deployment", d: "New release shipped", pill: "OK" },
-                          { t: "Automation", d: "Workflow completed", pill: "DONE" },
-                          { t: "Support", d: "Response sent", pill: "FAST" },
-                        ].map((row) => (
-                          <div
-                            key={row.t}
-                            className="flex items-center justify-between rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2 sm:backdrop-blur"
+                    <div className="mt-6 space-y-3">
+                      {[
+                        { label: "Solfligh Cloud", value: "In development", tone: "amber" as const },
+                        { label: "Products", value: "2 live, 1 in development", tone: "emerald" as const },
+                        { label: "Services", value: "Live", tone: "emerald" as const },
+                        { label: "AI", value: "In products & platform", tone: "sky" as const },
+                      ].map((row) => (
+                        <div
+                          key={row.label}
+                          className="flex items-center justify-between rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2.5 sm:backdrop-blur"
+                        >
+                          <p className="text-sm font-semibold text-slate-900">{row.label}</p>
+                          <span
+                            className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${
+                              row.tone === "emerald"
+                                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                : row.tone === "amber"
+                                ? "border-amber-200 bg-amber-50 text-amber-700"
+                                : "border-sky-200 bg-sky-50 text-sky-700"
+                            }`}
                           >
-                            <div>
-                              <p className="text-xs font-semibold text-slate-900">{row.t}</p>
-                              <p className="text-xs text-slate-500">{row.d}</p>
-                            </div>
-                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700">
-                              {row.pill}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                            {row.value}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
 
                 <p className="mt-4 text-xs leading-relaxed text-slate-500">
-                  Clean visuals, real structure designed to feel premium while staying simple and readable.
+                  This reflects our actual status today —{" "}
+                  <Link href="/roadmap" className="underline hover:text-slate-700">
+                    see the full roadmap →
+                  </Link>
                 </p>
               </div>
             </div>
@@ -421,7 +397,7 @@ export default function HomePage() {
                   href="/projects"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2 font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
-                  Explore projects
+                  Explore products
                 </Link>
                 <Link
                   href="/services"
@@ -538,6 +514,79 @@ export default function HomePage() {
         </Container>
       </section>
 
+      {/* Four Pillars — immediately below hero, equal weight (Website Architecture §3.2) */}
+      <section className="py-14 sm:py-18">
+        <Container>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {pillars.map((p) => (
+              <Link
+                key={p.title}
+                href={p.href}
+                className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-lg sm:backdrop-blur no-underline"
+              >
+                <span className="text-3xl" aria-hidden="true">{p.emoji}</span>
+                <h3 className="mt-4 text-base font-bold tracking-tight text-slate-950">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">{p.desc}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-sky-700">
+                  Learn more <span aria-hidden="true">→</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* Products Preview — only after the pillars (§3.3) */}
+      {products.length > 0 ? (
+        <section className="bg-gradient-to-b from-slate-50 to-white py-14 sm:py-18">
+          <Container>
+            <PageHeader
+              level={2}
+              badge="Products"
+              title="Software solving real problems today"
+              subtitle="Finished, usable products — not prototypes."
+              actions={
+                <Link
+                  href="/projects"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
+                >
+                  View all Products
+                </Link>
+              }
+            />
+
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {products.map((p) => {
+                const isExternal =
+                  typeof p.externalUrl === "string" && p.externalUrl.startsWith("http");
+                const href = isExternal ? (p.externalUrl as string) : p.href || `/projects/${p.slug}`;
+                return (
+                  <Link
+                    key={p.slug}
+                    href={href}
+                    {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-lg sm:backdrop-blur no-underline"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-base font-bold tracking-tight text-slate-950">{p.name}</h3>
+                      <span
+                        className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${p.statusColor}`}
+                      >
+                        {p.status}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-700">{p.description}</p>
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-sky-700">
+                      Learn more <span aria-hidden="true">→</span>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
+      ) : null}
+
       {/* Features (defer) */}
       <section className="py-14 sm:py-18" style={deferBelowFold}>
         <Container>
@@ -632,59 +681,65 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Proof / Testimonials (defer) */}
+      {/* Proof / Trust — honest "what's live now" (Website Architecture §3.4) */}
       <section className="py-14 sm:py-18" style={deferBelowFold}>
         <Container>
           <PageHeader
             level={2}
             badge="Proof"
-            title="Built with clarity"
-            subtitle="We keep things simple: strong visuals, strong engineering, and clean delivery."
+            title="What's live now"
+            subtitle="No invented numbers, no anonymous quotes — just what's actually shipped today."
             actions={
               <Link
-                href="/projects"
+                href="/roadmap"
                 className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
               >
-                View projects
+                View Roadmap
               </Link>
             }
           />
 
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            {testimonials.map((t) => (
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { title: "ProfitPilot", desc: "Payroll & business automation — live / near launch." },
+              { title: "FXCopilot", desc: "FX decision support — live today." },
+              { title: "RebirthAgro", desc: "Agriculture technology — in active development." },
+              { title: "Services", desc: "Build, AI & automation, infrastructure, design, and run — live today." },
+            ].map((item) => (
               <div
-                key={t.name}
-                className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-7 shadow-sm transition hover:shadow-lg sm:backdrop-blur"
+                key={item.title}
+                className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm transition hover:shadow-lg sm:backdrop-blur"
               >
-                <div className="absolute -right-24 -top-24 hidden h-64 w-64 rounded-full bg-blue-200/30 blur-3xl md:block" />
-                <div className="relative">
-                  <p className="text-sm leading-relaxed text-slate-700">“{t.quote}”</p>
-                  <div className="mt-6">
-                    <p className="text-sm font-semibold text-slate-900">{t.name}</p>
-                    <p className="text-xs text-slate-500">{t.title}</p>
-                  </div>
-                </div>
+                <p className="text-sm font-bold text-slate-950">{item.title}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">{item.desc}</p>
               </div>
             ))}
           </div>
+        </Container>
+      </section>
 
-          <div className="mt-10 flex flex-col items-center justify-between gap-3 rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-sm sm:flex-row sm:backdrop-blur">
-            <div>
-              <p className="text-base font-semibold tracking-tight text-slate-900">Want your product to feel premium?</p>
-              <p className="mt-1 text-sm text-slate-600">See the work then reach out when you’re ready.</p>
-            </div>
-            <div className="flex gap-3">
+      {/* Company Close (§3.5) */}
+      <section className="py-14 sm:py-18" style={deferBelowFold}>
+        <Container>
+          <div className="rounded-3xl border border-slate-200/70 bg-white/80 p-8 shadow-sm sm:p-10 sm:backdrop-blur">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs font-bold tracking-wider text-slate-500">SOLFLIGH TECH</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                  A platform-plus-products company, built for African conditions first
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                  We build for unreliable connectivity, volatile currency exposure, and fragmented
+                  regulatory information — not just the best-case enterprise customer. Solfligh
+                  Cloud is the shared infrastructure our products stand on; every product we ship
+                  makes that infrastructure stronger for the next one.
+                </p>
+              </div>
               <Link
-                href="/partner"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
+                href="/about"
+                className="inline-flex shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
               >
-                Partner
-              </Link>
-              <Link
-                href="/projects"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
-              >
-                Projects
+                About Solfligh Tech
               </Link>
             </div>
           </div>
@@ -706,7 +761,7 @@ export default function HomePage() {
                   Ready to build something clean, fast, and scalable?
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  Explore our services, see the projects we’re building, or reach out and let’s plan your next release.
+                  Explore our services, see the projects we're building, or reach out and let’s plan your next release.
                 </p>
               </div>
 
