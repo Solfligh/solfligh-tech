@@ -6,15 +6,18 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const primaryLinks = [
-  { href: "/books", label: "eBooks" },  // CHANGED: /ebooks → /books
-  { href: "/blog", label: "Blog" },
-  { href: "/projects", label: "Projects" },
+  { href: "/cloud", label: "Solfligh Cloud" },
+  { href: "/projects", label: "Products" }, // NOTE: label per Website Architecture; href stays /projects until the product-routing pass
   { href: "/services", label: "Services" },
+  { href: "/ai", label: "AI" },
+  { href: "/roadmap", label: "Roadmap" },
 ];
 
 const moreLinks = [
-  { href: "/insights", label: "Insights" },
   { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
+  { href: "/books", label: "eBooks" },
+  { href: "/insights", label: "Insights" },
   { href: "/partner", label: "Partner With Us" },
   { href: "/investors", label: "Investors" },
 ];
@@ -113,7 +116,7 @@ export default function Navbar() {
                     : "text-slate-700 hover:bg-slate-100"
                 }`}
               >
-                More
+                Company
                 <svg
                   className={`h-4 w-4 transition ${openMore ? "rotate-180" : ""}`}
                   viewBox="0 0 24 24"

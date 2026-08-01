@@ -4,9 +4,9 @@ import Image from "next/image";
 export default function Footer() {
   return (
     <footer className="mt-20 border-t border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-12 grid gap-10 md:grid-cols-3">
+      <div className="mx-auto max-w-6xl px-4 py-12 grid gap-10 md:grid-cols-4">
         {/* BRAND */}
-        <div>
+        <div className="md:col-span-1">
           <div className="flex items-center gap-4">
             <div className="relative h-10 w-10">
               <Image
@@ -32,13 +32,26 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* LINKS */}
+        {/* PLATFORM */}
         <div>
-          <div className="font-bold text-slate-950 mb-3">Explore</div>
+          <div className="font-bold text-slate-950 mb-3">Platform</div>
           <ul className="space-y-2 text-sm font-semibold text-slate-700">
-            <li><Link href="/projects">Projects</Link></li>
+            <li><Link href="/cloud">Solfligh Cloud</Link></li>
+            <li><Link href="/projects">Products</Link></li>
             <li><Link href="/services">Services</Link></li>
+            <li><Link href="/ai">AI</Link></li>
+            <li><Link href="/roadmap">Roadmap</Link></li>
+          </ul>
+        </div>
+
+        {/* COMPANY */}
+        <div>
+          <div className="font-bold text-slate-950 mb-3">Company</div>
+          <ul className="space-y-2 text-sm font-semibold text-slate-700">
             <li><Link href="/about">About</Link></li>
+            <li><Link href="/blog">Blog</Link></li>
+            <li><Link href="/books">eBooks</Link></li>
+            <li><Link href="/insights">Insights</Link></li>
             <li><Link href="/investors">Investors</Link></li>
             <li><Link href="/partner">Partner With Us</Link></li>
             <li><Link href="/contact">Contact</Link></li>

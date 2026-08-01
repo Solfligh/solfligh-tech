@@ -18,8 +18,11 @@ function safeDate(value: unknown): Date | null {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}`, priority: 1.0 },
+    { url: `${SITE_URL}/cloud`, priority: 0.9 },
     { url: `${SITE_URL}/projects`, priority: 0.9 },
     { url: `${SITE_URL}/services`, priority: 0.8 },
+    { url: `${SITE_URL}/ai`, priority: 0.7 },
+    { url: `${SITE_URL}/roadmap`, priority: 0.7 },
     { url: `${SITE_URL}/about`, priority: 0.7 },
     { url: `${SITE_URL}/contact`, priority: 0.6 },
   ];
