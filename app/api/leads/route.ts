@@ -86,22 +86,30 @@ export async function POST(req: Request) {
       if (!email || !isValidEmail(email)) return json(400, { ok: false, error: "Valid email is required." });
       if (message.length > 2000) return json(400, { ok: false, error: "Message is too long." });
 
-      // ✅ FIX: always set status + created_at
-      const { error: dbErr } = await supabaseAdmin.from("leads").insert({
-        project_slug: projectSlug,
-        name,
-        email,
-        company: company || null,
-        message: message || null,
-        source: source || "projects",
-        status: "new",
-        contacted_at: null,
-        ip: ip || null,
-        user_agent: userAgent || null,
-        created_at: new Date().toISOString(),
-      });
-
-      if (dbErr) return json(500, { ok: false, error: dbErr.message });
+      // Persist the lead. A storage failure must NOT prevent the
+      // notification email below: previously this returned 500 here,
+      // which silently dropped the lead entirely whenever the database
+      // was unreachable (as it was for months while the old Supabase
+      // project was paused). Email is the durable fallback.
+      let stored = true;
+      try {
+        const { error: dbErr } = await supabaseAdmin.from("leads").insert({
+          project_slug: projectSlug,
+          name,
+          email,
+          company: company || null,
+          message: message || null,
+          source: source || "projects",
+          status: "new",
+          contacted_at: null,
+          ip: ip || null,
+          user_agent: userAgent || null,
+          created_at: new Date().toISOString(),
+        });
+        if (dbErr) stored = false;
+      } catch {
+        stored = false;
+      }
 
       const cfg = getResendConfig();
       if (cfg.ok) {
@@ -114,12 +122,14 @@ export async function POST(req: Request) {
             to: cfg.to,
             subject,
             replyTo: email,
-            text: `Project: ${projectSlug}\nName: ${name}\nEmail: ${email}\n\n${message || ""}`,
+            text: `Project: ${projectSlug}\nName: ${name}\nEmail: ${email}\nStored in DB: ${
+              stored ? "yes" : "NO — database write failed, this email is the only record"
+            }\n\n${message || ""}`,
           });
         } catch {}
       }
 
-      return json(200, { ok: true });
+      return json(200, { ok: true, stored });
     }
 
     /* ============================================================
@@ -149,20 +159,25 @@ export async function POST(req: Request) {
         text: message,
       });
 
-      // ✅ FIX: clean storage for admin UI
-      await supabaseAdmin.from("leads").insert({
-        project_slug: null,
-        name,
-        email,
-        company: firm || null,
-        message,
-        source: kind,
-        status: "new",
-        contacted_at: null,
-        ip: ip || null,
-        user_agent: userAgent || null,
-        created_at: new Date().toISOString(),
-      });
+      // Best-effort storage; the email above has already been sent,
+      // so a DB failure here must never fail the request.
+      try {
+        await supabaseAdmin.from("leads").insert({
+          project_slug: null,
+          name,
+          email,
+          company: firm || null,
+          message,
+          source: kind,
+          status: "new",
+          contacted_at: null,
+          ip: ip || null,
+          user_agent: userAgent || null,
+          created_at: new Date().toISOString(),
+        });
+      } catch {
+        // Lead already emailed; storage is non-critical here.
+      }
 
       return json(200, { ok: true });
     }
