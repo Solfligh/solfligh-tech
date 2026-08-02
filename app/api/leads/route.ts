@@ -146,23 +146,11 @@ export async function POST(req: Request) {
       if (!email || !isValidEmail(email)) return json(400, { ok: false, error: "Valid email is required." });
       if (!message || message.length < 10) return json(400, { ok: false, error: "Message too short." });
 
-      const cfg = getResendConfig();
-      if (!cfg.ok) return json(500, { ok: false, error: cfg.error });
-
-      const resend = new Resend(cfg.apiKey);
-
-      await resend.emails.send({
-        from: cfg.from,
-        to: cfg.to,
-        subject: `New ${kind.toUpperCase()} Lead — SOLFLIGH TECH`,
-        replyTo: email,
-        text: message,
-      });
-
-      // Best-effort storage; the email above has already been sent,
-      // so a DB failure here must never fail the request.
+      // Store first. Neither a database failure nor a missing/broken
+      // email configuration may cause a captured lead to be discarded.
+      let stored = true;
       try {
-        await supabaseAdmin.from("leads").insert({
+        const { error: dbErr } = await supabaseAdmin.from("leads").insert({
           project_slug: null,
           name,
           email,
@@ -175,11 +163,46 @@ export async function POST(req: Request) {
           user_agent: userAgent || null,
           created_at: new Date().toISOString(),
         });
+        if (dbErr) stored = false;
       } catch {
-        // Lead already emailed; storage is non-critical here.
+        stored = false;
       }
 
-      return json(200, { ok: true });
+      // Notify by email. Previously a missing RESEND_* config returned
+      // 500 here BEFORE anything was stored, so the lead was lost
+      // entirely; and an unwrapped send() would throw on any Resend
+      // outage with the same result.
+      let notified = false;
+      const cfg = getResendConfig();
+      if (cfg.ok) {
+        try {
+          const resend = new Resend(cfg.apiKey);
+          await resend.emails.send({
+            from: cfg.from,
+            to: cfg.to,
+            subject: `New ${kind.toUpperCase()} Lead — SOLFLIGH TECH`,
+            replyTo: email,
+            text: `Name: ${name}\nEmail: ${email}${
+              firm ? `\nFirm: ${firm}` : ""
+            }\nStored in DB: ${stored ? "yes" : "NO — this email is the only record"}\n\n${message}`,
+          });
+          notified = true;
+        } catch {
+          notified = false;
+        }
+      }
+
+      // Only fail the request if BOTH channels failed — otherwise the
+      // lead is safely recorded somewhere and the visitor should see
+      // success.
+      if (!stored && !notified) {
+        return json(500, {
+          ok: false,
+          error: "We could not record your message. Please email us directly.",
+        });
+      }
+
+      return json(200, { ok: true, stored, notified });
     }
 
     return json(400, { ok: false, error: "Invalid payload." });
