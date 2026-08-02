@@ -130,7 +130,7 @@ function asStringArray(v: any): string[] {
   return [];
 }
 
-function asDemoStatus(v: any): ProjectPayload["demoStatus"] {
+export function asDemoStatus(v: any): ProjectPayload["demoStatus"] {
   const s = String(v || "").toLowerCase();
   if (s === "demo" || s === "live") return s;
   return "none";

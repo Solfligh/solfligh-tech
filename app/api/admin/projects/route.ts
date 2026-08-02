@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { upsertProject } from "../../../lib/projectStore";
+import { upsertProject, asDemoStatus } from "../../../lib/projectStore";
 
 export const runtime = "nodejs";
 
@@ -69,6 +69,8 @@ export async function POST(req: Request) {
     href,
     externalUrl,
     published: Boolean(body.published),
+    demoStatus: asDemoStatus(body.demoStatus),
+    featured: Boolean(body.featured),
     media,
 
     problem: String(body.problem || ""),
