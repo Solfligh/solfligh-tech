@@ -17,6 +17,9 @@ export default function LeadForm({
   const [email, setEmail] = useState("");
   const [firm, setFirm] = useState("");
   const [message, setMessage] = useState("");
+  // Honeypot: bots fill this, humans never see it. The API already
+  // silently accepts-and-discards any submission where it is set.
+  const [website, setWebsite] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [ok, setOk] = useState(false);
@@ -42,6 +45,7 @@ export default function LeadForm({
           email,
           firm: includeFirm ? firm : undefined,
           message,
+          website,
         }),
       });
 
@@ -72,8 +76,13 @@ export default function LeadForm({
       }}
     >
       <div>
-        <label className="text-sm font-bold text-slate-950">Name</label>
+        <label htmlFor={`${kind}-name`} className="text-sm font-bold text-slate-950">
+          Name
+        </label>
         <input
+          id={`${kind}-name`}
+          name="name"
+          autoComplete="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           type="text"
@@ -83,8 +92,13 @@ export default function LeadForm({
       </div>
 
       <div>
-        <label className="text-sm font-bold text-slate-950">Email</label>
+        <label htmlFor={`${kind}-email`} className="text-sm font-bold text-slate-950">
+          Email
+        </label>
         <input
+          id={`${kind}-email`}
+          name="email"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
@@ -95,8 +109,13 @@ export default function LeadForm({
 
       {includeFirm && (
         <div>
-          <label className="text-sm font-bold text-slate-950">Firm / Organization</label>
+          <label htmlFor={`${kind}-firm`} className="text-sm font-bold text-slate-950">
+            Firm / Organization
+          </label>
           <input
+            id={`${kind}-firm`}
+            name="firm"
+            autoComplete="organization"
             value={firm}
             onChange={(e) => setFirm(e.target.value)}
             type="text"
@@ -107,13 +126,31 @@ export default function LeadForm({
       )}
 
       <div>
-        <label className="text-sm font-bold text-slate-950">Message</label>
+        <label htmlFor={`${kind}-message`} className="text-sm font-bold text-slate-950">
+          Message
+        </label>
         <textarea
+          id={`${kind}-message`}
+          name="message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={6}
           placeholder="Describe the request, goals, and timeline..."
           className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-sky-400"
+        />
+      </div>
+
+      {/* Honeypot — hidden from sighted users, screen readers, and tab order */}
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor={`${kind}-website`}>Website</label>
+        <input
+          id={`${kind}-website`}
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
         />
       </div>
 
@@ -125,9 +162,13 @@ export default function LeadForm({
         {loading ? "Sending..." : buttonText}
       </button>
 
-      {err && <p className="text-sm font-semibold text-red-600">{err}</p>}
+      {err && (
+        <p role="alert" className="text-sm font-semibold text-red-600">
+          {err}
+        </p>
+      )}
       {ok && (
-        <p className="text-sm font-semibold text-emerald-700">
+        <p role="status" className="text-sm font-semibold text-emerald-700">
           Sent successfully — we’ll get back to you.
         </p>
       )}

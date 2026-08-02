@@ -1,5 +1,6 @@
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
+import LeadForm from "@/app/components/LeadForm";
 
 export default function PartnerPage() {
   return (
@@ -41,44 +42,7 @@ export default function PartnerPage() {
             Share a quick overview and we’ll respond with next steps.
           </p>
 
-          <form className="mt-6 grid gap-4">
-            <div>
-              <label className="text-sm font-bold text-slate-950">Name</label>
-              <input
-                type="text"
-                placeholder="Your name"
-                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-sky-400"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-bold text-slate-950">Email</label>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-sky-400"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-bold text-slate-950">
-                What do you want to collaborate on?
-              </label>
-              <textarea
-                rows={5}
-                placeholder="Describe the idea, goals, timeline, and any context..."
-                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-sky-400"
-              />
-            </div>
-
-            <button
-              type="button"
-              className="mt-2 inline-flex items-center justify-center rounded-full bg-sky-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-sky-500"
-            >
-              Send Partnership Request
-            </button>
-
-          </form>
+          <LeadForm kind="partner" buttonText="Send Partnership Request" />
         </div>
       </div>
     </Container>
