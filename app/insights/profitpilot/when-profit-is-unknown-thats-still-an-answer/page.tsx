@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import Container from "@/app/components/Container";
 import ProfitLogicClarification from "@/app/components/ProfitLogicClarification";
 
@@ -49,7 +48,7 @@ export default function ProfitUnknownArticlePage() {
     tag: "Product Solution",
     readingTime: "4–6 min",
     dateLabel: "Jan 2026",
-    coverImage: "/insights/profitpilot/posts/profit-unknown.jpg",
+    accent: "from-sky-200 to-blue-200",
     title: "When Profit Is Unknown, That’s Still an Answer",
     subtitle:
       "Sometimes the most honest number is: “we don’t know yet.” ProfitPilot treats profit as a proven number not a guess.",
@@ -124,14 +123,7 @@ export default function ProfitUnknownArticlePage() {
             {/* Cover */}
             <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               <div className="relative h-[240px] w-full sm:h-[340px] md:h-[400px]">
-                <Image
-                  src={meta.coverImage}
-                  alt={meta.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 1100px"
-                  priority={false}
-                />
+                <div className={`absolute inset-0 bg-gradient-to-br ${meta.accent}`} />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent" />
               </div>
             </div>

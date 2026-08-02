@@ -162,7 +162,6 @@ const POSTS: InsightPost[] = [
     dateLabel: "Jan 2026",
     dateISO: "2026-01-18",
     accent: "from-sky-500/20 to-blue-500/10",
-    coverImage: "/insights/profitpilot/posts/profit-unknown.jpg",
   },
 ];
 
