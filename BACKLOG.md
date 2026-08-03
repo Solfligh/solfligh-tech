@@ -12,6 +12,27 @@ Prioritized work queue. Read `CLAUDE.md` first for project rules and constraints
 
 ---
 
+## Status — 2026-08-03
+
+| # | Task | State |
+|---|---|---|
+| 1 | Broken image on a live article | Done — PR #1 |
+| 2 | `/api/admin/categories` | Done — PR #2, **but see correction below** |
+| 3 | `/admin` Status dropdown | Done — PR #3 |
+| 4 | `images.domains` deprecated | Done — PR #4 |
+| 5 | `middleware` → `proxy` | Done — PR #5 |
+| 6 | Dependency housekeeping | Partial — PR #6 (browserslist), PR #7 (resend/supabase). See task 16. |
+
+**Correction to task 2 as written.** The premise was out of date. `getCategories`
+and `saveCategories` *did* exist in `app/lib/posts.ts`, and the route's relative
+import resolves there (not to the root `lib/posts.ts`), so it compiled and
+returned data — it was never throwing. The real defect was persistence: writes
+went to `public/data/*.json` via `fs.writeFileSync`, which fails on a read-only
+serverless filesystem, and the public blog read the baked-in static JSON. Both
+now go through Supabase.
+
+---
+
 ## P0 — Visible breakage
 
 ### 1. Broken image on a live article
@@ -69,6 +90,54 @@ maintenance mode via `MAINTENANCE_MODE`.
 - `npm audit` — review the 14 reported vulnerabilities.
   **Do NOT run `npm audit fix --force`**; it installs breaking major versions.
   Report findings and propose specific upgrades instead.
+
+### 14. Vercel preview deployments have no Supabase env vars
+
+**Every PR preview fails to build**, regardless of what the PR changes. Production
+(`main`) is green because it has the env vars; Preview does not.
+
+Reproduced locally: with `NEXT_PUBLIC_SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY` removed, `npm run build` dies at
+`Failed to collect page data for /api/admin/leads`, because
+`app/lib/supabaseAdmin.ts` throws at module evaluation when either is missing.
+
+- Add both vars to Vercel's **Preview** environment
+- **Done when:** a PR preview deploys green
+- Consider also making `supabaseAdmin.ts` fail lazily rather than at import
+  time, so a missing env var degrades one route instead of the whole build
+
+### 15. Books/chapters admin still writes JSON at runtime
+
+Same class of bug as task 2, not fixed by it. `/api/admin/books` and
+`/api/admin/chapters` still persist via `fs.writeFileSync` into `public/data/`,
+and `app/admin/blog/page.tsx` reads `/data/books.json` + `/data/chapters.json`
+directly. That cannot work on a read-only serverless filesystem.
+
+- Migrate to Supabase following the pattern now used for `posts`/`categories`
+  in `app/lib/posts.ts` (`hasSupabase()` gate, Supabase read with JSON fallback)
+- Keep `public/data/*.json` as the local/dev fallback
+- **Done when:** a book or chapter saved through `/admin/blog` survives a redeploy
+
+### 16. Finish the npm audit remediation (continues task 6)
+
+`npm audit` is at **10** (1 low, 1 moderate, 8 high), down from 14 after PR #7.
+**Do NOT run `npm audit fix --force`.** Remaining, in priority order:
+
+1. **`next` 16.1.1 → 16.2.12** — clears `next` (high) and `sharp` (high, libvips
+   CVEs). Despite the earlier warning in task 6, npm reports this as
+   `isSemVerMajor: false` — it is a **minor** bump. It only trips the "outside
+   the stated dependency range" message because `package.json` pins `next` to an
+   exact `16.1.1` with no caret. Biggest blast radius of what is left; give it
+   its own PR and a real smoke test.
+2. **`postcss` devDep → 8.5.25** — trivial, in range.
+3. **`postcss` bundled inside Next — cannot currently be fixed.** `next@16.2.12`
+   still pins `postcss 8.4.31`, which stays inside the vulnerable range
+   (`<=8.5.17`). npm's claim that upgrading Next fixes postcss is wrong. Low
+   practical risk: the advisory needs attacker-controlled CSS comments, and all
+   CSS here is authored. Revisit when Next ships a newer postcss.
+4. **7 dev-only transitives** (`@babel/core`, `ajv`, `brace-expansion`,
+   `flatted`, `js-yaml`, `minimatch`, `picomatch`) — eslint/babel toolchain,
+   never shipped to users. No action; they clear on the next eslint update.
 
 ---
 
@@ -138,6 +207,29 @@ Website Architecture §9 lists Careers under Company. It does not exist.
 
 **Ask the founder before building:** are there actual openings, or should this be
 a "no current openings, get in touch" page? Do not invent job listings.
+
+### 17. Blog comments are localStorage-only, and `app/lib/comments.ts` is dead code
+
+`app/blog/[slug]/page.tsx` stores comments in `localStorage`. A visitor therefore
+only ever sees **their own** comments, on **one** browser, and they vanish when
+storage is cleared. Nothing is persisted server-side and no one else can read them.
+
+Meanwhile `app/lib/comments.ts` exports `fetchComments`/`addComment` that POST to
+a Google Apps Script webhook — **nothing imports them**. It looks like the
+intended real backend that was never wired up. (Its missing-quote syntax error
+was fixed in PR #8; the file still parses only because nothing imports it.)
+
+**Decision needed before any code:** is a real comments system wanted?
+- If yes: a `comments` table fits the Supabase pattern already established for
+  `posts`/`categories`. Needs a moderation/spam story before going public.
+- If no: delete `app/lib/comments.ts` and either remove the comment UI or label
+  it clearly as local-only notes.
+
+Either way, do not leave it as-is — the current UI implies comments are public
+when they are not.
+
+If the Apps Script approach is kept, rotate the webhook URL and move it to an
+env var. It is a capability URL and is already committed in git history (`66ff4fd`).
 
 ---
 
