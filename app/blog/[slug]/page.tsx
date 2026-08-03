@@ -57,10 +57,10 @@ export default function ArticlePage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const postsRes = await fetch('/data/posts.json');
+        const postsRes = await fetch('/api/posts');
         const postsData = await postsRes.json();
-        
-        const categoriesRes = await fetch('/data/categories.json');
+
+        const categoriesRes = await fetch('/api/categories');
         const categoriesData = await categoriesRes.json();
         
         const foundPost = postsData.find((p: BlogPost) => p.slug === slug);
