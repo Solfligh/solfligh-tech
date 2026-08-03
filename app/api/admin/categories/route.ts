@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCategories, saveCategories } from '../../../lib/posts';
+import { requireAdmin } from '../_auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+
   try {
     const categories = await getCategories();
     return NextResponse.json(categories);
@@ -12,6 +16,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+
   try {
     const categories = await request.json();
     if (!Array.isArray(categories)) {

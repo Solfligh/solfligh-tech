@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { requireAdmin } from '../_auth';
 
 // CORRECTED PATH - using public/data/
 const chaptersFilePath = path.join(process.cwd(), 'public', 'data', 'chapters.json');
@@ -42,6 +43,9 @@ function writeChapters(chapters: any[]): boolean {
 }
 
 export async function GET(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+
   let chapters = readChapters();
   const { searchParams } = new URL(request.url);
   const bookId = searchParams.get('bookId');
@@ -54,6 +58,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+
   const chapter = await request.json();
   
   if (!chapter || !chapter.title || !chapter.content) {
@@ -110,8 +117,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+
   const { id } = await request.json();
-  
+
   if (!id) {
     return NextResponse.json({ error: 'Chapter ID is required' }, { status: 400 });
   }
