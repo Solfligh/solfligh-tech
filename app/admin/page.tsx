@@ -47,18 +47,24 @@ type DraftAnswers = {
   magic: string;
   howItWorks: string;
   differentiator: string;
-  status: "Live / Near Launch" | "In Development" | "Upcoming";
+  status: "Live" | "Live / Near Launch" | "In Development" | "Upcoming";
   platforms: string;
   tech: string;
 };
 
 const STATUS_PRESETS: Record<string, { color: string; cta: string }> = {
+  // Colors match the values already stored for live projects, so editing an
+  // existing project through the admin UI does not silently restyle its badge.
+  Live: {
+    color: "bg-sky-100 text-sky-700 border-sky-200",
+    cta: "View project",
+  },
   "Live / Near Launch": {
     color: "bg-emerald-100 text-emerald-700 border-emerald-200",
     cta: "View project",
   },
   "In Development": {
-    color: "bg-sky-100 text-sky-700 border-sky-200",
+    color: "bg-amber-100 text-amber-700 border-amber-200",
     cta: "Get updates",
   },
   Upcoming: {
@@ -399,6 +405,7 @@ export default function AdminPage() {
                       <option>Upcoming</option>
                       <option>In Development</option>
                       <option>Live / Near Launch</option>
+                      <option>Live</option>
                     </select>
                   </div>
 
