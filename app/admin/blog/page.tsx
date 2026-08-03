@@ -106,8 +106,8 @@ export default function BlogAdmin() {
     setLoading(true);
     try {
       const [postsRes, catsRes] = await Promise.all([
-        fetch('/data/posts.json').then(res => res.json()).catch(() => []),
-        fetch('/data/categories.json').then(res => res.json()).catch(() => []),
+        fetch('/api/admin/posts').then(res => res.json()).catch(() => []),
+        fetch('/api/admin/categories').then(res => res.json()).catch(() => []),
       ]);
       setPosts(postsRes);
       setCategories(catsRes);

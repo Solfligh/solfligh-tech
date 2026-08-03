@@ -36,8 +36,8 @@ export default function BlogPage() {
     async function loadData() {
       try {
         const [postsData, categoriesData] = await Promise.all([
-          fetch('/data/posts.json').then(res => res.json()).catch(() => []),
-          fetch('/data/categories.json').then(res => res.json()).catch(() => []),
+          fetch('/api/posts').then(res => res.json()).catch(() => []),
+          fetch('/api/categories').then(res => res.json()).catch(() => []),
         ]);
         setPosts(postsData);
         setCategories(categoriesData);
