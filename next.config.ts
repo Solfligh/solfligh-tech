@@ -12,13 +12,13 @@ const nextConfig: NextConfig = {
    * Added Google Drive support for blog images
    */
   images: {
-    domains: [
-      // "YOURPROJECT.supabase.co",
-      "fxco-pilot.solflightech.org",
-      "drive.google.com",
-      "lh3.googleusercontent.com",
-    ],
+    // `domains` is deprecated in Next 16 (it matches on hostname only, which is
+    // a security risk). Every host previously listed there is preserved below.
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "fxco-pilot.solflightech.org",
+      },
       {
         protocol: "https",
         hostname: "drive.google.com",
