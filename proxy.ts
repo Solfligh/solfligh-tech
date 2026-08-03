@@ -1,8 +1,8 @@
-// middleware.ts
+// proxy.ts
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * SOLFLIGH TECH  Maintenance Mode Middleware (SEO-safe)
+ * SOLFLIGH TECH  Maintenance Mode Proxy (SEO-safe)
  *
  * IMPORTANT:
  * - Only the literal string "true" enables maintenance mode.
@@ -39,7 +39,7 @@ function isStaticAsset(pathname: string) {
   );
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Always allow Next internals, admin, maintenance page, and static assets
@@ -77,7 +77,7 @@ export function middleware(req: NextRequest) {
   return res;
 }
 
-// Optional: limit middleware to routes that matter (keeps it fast & predictable)
+// Optional: limit the proxy to routes that matter (keeps it fast & predictable)
 export const config = {
   matcher: [
     /*
