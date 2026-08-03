@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { requireAdmin } from '../_auth';
 
 // CORRECTED PATH - using public/data/
 const booksFilePath = path.join(process.cwd(), 'public', 'data', 'books.json');
@@ -41,12 +42,18 @@ function writeBooks(books: any[]): boolean {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+
   const books = readBooks();
   return NextResponse.json(books);
 }
 
 export async function POST(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+
   const book = await request.json();
   
   if (!book || !book.title) {
@@ -86,8 +93,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+
   const { id } = await request.json();
-  
+
   if (!id) {
     return NextResponse.json({ error: 'Book ID is required' }, { status: 400 });
   }

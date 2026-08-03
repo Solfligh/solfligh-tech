@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 
-// Simple password protection
-const ADMIN_PASSWORD = 'solfligh2025';
+// Admin auth uses the server-side ADMIN_TOKEN, sent as an x-admin-token header
+// on every /api/admin/* call. There is deliberately no password constant here:
+// anything hardcoded in a 'use client' file ships to every visitor in the JS
+// bundle and is not protection.
 
 interface BlogPost {
   id: string;
@@ -50,7 +52,8 @@ interface Chapter {
 
 export default function BlogAdmin() {
   const [authenticated, setAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
+  const [adminToken, setAdminToken] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
@@ -102,12 +105,21 @@ export default function BlogAdmin() {
     }
   }, [authenticated]);
 
+  // Every /api/admin/* call must carry the admin token.
+  function authHeaders(): Record<string, string> {
+    return { 'x-admin-token': adminToken.trim() };
+  }
+
+  function jsonAuthHeaders(): Record<string, string> {
+    return { 'Content-Type': 'application/json', ...authHeaders() };
+  }
+
   async function loadData() {
     setLoading(true);
     try {
       const [postsRes, catsRes] = await Promise.all([
-        fetch('/api/admin/posts').then(res => res.json()).catch(() => []),
-        fetch('/api/admin/categories').then(res => res.json()).catch(() => []),
+        fetch('/api/admin/posts', { headers: authHeaders() }).then(res => res.json()).catch(() => []),
+        fetch('/api/admin/categories', { headers: authHeaders() }).then(res => res.json()).catch(() => []),
       ]);
       setPosts(postsRes);
       setCategories(catsRes);
@@ -120,8 +132,8 @@ export default function BlogAdmin() {
   async function loadBooksAndChapters() {
     try {
       const [booksRes, chaptersRes] = await Promise.all([
-        fetch('/data/books.json').then(res => res.json()).catch(() => []),
-        fetch('/data/chapters.json').then(res => res.json()).catch(() => []),
+        fetch('/api/admin/books', { headers: authHeaders() }).then(res => res.json()).catch(() => []),
+        fetch('/api/admin/chapters', { headers: authHeaders() }).then(res => res.json()).catch(() => []),
       ]);
       setBooks(booksRes);
       setChapters(chaptersRes);
@@ -130,12 +142,37 @@ export default function BlogAdmin() {
     }
   }
 
-  function handleLogin(e: React.FormEvent) {
+  // Validated by the server, not by comparing a string in the browser: we make a
+  // real authenticated request and only proceed if the API accepts the token.
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setAuthenticated(true);
-    } else {
-      alert('Wrong password');
+    setLoginError('');
+
+    const token = adminToken.trim();
+    if (!token) {
+      setLoginError('Enter your admin token.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/posts', {
+        headers: { 'x-admin-token': token },
+      });
+
+      if (res.ok) {
+        setAuthenticated(true);
+        return;
+      }
+
+      if (res.status === 401) {
+        setLoginError('Invalid admin token.');
+      } else if (res.status === 500) {
+        setLoginError('ADMIN_TOKEN is not configured on the server.');
+      } else {
+        setLoginError(`Login failed (${res.status}).`);
+      }
+    } catch {
+      setLoginError('Could not reach the server.');
     }
   }
 
@@ -162,7 +199,7 @@ export default function BlogAdmin() {
 
     const response = await fetch('/api/admin/posts', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: jsonAuthHeaders(),
       body: JSON.stringify(newPost),
     });
 
@@ -179,7 +216,7 @@ export default function BlogAdmin() {
     if (confirm('Delete this article?')) {
       await fetch('/api/admin/posts', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers: jsonAuthHeaders(),
         body: JSON.stringify({ id }),
       });
       await loadData();
@@ -189,7 +226,7 @@ export default function BlogAdmin() {
   async function saveCategories() {
     const response = await fetch('/api/admin/categories', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: jsonAuthHeaders(),
       body: JSON.stringify(categories),
     });
 
@@ -271,7 +308,7 @@ export default function BlogAdmin() {
 
     const response = await fetch('/api/admin/books', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: jsonAuthHeaders(),
       body: JSON.stringify(newBook),
     });
 
@@ -290,13 +327,13 @@ export default function BlogAdmin() {
       for (const chapter of bookChapters) {
         await fetch('/api/admin/chapters', {
           method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
+          headers: jsonAuthHeaders(),
           body: JSON.stringify({ id: chapter.id }),
         });
       }
       await fetch('/api/admin/books', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers: jsonAuthHeaders(),
         body: JSON.stringify({ id }),
       });
       await loadBooksAndChapters();
@@ -354,7 +391,7 @@ export default function BlogAdmin() {
 
     const response = await fetch('/api/admin/chapters', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: jsonAuthHeaders(),
       body: JSON.stringify(newChapter),
     });
 
@@ -371,7 +408,7 @@ export default function BlogAdmin() {
     if (confirm('Delete this chapter?')) {
       await fetch('/api/admin/chapters', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers: jsonAuthHeaders(),
         body: JSON.stringify({ id }),
       });
       await loadBooksAndChapters();
@@ -405,14 +442,21 @@ export default function BlogAdmin() {
       <div className="flex min-h-screen items-center justify-center">
         <form onSubmit={handleLogin} className="w-96 rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
           <h1 className="mb-4 text-2xl font-bold">Blog Admin</h1>
-          <p className="mb-4 text-sm text-slate-500">Enter password to manage articles, books, and categories</p>
+          <p className="mb-4 text-sm text-slate-500">
+            Enter your admin token to manage articles, books, and categories
+          </p>
           <input
             type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mb-4 w-full rounded-lg border border-slate-200 px-4 py-2 focus:border-sky-400 focus:outline-none"
+            placeholder="Admin token"
+            value={adminToken}
+            onChange={(e) => setAdminToken(e.target.value)}
+            className="mb-2 w-full rounded-lg border border-slate-200 px-4 py-2 focus:border-sky-400 focus:outline-none"
           />
+          {loginError ? (
+            <p className="mb-3 text-sm font-medium text-red-600">{loginError}</p>
+          ) : (
+            <div className="mb-3" />
+          )}
           <button type="submit" className="w-full rounded-full bg-sky-600 py-2 text-white hover:bg-sky-500">
             Login
           </button>
