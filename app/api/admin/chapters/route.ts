@@ -1,117 +1,82 @@
 // /app/api/admin/chapters/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { requireAdmin } from '../_auth';
-
-// CORRECTED PATH - using public/data/
-const chaptersFilePath = path.join(process.cwd(), 'public', 'data', 'chapters.json');
-
-// Helper to ensure data directory exists
-function ensureDataDir() {
-  const dir = path.join(process.cwd(), 'public', 'data');
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-}
-
-// Helper function to read chapters from file
-function readChapters(): any[] {
-  ensureDataDir();
-  try {
-    if (!fs.existsSync(chaptersFilePath)) {
-      fs.writeFileSync(chaptersFilePath, JSON.stringify([], null, 2));
-      return [];
-    }
-    const data = fs.readFileSync(chaptersFilePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading chapters:', error);
-    return [];
-  }
-}
-
-// Helper function to write chapters to file
-function writeChapters(chapters: any[]): boolean {
-  try {
-    fs.writeFileSync(chaptersFilePath, JSON.stringify(chapters, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Error writing chapters:', error);
-    return false;
-  }
-}
+import {
+  getChapters,
+  saveChapter,
+  deleteChapter,
+  chapterNumberExists,
+  type Chapter,
+} from '../../../lib/booksStore';
 
 export async function GET(request: NextRequest) {
   const denied = requireAdmin(request);
   if (denied) return denied;
 
-  let chapters = readChapters();
-  const { searchParams } = new URL(request.url);
-  const bookId = searchParams.get('bookId');
-  
-  if (bookId) {
-    chapters = chapters.filter((c: any) => c.bookId === bookId);
+  try {
+    const { searchParams } = new URL(request.url);
+    const bookId = searchParams.get('bookId') || undefined;
+    const chapters = await getChapters(bookId);
+    return NextResponse.json(chapters);
+  } catch (err) {
+    console.error('GET /api/admin/chapters failed:', err);
+    return NextResponse.json({ error: 'Failed to load chapters' }, { status: 500 });
   }
-  
-  return NextResponse.json(chapters);
 }
 
 export async function POST(request: NextRequest) {
   const denied = requireAdmin(request);
   if (denied) return denied;
 
-  const chapter = await request.json();
-  
-  if (!chapter || !chapter.title || !chapter.content) {
-    return NextResponse.json({ error: 'Chapter title and content are required' }, { status: 400 });
-  }
-  
-  if (!chapter.bookId) {
-    return NextResponse.json({ error: 'Book ID is required' }, { status: 400 });
-  }
+  try {
+    const chapter = await request.json();
 
-  let chapters = readChapters();
-  
-  if (chapter.id) {
-    // Update existing chapter
-    const index = chapters.findIndex((c: any) => c.id === chapter.id);
-    if (index !== -1) {
-      chapters[index] = { ...chapters[index], ...chapter, updatedAt: new Date().toISOString() };
+    if (!chapter || !chapter.title || !chapter.content) {
+      return NextResponse.json(
+        { error: 'Chapter title and content are required' },
+        { status: 400 }
+      );
+    }
+
+    if (!chapter.bookId) {
+      return NextResponse.json({ error: 'Book ID is required' }, { status: 400 });
+    }
+
+    const now = new Date().toISOString();
+    let next: Chapter;
+
+    if (chapter.id) {
+      const existing = (await getChapters()).find((c) => c.id === chapter.id);
+      if (!existing) {
+        return NextResponse.json({ error: 'Chapter not found' }, { status: 404 });
+      }
+      next = { ...existing, ...chapter, updatedAt: now };
     } else {
-      return NextResponse.json({ error: 'Chapter not found' }, { status: 404 });
+      const taken = await chapterNumberExists(chapter.bookId, chapter.chapterNumber);
+      if (taken) {
+        return NextResponse.json(
+          { error: 'Chapter number already exists for this book' },
+          { status: 400 }
+        );
+      }
+
+      next = {
+        id: Date.now().toString(),
+        bookId: chapter.bookId,
+        bookSlug: chapter.bookSlug || '',
+        chapterNumber: chapter.chapterNumber,
+        title: chapter.title,
+        content: chapter.content,
+        publishedAt: chapter.publishedAt || now,
+        createdAt: now,
+        updatedAt: now,
+      };
     }
-  } else {
-    // Check if chapter number already exists for this book
-    const existingChapter = chapters.find(
-      (c: any) => c.bookId === chapter.bookId && c.chapterNumber === chapter.chapterNumber
-    );
-    
-    if (existingChapter) {
-      return NextResponse.json({ error: 'Chapter number already exists for this book' }, { status: 400 });
-    }
-    
-    // Create new chapter
-    const newChapter = {
-      id: Date.now().toString(),
-      bookId: chapter.bookId,
-      bookSlug: chapter.bookSlug || '',
-      chapterNumber: chapter.chapterNumber,
-      title: chapter.title,
-      content: chapter.content,
-      publishedAt: chapter.publishedAt || new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    chapters.push(newChapter);
-  }
-  
-  // Sort chapters by chapter number
-  chapters.sort((a: any, b: any) => a.chapterNumber - b.chapterNumber);
-  
-  if (writeChapters(chapters)) {
-    return NextResponse.json({ success: true, chapters });
-  } else {
+
+    await saveChapter(next);
+    return NextResponse.json({ success: true, chapters: await getChapters() });
+  } catch (err) {
+    console.error('POST /api/admin/chapters failed:', err);
     return NextResponse.json({ error: 'Failed to save chapter' }, { status: 500 });
   }
 }
@@ -120,22 +85,22 @@ export async function DELETE(request: NextRequest) {
   const denied = requireAdmin(request);
   if (denied) return denied;
 
-  const { id } = await request.json();
+  try {
+    const { id } = await request.json();
 
-  if (!id) {
-    return NextResponse.json({ error: 'Chapter ID is required' }, { status: 400 });
-  }
-  
-  let chapters = readChapters();
-  const filteredChapters = chapters.filter((c: any) => c.id !== id);
-  
-  if (filteredChapters.length === chapters.length) {
-    return NextResponse.json({ error: 'Chapter not found' }, { status: 404 });
-  }
-  
-  if (writeChapters(filteredChapters)) {
+    if (!id) {
+      return NextResponse.json({ error: 'Chapter ID is required' }, { status: 400 });
+    }
+
+    const chapters = await getChapters();
+    if (!chapters.some((c) => c.id === id)) {
+      return NextResponse.json({ error: 'Chapter not found' }, { status: 404 });
+    }
+
+    await deleteChapter(id);
     return NextResponse.json({ success: true });
-  } else {
+  } catch (err) {
+    console.error('DELETE /api/admin/chapters failed:', err);
     return NextResponse.json({ error: 'Failed to delete chapter' }, { status: 500 });
   }
 }
