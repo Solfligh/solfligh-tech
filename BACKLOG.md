@@ -12,7 +12,11 @@ Prioritized work queue. Read `CLAUDE.md` first for project rules and constraints
 
 ---
 
-## Status — 2026-08-03
+## Status — 2026-08-05
+
+**All P0, P1, and P2 build tasks are complete.** What remains is two founder
+decisions (11, 17) and two documentation corrections that target files which do
+not live in this repo (12, 13).
 
 | # | Task | State |
 |---|---|---|
@@ -21,7 +25,35 @@ Prioritized work queue. Read `CLAUDE.md` first for project rules and constraints
 | 3 | `/admin` Status dropdown | Done — PR #3 |
 | 4 | `images.domains` deprecated | Done — PR #4 |
 | 5 | `middleware` → `proxy` | Done — PR #5 |
-| 6 | Dependency housekeeping | Partial — PR #6 (browserslist), PR #7 (resend/supabase). See task 16. |
+| 6 | Dependency housekeeping | Done — PR #6, #7, #11. See task 16. |
+| 7 | Services page service lines | Done — PR #15 |
+| 8 | Contextual CTA routing | Done — PR #16 |
+| 9 | `/projects` → `/products` | Done — PR #14 |
+| 10 | `/waitlist` genericization | Done — PR #13 |
+| 11 | Careers page | **Blocked — needs a founder decision.** Are there real openings? |
+| 12 | Roadmap doc corrections | **Blocked — file not in this repo.** See note under the task. |
+| 13 | Blueprint naming | **Blocked — file not in this repo.** See note under the task. |
+| 14 | Vercel preview env vars | Done — resolved in Vercel, previews now build |
+| 15 | Books/chapters persistence | Done — PR #12 |
+| 16 | Finish npm audit remediation | Done — PR #11. 14 → 7, and all 7 remaining are dev-only. |
+| 17 | Blog comments | **Blocked — needs a founder decision.** Real backend, or delete? |
+
+Two issues were found and fixed during this pass that were not on the list:
+
+- **Unauthenticated admin write endpoints** (PR #10). `/api/admin/posts`,
+  `/categories`, `/books`, and `/chapters` had no auth at all — anyone could
+  create, edit, or delete blog content on production with a single `curl`.
+  `requireAdmin` existed and was simply never called. The blog admin was also
+  "protected" by a password hardcoded in a `'use client'` file, so it shipped to
+  every visitor. Fixed; all 8 admin routes now enforce `ADMIN_TOKEN`.
+- **A syntax error in `app/lib/comments.ts`** (PR #8) that made `tsc --noEmit`
+  fail on `main`, dormant only because nothing imports the module.
+
+Also worth knowing: **Vercel Preview deployments were failing for every PR**
+regardless of content, because `SUPABASE_SERVICE_ROLE_KEY` was scoped to
+Production only. Red CI therefore carried no signal for the whole first half of
+this pass. Resolved (task 14), and the project's Node version was moved to 22.x
+to match what `@supabase/supabase-js` requires.
 
 **Correction to task 2 as written.** The premise was out of date. `getCategories`
 and `saveCategories` *did* exist in `app/lib/posts.ts`, and the route's relative
@@ -242,11 +274,27 @@ env var. It is a capability URL and is already committed in git history (`66ff4f
 
 Both confirmed with the founder. The site is correct; the doc is stale.
 
+> **Blocked: the file is not in this repo.** Searched the repository and the
+> usual local locations; the only markdown here is `BACKLOG.md`, `CLAUDE.md`,
+> and `README.md`. The strategy docs are maintained outside version control.
+>
+> **The site side needs no change** — `app/roadmap/page.tsx` already reads
+> "Live / near launch" for ProfitPilot and lists RebirthAgro under *In
+> development — not yet released*. Verified 2026-08-05. This is purely an
+> internal-doc correction.
+>
+> To action: add the file to the repo (a `docs/` folder is fine) or paste §2,
+> and the edit is a two-line change.
+
 ### 13. Blueprint naming inconsistency
 `04-solfligh-tech-master-corporate-blueprint-v2.md` §3 (Core Values, item 5) and
 §4 still reference "API Cloud" as a product name, which the same document's own
 changelog retired. Minor, but the Blueprint is the authoritative naming source,
 so it should not contradict itself.
+
+> **Blocked: the file is not in this repo**, same as task 12. No code change is
+> implied either way — "API Cloud" appears nowhere in the codebase, so this is a
+> documentation-only fix.
 
 ---
 
