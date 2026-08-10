@@ -5,6 +5,12 @@ import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Container from "@/app/components/Container";
+import {
+  getProduct,
+  isCloudSlug,
+  normalizeProductSlug,
+  productLabel as canonicalProductLabel,
+} from "@/app/lib/products";
 
 type ApiResponse =
   | { ok: true; stored?: boolean; message: string }
@@ -24,22 +30,23 @@ function Pill({ children }: { children: React.ReactNode }) {
 function WaitlistContent() {
   const sp = useSearchParams();
 
-  const product = useMemo(() => {
-    const p = (sp.get("product") || "profitpilot").trim().toLowerCase();
-    return p || "profitpilot";
-  }, [sp]);
+  const rawProduct = sp.get("product");
+
+  // Solfligh Cloud is the platform layer, not a product (Blueprint 11.1), so it
+  // must never be routed through a product waitlist.
+  const cloudRequested = useMemo(() => isCloudSlug(rawProduct), [rawProduct]);
+
+  const product = useMemo(() => normalizeProductSlug(rawProduct), [rawProduct]);
 
   const source = useMemo(() => {
     return (sp.get("source") || "waitlist_page").trim();
   }, [sp]);
 
-  const productLabel = useMemo(() => {
-    if (product === "profitpilot") return "ProfitPilot";
-    return product
-      .split("-")
-      .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
-      .join(" ");
-  }, [product]);
+  // Known products get their canonical name and a real "back" destination.
+  // Unknown slugs fall back to neutral copy rather than an invented name.
+  const info = useMemo(() => getProduct(product), [product]);
+  const productLabel = useMemo(() => canonicalProductLabel(product), [product]);
+  const hasKnownProduct = !!info;
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -88,6 +95,51 @@ function WaitlistContent() {
     }
   }
 
+  // Cloud is not a product: show where to actually go instead of a waitlist form.
+  if (cloudRequested) {
+    return (
+      <main className="bg-white text-slate-900">
+        <section className="relative overflow-hidden">
+          <Container>
+            <div className="relative py-12 sm:py-16">
+              <div className="mx-auto max-w-2xl">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Pill>Solfligh Cloud</Pill>
+                  <Pill>Platform</Pill>
+                </div>
+
+                <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+                  Solfligh Cloud doesn’t use a product waitlist
+                </h1>
+
+                <p className="mt-3 text-base leading-relaxed text-slate-600">
+                  Solfligh Cloud is the platform and infrastructure layer behind our
+                  products, not a product you join a waitlist for. Read what’s live
+                  today, or talk to us about building on it.
+                </p>
+
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link
+                    href="/cloud"
+                    className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                  >
+                    Explore Solfligh Cloud
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                  >
+                    Talk to us
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </Container>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="bg-white text-slate-900">
       <section className="relative overflow-hidden">
@@ -102,12 +154,12 @@ function WaitlistContent() {
             <div className="mx-auto max-w-2xl">
               <div className="flex flex-wrap items-center gap-2">
                 <Pill>Early access</Pill>
-                <Pill>{productLabel}</Pill>
+                {hasKnownProduct && <Pill>{productLabel}</Pill>}
                 <Pill>Waitlist</Pill>
               </div>
 
               <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-                Join the {productLabel} waitlist
+                {hasKnownProduct ? `Join the ${productLabel} waitlist` : "Join the waitlist"}
               </h1>
 
               <p className="mt-3 text-base leading-relaxed text-slate-600">
@@ -121,12 +173,14 @@ function WaitlistContent() {
                     <p className="text-sm text-slate-700">{message}</p>
 
                     <div className="pt-2 flex flex-wrap gap-3">
-                      <Link
-                        href="/insights/profitpilot"
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
-                      >
-                        Back to ProfitPilot hub
-                      </Link>
+                      {info && (
+                        <Link
+                          href={info.backHref}
+                          className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                        >
+                          {info.backLabel}
+                        </Link>
+                      )}
                       <Link
                         href="/"
                         className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
@@ -165,7 +219,11 @@ function WaitlistContent() {
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
                       rows={4}
-                      placeholder="What do you want ProfitPilot to help with?"
+                      placeholder={
+                        hasKnownProduct
+                          ? `What do you want ${productLabel} to help with?`
+                          : "What do you want this product to help with?"
+                      }
                       className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
                     />
 
