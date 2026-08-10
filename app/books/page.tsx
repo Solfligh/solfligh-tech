@@ -1,10 +1,25 @@
 // /app/books/page.tsx
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getBooks } from '@/app/lib/booksStore';
 
 // Server Component: reads through booksStore (Supabase, JSON fallback) rather
 // than the static file, so books saved in /admin show up without a rebuild.
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'eBooks',
+  description:
+    'Long-form books published by SOLFLIGH TECH, released chapter by chapter and free to read online.',
+  alternates: { canonical: '/books' },
+  openGraph: {
+    type: 'website',
+    title: 'eBooks | SOLFLIGH TECH',
+    description:
+      'Long-form books published by SOLFLIGH TECH, released chapter by chapter and free to read online.',
+    url: 'https://solflightech.org/books',
+  },
+};
 
 // This is the page component - it MUST be the default export
 export default async function BooksPage() {

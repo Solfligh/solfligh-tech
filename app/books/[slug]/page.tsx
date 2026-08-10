@@ -1,152 +1,163 @@
-// /app/books/[slug]/page.tsx
-'use client';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { getBooks, getChapters, type Book, type Chapter } from '@/app/lib/booksStore';
+import BookView from './BookView';
 
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+/**
+ * Server wrapper for a book page.
+ *
+ * Every book and chapter URL previously shared the layout's default title, with
+ * no description, canonical, Open Graph tags, or structured data — a nine
+ * chapter book was indistinguishable from the homepage in search results.
+ */
 
-interface Book {
-  id: string;
-  title: string;
-  slug: string;
-  author: string;
-  originalPubDate: string;
-  coverImage: string;
-  description: string;
-  status: 'ongoing' | 'completed';
-  createdAt: string;
-}
+const SITE_URL = 'https://solflightech.org';
+const ORG_NAME = 'SOLFLIGH TECH';
 
-interface Chapter {
-  id: string;
-  bookId: string;
-  bookSlug: string;
-  chapterNumber: number;
-  title: string;
-  content: string;
-  publishedAt: string;
-}
+export const dynamic = 'force-dynamic';
 
-export default function BookPage() {
-  const params = useParams();
-  const slug = params?.slug as string;
-  
-  const [book, setBook] = useState<Book | null>(null);
-  const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBookAndChapters() {
-      if (!slug) return;
-      
-      try {
-        // Fetch books
-        const booksRes = await fetch('/api/books');
-        const books: Book[] = await booksRes.json();
-        const foundBook = books.find(b => b.slug === slug);
-        setBook(foundBook || null);
-
-        // Fetch chapters
-        const chaptersRes = await fetch('/api/chapters');
-        const allChapters: Chapter[] = await chaptersRes.json();
-        const bookChapters = allChapters.filter(c => c.bookSlug === slug).sort((a, b) => a.chapterNumber - b.chapterNumber);
-        setChapters(bookChapters);
-      } catch (error) {
-        console.error('Error fetching book:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    fetchBookAndChapters();
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-600 border-t-transparent" />
-      </div>
-    );
+async function loadBook(slug: string): Promise<{ book: Book | null; chapters: Chapter[] }> {
+  try {
+    const [books, allChapters] = await Promise.all([getBooks(), getChapters()]);
+    const book = books.find((b) => b.slug === slug) || null;
+    const chapters = book
+      ? allChapters
+          .filter((c) => c.bookSlug === slug)
+          .sort((a, b) => a.chapterNumber - b.chapterNumber)
+      : [];
+    return { book, chapters };
+  } catch {
+    return { book: null, chapters: [] };
   }
+}
+
+function toPlainText(html: string): string {
+  return (html || '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function describe(text: string, max = 300): string {
+  const s = toPlainText(text);
+  return s.length > max ? `${s.slice(0, max - 3)}…` : s;
+}
+
+function absoluteImage(src?: string): string | undefined {
+  const s = (src || '').trim();
+  if (!s) return undefined;
+  if (s.startsWith('http://') || s.startsWith('https://')) return s;
+  return `${SITE_URL}${s.startsWith('/') ? '' : '/'}${s}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const { book } = await loadBook(slug);
 
   if (!book) {
-    return (
-      <div className="mx-auto max-w-4xl px-4 py-24 text-center">
-        <h1 className="mb-4 text-3xl font-bold">Book Not Found</h1>
-        <p className="mb-8 text-slate-600">The book you're looking for doesn't exist.</p>
-        <Link href="/books" className="text-sky-600 hover:underline">
-          ← Back to all eBooks
-        </Link>
-      </div>
-    );
+    return { title: 'Book not found', robots: { index: false, follow: true } };
   }
 
+  const description = describe(book.description);
+  const image = absoluteImage(book.coverImage);
+
+  return {
+    title: book.title,
+    description,
+    alternates: { canonical: `/books/${book.slug}` },
+    openGraph: {
+      type: 'book',
+      title: book.title,
+      description,
+      url: `${SITE_URL}/books/${book.slug}`,
+      authors: book.author ? [book.author] : undefined,
+      ...(image ? { images: [{ url: image, alt: book.title }] } : {}),
+    },
+    twitter: {
+      card: image ? 'summary_large_image' : 'summary',
+      title: book.title,
+      description,
+      ...(image ? { images: [image] } : {}),
+    },
+  };
+}
+
+export default async function BookPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const { book, chapters } = await loadBook(slug);
+
+  if (!book) notFound();
+
+  const image = absoluteImage(book.coverImage);
+
+  const bookJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Book',
+    name: book.title,
+    url: `${SITE_URL}/books/${book.slug}`,
+    description: describe(book.description, 500),
+    ...(image ? { image } : {}),
+    ...(book.author ? { author: { '@type': 'Person', name: book.author } } : {}),
+    ...(book.originalPubDate ? { datePublished: book.originalPubDate } : {}),
+    inLanguage: 'en',
+    isAccessibleForFree: true,
+    publisher: {
+      '@type': 'Organization',
+      name: ORG_NAME,
+      url: SITE_URL,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+    },
+    // Chapters are individually addressable pages, so they are declared as parts.
+    ...(chapters.length
+      ? {
+          numberOfPages: chapters.length,
+          hasPart: chapters.map((c) => ({
+            '@type': 'Chapter',
+            name: c.title,
+            position: c.chapterNumber,
+            url: `${SITE_URL}/books/${book.slug}/chapters/${c.chapterNumber}`,
+          })),
+        }
+      : {}),
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'eBooks', item: `${SITE_URL}/books` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: book.title,
+        item: `${SITE_URL}/books/${book.slug}`,
+      },
+    ],
+  };
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12">
-      {/* Back link */}
-      <Link href="/books" className="mb-6 inline-block text-sky-600 hover:underline">
-        ← Back to all books
-      </Link>
-      
-      {/* Book header */}
-      <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white md:flex">
-        {book.coverImage && (
-          <div className="md:w-1/3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={book.coverImage}
-              alt={book.title}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        )}
-        <div className="p-6 md:w-2/3">
-          <h1 className="mb-3 text-3xl font-bold text-slate-900">{book.title}</h1>
-          <p className="mb-2 text-lg text-slate-600">by {book.author}</p>
-          <p className="mb-3 text-sm text-slate-500">Originally published: {book.originalPubDate}</p>
-          <div className="mb-4">
-            <span className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${
-              book.status === 'completed' 
-                ? 'bg-green-100 text-green-700' 
-                : 'bg-amber-100 text-amber-700'
-            }`}>
-              {book.status === 'completed' ? '✓ Completed' : '🔄 Ongoing'}
-            </span>
-          </div>
-          <div className="prose prose-slate max-w-none">
-            <p className="whitespace-pre-wrap text-slate-700">{book.description}</p>
-          </div>
-        </div>
-      </div>
-      
-      {/* Chapters section */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="mb-4 text-2xl font-bold">📖 Chapters ({chapters.length})</h2>
-        
-        {chapters.length === 0 ? (
-          <p className="py-8 text-center text-slate-500">
-            No chapters published yet. Check back soon!
-          </p>
-        ) : (
-          <div className="divide-y divide-slate-200">
-            {chapters.map((chapter) => (
-              <Link
-                key={chapter.id}
-                href={`/books/${book.slug}/chapters/${chapter.chapterNumber}`}
-                className="block py-4 transition-colors hover:bg-slate-50"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="font-mono text-sm text-slate-500">Chapter {chapter.chapterNumber}</span>
-                    <h3 className="text-lg font-semibold text-slate-900">{chapter.title}</h3>
-                  </div>
-                  <span className="text-sky-600">Read →</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(bookJsonLd) }}
+        key="book-jsonld"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        key="book-breadcrumb-jsonld"
+      />
+      <BookView initialBook={book} initialChapters={chapters} />
+    </>
   );
 }
