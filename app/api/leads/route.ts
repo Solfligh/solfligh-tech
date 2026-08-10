@@ -2,6 +2,7 @@
 import { Resend } from "resend";
 import { supabaseAdmin } from "@/app/lib/supabaseAdmin";
 import { checkRateLimit, hashIp } from "@/app/lib/rateLimit";
+import { coarseUserAgent } from "@/app/lib/userAgent";
 
 export const runtime = "nodejs";
 
@@ -86,7 +87,9 @@ export async function POST(req: Request) {
     // The raw address is used only to derive the hash and is never stored.
     const ip = getIp(req);
     const ipHash = ip ? hashIp(ip) : "";
-    const userAgent = req.headers.get("user-agent") || "";
+    // Coarsened to "browser on OS" before it is stored. The full string is a
+    // fingerprint and is not needed on a lead record.
+    const userAgent = coarseUserAgent(req.headers.get("user-agent"));
 
     // Applies to both branches below, and runs before anything is written.
     if (ipHash) {
