@@ -41,7 +41,10 @@ export function coarseUserAgent(ua: string | null | undefined): string | null {
   const s = (ua || '').trim();
   if (!s) return null;
 
-  if (/\bbot\b|\bcrawler\b|\bspider\b|\bslurp\b|curl\/|wget\/|python-requests/i.test(s)) {
+  // `bot\b` rather than `\bbot\b`: named crawlers attach the word to a prefix,
+  // so "Googlebot" and "Bingbot" have no boundary before "bot" and were being
+  // labelled "Unknown". The trailing boundary still keeps "botanical" out.
+  if (/bot\b|crawler|spider|slurp|curl\/|wget\/|python-requests|headless/i.test(s)) {
     return 'Bot';
   }
 
