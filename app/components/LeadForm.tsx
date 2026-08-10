@@ -2,16 +2,28 @@
 
 import { useState } from "react";
 
-type Kind = "contact" | "partner" | "investor";
+type Kind = "contact" | "partner" | "investor" | "developer";
 
 export default function LeadForm({
   kind,
   includeFirm = false,
   buttonText,
+  // The field wording is adjustable so a new audience does not need a bespoke
+  // form component, which CLAUDE.md rules out. "Firm / Organization" and
+  // "Describe the request, goals, and timeline" read oddly to a developer
+  // registering for platform access.
+  firmLabel = "Firm / Organization",
+  firmPlaceholder = "Firm name (optional)",
+  messageLabel = "Message",
+  messagePlaceholder = "Describe the request, goals, and timeline...",
 }: {
   kind: Kind;
   includeFirm?: boolean;
   buttonText: string;
+  firmLabel?: string;
+  firmPlaceholder?: string;
+  messageLabel?: string;
+  messagePlaceholder?: string;
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -110,7 +122,7 @@ export default function LeadForm({
       {includeFirm && (
         <div>
           <label htmlFor={`${kind}-firm`} className="text-sm font-bold text-slate-950">
-            Firm / Organization
+            {firmLabel}
           </label>
           <input
             id={`${kind}-firm`}
@@ -119,7 +131,7 @@ export default function LeadForm({
             value={firm}
             onChange={(e) => setFirm(e.target.value)}
             type="text"
-            placeholder="Firm name (optional)"
+            placeholder={firmPlaceholder}
             className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-sky-400"
           />
         </div>
@@ -127,7 +139,7 @@ export default function LeadForm({
 
       <div>
         <label htmlFor={`${kind}-message`} className="text-sm font-bold text-slate-950">
-          Message
+          {messageLabel}
         </label>
         <textarea
           id={`${kind}-message`}
@@ -135,7 +147,7 @@ export default function LeadForm({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={6}
-          placeholder="Describe the request, goals, and timeline..."
+          placeholder={messagePlaceholder}
           className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-sky-400"
         />
       </div>

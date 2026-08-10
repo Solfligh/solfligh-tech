@@ -51,10 +51,16 @@ export function getHeaderCta(pathname: string): HeaderCta {
     return { href: '/contact', label: 'Talk to us' };
   }
 
-  // Homepage and Solfligh Cloud: developer signup does not exist yet, so the
-  // spec directs these to /contact.
+  // Homepage and Solfligh Cloud route to the developer signup, per Website
+  // Architecture §10. That signup did not exist when this table was first
+  // implemented, which is why these previously fell back to /contact.
+  // /cloud/access is itself the destination, so it keeps a plain contact CTA
+  // rather than linking to the page you are already on.
+  if (path === '/cloud/access') {
+    return { href: '/contact', label: 'Contact' };
+  }
   if (path === '/' || path === '/cloud' || path.startsWith('/cloud/')) {
-    return { href: '/contact', label: 'Get in touch' };
+    return { href: '/cloud/access', label: 'Get early access' };
   }
 
   // Company pages and everything else: general contact form.
