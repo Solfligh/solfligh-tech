@@ -150,13 +150,19 @@ export async function POST(req: Request) {
       }
     }
 
-    // Always respond success for a smooth user experience.
-    // NOTE: if both `stored` and `notified` are false the signup reached
-    // neither the database nor an inbox, yet the visitor is still told they
-    // are in. That is the existing deliberate behaviour, left unchanged here;
-    // `notified` is surfaced so the condition is at least observable.
+    // If the signup reached neither the database nor an inbox, it is gone.
+    // Telling the visitor "You're in" would be untrue, and they would have no
+    // reason to try again. Same guard as /api/leads.
     if (!stored && !notified) {
       console.error("Waitlist signup was neither stored nor emailed:", { product, email });
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "We could not record your signup. Please try again, or reach us through the contact page.",
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
