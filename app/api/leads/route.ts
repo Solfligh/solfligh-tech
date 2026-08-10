@@ -1,7 +1,7 @@
 // app/api/leads/route.ts
 import { Resend } from "resend";
 import { supabaseAdmin } from "@/app/lib/supabaseAdmin";
-import { checkRateLimit } from "@/app/lib/rateLimit";
+import { checkRateLimit, hashIp } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -9,9 +9,12 @@ export const runtime = "nodejs";
  * Rate limiting.
  *
  * Deliberately more permissive than comments: a blocked lead is a lost
- * customer, so the limit only stops obvious flooding. The counter reuses the
- * `ip` this route already stores on public.leads rather than adding a second
- * copy of the same information.
+ * customer, so the limit only stops obvious flooding.
+ *
+ * Counting is keyed on a salted hash of the submitter's IP. This route used to
+ * store the raw address on public.leads alongside the name, email, and message
+ * body; that column has been backfilled to hashes and dropped, so the raw value
+ * now exists only for the lifetime of the request.
  */
 const LEAD_RATE_LIMIT_MAX = 5;
 const LEAD_RATE_LIMIT_WINDOW_MINUTES = 15;
@@ -80,15 +83,17 @@ export async function POST(req: Request) {
       return json(200, { ok: true });
     }
 
+    // The raw address is used only to derive the hash and is never stored.
     const ip = getIp(req);
+    const ipHash = ip ? hashIp(ip) : "";
     const userAgent = req.headers.get("user-agent") || "";
 
     // Applies to both branches below, and runs before anything is written.
-    if (ip) {
+    if (ipHash) {
       const { limited, retryAfterSeconds } = await checkRateLimit({
         table: "leads",
-        column: "ip",
-        value: ip,
+        column: "ip_hash",
+        value: ipHash,
         max: LEAD_RATE_LIMIT_MAX,
         windowMinutes: LEAD_RATE_LIMIT_WINDOW_MINUTES,
       });
@@ -141,7 +146,7 @@ export async function POST(req: Request) {
           source: source || "projects",
           status: "new",
           contacted_at: null,
-          ip: ip || null,
+          ip_hash: ipHash || null,
           user_agent: userAgent || null,
           created_at: new Date().toISOString(),
         });
@@ -218,7 +223,7 @@ export async function POST(req: Request) {
           source: kind,
           status: "new",
           contacted_at: null,
-          ip: ip || null,
+          ip_hash: ipHash || null,
           user_agent: userAgent || null,
           created_at: new Date().toISOString(),
         });
