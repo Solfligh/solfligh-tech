@@ -44,7 +44,6 @@ function buildCsv(rows: any[]) {
     "company",
     "source",
     "message",
-    "ip",
     "user_agent",
     "id",
   ];
@@ -80,7 +79,7 @@ export async function GET(req: Request) {
   let query = supabaseAdmin
     .from("leads")
     .select(
-      "id,project_slug,name,email,company,message,source,ip,user_agent,created_at,status,contacted_at",
+      "id,project_slug,name,email,company,message,source,user_agent,created_at,status,contacted_at",
       { count: "exact" }
     )
     .order("created_at", { ascending: false });

@@ -14,8 +14,9 @@ type LeadRow = {
   company: string | null;
   message: string | null;
   source: string | null;
-  ip: string | null;
-  user_agent: string | null;
+  // `ip` was dropped from public.leads; only a salted hash is kept now, and it
+  // is deliberately not exposed here.
+  user_agent: string | null; // coarse "browser on OS", not the raw header
   created_at: string | null;
 
   status: "new" | "contacted" | string | null;
