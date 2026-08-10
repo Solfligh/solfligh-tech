@@ -15,12 +15,20 @@ export async function GET() {
     );
   }
 
-  const data = await resend.emails.send({
+  // This endpoint exists to answer "is Resend working?", so a rejected send
+  // must not be reported as ok. Resend puts API-level failures on `error`
+  // rather than throwing.
+  const { data, error } = await resend.emails.send({
     from,
     to,
     subject: "Vercel + Resend working ✅",
     html: "<p>Your Resend setup on Vercel is correct.</p>",
   });
 
-  return Response.json({ ok: true, data });
+  if (error) {
+    console.error("Test email rejected by Resend:", error);
+    return Response.json({ ok: false, error }, { status: 502 });
+  }
+
+  return Response.json({ ok: true, id: data?.id });
 }

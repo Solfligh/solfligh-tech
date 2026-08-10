@@ -51,6 +51,7 @@ export async function POST(req: Request) {
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     let stored = false;
+    let notified = false;
 
     if (supabaseUrl && serviceKey) {
       const supabase = createClient(supabaseUrl, serviceKey, {
@@ -107,20 +108,29 @@ export async function POST(req: Request) {
         </div>
       `;
 
+      // Resend reports API-level failures on `error` rather than throwing, so
+      // these are inspected rather than assumed to have succeeded. Both sends
+      // stay best effort — a mail problem must not cost the signup — but a
+      // failure is now visible in the logs instead of disappearing.
       try {
-        await resend.emails.send({
+        const { error: adminErr } = await resend.emails.send({
           from: resendFrom,
           to: adminTo,
           subject,
           html,
         });
-      } catch {
-        // swallow errors to keep UX smooth
+        if (adminErr) {
+          console.error("Waitlist admin notification rejected by Resend:", adminErr);
+        } else {
+          notified = true;
+        }
+      } catch (err) {
+        console.error("Waitlist admin notification threw:", err);
       }
 
       // Optional: user confirmation email (also best effort)
       try {
-        await resend.emails.send({
+        const { error: confirmErr } = await resend.emails.send({
           from: resendFrom,
           to: email,
           subject: "You're on the waitlist ✅",
@@ -132,15 +142,33 @@ export async function POST(req: Request) {
             </div>
           `,
         });
-      } catch {
-        // ignore
+        if (confirmErr) {
+          console.error("Waitlist confirmation email rejected by Resend:", confirmErr);
+        }
+      } catch (err) {
+        console.error("Waitlist confirmation email threw:", err);
       }
     }
 
-    // Always respond success for a smooth user experience
+    // If the signup reached neither the database nor an inbox, it is gone.
+    // Telling the visitor "You're in" would be untrue, and they would have no
+    // reason to try again. Same guard as /api/leads.
+    if (!stored && !notified) {
+      console.error("Waitlist signup was neither stored nor emailed:", { product, email });
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "We could not record your signup. Please try again, or reach us through the contact page.",
+        },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       ok: true,
       stored,
+      notified,
       message: "You’re in. We’ll notify you as soon as early access opens.",
     });
   } catch {
