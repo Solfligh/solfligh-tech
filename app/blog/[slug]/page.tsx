@@ -48,9 +48,10 @@ export default function ArticlePage() {
   const [categoryStyle, setCategoryStyle] = useState(categoryColors['software-engineering']);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [commentForm, setCommentForm] = useState({ name: '', content: '' });
+  const [commentForm, setCommentForm] = useState({ name: '', content: '', website: '' });
   const [submitting, setSubmitting] = useState(false);
-  const [commentSubmitted, setCommentSubmitted] = useState(false);
+  const [commentNotice, setCommentNotice] = useState('');
+  const [commentError, setCommentError] = useState('');
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
 
@@ -91,29 +92,16 @@ export default function ArticlePage() {
     }
   }, [slug]);
 
+  // Only approved comments come back from this endpoint.
   async function loadComments(postSlug: string) {
     try {
-      const savedComments = localStorage.getItem(`comments_${postSlug}`);
-      if (savedComments) {
-        setComments(JSON.parse(savedComments));
-      }
+      const res = await fetch(`/api/comments?postSlug=${encodeURIComponent(postSlug)}`);
+      const data = await res.json();
+      setComments(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error loading comments:', error);
+      setComments([]);
     }
-  }
-
-  async function addCommentToStorage(postSlug: string, name: string, content: string) {
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      postSlug,
-      authorName: name,
-      content,
-      createdAt: new Date().toISOString(),
-    };
-    
-    const updatedComments = [newComment, ...comments];
-    setComments(updatedComments);
-    localStorage.setItem(`comments_${postSlug}`, JSON.stringify(updatedComments));
   }
 
   const handleLike = () => {
@@ -129,12 +117,36 @@ export default function ArticlePage() {
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!commentForm.name.trim() || !commentForm.content.trim() || !post) return;
-    
+
     setSubmitting(true);
-    await addCommentToStorage(post.slug, commentForm.name, commentForm.content);
-    setCommentSubmitted(true);
-    setCommentForm({ name: '', content: '' });
-    setTimeout(() => setCommentSubmitted(false), 3000);
+    setCommentNotice('');
+    setCommentError('');
+
+    try {
+      const res = await fetch('/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postSlug: post.slug,
+          authorName: commentForm.name,
+          content: commentForm.content,
+          website: commentForm.website, // honeypot
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        setCommentError(data?.error || 'Could not submit your comment. Please try again.');
+      } else {
+        // Comments are held for review, so nothing is added to the list here.
+        setCommentNotice(data.message || 'Thanks — your comment has been submitted for review.');
+        setCommentForm({ name: '', content: '', website: '' });
+      }
+    } catch {
+      setCommentError('Network error. Please try again.');
+    }
+
     setSubmitting(false);
   };
 
@@ -333,11 +345,31 @@ export default function ArticlePage() {
           
           {/* Comment Form */}
           <form onSubmit={handleSubmitComment} className={`mb-8 p-6 rounded-2xl ${categoryStyle.bg} border ${categoryStyle.border}`}>
-            {commentSubmitted && (
+            {commentNotice && (
               <div className="mb-4 rounded-lg bg-emerald-100 border border-emerald-300 p-3 text-emerald-700 text-sm">
-                ✨ Comment posted successfully!
+                {commentNotice}
               </div>
             )}
+            {commentError && (
+              <div className="mb-4 rounded-lg bg-red-100 border border-red-300 p-3 text-red-700 text-sm">
+                {commentError}
+              </div>
+            )}
+
+            {/* Honeypot — hidden from sighted users, screen readers, and tab order */}
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="comment-website">Website</label>
+              <input
+                id="comment-website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={commentForm.website}
+                onChange={(e) => setCommentForm({ ...commentForm, website: e.target.value })}
+              />
+            </div>
+
             <div className="mb-4">
               <input
                 type="text"
@@ -363,8 +395,11 @@ export default function ArticlePage() {
               disabled={submitting}
               className={`px-6 py-2.5 rounded-full bg-gradient-to-r ${categoryStyle.gradient} text-white font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50`}
             >
-              {submitting ? 'Posting...' : 'Post Comment 💬'}
+              {submitting ? 'Submitting...' : 'Submit comment 💬'}
             </button>
+            <p className="mt-3 text-xs text-slate-500">
+              Comments are reviewed before they appear.
+            </p>
           </form>
 
           {/* Comments List */}
