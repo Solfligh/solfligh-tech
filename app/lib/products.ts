@@ -35,7 +35,7 @@ const PRODUCTS: Record<string, ProductInfo> = {
     slug: 'rebirthagro',
     // No insights hub exists for RebirthAgro, so this points at the product page.
     label: 'RebirthAgro',
-    backHref: '/projects/rebirthagro',
+    backHref: '/products/rebirthagro',
     backLabel: 'Back to RebirthAgro',
   },
   'fxco-pilot': {

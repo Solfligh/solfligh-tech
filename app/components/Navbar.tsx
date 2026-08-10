@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 const primaryLinks = [
   { href: "/cloud", label: "Solfligh Cloud" },
-  { href: "/projects", label: "Products" }, // NOTE: label per Website Architecture; href stays /projects until the product-routing pass
+  { href: "/products", label: "Products" }, // Website Architecture §11: /products and /products/[slug]
   { href: "/services", label: "Services" },
   { href: "/ai", label: "AI" },
   { href: "/roadmap", label: "Roadmap" },

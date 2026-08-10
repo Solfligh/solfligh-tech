@@ -148,7 +148,7 @@ function toPayload(p: DbProjectRow, media: MediaItem[]): ProjectPayload {
     description: p.description || "",
     highlights: asStringArray(p.highlights),
     ctaLabel: p.cta_label || "View project",
-    href: p.href || `/projects/${slug}`,
+    href: p.href || `/products/${slug}`,
     externalUrl: p.external_url,
 
     demoStatus: asDemoStatus(p.demo_status),

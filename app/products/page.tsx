@@ -1,4 +1,4 @@
-// app/projects/page.tsx
+// app/products/page.tsx
 import type { Metadata } from "next";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
@@ -25,11 +25,11 @@ export const metadata: Metadata = {
   title: "Projects – SOLFLIGH TECH Products & Platforms",
   description:
     "Explore SOLFLIGH TECH projects including ProfitPilot and RebirthAgro — platforms built to solve real operational problems.",
-  alternates: { canonical: `${SITE_URL}/projects` },
+  alternates: { canonical: `${SITE_URL}/products` },
   openGraph: {
     title: "Projects – SOLFLIGH TECH",
     description: "A selection of platforms designed to solve real operational and business problems.",
-    url: `${SITE_URL}/projects`,
+    url: `${SITE_URL}/products`,
     type: "website",
     siteName: "SOLFLIGH TECH",
     images: [
@@ -101,7 +101,7 @@ function getProjectLink(project: AnyProject) {
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   const isExternal = !!externalUrl;
 
-  const href = isExternal ? externalUrl : project.href || `/projects/${slug}`;
+  const href = isExternal ? externalUrl : project.href || `/products/${slug}`;
   const linkProps = isExternal
     ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
     : ({} as const);

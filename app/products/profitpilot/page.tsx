@@ -1,4 +1,4 @@
-// app/projects/profitpilot/page.tsx
+// app/products/profitpilot/page.tsx
 import ProjectDetailPage from "../[slug]/page";
 
 export const runtime = "nodejs";

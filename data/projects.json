@@ -13,7 +13,7 @@
         "Smart insights dashboard"
       ],
       "ctaLabel": "View ProfitPilot",
-      "href": "/projects/profitpilot",
+      "href": "/products/profitpilot",
       "externalUrl": null,
       "demo": {
         "status": "coming_soon",
@@ -65,7 +65,7 @@
         "Automation-ready design"
       ],
       "ctaLabel": "Open FXCopilot",
-      "href": "/projects/fxco-pilot",
+      "href": "/products/fxco-pilot",
       "externalUrl": "https://fxco-pilot.solflightech.org",
       "demo": {
         "status": "none"
@@ -109,7 +109,7 @@
         "Logistics coordination"
       ],
       "ctaLabel": "View RebirthAgro",
-      "href": "/projects/rebirthagro",
+      "href": "/products/rebirthagro",
       "externalUrl": null,
       "demo": {
         "status": "coming_soon",

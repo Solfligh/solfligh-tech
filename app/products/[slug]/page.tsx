@@ -1,4 +1,4 @@
-// app/projects/[slug]/page.tsx
+// app/products/[slug]/page.tsx
 import type { Metadata } from "next";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
@@ -160,7 +160,7 @@ function getProjectLink(project: AnyProject) {
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   const isExternal = !!externalUrl;
 
-  const href = isExternal ? externalUrl : `/projects/${slug}`;
+  const href = isExternal ? externalUrl : `/products/${slug}`;
   const linkProps = isExternal
     ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
     : ({} as const);
@@ -200,7 +200,7 @@ export async function generateMetadata({
       : "Explore SOLFLIGH TECH projects focused on automation, clarity, and real business impact.";
 
   // ✅ Always keep canonical INTERNAL to avoid redirect/canonical conflicts
-  const canonical = `${SITE_URL}/projects/${slug}`;
+  const canonical = `${SITE_URL}/products/${slug}`;
 
   const ogImage = ogUrl({
     title: name,
@@ -468,7 +468,7 @@ export default async function ProjectDetailPage({
             <section className="mt-16">
               <div className="flex items-center justify-between gap-4">
                 <h3 className="text-lg font-semibold text-slate-900">Other Projects</h3>
-                <Link href="/projects" className="text-sm font-semibold text-sky-700 hover:underline">
+                <Link href="/products" className="text-sm font-semibold text-sky-700 hover:underline">
                   View all →
                 </Link>
               </div>

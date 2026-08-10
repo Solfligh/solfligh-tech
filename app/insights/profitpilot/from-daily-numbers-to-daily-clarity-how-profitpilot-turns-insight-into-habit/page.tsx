@@ -100,7 +100,7 @@ export default function ProfitPilotSolutionArticlePage() {
   const nextArticleHref = "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer";
 
   const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_solution_article";
-  const projectHref = "/projects/profitpilot";
+  const projectHref = "/products/profitpilot";
 
   return (
     <main className="bg-white text-slate-900">

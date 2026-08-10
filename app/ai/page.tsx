@@ -41,7 +41,7 @@ export default function AIPage() {
               Solfligh Cloud
             </Link>
             <Link
-              href="/projects"
+              href="/products"
               className="inline-flex items-center justify-center rounded-full bg-sky-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-sky-500 no-underline"
             >
               See it in our products
