@@ -28,6 +28,15 @@ interface Category {
   description?: string;
 }
 
+interface Comment {
+  id: string;
+  postSlug: string;
+  authorName: string;
+  content: string;
+  approved: boolean;
+  createdAt: string;
+}
+
 interface Book {
   id: string;
   title: string;
@@ -63,7 +72,8 @@ export default function BlogAdmin() {
   // Books & Chapters state
   const [books, setBooks] = useState<Book[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [activeTab, setActiveTab] = useState<'articles' | 'books'>('articles');
+  const [activeTab, setActiveTab] = useState<'articles' | 'books' | 'comments'>('articles');
+  const [comments, setComments] = useState<Comment[]>([]);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
   const [editingChapter, setEditingChapter] = useState<Chapter | null>(null);
   const [selectedBookForChapter, setSelectedBookForChapter] = useState<Book | null>(null);
@@ -102,8 +112,40 @@ export default function BlogAdmin() {
     if (authenticated) {
       loadData();
       loadBooksAndChapters();
+      loadComments();
     }
   }, [authenticated]);
+
+  async function loadComments() {
+    try {
+      const res = await fetch('/api/admin/comments', { headers: authHeaders() });
+      const data = await res.json();
+      setComments(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error loading comments:', error);
+    }
+  }
+
+  async function setCommentApproval(id: string, approved: boolean) {
+    const res = await fetch('/api/admin/comments', {
+      method: 'POST',
+      headers: jsonAuthHeaders(),
+      body: JSON.stringify({ id, approved }),
+    });
+    if (res.ok) await loadComments();
+    else alert('Could not update that comment.');
+  }
+
+  async function removeComment(id: string) {
+    if (!confirm('Delete this comment permanently?')) return;
+    const res = await fetch('/api/admin/comments', {
+      method: 'DELETE',
+      headers: jsonAuthHeaders(),
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) await loadComments();
+    else alert('Could not delete that comment.');
+  }
 
   // Every /api/admin/* call must carry the admin token.
   function authHeaders(): Record<string, string> {
@@ -499,7 +541,92 @@ export default function BlogAdmin() {
         >
           📚 Books & Chapters
         </button>
+        <button
+          onClick={() => setActiveTab('comments')}
+          className={`px-4 py-2 font-medium transition-colors ${
+            activeTab === 'comments'
+              ? 'border-b-2 border-sky-600 text-sky-600'
+              : 'text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          💬 Comments
+          {comments.filter((c) => !c.approved).length > 0 && (
+            <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800">
+              {comments.filter((c) => !c.approved).length} pending
+            </span>
+          )}
+        </button>
       </div>
+
+      {/* COMMENTS TAB */}
+      {activeTab === 'comments' && (
+        <div>
+          <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+            Comments are held for review. Nothing appears on the blog until you
+            approve it here.
+          </div>
+
+          {comments.length === 0 ? (
+            <p className="py-12 text-center text-slate-400">No comments yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {comments.map((c) => (
+                <div
+                  key={c.id}
+                  className={`rounded-xl border p-4 ${
+                    c.approved ? 'border-slate-200 bg-white' : 'border-amber-300 bg-amber-50'
+                  }`}
+                >
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <span className="font-semibold text-slate-900">{c.authorName}</span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                        c.approved
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}
+                    >
+                      {c.approved ? 'Approved' : 'Pending'}
+                    </span>
+                    <span className="text-xs text-slate-500">
+                      on <code>{c.postSlug}</code>
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
+                    </span>
+                  </div>
+
+                  <p className="whitespace-pre-wrap text-sm text-slate-700">{c.content}</p>
+
+                  <div className="mt-3 flex gap-2">
+                    {c.approved ? (
+                      <button
+                        onClick={() => setCommentApproval(c.id, false)}
+                        className="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                      >
+                        Unapprove
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setCommentApproval(c.id, true)}
+                        className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-500"
+                      >
+                        Approve
+                      </button>
+                    )}
+                    <button
+                      onClick={() => removeComment(c.id)}
+                      className="rounded-full border border-red-300 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-50"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ARTICLES TAB */}
       {activeTab === 'articles' && (
