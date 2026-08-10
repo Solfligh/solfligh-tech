@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import crypto from 'crypto';
 import { unstable_noStore as noStore } from 'next/cache';
 import { supabaseAdmin } from '@/app/lib/supabaseAdmin';
 
@@ -31,21 +30,10 @@ export interface Comment {
 /* Rate limiting                                                              */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Turn a client IP into a stable pseudonymous key.
- *
- * The raw IP is never stored. It is personal data, and rate limiting only needs
- * a value that is consistent for the same submitter — not one that can be
- * reversed. The salt keeps the hash from being a plain rainbow-table lookup of
- * the (small) IPv4 space.
- */
-export function hashIp(ip: string): string {
-  const salt =
-    process.env.COMMENT_IP_SALT ||
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    'solfligh-local-dev-salt';
-  return crypto.createHash('sha256').update(`${salt}:${ip}`).digest('hex');
-}
+// Re-exported so the comments route keeps its existing import. The
+// implementation now lives in app/lib/rateLimit.ts, shared with leads and
+// waitlist rather than duplicated per feature.
+export { hashIp } from '@/app/lib/rateLimit';
 
 /** How many comments this hash has submitted since `sinceIso`. */
 export async function countRecentCommentsByIp(

@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { normalizeProductSlug, productLabel } from "@/app/lib/products";
+import { checkRateLimit, clientIp, hashIp } from "@/app/lib/rateLimit";
+
+/**
+ * Rate limiting. This table stores no IP, so a salted hash is used rather than
+ * starting to collect raw addresses just to count them.
+ */
+const WAITLIST_RATE_LIMIT_MAX = 5;
+const WAITLIST_RATE_LIMIT_WINDOW_MINUTES = 15;
 
 export const runtime = "nodejs"; // ✅ important for Vercel
 
@@ -46,6 +54,30 @@ export async function POST(req: Request) {
       );
     }
 
+    // Rate limit before writing anything.
+    const ip = clientIp(req.headers);
+    const ipHash = ip ? hashIp(ip) : "";
+
+    if (ipHash) {
+      const { limited, retryAfterSeconds } = await checkRateLimit({
+        table: "waitlist_signups",
+        column: "ip_hash",
+        value: ipHash,
+        max: WAITLIST_RATE_LIMIT_MAX,
+        windowMinutes: WAITLIST_RATE_LIMIT_WINDOW_MINUTES,
+      });
+
+      if (limited) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `You have signed up a few times already. Please wait ${WAITLIST_RATE_LIMIT_WINDOW_MINUTES} minutes before trying again.`,
+          },
+          { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } }
+        );
+      }
+    }
+
     // ---- Supabase storage (same as before) ----
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -63,6 +95,7 @@ export async function POST(req: Request) {
           {
             product,
             email,
+            ip_hash: ipHash || null,
             full_name: fullName || null,
             phone: phone || null,
             company: company || null,

@@ -1,8 +1,20 @@
 // app/api/leads/route.ts
 import { Resend } from "resend";
 import { supabaseAdmin } from "@/app/lib/supabaseAdmin";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
+
+/**
+ * Rate limiting.
+ *
+ * Deliberately more permissive than comments: a blocked lead is a lost
+ * customer, so the limit only stops obvious flooding. The counter reuses the
+ * `ip` this route already stores on public.leads rather than adding a second
+ * copy of the same information.
+ */
+const LEAD_RATE_LIMIT_MAX = 5;
+const LEAD_RATE_LIMIT_WINDOW_MINUTES = 15;
 
 type WebsiteLeadPayload = {
   kind: "contact" | "partner" | "investor";
@@ -70,6 +82,33 @@ export async function POST(req: Request) {
 
     const ip = getIp(req);
     const userAgent = req.headers.get("user-agent") || "";
+
+    // Applies to both branches below, and runs before anything is written.
+    if (ip) {
+      const { limited, retryAfterSeconds } = await checkRateLimit({
+        table: "leads",
+        column: "ip",
+        value: ip,
+        max: LEAD_RATE_LIMIT_MAX,
+        windowMinutes: LEAD_RATE_LIMIT_WINDOW_MINUTES,
+      });
+
+      if (limited) {
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error: `You have sent a few messages already. Please wait ${LEAD_RATE_LIMIT_WINDOW_MINUTES} minutes before sending another, or email us directly.`,
+          }),
+          {
+            status: 429,
+            headers: {
+              "Content-Type": "application/json",
+              "Retry-After": String(retryAfterSeconds),
+            },
+          }
+        );
+      }
+    }
 
     /* ============================================================
        CASE A — PROJECT LEAD
