@@ -41,13 +41,13 @@ export default function BookPage() {
       
       try {
         // Fetch books
-        const booksRes = await fetch('/data/books.json');
+        const booksRes = await fetch('/api/books');
         const books: Book[] = await booksRes.json();
         const foundBook = books.find(b => b.slug === slug);
         setBook(foundBook || null);
-        
+
         // Fetch chapters
-        const chaptersRes = await fetch('/data/chapters.json');
+        const chaptersRes = await fetch('/api/chapters');
         const allChapters: Chapter[] = await chaptersRes.json();
         const bookChapters = allChapters.filter(c => c.bookSlug === slug).sort((a, b) => a.chapterNumber - b.chapterNumber);
         setChapters(bookChapters);

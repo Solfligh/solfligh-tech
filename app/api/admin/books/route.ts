@@ -1,93 +1,62 @@
 // /app/api/admin/books/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { requireAdmin } from '../_auth';
-
-// CORRECTED PATH - using public/data/
-const booksFilePath = path.join(process.cwd(), 'public', 'data', 'books.json');
-
-// Helper to ensure data directory exists
-function ensureDataDir() {
-  const dir = path.join(process.cwd(), 'public', 'data');
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-}
-
-// Helper function to read books from file
-function readBooks(): any[] {
-  ensureDataDir();
-  try {
-    if (!fs.existsSync(booksFilePath)) {
-      fs.writeFileSync(booksFilePath, JSON.stringify([], null, 2));
-      return [];
-    }
-    const data = fs.readFileSync(booksFilePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading books:', error);
-    return [];
-  }
-}
-
-// Helper function to write books to file
-function writeBooks(books: any[]): boolean {
-  try {
-    fs.writeFileSync(booksFilePath, JSON.stringify(books, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Error writing books:', error);
-    return false;
-  }
-}
+import { getBooks, saveBook, deleteBook, deleteChaptersForBook, type Book } from '../../../lib/booksStore';
 
 export async function GET(request: NextRequest) {
   const denied = requireAdmin(request);
   if (denied) return denied;
 
-  const books = readBooks();
-  return NextResponse.json(books);
+  try {
+    const books = await getBooks();
+    return NextResponse.json(books);
+  } catch (err) {
+    console.error('GET /api/admin/books failed:', err);
+    return NextResponse.json({ error: 'Failed to load books' }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
   const denied = requireAdmin(request);
   if (denied) return denied;
 
-  const book = await request.json();
-  
-  if (!book || !book.title) {
-    return NextResponse.json({ error: 'Book title is required' }, { status: 400 });
-  }
+  try {
+    const book = await request.json();
 
-  let books = readBooks();
-  
-  if (book.id) {
-    const index = books.findIndex((b: any) => b.id === book.id);
-    if (index !== -1) {
-      books[index] = { ...books[index], ...book, updatedAt: new Date().toISOString() };
-    } else {
-      return NextResponse.json({ error: 'Book not found' }, { status: 404 });
+    if (!book || !book.title) {
+      return NextResponse.json({ error: 'Book title is required' }, { status: 400 });
     }
-  } else {
-    const newBook = {
-      id: Date.now().toString(),
-      title: book.title,
-      slug: book.slug || book.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      author: book.author || '',
-      originalPubDate: book.originalPubDate || '',
-      coverImage: book.coverImage || '',
-      description: book.description || '',
-      status: book.status || 'ongoing',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    books.push(newBook);
-  }
-  
-  if (writeBooks(books)) {
-    return NextResponse.json({ success: true, books });
-  } else {
+
+    const books = await getBooks();
+    const now = new Date().toISOString();
+
+    let next: Book;
+
+    if (book.id) {
+      const existing = books.find((b) => b.id === book.id);
+      if (!existing) {
+        return NextResponse.json({ error: 'Book not found' }, { status: 404 });
+      }
+      next = { ...existing, ...book, updatedAt: now };
+    } else {
+      next = {
+        id: Date.now().toString(),
+        title: book.title,
+        slug: book.slug || book.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        author: book.author || '',
+        originalPubDate: book.originalPubDate || '',
+        coverImage: book.coverImage || '',
+        description: book.description || '',
+        status: book.status || 'ongoing',
+        createdAt: now,
+        updatedAt: now,
+      };
+    }
+
+    await saveBook(next);
+    return NextResponse.json({ success: true, books: await getBooks() });
+  } catch (err) {
+    console.error('POST /api/admin/books failed:', err);
     return NextResponse.json({ error: 'Failed to save book' }, { status: 500 });
   }
 }
@@ -96,22 +65,25 @@ export async function DELETE(request: NextRequest) {
   const denied = requireAdmin(request);
   if (denied) return denied;
 
-  const { id } = await request.json();
+  try {
+    const { id } = await request.json();
 
-  if (!id) {
-    return NextResponse.json({ error: 'Book ID is required' }, { status: 400 });
-  }
-  
-  let books = readBooks();
-  const filteredBooks = books.filter((b: any) => b.id !== id);
-  
-  if (filteredBooks.length === books.length) {
-    return NextResponse.json({ error: 'Book not found' }, { status: 404 });
-  }
-  
-  if (writeBooks(filteredBooks)) {
+    if (!id) {
+      return NextResponse.json({ error: 'Book ID is required' }, { status: 400 });
+    }
+
+    const books = await getBooks();
+    if (!books.some((b) => b.id === id)) {
+      return NextResponse.json({ error: 'Book not found' }, { status: 404 });
+    }
+
+    // Remove the book's chapters too, so they are not orphaned.
+    await deleteChaptersForBook(id);
+    await deleteBook(id);
+
     return NextResponse.json({ success: true });
-  } else {
+  } catch (err) {
+    console.error('DELETE /api/admin/books failed:', err);
     return NextResponse.json({ error: 'Failed to delete book' }, { status: 500 });
   }
 }

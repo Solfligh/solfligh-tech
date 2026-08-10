@@ -1,31 +1,10 @@
 // /app/books/page.tsx
 import Link from 'next/link';
-import fs from 'fs';
-import path from 'path';
+import { getBooks } from '@/app/lib/booksStore';
 
-interface Book {
-  id: string;
-  title: string;
-  slug: string;
-  author: string;
-  originalPubDate: string;
-  coverImage: string;
-  description: string;
-  status: 'ongoing' | 'completed';
-  createdAt: string;
-}
-
-// This is a Server Component - async is allowed in Next.js App Router
-async function getBooks(): Promise<Book[]> {
-  const booksPath = path.join(process.cwd(), 'public', 'data', 'books.json');
-  try {
-    const data = fs.readFileSync(booksPath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading books:', error);
-    return [];
-  }
-}
+// Server Component: reads through booksStore (Supabase, JSON fallback) rather
+// than the static file, so books saved in /admin show up without a rebuild.
+export const dynamic = 'force-dynamic';
 
 // This is the page component - it MUST be the default export
 export default async function BooksPage() {
