@@ -19,6 +19,7 @@ const moreLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/books", label: "eBooks" },
   { href: "/insights", label: "Insights" },
+  { href: "/careers", label: "Careers" }, // Website Architecture §9: Careers sits under Company
   { href: "/partner", label: "Partner With Us" },
   { href: "/investors", label: "Investors" },
 ];
