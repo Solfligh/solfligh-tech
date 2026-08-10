@@ -52,6 +52,7 @@ export default function Footer() {
             <li><Link href="/blog">Blog</Link></li>
             <li><Link href="/books">eBooks</Link></li>
             <li><Link href="/insights">Insights</Link></li>
+            <li><Link href="/careers">Careers</Link></li>
             <li><Link href="/investors">Investors</Link></li>
             <li><Link href="/partner">Partner With Us</Link></li>
             <li><Link href="/contact">Contact</Link></li>

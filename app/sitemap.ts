@@ -24,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/ai`, priority: 0.7 },
     { url: `${SITE_URL}/roadmap`, priority: 0.7 },
     { url: `${SITE_URL}/about`, priority: 0.7 },
+    { url: `${SITE_URL}/careers`, priority: 0.5 },
     { url: `${SITE_URL}/contact`, priority: 0.6 },
   ];
 
