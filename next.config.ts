@@ -47,6 +47,10 @@ const nextConfig: NextConfig = {
       },
 
       // Old project slug -> new project slug
+      // NOTE: these must stay ABOVE the /projects -> /products rules below.
+      // Next matches redirects in array order, so the catch-all would otherwise
+      // swallow /projects/profitfx and send it to /products/profitfx instead of
+      // the external FXCopilot app.
       {
         source: "/projects/profitfx",
         destination: "https://fxco-pilot.solflightech.org",
@@ -57,11 +61,41 @@ const nextConfig: NextConfig = {
         destination: "https://fxco-pilot.solflightech.org",
         permanent: true,
       },
+      {
+        source: "/products/profitfx",
+        destination: "https://fxco-pilot.solflightech.org",
+        permanent: true,
+      },
+      {
+        source: "/products/profitfx/:path*",
+        destination: "https://fxco-pilot.solflightech.org",
+        permanent: true,
+      },
 
       // Nice short link
       {
         source: "/fxco-pilot",
         destination: "https://fxco-pilot.solflightech.org",
+        permanent: true,
+      },
+
+      // -----------------------------
+      // ✅ /projects -> /products (Website Architecture §11)
+      // -----------------------------
+      {
+        source: "/projects",
+        destination: "/products",
+        permanent: true,
+      },
+      {
+        // The [^.]+ pattern deliberately excludes any path containing a dot.
+        // Redirects run BEFORE filesystem routes, so a bare :path* here would
+        // also capture the project media that still lives in public/projects
+        // (e.g. /projects/video-poster.jpg, /projects/profitpilot/1.jpg) and
+        // redirect those images to URLs that do not exist. Assets keep their
+        // /projects paths; only page routes move.
+        source: "/projects/:path([^.]+)",
+        destination: "/products/:path",
         permanent: true,
       },
 

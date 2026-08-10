@@ -62,7 +62,7 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
   const isFxcoPilot = slug === "fxco-pilot";
   const externalFxcoUrl = "https://fxco-pilot.solflightech.org";
 
-  const href = isFxcoPilot ? externalFxcoUrl : project.href || `/projects/${slug}`;
+  const href = isFxcoPilot ? externalFxcoUrl : project.href || `/products/${slug}`;
 
   const status = isFxcoPilot ? "Live" : project.status || "Upcoming";
   const statusColor = isFxcoPilot

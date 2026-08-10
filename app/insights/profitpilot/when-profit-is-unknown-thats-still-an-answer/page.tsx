@@ -59,7 +59,7 @@ export default function ProfitUnknownArticlePage() {
     "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit";
 
   const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_article_6";
-  const projectHref = "/projects/profitpilot";
+  const projectHref = "/products/profitpilot";
 
   return (
     <main className="bg-white text-slate-900">

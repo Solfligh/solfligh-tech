@@ -159,7 +159,7 @@ export default function AdminPage() {
 
   const payload: ProjectPayload = useMemo(() => {
     const safeSlug = slug.trim().toLowerCase();
-    const internalHref = `/projects/${safeSlug}`;
+    const internalHref = `/products/${safeSlug}`;
 
     const ext = normalizeUrl(externalUrlText);
     const demo = demoStatusValue;
@@ -291,7 +291,7 @@ export default function AdminPage() {
 
     setIsSaving(true);
     try {
-      const res = await fetch("/api/admin/projects", {
+      const res = await fetch("/api/admin/products", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
         body: JSON.stringify(payload),
@@ -300,7 +300,7 @@ export default function AdminPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Save failed");
 
-      setToast({ type: "ok", msg: "Saved. (If published=true, it will show on /projects)" });
+      setToast({ type: "ok", msg: "Saved. (If published=true, it will show on /products)" });
     } catch (e: any) {
       setToast({ type: "err", msg: e?.message || "Save failed" });
     } finally {
@@ -336,7 +336,7 @@ export default function AdminPage() {
                 </Link>
 
                 <Link
-                  href="/projects"
+                  href="/products"
                   className="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                 >
                   View projects
@@ -689,7 +689,7 @@ export default function AdminPage() {
             <aside className="space-y-6">
               <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
                 <h3 className="text-sm font-semibold text-slate-900">Live card preview</h3>
-                <p className="mt-1 text-xs text-slate-600">This is how it will look on /projects.</p>
+                <p className="mt-1 text-xs text-slate-600">This is how it will look on /products.</p>
 
                 <div className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white">
                   <ProjectMediaCarousel
@@ -774,7 +774,7 @@ export default function AdminPage() {
                   <li>• Put your demo video first in the media list.</li>
                   <li>• Use .jpg/.png images for screenshots.</li>
                   <li>• If demo/live is selected, add External URL.</li>
-                  <li>• “Use external link” makes the card open external instead of /projects/slug.</li>
+                  <li>• “Use external link” makes the card open external instead of /products/slug.</li>
                   <li>• Preview before Publish to avoid broken pages.</li>
                 </ul>
               </div>
@@ -801,7 +801,7 @@ export default function AdminPage() {
             <div className="max-h-[78vh] overflow-y-auto p-6">
               <div className="mb-6 flex items-center justify-between gap-3">
                 <Link
-                  href="/projects"
+                  href="/products"
                   className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                 >
                   ← Back to projects

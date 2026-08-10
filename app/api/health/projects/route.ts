@@ -1,4 +1,4 @@
-// app/api/health/projects/route.ts
+// app/api/health/products/route.ts
 import { supabaseAdmin } from "@/app/lib/supabaseAdmin";
 
 export const runtime = "nodejs";

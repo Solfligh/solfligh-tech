@@ -8,7 +8,7 @@ import { listProjects, type ProjectPayload } from "@/app/lib/projectStore";
 
 const pillars = [
   { emoji: "☁️", title: "Solfligh Cloud", desc: "The infrastructure layer our software is built on", href: "/cloud" },
-  { emoji: "🚀", title: "Products", desc: "Software solving real business problems today", href: "/projects" },
+  { emoji: "🚀", title: "Products", desc: "Software solving real business problems today", href: "/products" },
   { emoji: "💼", title: "Services", desc: "Expert teams building custom technology for your business", href: "/services" },
   { emoji: "🤖", title: "AI", desc: "AI built for people and autonomous agents alike", href: "/ai" },
 ];
@@ -291,7 +291,7 @@ export default async function HomePage() {
                   </Link>
 
                   <Link
-                    href="/projects"
+                    href="/products"
                     className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-slate-300/40 sm:backdrop-blur"
                   >
                     See our Products
@@ -394,7 +394,7 @@ export default async function HomePage() {
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
                 <Link
-                  href="/projects"
+                  href="/products"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2 font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   Explore products
@@ -547,7 +547,7 @@ export default async function HomePage() {
               subtitle="Finished, usable products — not prototypes."
               actions={
                 <Link
-                  href="/projects"
+                  href="/products"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   View all Products
@@ -559,7 +559,7 @@ export default async function HomePage() {
               {products.map((p) => {
                 const isExternal =
                   typeof p.externalUrl === "string" && p.externalUrl.startsWith("http");
-                const href = isExternal ? (p.externalUrl as string) : p.href || `/projects/${p.slug}`;
+                const href = isExternal ? (p.externalUrl as string) : p.href || `/products/${p.slug}`;
                 return (
                   <Link
                     key={p.slug}
@@ -604,7 +604,7 @@ export default async function HomePage() {
                   Services
                 </Link>
                 <Link
-                  href="/projects"
+                  href="/products"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   Projects
@@ -672,7 +672,7 @@ export default async function HomePage() {
               See services
             </Link>
             <Link
-              href="/projects"
+              href="/products"
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2 font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
             >
               View projects
@@ -773,7 +773,7 @@ export default async function HomePage() {
                   Services
                 </Link>
                 <Link
-                  href="/projects"
+                  href="/products"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
                   Projects

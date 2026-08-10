@@ -37,7 +37,7 @@ export default function Footer() {
           <div className="font-bold text-slate-950 mb-3">Platform</div>
           <ul className="space-y-2 text-sm font-semibold text-slate-700">
             <li><Link href="/cloud">Solfligh Cloud</Link></li>
-            <li><Link href="/projects">Products</Link></li>
+            <li><Link href="/products">Products</Link></li>
             <li><Link href="/services">Services</Link></li>
             <li><Link href="/ai">AI</Link></li>
             <li><Link href="/roadmap">Roadmap</Link></li>

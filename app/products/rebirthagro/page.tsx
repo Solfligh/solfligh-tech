@@ -1,4 +1,4 @@
-// app/projects/rebirthagro/page.tsx
+// app/products/rebirthagro/page.tsx
 import ProjectDetailPage from "../[slug]/page";
 
 export const runtime = "nodejs";

@@ -50,7 +50,7 @@ export async function POST(req: Request) {
   if (media.length === 0) return bad("media must be a non-empty array");
 
   // internal default
-  const href = String(body.href || `/projects/${slug}`);
+  const href = String(body.href || `/products/${slug}`);
 
   // ✅ externalUrl first-class
   const externalUrl = isValidExternalUrl(body.externalUrl) ? String(body.externalUrl).trim() : null;

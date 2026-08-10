@@ -74,7 +74,7 @@ export default function AdminPage() {
               • Upload demo video + images
             </span>
             <span className="block">
-              • Auto-show them on /projects and the project details page
+              • Auto-show them on /products and the project details page
             </span>
           </p>
         </div>
