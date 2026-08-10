@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
 import ProfitLogicClarification from "@/app/components/ProfitLogicClarification";
+import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
   title: "From Daily Numbers to Daily Clarity: How ProfitPilot Turns Insight Into Habit | SolFligh Tech",
@@ -104,6 +105,7 @@ export default function ProfitPilotSolutionArticlePage() {
 
   return (
     <main className="bg-white text-slate-900">
+      <InsightJsonLd href="/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit" />
       <section className="relative overflow-hidden">
         <Container>
           <div className="relative py-10 sm:py-12">

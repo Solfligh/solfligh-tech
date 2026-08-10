@@ -1,8 +1,28 @@
 // app/insights/profitpilot/(hub)/page.tsx
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import PageHeader from "@/app/components/PageHeader";
 import { getHub, listPostsByHub, type InsightPost } from "@/app/lib/insightsStore";
+
+/**
+ * Without this the hub inherited app/insights/layout.tsx's metadata, so it
+ * shared the exact title of the /insights index — two different pages
+ * competing under one name.
+ */
+export const metadata: Metadata = {
+  title: "ProfitPilot Insights",
+  description:
+    "Articles on daily profit clarity for SMEs: what to track, why profit is conditional on complete costs, and how ProfitPilot turns the routine into a habit.",
+  alternates: { canonical: "/insights/profitpilot" },
+  openGraph: {
+    type: "website",
+    title: "ProfitPilot Insights | SOLFLIGH TECH",
+    description:
+      "Articles on daily profit clarity for SMEs: what to track, why profit is conditional on complete costs, and how ProfitPilot turns the routine into a habit.",
+    url: "https://solflightech.org/insights/profitpilot",
+  },
+};
 
 function MiniHero({ title }: { title: string }) {
   return (

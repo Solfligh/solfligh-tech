@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
+import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
   title: "Why Most SMEs Don’t Actually Know If Today Helped or Hurt Their Business | ProfitPilot | SolFligh Tech",
@@ -102,6 +103,7 @@ export default function ProfitPilotArticlePage() {
 
   return (
     <main className="bg-white text-slate-900">
+      <InsightJsonLd href="/insights/profitpilot/why-most-smes-dont-actually-know-how-much-they-made-today" />
       <section className="relative overflow-hidden">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
           <div className="absolute -left-24 -top-32 h-96 w-96 rounded-full bg-sky-200/25 blur-3xl" />

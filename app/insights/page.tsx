@@ -1,8 +1,22 @@
 // app/insights/page.tsx
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import PageHeader from "@/app/components/PageHeader";
 import { listHubs } from "@/app/lib/insightsStore";
+
+// The layout supplies the title and description for this section; the index
+// still needs its own canonical so it is not confused with the hub pages.
+export const metadata: Metadata = {
+  alternates: { canonical: "/insights" },
+  openGraph: {
+    type: "website",
+    title: "Insights | SolFligh Tech",
+    description:
+      "Practical, plain-language articles about building clearer software for real-world business problems.",
+    url: "https://solflightech.org/insights",
+  },
+};
 
 function InsightHeroArt() {
   return (
