@@ -1,143 +1,177 @@
-// /app/books/[slug]/chapters/[chapterNum]/page.tsx
-'use client';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { getBooks, getChapters, type Book, type Chapter } from '@/app/lib/booksStore';
+import ChapterView from './ChapterView';
 
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+/**
+ * Server wrapper for a chapter page.
+ *
+ * All nine chapters of a book previously shared the layout's default title and
+ * had no description, canonical, Open Graph tags, or structured data — so a
+ * serialised book was invisible as individual chapters in search.
+ */
 
-interface Book {
-  id: string;
-  title: string;
-  slug: string;
-  author: string;
-}
+const SITE_URL = 'https://solflightech.org';
+const ORG_NAME = 'SOLFLIGH TECH';
 
-interface Chapter {
-  id: string;
-  bookId: string;
-  bookSlug: string;
-  chapterNumber: number;
-  title: string;
-  content: string;
-  publishedAt: string;
-}
+export const dynamic = 'force-dynamic';
 
-export default function ChapterPage() {
-  const params = useParams();
-  const slug = params?.slug as string;
-  const chapterNum = params?.chapterNum as string;
-  
-  const [book, setBook] = useState<Book | null>(null);
-  const [chapter, setChapter] = useState<Chapter | null>(null);
-  const [prevChapter, setPrevChapter] = useState<Chapter | null>(null);
-  const [nextChapter, setNextChapter] = useState<Chapter | null>(null);
-  const [loading, setLoading] = useState(true);
+type Loaded = {
+  book: Book | null;
+  chapter: Chapter | null;
+  prev: Chapter | null;
+  next: Chapter | null;
+};
 
-  useEffect(() => {
-    async function fetchChapter() {
-      if (!slug || !chapterNum) return;
-      
-      try {
-        const booksRes = await fetch('/api/books');
-        const books: Book[] = await booksRes.json();
-        const foundBook = books.find(b => b.slug === slug);
-        setBook(foundBook || null);
+async function loadChapter(slug: string, chapterNum: string): Promise<Loaded> {
+  const empty: Loaded = { book: null, chapter: null, prev: null, next: null };
+  const n = Number.parseInt(chapterNum, 10);
+  if (!Number.isFinite(n)) return empty;
 
-        const chaptersRes = await fetch('/api/chapters');
-        const allChapters: Chapter[] = await chaptersRes.json();
-        const bookChapters = allChapters.filter(c => c.bookSlug === slug).sort((a, b) => a.chapterNumber - b.chapterNumber);
-        
-        const currentChapter = bookChapters.find(c => c.chapterNumber === parseInt(chapterNum));
-        setChapter(currentChapter || null);
-        
-        const currentIndex = bookChapters.findIndex(c => c.chapterNumber === parseInt(chapterNum));
-        if (currentIndex > 0) setPrevChapter(bookChapters[currentIndex - 1]);
-        if (currentIndex < bookChapters.length - 1) setNextChapter(bookChapters[currentIndex + 1]);
-      } catch (error) {
-        console.error('Error fetching chapter:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    fetchChapter();
-  }, [slug, chapterNum]);
+  try {
+    const [books, allChapters] = await Promise.all([getBooks(), getChapters()]);
+    const book = books.find((b) => b.slug === slug) || null;
+    if (!book) return empty;
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-600 border-t-transparent" />
-      </div>
-    );
+    const chapters = allChapters
+      .filter((c) => c.bookSlug === slug)
+      .sort((a, b) => a.chapterNumber - b.chapterNumber);
+
+    const index = chapters.findIndex((c) => c.chapterNumber === n);
+    if (index === -1) return { book, chapter: null, prev: null, next: null };
+
+    return {
+      book,
+      chapter: chapters[index],
+      prev: index > 0 ? chapters[index - 1] : null,
+      next: index < chapters.length - 1 ? chapters[index + 1] : null,
+    };
+  } catch {
+    return empty;
   }
+}
+
+function toPlainText(html: string): string {
+  return (html || '')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function describe(text: string, max = 300): string {
+  const s = toPlainText(text);
+  return s.length > max ? `${s.slice(0, max - 3)}…` : s;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; chapterNum: string }>;
+}): Promise<Metadata> {
+  const { slug, chapterNum } = await params;
+  const { book, chapter } = await loadChapter(slug, chapterNum);
 
   if (!book || !chapter) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-24 text-center">
-        <h1 className="mb-4 text-3xl font-bold">Chapter Not Found</h1>
-        <p className="mb-8 text-slate-600">The chapter you're looking for doesn't exist.</p>
-        <Link href="/books" className="text-sky-600 hover:underline">
-          ← Back to all books
-        </Link>
-      </div>
-    );
+    return { title: 'Chapter not found', robots: { index: false, follow: true } };
   }
+
+  const title = `Chapter ${chapter.chapterNumber}: ${chapter.title} — ${book.title}`;
+  const description = describe(chapter.content);
+  const url = `${SITE_URL}/books/${book.slug}/chapters/${chapter.chapterNumber}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/books/${book.slug}/chapters/${chapter.chapterNumber}` },
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      url,
+      publishedTime: chapter.publishedAt || undefined,
+      authors: book.author ? [book.author] : undefined,
+    },
+    twitter: { card: 'summary', title, description },
+  };
+}
+
+export default async function ChapterPage({
+  params,
+}: {
+  params: Promise<{ slug: string; chapterNum: string }>;
+}) {
+  const { slug, chapterNum } = await params;
+  const { book, chapter, prev, next } = await loadChapter(slug, chapterNum);
+
+  if (!book || !chapter) notFound();
+
+  const url = `${SITE_URL}/books/${book.slug}/chapters/${chapter.chapterNumber}`;
+
+  const chapterJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Chapter',
+    name: chapter.title,
+    position: chapter.chapterNumber,
+    url,
+    description: describe(chapter.content, 500),
+    ...(chapter.publishedAt ? { datePublished: chapter.publishedAt } : {}),
+    ...(book.author ? { author: { '@type': 'Person', name: book.author } } : {}),
+    isPartOf: {
+      '@type': 'Book',
+      name: book.title,
+      url: `${SITE_URL}/books/${book.slug}`,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: ORG_NAME,
+      url: SITE_URL,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+    },
+    inLanguage: 'en',
+    isAccessibleForFree: true,
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'eBooks', item: `${SITE_URL}/books` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: book.title,
+        item: `${SITE_URL}/books/${book.slug}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        name: `Chapter ${chapter.chapterNumber}: ${chapter.title}`,
+        item: url,
+      },
+    ],
+  };
 
   return (
     <>
-      {/* Navigation Bar */}
-      <div className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-4xl px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Link 
-              href={`/books/${book.slug}`} 
-              className="text-sm text-slate-600 hover:text-sky-600 transition-colors"
-            >
-              ← Back to {book.title}
-            </Link>
-            <Link 
-              href="/books" 
-              className="text-sm text-slate-600 hover:text-sky-600 transition-colors"
-            >
-              All Books
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Chapter Content - Directly render the HTML which already has chapter-container class */}
-      <div className="py-12">
-        <div 
-          dangerouslySetInnerHTML={{ __html: chapter.content }}
-        />
-      </div>
-      
-      {/* Chapter Navigation */}
-      <div className="mx-auto max-w-3xl px-4 pb-16">
-        <div className="mt-16 flex flex-wrap justify-between gap-4 border-t border-slate-200 pt-8">
-          {prevChapter ? (
-            <Link
-              href={`/books/${book.slug}/chapters/${prevChapter.chapterNumber}`}
-              className="text-sm text-slate-600 hover:text-sky-600 transition-colors"
-            >
-              ← Chapter {prevChapter.chapterNumber}: {prevChapter.title}
-            </Link>
-          ) : (
-            <div />
-          )}
-          
-          {nextChapter ? (
-            <Link
-              href={`/books/${book.slug}/chapters/${nextChapter.chapterNumber}`}
-              className="text-sm text-slate-600 hover:text-sky-600 transition-colors"
-            >
-              Chapter {nextChapter.chapterNumber}: {nextChapter.title} →
-            </Link>
-          ) : (
-            <div />
-          )}
-        </div>
-      </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(chapterJsonLd) }}
+        key="chapter-jsonld"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        key="chapter-breadcrumb-jsonld"
+      />
+      <ChapterView
+        initialBook={book}
+        initialChapter={chapter}
+        initialPrev={prev}
+        initialNext={next}
+      />
     </>
   );
 }
