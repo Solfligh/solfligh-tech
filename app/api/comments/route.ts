@@ -39,7 +39,10 @@ async function notifyAdminOfComment(input: {
     const excerpt =
       input.content.length > 600 ? `${input.content.slice(0, 600)}…` : input.content;
 
-    await resend.emails.send({
+    // The Resend SDK reports API-level failures on the returned `error` field
+    // rather than throwing, so a try/catch alone would let a failed send pass
+    // silently.
+    const { data, error } = await resend.emails.send({
       from: resendFrom,
       to: adminTo,
       subject: `New comment awaiting review — ${input.postSlug}`,
@@ -64,6 +67,12 @@ async function notifyAdminOfComment(input: {
         </div>
       `,
     });
+
+    if (error) {
+      console.error('Comment notification email rejected by Resend:', error);
+    } else {
+      console.log('Comment notification email sent, id:', data?.id);
+    }
   } catch (err) {
     // Swallow: the comment is stored, and the admin queue still shows it.
     console.error('Comment notification email failed:', err);
