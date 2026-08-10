@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import { normalizeProductSlug, productLabel } from "@/app/lib/products";
 
 export const runtime = "nodejs"; // ✅ important for Vercel
 
@@ -27,7 +28,10 @@ export async function POST(req: Request) {
   try {
     const body = (await req.json()) as Payload;
 
-    const product = (body.product || "profitpilot").trim().toLowerCase();
+    // Normalize so aliases (e.g. "fxcopilot" vs "fxco-pilot") don't create
+    // duplicate rows, and so emails can use the canonical display name.
+    const product = normalizeProductSlug(body.product);
+    const productName = productLabel(product);
     const email = (body.email || "").trim().toLowerCase();
     const fullName = (body.fullName || "").trim();
     const phone = (body.phone || "").trim();
@@ -86,12 +90,12 @@ export async function POST(req: Request) {
     if (resendKey && resendFrom && adminTo) {
       const resend = new Resend(resendKey);
 
-      const subject = `New waitlist signup: ${product}`;
+      const subject = `New waitlist signup: ${productName}`;
       const html = `
         <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;">
           <h2 style="margin:0 0 12px;">New waitlist signup</h2>
           <table cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
-            <tr><td><b>Product</b></td><td>${safe(product)}</td></tr>
+            <tr><td><b>Product</b></td><td>${safe(productName)} <span style="color:#64748b;">(${safe(product)})</span></td></tr>
             <tr><td><b>Email</b></td><td>${safe(email)}</td></tr>
             <tr><td><b>Name</b></td><td>${safe(fullName || "—")}</td></tr>
             <tr><td><b>Phone</b></td><td>${safe(phone || "—")}</td></tr>
@@ -122,7 +126,7 @@ export async function POST(req: Request) {
           subject: "You're on the waitlist ✅",
           html: `
             <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;">
-              <p>Thanks${fullName ? `, ${safe(fullName)}` : ""} — you’re on the waitlist for <b>${safe(product)}</b>.</p>
+              <p>Thanks${fullName ? `, ${safe(fullName)}` : ""} — you’re on the waitlist for <b>${safe(productName)}</b>.</p>
               <p>We’ll notify you as soon as early access opens.</p>
               <p style="margin-top:20px;">— Solfligh Tech</p>
             </div>
