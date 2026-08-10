@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { getHeaderCta } from "@/app/lib/headerCta";
 
 const primaryLinks = [
   { href: "/cloud", label: "Solfligh Cloud" },
@@ -59,6 +60,12 @@ export default function Navbar() {
     () => moreLinks.some((l) => isActive(pathname, l.href)),
     [pathname]
   );
+
+  // Website Architecture §10: the CTA destination follows page context.
+  const cta = useMemo(() => getHeaderCta(pathname), [pathname]);
+  const ctaExternalProps = cta.external
+    ? { target: "_blank" as const, rel: "noopener noreferrer" }
+    : {};
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/90 backdrop-blur">
@@ -160,12 +167,13 @@ export default function Navbar() {
           {/* Divider */}
           <div className="h-6 w-px bg-slate-200" />
 
-          {/* CTA */}
+          {/* Contextual CTA */}
           <Link
-            href="/contact"
+            href={cta.href}
+            {...ctaExternalProps}
             className="rounded-full bg-sky-600 px-4 py-2 text-sm font-bold text-white no-underline transition hover:bg-sky-500"
           >
-            Contact
+            {cta.label}
           </Link>
         </div>
 
@@ -200,10 +208,11 @@ export default function Navbar() {
             })}
 
             <Link
-              href="/contact"
+              href={cta.href}
+              {...ctaExternalProps}
               className="block rounded-xl bg-sky-600 px-4 py-3 text-center text-sm font-bold text-white no-underline hover:bg-sky-500"
             >
-              Contact
+              {cta.label}
             </Link>
           </div>
         </div>

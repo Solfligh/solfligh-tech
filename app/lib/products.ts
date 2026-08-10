@@ -22,6 +22,15 @@ export type ProductInfo = {
   /** Where the post-signup "back" link goes. */
   backHref: string;
   backLabel: string;
+  /**
+   * The product's own demo/signup destination, used by the contextual header
+   * CTA (Website Architecture §10) when a visitor is on that product's page.
+   * Reflects the product's real status: live products open the app, unreleased
+   * ones point at their waitlist.
+   */
+  ctaHref: string;
+  ctaLabel: string;
+  ctaExternal?: boolean;
 };
 
 const PRODUCTS: Record<string, ProductInfo> = {
@@ -30,6 +39,9 @@ const PRODUCTS: Record<string, ProductInfo> = {
     label: 'ProfitPilot',
     backHref: '/insights/profitpilot',
     backLabel: 'Back to ProfitPilot hub',
+    // Live / Near Launch: signup goes through the waitlist.
+    ctaHref: '/waitlist?product=profitpilot&source=header_cta',
+    ctaLabel: 'Join the waitlist',
   },
   rebirthagro: {
     slug: 'rebirthagro',
@@ -37,12 +49,19 @@ const PRODUCTS: Record<string, ProductInfo> = {
     label: 'RebirthAgro',
     backHref: '/products/rebirthagro',
     backLabel: 'Back to RebirthAgro',
+    // In Development: waitlist is the only signup that exists.
+    ctaHref: '/waitlist?product=rebirthagro&source=header_cta',
+    ctaLabel: 'Join the waitlist',
   },
   'fxco-pilot': {
     slug: 'fxco-pilot',
     label: 'FXCopilot',
     backHref: '/insights/fxco-pilot',
     backLabel: 'Back to FXCopilot hub',
+    // Live: the app itself is the destination, not a waitlist.
+    ctaHref: 'https://fxco-pilot.solflightech.org',
+    ctaLabel: 'Open FXCopilot',
+    ctaExternal: true,
   },
 };
 
