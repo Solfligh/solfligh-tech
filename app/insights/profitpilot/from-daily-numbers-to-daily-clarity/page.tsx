@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
+import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
   title: "From Daily Number to Daily Clarity: ProfitPilot’s Conditional Profit Logic | SolFligh Tech",
@@ -100,6 +101,7 @@ export default function Page() {
 
   return (
     <main className="bg-white text-slate-900">
+      <InsightJsonLd href="/insights/profitpilot/from-daily-numbers-to-daily-clarity" />
       <section className="relative overflow-hidden">
         <Container>
           <article className="mx-auto max-w-3xl space-y-10 py-10">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/app/components/Container";
 import ProfitLogicClarification from "@/app/components/ProfitLogicClarification";
+import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
   title: "When Profit Is Unknown, That’s Still an Answer | ProfitPilot | SolFligh Tech",
@@ -63,6 +64,7 @@ export default function ProfitUnknownArticlePage() {
 
   return (
     <main className="bg-white text-slate-900">
+      <InsightJsonLd href="/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer" />
       <section className="relative overflow-hidden">
         <Container>
           <div className="relative py-10 sm:py-12">

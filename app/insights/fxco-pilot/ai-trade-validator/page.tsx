@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
 import ReadingSlider from "./ReadingSlider";
+import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
   title: "FXCopilot AI Trade Validator: Decision Support Before You Enter a Forex Trade | SolFligh Tech",
@@ -103,6 +104,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
 
   return (
     <main className="bg-gradient-to-b from-slate-50 via-white to-white text-slate-900">
+      <InsightJsonLd href="/insights/fxco-pilot/ai-trade-validator" breadcrumbOnly />
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger

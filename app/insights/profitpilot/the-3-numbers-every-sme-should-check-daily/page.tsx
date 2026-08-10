@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
+import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
   title: "The 3 Numbers Every SME Should Check Before Closing for the Day | ProfitPilot | SolFligh Tech",
@@ -79,6 +80,7 @@ export default function ArticlePage() {
 
   return (
     <main className="bg-white text-slate-900">
+      <InsightJsonLd href="/insights/profitpilot/the-3-numbers-every-sme-should-check-daily" />
       <section className="relative overflow-hidden">
         <Container>
           <div className="py-10">
