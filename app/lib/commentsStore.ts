@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { unstable_noStore as noStore } from 'next/cache';
 import { supabaseAdmin } from '@/app/lib/supabaseAdmin';
 
@@ -26,6 +27,53 @@ export interface Comment {
   approvedAt?: string | null;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Rate limiting                                                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Turn a client IP into a stable pseudonymous key.
+ *
+ * The raw IP is never stored. It is personal data, and rate limiting only needs
+ * a value that is consistent for the same submitter — not one that can be
+ * reversed. The salt keeps the hash from being a plain rainbow-table lookup of
+ * the (small) IPv4 space.
+ */
+export function hashIp(ip: string): string {
+  const salt =
+    process.env.COMMENT_IP_SALT ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    'solfligh-local-dev-salt';
+  return crypto.createHash('sha256').update(`${salt}:${ip}`).digest('hex');
+}
+
+/** How many comments this hash has submitted since `sinceIso`. */
+export async function countRecentCommentsByIp(
+  ipHash: string,
+  sinceIso: string
+): Promise<number> {
+  if (!ipHash) return 0;
+
+  if (hasSupabase()) {
+    try {
+      noStore();
+      const { count, error } = await supabaseAdmin
+        .from('comments')
+        .select('id', { count: 'exact', head: true })
+        .eq('ip_hash', ipHash)
+        .gte('created_at', sinceIso);
+      if (error) throw error;
+      return count ?? 0;
+    } catch (err) {
+      // Fail open: a counting failure must not block a legitimate comment.
+      console.error('Rate limit lookup failed, allowing the request:', err);
+      return 0;
+    }
+  }
+
+  return readJson().filter((c) => c.ipHash === ipHash && c.createdAt >= sinceIso).length;
+}
+
 function hasSupabase(): boolean {
   return !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
 }
@@ -40,7 +88,14 @@ function ensureDataDir() {
   if (!fs.existsSync(commentsPath)) fs.writeFileSync(commentsPath, JSON.stringify([], null, 2));
 }
 
-function readJson(): Comment[] {
+/**
+ * On-disk shape. Carries ip_hash for rate limiting, which must never reach a
+ * caller — `strip()` removes it on every read path. The Supabase column list
+ * deliberately omits ip_hash for the same reason.
+ */
+type StoredComment = Comment & { ipHash?: string };
+
+function readJson(): StoredComment[] {
   ensureDataDir();
   try {
     return JSON.parse(fs.readFileSync(commentsPath, 'utf-8'));
@@ -49,9 +104,15 @@ function readJson(): Comment[] {
   }
 }
 
-function writeJson(comments: Comment[]): void {
+function writeJson(comments: StoredComment[]): void {
   ensureDataDir();
   fs.writeFileSync(commentsPath, JSON.stringify(comments, null, 2));
+}
+
+/** Drop the rate-limiting key before a comment leaves this module. */
+function strip(c: StoredComment): Comment {
+  const { ipHash: _ipHash, ...rest } = c;
+  return rest;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -102,11 +163,11 @@ export async function getApprovedComments(postSlug: string): Promise<Comment[]> 
       if (error) throw error;
       return ((data || []) as DbCommentRow[]).map(toComment);
     } catch {
-      return readJson().filter((c) => c.postSlug === slug && c.approved);
+      return readJson().filter((c) => c.postSlug === slug && c.approved).map(strip);
     }
   }
 
-  return readJson().filter((c) => c.postSlug === slug && c.approved);
+  return readJson().filter((c) => c.postSlug === slug && c.approved).map(strip);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -125,10 +186,10 @@ export async function getAllComments(): Promise<Comment[]> {
       if (error) throw error;
       return ((data || []) as DbCommentRow[]).map(toComment);
     } catch {
-      return readJson();
+      return readJson().map(strip);
     }
   }
-  return readJson();
+  return readJson().map(strip);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -140,6 +201,7 @@ export async function addComment(input: {
   postSlug: string;
   authorName: string;
   content: string;
+  ipHash?: string;
 }): Promise<Comment> {
   const now = new Date().toISOString();
   const comment: Comment = {
@@ -162,13 +224,14 @@ export async function addComment(input: {
       approved: false,
       created_at: comment.createdAt,
       approved_at: null,
+      ip_hash: input.ipHash || null,
     });
     if (error) throw error;
     return comment;
   }
 
   const all = readJson();
-  all.unshift(comment);
+  all.unshift({ ...comment, ipHash: input.ipHash });
   writeJson(all);
   return comment;
 }

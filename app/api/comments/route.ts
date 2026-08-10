@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { getApprovedComments, addComment } from '@/app/lib/commentsStore';
+import {
+  getApprovedComments,
+  addComment,
+  hashIp,
+  countRecentCommentsByIp,
+} from '@/app/lib/commentsStore';
 
 export const runtime = 'nodejs';
 
@@ -93,6 +98,29 @@ export const dynamic = 'force-dynamic';
 const MAX_NAME = 80;
 const MAX_CONTENT = 4000;
 
+/**
+ * Rate limiting.
+ *
+ * Approve-first moderation stops spam reaching readers, but without a limit a
+ * single script can still flood the moderation queue and the notification
+ * inbox. The counter is database-backed rather than in-memory because
+ * serverless instances are short-lived and plural, so an in-process map would
+ * reset on every cold start and be trivially bypassed.
+ */
+const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_WINDOW_MINUTES = 10;
+
+/**
+ * Client IP as seen through Vercel's proxy. x-forwarded-for is a comma
+ * separated chain; the first entry is the original client.
+ */
+function clientIp(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for') || '';
+  const first = forwarded.split(',')[0]?.trim();
+  if (first) return first;
+  return request.headers.get('x-real-ip')?.trim() || '';
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -142,7 +170,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: false, error: 'That comment is too long.' }, { status: 400 });
     }
 
-    await addComment({ postSlug, authorName, content });
+    // Rate limit before writing anything, so a flood cannot fill the queue.
+    const ip = clientIp(request);
+    const ipHash = ip ? hashIp(ip) : '';
+
+    if (ipHash) {
+      const since = new Date(
+        Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000
+      ).toISOString();
+      const recent = await countRecentCommentsByIp(ipHash, since);
+
+      if (recent >= RATE_LIMIT_MAX) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `You have posted a few comments already. Please wait ${RATE_LIMIT_WINDOW_MINUTES} minutes before posting again.`,
+          },
+          { status: 429, headers: { 'Retry-After': String(RATE_LIMIT_WINDOW_MINUTES * 60) } }
+        );
+      }
+    }
+
+    await addComment({ postSlug, authorName, content, ipHash: ipHash || undefined });
 
     // Best effort, and deliberately awaited so it still runs on serverless,
     // where the function can be frozen the moment the response is returned.
