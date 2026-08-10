@@ -111,13 +111,14 @@ export async function POST(req: Request) {
         stored = false;
       }
 
+      let notified = false;
       const cfg = getResendConfig();
       if (cfg.ok) {
         const resend = new Resend(cfg.apiKey);
         const subject = `New Waitlist / Demo Request — ${projectSlug}`;
 
         try {
-          await resend.emails.send({
+          const { error: sendErr } = await resend.emails.send({
             from: cfg.from,
             to: cfg.to,
             subject,
@@ -126,10 +127,29 @@ export async function POST(req: Request) {
               stored ? "yes" : "NO — database write failed, this email is the only record"
             }\n\n${message || ""}`,
           });
-        } catch {}
+
+          if (sendErr) {
+            console.error("Project lead notification rejected by Resend:", sendErr);
+          } else {
+            notified = true;
+          }
+        } catch (err) {
+          console.error("Project lead notification threw:", err);
+        }
       }
 
-      return json(200, { ok: true, stored });
+      // Same guard as the website-lead branch: only fail if the lead reached
+      // neither the database nor an inbox. Previously this returned ok
+      // unconditionally, so a lead could be lost with the visitor told it
+      // succeeded.
+      if (!stored && !notified) {
+        return json(500, {
+          ok: false,
+          error: "We could not record your request. Please email us directly.",
+        });
+      }
+
+      return json(200, { ok: true, stored, notified });
     }
 
     /* ============================================================
@@ -177,7 +197,10 @@ export async function POST(req: Request) {
       if (cfg.ok) {
         try {
           const resend = new Resend(cfg.apiKey);
-          await resend.emails.send({
+          // Resend reports API-level failures on `error` rather than throwing.
+          // Setting notified = true without checking it would defeat the
+          // both-channels-failed guard below and lose the lead silently.
+          const { error: sendErr } = await resend.emails.send({
             from: cfg.from,
             to: cfg.to,
             subject: `New ${kind.toUpperCase()} Lead — SOLFLIGH TECH`,
@@ -186,8 +209,15 @@ export async function POST(req: Request) {
               firm ? `\nFirm: ${firm}` : ""
             }\nStored in DB: ${stored ? "yes" : "NO — this email is the only record"}\n\n${message}`,
           });
-          notified = true;
-        } catch {
+
+          if (sendErr) {
+            console.error("Lead notification rejected by Resend:", sendErr);
+            notified = false;
+          } else {
+            notified = true;
+          }
+        } catch (err) {
+          console.error("Lead notification threw:", err);
           notified = false;
         }
       }
