@@ -52,11 +52,26 @@ function unauthorized(message = "Unauthorized"): AdminAuth {
   };
 }
 
+/** Name of the httpOnly session cookie set by /api/admin/session. */
+export const ADMIN_COOKIE = "admin_session";
+
+function cookieToken(req: Request): string {
+  const raw = req.headers.get("cookie") || "";
+  for (const part of raw.split(";")) {
+    const [k, ...rest] = part.trim().split("=");
+    if (k === ADMIN_COOKIE) return decodeURIComponent(rest.join("=")).trim();
+  }
+  return "";
+}
+
 function extractToken(req: Request): string {
   const auth = (req.headers.get("authorization") || "").trim();
   const bearer = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : "";
   const header = (req.headers.get("x-admin-token") || "").trim();
-  return (bearer || header).trim();
+  // Headers still win, so scripts, curl, and any API client keep working
+  // exactly as before. The cookie is what makes the browser UIs stop asking
+  // for the token on every reload.
+  return (bearer || header || cookieToken(req)).trim();
 }
 
 /**
@@ -66,7 +81,18 @@ function extractToken(req: Request): string {
  * the request is rejected rather than allowed.
  */
 export async function requireAdmin(req: Request): Promise<AdminAuth> {
-  const provided = extractToken(req);
+  return verifyAdminToken(extractToken(req));
+}
+
+/**
+ * Verify a bare token string.
+ *
+ * Exported so the session login route validates credentials through exactly
+ * this path rather than reimplementing it — a second copy of the check is how
+ * this guard drifted last time.
+ */
+export async function verifyAdminToken(token: string): Promise<AdminAuth> {
+  const provided = (token || "").trim();
   if (!provided) return unauthorized();
 
   // Legacy shared token, kept working during migration.

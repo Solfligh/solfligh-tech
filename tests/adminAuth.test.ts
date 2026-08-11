@@ -142,3 +142,43 @@ describe("legacy shared token", () => {
     expect(auth.ok).toBe(false);
   });
 });
+
+describe("session cookie", () => {
+  it("authenticates from the admin_session cookie", async () => {
+    tokenRow = { id: "abc", name: "Alice", revoked_at: null };
+    const auth = await check({ cookie: "admin_session=slf_alice" });
+
+    expect(auth.ok).toBe(true);
+    if (auth.ok) expect(auth.identity.name).toBe("Alice");
+  });
+
+  it("picks the right cookie when others are present", async () => {
+    tokenRow = { id: "abc", name: "Alice", revoked_at: null };
+    const auth = await check({
+      cookie: "ga=123; admin_session=slf_alice; other=xyz",
+    });
+    expect(auth.ok).toBe(true);
+  });
+
+  it("still verifies against the database, so a revoked token's cookie fails", async () => {
+    // The cookie carries the token; it is not a standalone session record.
+    // Revocation therefore takes effect immediately for existing sessions.
+    tokenRow = null;
+    const auth = await check({ cookie: "admin_session=slf_revoked" });
+    expect(auth.ok).toBe(false);
+  });
+
+  it("prefers an explicit header over the cookie", async () => {
+    tokenRow = { id: "abc", name: "Alice", revoked_at: null };
+    await check({ "x-admin-token": "slf_from_header", cookie: "admin_session=slf_from_cookie" });
+
+    const { hashAdminToken } = await import("@/app/api/admin/_auth");
+    expect(capturedFilters.token_hash).toBe(hashAdminToken("slf_from_header"));
+  });
+
+  it("ignores an empty cookie value", async () => {
+    tokenRow = null;
+    const auth = await check({ cookie: "admin_session=" });
+    expect(auth.ok).toBe(false);
+  });
+});
