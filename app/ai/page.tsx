@@ -6,22 +6,22 @@ import PageHeader from "@/app/components/PageHeader";
 export const metadata: Metadata = {
   title: "AI",
   description:
-    "AI at SOLFLIGH TECH is infrastructure, not a feature flag — used inside Solfligh Cloud and inside every product we build, built to be usable by people and by autonomous agents.",
+    "AI at SOLFLIGH TECH is infrastructure, not a feature flag used inside Solfligh Cloud and inside every product we build, built to be usable by people and by autonomous agents.",
   alternates: { canonical: "/ai" },
 };
 
 const productAI = [
   {
     name: "ProfitPilot",
-    desc: "Automation that turns daily transaction data into clear, same-day profit clarity — no manual reconciliation.",
+    desc: "Automation that turns daily transaction data into clear, same-day profit clarity no manual reconciliation.",
   },
   {
     name: "FXCopilot",
-    desc: "AI-assisted decision support that validates trade context, risk, and assumptions before execution — not signals or predictions.",
+    desc: "AI-assisted decision support that validates trade context, risk, and assumptions before execution not signals or predictions.",
   },
   {
     name: "RebirthAgro",
-    desc: "In development — AI-driven agricultural insight is planned as part of the initial release, not yet live.",
+    desc: "In development AI-driven agricultural insight is planned as part of the initial release, not yet live.",
   },
 ];
 
@@ -31,7 +31,7 @@ export default function AIPage() {
       <PageHeader
         badge="AI • Capability"
         title="AI as infrastructure, not a feature flag"
-        subtitle="We use AI in two places: as a platform capability inside Solfligh Cloud, and inside each product's own automation. Both are built multi-provider by design — no single foundation-model dependency."
+        subtitle="We use AI in two places: as a platform capability inside Solfligh Cloud, and inside each product's own automation. Both are built multi-provider by design no single foundation-model dependency."
         actions={
           <>
             <Link
@@ -53,7 +53,7 @@ export default function AIPage() {
       <div className="mt-10 card-premium p-8">
         <div className="text-base font-bold text-slate-950">AI as a platform capability</div>
         <p className="mt-3 text-sm font-semibold text-slate-800">
-          Inside Solfligh Cloud, AI is a routing and orchestration layer — not a single foundation
+          Inside Solfligh Cloud, AI is a routing and orchestration layer not a single foundation
           model bolted on. That means resilience (no single point of AI-provider failure) and the
           ability to route to whichever model fits a given job on cost, quality, or latency. This
           layer is also being built to be callable by autonomous agents, not just people through a
