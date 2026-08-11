@@ -6,37 +6,37 @@ import PageHeader from "@/app/components/PageHeader";
 export const metadata: Metadata = {
   title: "Roadmap",
   description:
-    "What's live today at SOLFLIGH TECH, and what's actively in development. Nothing here is aspirational — if it's listed as live, you can use it today.",
+    "What's live today at SOLFLIGH TECH, and what's actively in development. Nothing here is aspirational if it's listed as live, you can use it today.",
   alternates: { canonical: "/roadmap" },
 };
 
 const liveToday = [
-  { name: "ProfitPilot", note: "Live / near launch — payroll & business automation." },
-  { name: "FXCopilot", note: "Live — FX decision support." },
+  { name: "ProfitPilot", note: "Live / near launch payroll & business automation." },
+  { name: "FXCopilot", note: "Live FX decision support." },
   {
     name: "Services (all lines)",
-    note: "Live — build, AI & automation, infrastructure, design, and run.",
+    note: "Live build, AI & automation, infrastructure, design, and run.",
   },
 ];
 
 const inDevelopment = [
   {
     name: "RebirthAgro",
-    note: "In development — agriculture technology platform, not yet released.",
+    note: "In development agriculture technology platform, not yet released.",
   },
   {
-    name: "Solfligh Cloud — public developer access",
-    note: "In development — powers our own products today; external API access, SDKs, and docs are not yet available.",
+    name: "Solfligh Cloud public developer access",
+    note: "In development powers our own products today; external API access, SDKs, and docs are not yet available.",
   },
   {
     name: "Payroll, Compliance, Business & Document APIs",
-    note: "In development — the first Cloud module set planned for public access.",
+    note: "In development the first Cloud module set planned for public access.",
   },
   {
     name: "Identity Cloud, AI Cloud, Data Cloud",
-    note: "Not yet started — planned unbundling of Core Platform services.",
+    note: "Not yet started planned unbundling of Core Platform services.",
   },
-  { name: "Marketplace", note: "Not yet started — gated on Cloud public access." },
+  { name: "Marketplace", note: "Not yet started gated on Cloud public access." },
 ];
 
 export default function RoadmapPage() {
@@ -45,7 +45,7 @@ export default function RoadmapPage() {
       <PageHeader
         badge="Roadmap • Status"
         title="What's live, and what's next"
-        subtitle="This page is a trust instrument, not a marketing page — nothing appears under Live Today unless you can use it right now."
+        subtitle="This page is a trust instrument, not a marketing page nothing appears under Live Today unless you can use it right now."
         actions={
           <Link
             href="/contact"
