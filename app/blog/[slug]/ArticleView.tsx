@@ -155,7 +155,7 @@ export default function ArticleView({ initialPost }: { initialPost?: BlogPost | 
         setCommentError(data?.error || 'Could not submit your comment. Please try again.');
       } else {
         // Comments are held for review, so nothing is added to the list here.
-        setCommentNotice(data.message || 'Thanks — your comment has been submitted for review.');
+        setCommentNotice(data.message || 'Thanks your comment has been submitted for review.');
         setCommentForm({ name: '', content: '', website: '' });
       }
     } catch {
@@ -371,7 +371,7 @@ export default function ArticleView({ initialPost }: { initialPost?: BlogPost | 
               </div>
             )}
 
-            {/* Honeypot — hidden from sighted users, screen readers, and tab order */}
+            {/* Honeypot hidden from sighted users, screen readers, and tab order */}
             <div className="hidden" aria-hidden="true">
               <label htmlFor="comment-website">Website</label>
               <input
