@@ -9,7 +9,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  *
  * This module used to read the environment and throw at module scope. Because
  * `next build` evaluates every server module while collecting page data, a
- * single missing env var did not degrade one route — it aborted the entire
+ * single missing env var did not degrade one route it aborted the entire
  * build with:
  *
  *   Error: Missing SUPABASE_SERVICE_ROLE_KEY
