@@ -6,14 +6,14 @@ import PageHeader from "@/app/components/PageHeader";
 export const metadata: Metadata = {
   title: "Solfligh Cloud",
   description:
-    "Solfligh Cloud is the shared infrastructure layer SOLFLIGH TECH's products are built on — auth, billing, data, and AI, available to our own products today and to external developers as it matures.",
+    "Solfligh Cloud is the shared infrastructure layer SOLFLIGH TECH's products are built on auth, billing, data, and AI, available to our own products today and to external developers as it matures.",
   alternates: { canonical: "/cloud" },
 };
 
 const coreServices = [
   {
     name: "Core Platform",
-    desc: "Authentication, identity, authorization, multi-tenancy, API gateway, billing, and usage metering — the shared foundation every product and future API sits on.",
+    desc: "Authentication, identity, authorization, multi-tenancy, API gateway, billing, and usage metering the shared foundation every product and future API sits on.",
   },
   {
     name: "Data Infrastructure",
@@ -25,11 +25,11 @@ const coreServices = [
   },
   {
     name: "Developer Platform / API Gateway",
-    desc: "Documentation, SDKs, and a developer dashboard — the entry point for anyone building on Solfligh Cloud directly.",
+    desc: "Documentation, SDKs, and a developer dashboard the entry point for anyone building on Solfligh Cloud directly.",
   },
   {
     name: "Marketplace",
-    desc: "A future home for third-party APIs, models, and data — curated and invite-only at launch, opening up as trust and tooling mature.",
+    desc: "A future home for third-party APIs, models, and data curated and invite-only at launch, opening up as trust and tooling mature.",
   },
 ];
 
@@ -39,9 +39,9 @@ const availableToday = [
 ];
 
 const planned = [
-  "Public developer access to Solfligh Cloud (API keys, dashboard, docs) — not yet available.",
-  "Marketplace for third-party APIs, models, and data — curated launch planned, not yet started.",
-  "Standalone Identity, AI, and Data Cloud services — future unbundling of Core Platform capabilities.",
+  "Public developer access to Solfligh Cloud (API keys, dashboard, docs) not yet available.",
+  "Marketplace for third-party APIs, models, and data curated launch planned, not yet started.",
+  "Standalone Identity, AI, and Data Cloud services future unbundling of Core Platform capabilities.",
 ];
 
 export default function CloudPage() {
@@ -50,7 +50,7 @@ export default function CloudPage() {
       <PageHeader
         badge="Solfligh Cloud • Platform"
         title="The infrastructure layer our products are built on"
-        subtitle="Solfligh Cloud is shared infrastructure — identity, billing, data, and AI — built once and reused across every product we ship. It isn't a fourth product; it's the foundation the others stand on."
+        subtitle="Solfligh Cloud is shared infrastructure identity, billing, data, and AI built once and reused across every product we ship. It isn't a fourth product; it's the foundation the others stand on."
         actions={
           <>
             <Link
@@ -78,7 +78,7 @@ export default function CloudPage() {
         ))}
       </div>
 
-      {/* Available today vs. planned — honest status split */}
+      {/* Available today vs. planned honest status split */}
       <div className="mt-10 grid gap-4 md:grid-cols-2">
         <div className="card-premium p-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
@@ -119,7 +119,7 @@ export default function CloudPage() {
             </div>
             <p className="mt-2 text-sm font-semibold text-slate-800">
               Today, Solfligh Cloud powers our own products. External API access, SDKs, and docs are
-              on the roadmap — see current status for specifics.
+              on the roadmap see current status for specifics.
             </p>
           </div>
           <Link
