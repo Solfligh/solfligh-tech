@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAdminSession } from '../useAdminSession';
 
 // Admin auth uses the server-side ADMIN_TOKEN, sent as an x-admin-token header
 // on every /api/admin/* call. There is deliberately no password constant here:
@@ -60,7 +61,9 @@ interface Chapter {
 }
 
 export default function BlogAdmin() {
-  const [authenticated, setAuthenticated] = useState(false);
+  // Session lives in an httpOnly cookie, so it survives a reload.
+  const session = useAdminSession();
+  const authenticated = session.signedIn === true;
   const [adminToken, setAdminToken] = useState('');
   const [loginError, setLoginError] = useState('');
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -148,8 +151,10 @@ export default function BlogAdmin() {
   }
 
   // Every /api/admin/* call must carry the admin token.
+  // The httpOnly session cookie is attached automatically to same-origin
+  // fetches, so no auth header is needed here any more.
   function authHeaders(): Record<string, string> {
-    return { 'x-admin-token': adminToken.trim() };
+    return {};
   }
 
   function jsonAuthHeaders(): Record<string, string> {
@@ -186,35 +191,17 @@ export default function BlogAdmin() {
 
   // Validated by the server, not by comparing a string in the browser: we make a
   // real authenticated request and only proceed if the API accepts the token.
+  // Exchanges the token for an httpOnly session cookie. The token itself is
+  // not kept in component state afterwards.
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoginError('');
 
-    const token = adminToken.trim();
-    if (!token) {
-      setLoginError('Enter your admin token.');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/admin/posts', {
-        headers: { 'x-admin-token': token },
-      });
-
-      if (res.ok) {
-        setAuthenticated(true);
-        return;
-      }
-
-      if (res.status === 401) {
-        setLoginError('Invalid admin token.');
-      } else if (res.status === 500) {
-        setLoginError('ADMIN_TOKEN is not configured on the server.');
-      } else {
-        setLoginError(`Login failed (${res.status}).`);
-      }
-    } catch {
-      setLoginError('Could not reach the server.');
+    const ok = await session.signIn(adminToken);
+    if (ok) {
+      setAdminToken('');
+    } else {
+      setLoginError(session.error || 'That token was not accepted.');
     }
   }
 

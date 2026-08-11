@@ -2,6 +2,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useAdminSession } from "./useAdminSession";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import Link from "next/link";
@@ -97,6 +98,7 @@ function demoBadge(demoStatus: DemoStatus) {
 }
 
 export default function AdminPage() {
+  const session = useAdminSession();
   const [adminToken, setAdminToken] = useState("");
 
   // Core
@@ -229,7 +231,9 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin/draft", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
+        headers: adminToken.trim()
+          ? { "Content-Type": "application/json", "x-admin-token": adminToken.trim() }
+          : { "Content-Type": "application/json" },
         body: JSON.stringify({
           slug: slug.trim(),
           name: name.trim(),
@@ -266,7 +270,7 @@ export default function AdminPage() {
   async function saveProject() {
     setToast(null);
 
-    if (!adminToken.trim()) {
+    if (!session.signedIn && !adminToken.trim()) {
       setToast({ type: "err", msg: "Paste your ADMIN_TOKEN first." });
       return;
     }
@@ -293,7 +297,9 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin/products", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
+        headers: adminToken.trim()
+          ? { "Content-Type": "application/json", "x-admin-token": adminToken.trim() }
+          : { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
@@ -361,16 +367,53 @@ export default function AdminPage() {
             {/* Left: Form */}
             <div className="lg:col-span-2 space-y-6">
               <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
-                <h2 className="text-sm font-semibold text-slate-900">Admin Token</h2>
-                <p className="mt-1 text-xs text-slate-600">
-                  This must match your <code className="font-semibold">ADMIN_TOKEN</code> in Vercel env.
-                </p>
-                <input
-                  className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-sky-400"
-                  placeholder="Paste ADMIN_TOKEN here"
-                  value={adminToken}
-                  onChange={(e) => setAdminToken(e.target.value)}
-                />
+                <h2 className="text-sm font-semibold text-slate-900">Admin access</h2>
+
+                {session.signedIn ? (
+                  <div className="mt-2 flex items-center justify-between gap-3">
+                    <p className="text-xs text-slate-600">
+                      Signed in as <span className="font-semibold">{session.name}</span>
+                      {session.legacy ? " (legacy shared token)" : ""}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={session.signOut}
+                      className="shrink-0 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="mt-1 text-xs text-slate-600">
+                      Paste your admin token once. It is exchanged for a session cookie, so
+                      you will not be asked again on this browser.
+                    </p>
+                    <input
+                      type="password"
+                      className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-sky-400"
+                      placeholder="Paste your admin token"
+                      value={adminToken}
+                      onChange={(e) => setAdminToken(e.target.value)}
+                    />
+
+                    {session.error ? (
+                      <p className="mt-2 text-xs font-semibold text-red-600">{session.error}</p>
+                    ) : null}
+
+                    <button
+                      type="button"
+                      disabled={session.busy}
+                      onClick={async () => {
+                        const ok = await session.signIn(adminToken);
+                        if (ok) setAdminToken("");
+                      }}
+                      className="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 disabled:opacity-60"
+                    >
+                      {session.busy ? "Signing in…" : "Sign in"}
+                    </button>
+                  </>
+                )}
               </div>
 
               <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
