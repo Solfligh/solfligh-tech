@@ -49,7 +49,7 @@ export default function ProfitLogicClarification({
   tone = "neutral",
   size = "md",
   showOneLiner = false,
-  oneLinerText = "Profit is conditional — if the data isn’t complete, the number isn’t shown.",
+  oneLinerText = "Profit is conditional if the data isn’t complete, the number isn’t shown.",
   showHint = false,
 }: Props) {
   const toneStyles =
@@ -135,7 +135,7 @@ export default function ProfitLogicClarification({
                   required costs (such as Cost of Goods Sold) are fully recorded.
                 </p>
                 <p className="mt-3 mb-0">
-                  If any required cost is missing, ProfitPilot does not estimate or guess — it will show{" "}
+                  If any required cost is missing, ProfitPilot does not estimate or guess it will show{" "}
                   <strong>“— —”</strong> and clearly explain why profit is unavailable.
                 </p>
               </>
