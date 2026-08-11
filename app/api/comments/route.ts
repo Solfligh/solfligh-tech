@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import {
   getApprovedComments,
   addComment,
@@ -7,82 +6,9 @@ import {
   countRecentCommentsByIp,
 } from '@/app/lib/commentsStore';
 
-export const runtime = 'nodejs';
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://solflightech.org').replace(/\/$/, '');
 
-function escapeHtml(s: string) {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
 
-/**
- * Tell the admin a comment is waiting.
- *
- * Approve-first means a comment is invisible until someone acts on it, so
- * without this the moderation queue depends on remembering to check.
- *
- * Best effort: a failure here must never fail the visitor's submission — the
- * comment is already stored by the time this runs.
- */
-async function notifyAdminOfComment(input: {
-  postSlug: string;
-  authorName: string;
-  content: string;
-}) {
-  const resendKey = process.env.RESEND_API_KEY;
-  const resendFrom = process.env.RESEND_FROM;
-  const adminTo = process.env.RESEND_TO;
-
-  if (!resendKey || !resendFrom || !adminTo) return;
-
-  try {
-    const resend = new Resend(resendKey);
-    const excerpt =
-      input.content.length > 600 ? `${input.content.slice(0, 600)}…` : input.content;
-
-    // The Resend SDK reports API-level failures on the returned `error` field
-    // rather than throwing, so a try/catch alone would let a failed send pass
-    // silently.
-    const { data, error } = await resend.emails.send({
-      from: resendFrom,
-      to: adminTo,
-      subject: `New comment awaiting review — ${input.postSlug}`,
-      html: `
-        <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;">
-          <h2 style="margin:0 0 12px;">A comment is waiting for review</h2>
-          <p style="margin:0 0 4px;"><b>From:</b> ${escapeHtml(input.authorName)}</p>
-          <p style="margin:0 0 12px;"><b>On post:</b> ${escapeHtml(input.postSlug)}</p>
-          <blockquote style="margin:0 0 16px;padding:12px 16px;border-left:3px solid #cbd5e1;background:#f8fafc;white-space:pre-wrap;">${escapeHtml(
-            excerpt
-          )}</blockquote>
-          <p style="margin:0 0 16px;">It is <b>not visible on the site</b> until you approve it.</p>
-          <p style="margin:0;">
-            <a href="${SITE_URL}/admin/blog"
-               style="display:inline-block;background:#0284c7;color:#fff;padding:10px 16px;border-radius:9999px;text-decoration:none;font-weight:600;">
-              Review it in admin
-            </a>
-          </p>
-          <p style="margin:16px 0 0;color:#64748b;font-size:12px;">
-            Also visible at ${SITE_URL}/blog/${escapeHtml(input.postSlug)} once approved.
-          </p>
-        </div>
-      `,
-    });
-
-    if (error) {
-      console.error('Comment notification email rejected by Resend:', error);
-    } else {
-      console.log('Comment notification email sent, id:', data?.id);
-    }
-  } catch (err) {
-    // Swallow: the comment is stored, and the admin queue still shows it.
-    console.error('Comment notification email failed:', err);
-  }
-}
 
 /**
  * Public comments endpoint.
@@ -193,9 +119,6 @@ export async function POST(request: NextRequest) {
 
     await addComment({ postSlug, authorName, content, ipHash: ipHash || undefined });
 
-    // Best effort, and deliberately awaited so it still runs on serverless,
-    // where the function can be frozen the moment the response is returned.
-    await notifyAdminOfComment({ postSlug, authorName, content });
 
     return NextResponse.json({
       ok: true,
