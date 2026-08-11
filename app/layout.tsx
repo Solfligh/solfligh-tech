@@ -29,7 +29,7 @@ const organizationJsonLd = {
   logo: `${SITE_URL}/logo.png`,
   image: `${SITE_URL}/og.png`,
   description:
-    "SOLFLIGH TECH builds modern platforms like ProfitPilot, FXCopilot, and RebirthAgro — focused on automation, clarity, and real business impact. Read our books on psychology, trauma recovery, and personal growth.",
+    "SOLFLIGH TECH builds modern platforms like ProfitPilot, FXCopilot, and RebirthAgro focused on automation, clarity, and real business impact. Read our books on psychology, trauma recovery, and personal growth.",
   sameAs: [],
   hasMenu: {
     "@type": "Menu",
@@ -56,11 +56,11 @@ const organizationJsonLd = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "SOLFLIGH TECH — Technology · Innovation · Getting you back your time",
-    template: "%s — SOLFLIGH TECH",
+    default: "SOLFLIGH TECH  Technology · Innovation · Getting you back your time",
+    template: "%s SOLFLIGH TECH",
   },
   description:
-    "SOLFLIGH TECH builds modern platforms like ProfitPilot, FXCopilot, and RebirthAgro — focused on automation, clarity, and real business impact.",
+    "SOLFLIGH TECH builds modern platforms like ProfitPilot, FXCopilot, and RebirthAgro focused on automation, clarity, and real business impact.",
 
   // ✅ Use standard, predictable favicon paths
   icons: {
@@ -132,7 +132,7 @@ export default function RootLayout({
       </head>
 
       <body className="min-h-screen bg-white font-sans text-slate-900 antialiased">
-        {/* ✅ Google Analytics — lazy loaded to protect performance */}
+        {/* ✅ Google Analytics lazy loaded to protect performance */}
         {hasGA ? (
           <>
             <Script
