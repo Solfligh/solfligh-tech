@@ -24,7 +24,7 @@ function ogUrl(params: { title?: string; subtitle?: string; badge?: string }) {
 export const metadata: Metadata = {
   title: "Projects – SOLFLIGH TECH Products & Platforms",
   description:
-    "Explore SOLFLIGH TECH projects including ProfitPilot and RebirthAgro — platforms built to solve real operational problems.",
+    "Explore SOLFLIGH TECH projects including ProfitPilot and RebirthAgro platforms built to solve real operational problems.",
   alternates: { canonical: `${SITE_URL}/products` },
   openGraph: {
     title: "Projects – SOLFLIGH TECH",
@@ -161,7 +161,7 @@ export default async function ProjectsPage() {
               <div>
                 <p className="text-sm font-semibold text-slate-900">Want deeper context?</p>
                 <p className="mt-1 text-sm leading-relaxed text-slate-600">
-                  Visit our Insights page to read detailed breakdowns of our projects—what they solve, who they’re for,
+                  Visit our Insights page to read detailed breakdowns of our projects what they solve, who they’re for,
                   and updates as we build.
                 </p>
               </div>
