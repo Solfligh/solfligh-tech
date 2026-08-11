@@ -32,7 +32,7 @@ function hasSupabase(): boolean {
 }
 
 /* -------------------------------------------------------------------------- */
-/* JSON fallback (dev/local only — Supabase is the source of truth)           */
+/* JSON fallback (dev/local only  Supabase is the source of truth)           */
 /* -------------------------------------------------------------------------- */
 
 export function ensureDataDir() {
