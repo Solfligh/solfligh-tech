@@ -7,7 +7,7 @@ import BookView from './BookView';
  * Server wrapper for a book page.
  *
  * Every book and chapter URL previously shared the layout's default title, with
- * no description, canonical, Open Graph tags, or structured data — a nine
+ * no description, canonical, Open Graph tags, or structured data a nine
  * chapter book was indistinguishable from the homepage in search results.
  */
 
