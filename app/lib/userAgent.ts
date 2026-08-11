@@ -6,8 +6,8 @@
  * name, email, and message body, that is far more identifying than anything the
  * lead record needs.
  *
- * Hashing would be the wrong tool here. UA strings have low entropy — many
- * people share one exactly — so a hash protects little while destroying the
+ * Hashing would be the wrong tool here. UA strings have low entropy many
+ * people share one exactly so a hash protects little while destroying the
  * only thing the value was useful for. Coarsening keeps the signal that is
  * actually wanted ("this came from Chrome on Android") and drops the rest.
  */
