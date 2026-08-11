@@ -3,8 +3,8 @@ import { getCategories, saveCategories } from '../../../lib/posts';
 import { requireAdmin } from '../_auth';
 
 export async function GET(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const categories = await getCategories();
@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const categories = await request.json();

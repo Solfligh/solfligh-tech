@@ -1,14 +1,8 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "../_auth";
 
 export const runtime = "nodejs";
 
-function requireAdmin(req: Request) {
-  const token = req.headers.get("x-admin-token") || "";
-  const expected = process.env.ADMIN_TOKEN || "";
-  if (!expected) return { ok: false as const, error: "ADMIN_TOKEN is not set on the server." };
-  if (!token || token !== expected) return { ok: false as const, error: "Invalid admin token." };
-  return { ok: true as const };
-}
 
 function pickLines(text: string, max = 6) {
   const lines = String(text || "")
@@ -19,8 +13,8 @@ function pickLines(text: string, max = 6) {
 }
 
 export async function POST(req: Request) {
-  const auth = requireAdmin(req);
-  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: 401 });
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
 
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });

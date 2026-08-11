@@ -1,22 +1,9 @@
 import { NextResponse } from "next/server";
 import { upsertProject, asDemoStatus } from "../../../lib/projectStore";
+import { requireAdmin } from "../_auth";
 
 export const runtime = "nodejs";
 
-function requireAdmin(req: Request) {
-  const token = req.headers.get("x-admin-token") || "";
-  const expected = process.env.ADMIN_TOKEN || "";
-
-  if (!expected) {
-    return { ok: false as const, error: "ADMIN_TOKEN is not set on the server." };
-  }
-
-  if (!token || token !== expected) {
-    return { ok: false as const, error: "Invalid admin token." };
-  }
-
-  return { ok: true as const };
-}
 
 function bad(msg: string, status = 400) {
   return NextResponse.json({ error: msg }, { status });
@@ -30,10 +17,8 @@ function isValidExternalUrl(url: unknown): url is string {
 
 export async function POST(req: Request) {
   // 🔐 Auth
-  const auth = requireAdmin(req);
-  if (!auth.ok) {
-    return NextResponse.json({ error: auth.error }, { status: 401 });
-  }
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
 
   // 📦 Body
   const body = await req.json().catch(() => null);

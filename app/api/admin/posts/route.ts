@@ -3,8 +3,8 @@ import { getPosts, savePost, deletePost } from '../../../lib/posts';
 import { requireAdmin } from '../_auth';
 
 export async function GET(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const posts = await getPosts();
@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const post = await request.json();
@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const { id } = await request.json();

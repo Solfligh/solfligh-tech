@@ -4,8 +4,8 @@ import { requireAdmin } from '../_auth';
 import { getBooks, saveBook, deleteBook, deleteChaptersForBook, type Book } from '../../../lib/booksStore';
 
 export async function GET(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const books = await getBooks();
@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const book = await request.json();
@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const { id } = await request.json();
