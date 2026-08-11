@@ -152,7 +152,7 @@ export default function LeadForm({
         />
       </div>
 
-      {/* Honeypot — hidden from sighted users, screen readers, and tab order */}
+      {/* Honeypot hidden from sighted users, screen readers, and tab order */}
       <div className="hidden" aria-hidden="true">
         <label htmlFor={`${kind}-website`}>Website</label>
         <input
@@ -181,7 +181,7 @@ export default function LeadForm({
       )}
       {ok && (
         <p role="status" className="text-sm font-semibold text-emerald-700">
-          Sent successfully — we’ll get back to you.
+          Sent successfully we’ll get back to you.
         </p>
       )}
     </form>
