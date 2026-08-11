@@ -90,7 +90,7 @@ export default function LeadCaptureForm({
                 Request demo / Join waitlist
               </h3>
               <p className="mt-1 text-xs text-slate-600">
-                Leave your email — we’ll contact you when it’s ready.
+                Leave your email we’ll contact you when it’s ready.
               </p>
             </div>
 
