@@ -5,7 +5,7 @@ import { getPostByHref, getHub } from "@/app/lib/insightsStore";
  *
  * The article pages are hand-written server components, so rather than paste a
  * JSON-LD block into each one, this looks the article up in insightsStore by
- * its canonical href — the same record that drives the hub listings and the
+ * its canonical href the same record that drives the hub listings and the
  * sitemap. One source, so the schema cannot drift from the visible copy.
  *
  * Renders nothing if the href is not a known article, which keeps a typo from
