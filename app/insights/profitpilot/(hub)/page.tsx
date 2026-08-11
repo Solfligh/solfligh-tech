@@ -7,7 +7,7 @@ import { getHub, listPostsByHub, type InsightPost } from "@/app/lib/insightsStor
 
 /**
  * Without this the hub inherited app/insights/layout.tsx's metadata, so it
- * shared the exact title of the /insights index — two different pages
+ * shared the exact title of the /insights index two different pages
  * competing under one name.
  */
 export const metadata: Metadata = {
