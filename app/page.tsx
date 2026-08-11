@@ -363,7 +363,7 @@ export default async function HomePage() {
                 </div>
 
                 <p className="mt-4 text-xs leading-relaxed text-slate-500">
-                  This reflects our actual status today —{" "}
+                  This reflects our actual status today {" "}
                   <Link href="/roadmap" className="underline hover:text-slate-700">
                     see the full roadmap →
                   </Link>
@@ -514,7 +514,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Four Pillars — immediately below hero, equal weight (Website Architecture §3.2) */}
+      {/* Four Pillars immediately below hero, equal weight (Website Architecture §3.2) */}
       <section className="py-14 sm:py-18">
         <Container>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -536,7 +536,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Products Preview — only after the pillars (§3.3) */}
+      {/* Products Preview only after the pillars (§3.3) */}
       {products.length > 0 ? (
         <section className="bg-gradient-to-b from-slate-50 to-white py-14 sm:py-18">
           <Container>
@@ -544,7 +544,7 @@ export default async function HomePage() {
               level={2}
               badge="Products"
               title="Software solving real problems today"
-              subtitle="Finished, usable products — not prototypes."
+              subtitle="Finished, usable products not prototypes."
               actions={
                 <Link
                   href="/products"
@@ -681,14 +681,14 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Proof / Trust — honest "what's live now" (Website Architecture §3.4) */}
+      {/* Proof / Trust honest "what's live now" (Website Architecture §3.4) */}
       <section className="py-14 sm:py-18" style={deferBelowFold}>
         <Container>
           <PageHeader
             level={2}
             badge="Proof"
             title="What's live now"
-            subtitle="No invented numbers, no anonymous quotes — just what's actually shipped today."
+            subtitle="No invented numbers, no anonymous quotes just what's actually shipped today."
             actions={
               <Link
                 href="/roadmap"
@@ -701,10 +701,10 @@ export default async function HomePage() {
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { title: "ProfitPilot", desc: "Payroll & business automation — live / near launch." },
-              { title: "FXCopilot", desc: "FX decision support — live today." },
-              { title: "RebirthAgro", desc: "Agriculture technology — in active development." },
-              { title: "Services", desc: "Build, AI & automation, infrastructure, design, and run — live today." },
+              { title: "ProfitPilot", desc: "Payroll & business automation live / near launch." },
+              { title: "FXCopilot", desc: "FX decision support live today." },
+              { title: "RebirthAgro", desc: "Agriculture technology in active development." },
+              { title: "Services", desc: "Build, AI & automation, infrastructure, design, and run live today." },
             ].map((item) => (
               <div
                 key={item.title}
@@ -730,7 +730,7 @@ export default async function HomePage() {
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-600">
                   We build for unreliable connectivity, volatile currency exposure, and fragmented
-                  regulatory information — not just the best-case enterprise customer. Solfligh
+                  regulatory information not just the best-case enterprise customer. Solfligh
                   Cloud is the shared infrastructure our products stand on; every product we ship
                   makes that infrastructure stronger for the next one.
                 </p>
