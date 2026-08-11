@@ -180,6 +180,30 @@ export async function getAllComments(): Promise<Comment[]> {
   return readJson().map(strip);
 }
 
+/** Everything still awaiting moderation, oldest first so the longest wait leads. */
+export async function getPendingComments(): Promise<Comment[]> {
+  if (hasSupabase()) {
+    try {
+      noStore();
+      const { data, error } = await supabaseAdmin
+        .from('comments')
+        .select(COLUMNS)
+        .eq('approved', false)
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      return ((data || []) as DbCommentRow[]).map(toComment);
+    } catch {
+      return readJson()
+        .filter((c) => !c.approved)
+        .map(strip);
+    }
+  }
+
+  return readJson()
+    .filter((c) => !c.approved)
+    .map(strip);
+}
+
 /* -------------------------------------------------------------------------- */
 /* Writes                                                                     */
 /* -------------------------------------------------------------------------- */
