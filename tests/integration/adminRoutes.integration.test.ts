@@ -24,8 +24,11 @@ describeDb("admin read endpoints answer against the real schema", () => {
   // Imported statically rather than by building the path at runtime: a
   // template-literal import cannot be analysed by the bundler, and a typo in
   // the path would silently skip a route instead of failing.
-  type RouteModule = { GET: (req: Request) => Promise<Response> };
-  const cases: Array<[string, string, () => Promise<RouteModule>]> = [
+  //
+  // Typed as unknown and narrowed at the call site: the handlers take
+  // NextRequest, which is not assignable to a `(req: Request) => ...` slot.
+  type RouteModule = { GET: (req: never) => Promise<Response> };
+  const cases: Array<[string, string, () => Promise<unknown>]> = [
     ["posts", "http://localhost/api/admin/posts", () => import("@/app/api/admin/posts/route")],
     ["categories", "http://localhost/api/admin/categories", () => import("@/app/api/admin/categories/route")],
     ["books", "http://localhost/api/admin/books", () => import("@/app/api/admin/books/route")],
@@ -36,7 +39,7 @@ describeDb("admin read endpoints answer against the real schema", () => {
 
   for (const [name, url, load] of cases) {
     it(`GET /api/admin/${name} does not 500`, async () => {
-      const mod = await load();
+      const mod = (await load()) as RouteModule;
       const res = await mod.GET(authed(url) as never);
 
       // 500 is the signature of schema drift; that is the whole point here.
