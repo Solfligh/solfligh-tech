@@ -10,7 +10,7 @@
  * both of which break the canonical naming rule.
  *
  * Products are ProfitPilot, RebirthAgro, FXCopilot.
- * Solfligh Cloud is deliberately absent — it is the platform/infrastructure
+ * Solfligh Cloud is deliberately absent it is the platform/infrastructure
  * layer, not a product (Blueprint 11.1), and must never be routed through a
  * product waitlist.
  */
