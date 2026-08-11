@@ -1,23 +1,10 @@
 // app/api/admin/leads/route.ts
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/app/lib/supabaseAdmin";
+import { requireAdmin } from "../_auth";
 
 export const runtime = "nodejs";
 
-function requireAdmin(req: Request) {
-  const token = req.headers.get("x-admin-token") || "";
-  const expected = process.env.ADMIN_TOKEN || "";
-
-  if (!expected) {
-    return { ok: false as const, error: "ADMIN_TOKEN is not set on the server." };
-  }
-
-  if (!token || token !== expected) {
-    return { ok: false as const, error: "Invalid admin token." };
-  }
-
-  return { ok: true as const };
-}
 
 function toInt(v: string | null, fallback: number) {
   const n = Number(v);
@@ -61,8 +48,8 @@ function buildCsv(rows: any[]) {
 }
 
 export async function GET(req: Request) {
-  const auth = requireAdmin(req);
-  if (!auth.ok) return NextResponse.json({ ok: false, error: auth.error }, { status: 401 });
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
 
   const url = new URL(req.url);
   const q = (url.searchParams.get("q") || "").trim();
@@ -129,8 +116,8 @@ export async function GET(req: Request) {
 }
 
 export async function PATCH(req: Request) {
-  const auth = requireAdmin(req);
-  if (!auth.ok) return NextResponse.json({ ok: false, error: auth.error }, { status: 401 });
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
 
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ ok: false, error: "Invalid JSON body" }, { status: 400 });

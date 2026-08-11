@@ -21,7 +21,10 @@ const LEAD_RATE_LIMIT_MAX = 5;
 const LEAD_RATE_LIMIT_WINDOW_MINUTES = 15;
 
 type WebsiteLeadPayload = {
-  kind: "contact" | "partner" | "investor";
+  // "developer" is the Solfligh Cloud early-access list. Cloud is the platform
+  // layer, not a product (Blueprint 11.1), so it deliberately does not go
+  // through the product waitlist.
+  kind: "contact" | "partner" | "investor" | "developer";
   name: string;
   email: string;
   message: string;
@@ -71,7 +74,10 @@ function looksLikeProjectLead(body: any): body is Partial<ProjectLeadPayload> {
 }
 
 function looksLikeWebsiteLead(body: any): body is Partial<WebsiteLeadPayload> {
-  return typeof body?.kind === "string" && ["contact", "partner", "investor"].includes(body.kind);
+  return (
+    typeof body?.kind === "string" &&
+    ["contact", "partner", "investor", "developer"].includes(body.kind)
+  );
 }
 
 export async function POST(req: Request) {

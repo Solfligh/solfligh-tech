@@ -16,8 +16,8 @@ import { supabaseAdmin } from "../../../lib/supabaseAdmin";
  * }
  */
 export async function POST(req: NextRequest) {
-  const guard = requireAdmin(req);
-  if (guard) return guard;
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
 
   try {
     const body = (await req.json().catch(() => ({}))) as {

@@ -13,8 +13,8 @@ import {
  */
 
 export async function GET(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const comments = await getAllComments();
@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
 
 /** Approve or un-approve a comment. */
 export async function POST(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const { id, approved } = await request.json();
@@ -52,8 +52,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const denied = requireAdmin(request);
-  if (denied) return denied;
+  const auth = await requireAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const { id } = await request.json();

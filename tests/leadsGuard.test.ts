@@ -157,3 +157,36 @@ describe("honeypot", () => {
     expect(sendMock).not.toHaveBeenCalled();
   });
 });
+
+describe("developer kind (Solfligh Cloud early access)", () => {
+  it("accepts kind=developer and records it as the lead source", async () => {
+    insertMock.mockResolvedValue({ error: null });
+    sendMock.mockResolvedValue({ data: { id: "abc" }, error: null });
+
+    const { status, json } = await postLead({
+      kind: "developer",
+      name: "Dev Person",
+      email: "dev@example.com",
+      firm: "Some Team",
+      message: "We want to build payroll automation on top of the Cloud APIs.",
+    });
+
+    expect(status).toBe(200);
+    expect(json.ok).toBe(true);
+
+    const row = insertMock.mock.calls[0][0] as Record<string, unknown>;
+    // `kind` has no column of its own; it is stored as the source.
+    expect(row.source).toBe("developer");
+    expect(row.company).toBe("Some Team");
+  });
+
+  it("still rejects an unknown kind", async () => {
+    const { status } = await postLead({
+      kind: "not-a-real-kind",
+      name: "X",
+      email: "x@example.com",
+      message: "A message long enough to pass validation checks.",
+    });
+    expect(status).toBe(400);
+  });
+});

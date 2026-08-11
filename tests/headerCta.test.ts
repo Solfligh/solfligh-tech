@@ -7,10 +7,14 @@ import { getHeaderCta } from "@/app/lib/headerCta";
  */
 
 describe("contextual header CTA", () => {
-  it("routes homepage and Cloud to contact (developer signup does not exist yet)", () => {
-    expect(getHeaderCta("/").href).toBe("/contact");
-    expect(getHeaderCta("/cloud").href).toBe("/contact");
-    expect(getHeaderCta("/cloud/anything").href).toBe("/contact");
+  it("routes homepage and Cloud to the developer signup", () => {
+    expect(getHeaderCta("/").href).toBe("/cloud/access");
+    expect(getHeaderCta("/cloud").href).toBe("/cloud/access");
+    expect(getHeaderCta("/cloud/anything").href).toBe("/cloud/access");
+  });
+
+  it("does not point the signup page at itself", () => {
+    expect(getHeaderCta("/cloud/access").href).toBe("/contact");
   });
 
   it("routes a product page to that product's own signup", () => {
