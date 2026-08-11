@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
  * the single place that logic lives now.
  *
  * The token is exchanged for an httpOnly cookie by /api/admin/session and is
- * not kept in JavaScript afterwards, so admin requests need no headers — the
+ * not kept in JavaScript afterwards, so admin requests need no headers the
  * browser attaches the cookie to same-origin fetches automatically.
  */
 
