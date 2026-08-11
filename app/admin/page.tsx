@@ -539,7 +539,7 @@ export default function AdminPage() {
 
                 <div className="mt-4">
                   <label className="text-xs font-semibold text-slate-700">
-                    Media file paths (one per line) — first line should be the demo video
+                    Media file paths (one per line) first line should be the demo video
                   </label>
                   <p className="mt-1 text-xs text-slate-600">
                     Example: <code>/projects/profitpilot/demo.mp4</code>, <code>/projects/profitpilot/1.jpg</code>
@@ -969,7 +969,7 @@ export default function AdminPage() {
               </div>
 
               <div className="mt-10 text-xs text-slate-500">
-                Preview only — nothing is published until you click Publish/Save.
+                Preview only nothing is published until you click Publish/Save.
               </div>
             </div>
           </div>
