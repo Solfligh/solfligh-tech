@@ -78,7 +78,7 @@ function ensureDataDir() {
 
 /**
  * On-disk shape. Carries ip_hash for rate limiting, which must never reach a
- * caller — `strip()` removes it on every read path. The Supabase column list
+ * caller `strip()` removes it on every read path. The Supabase column list
  * deliberately omits ip_hash for the same reason.
  */
 type StoredComment = Comment & { ipHash?: string };
@@ -132,7 +132,7 @@ function toComment(r: DbCommentRow): Comment {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Public reads — approved only                                               */
+/* Public reads approved only                                               */
 /* -------------------------------------------------------------------------- */
 
 export async function getApprovedComments(postSlug: string): Promise<Comment[]> {
@@ -159,7 +159,7 @@ export async function getApprovedComments(postSlug: string): Promise<Comment[]> 
 }
 
 /* -------------------------------------------------------------------------- */
-/* Admin reads — everything, pending first                                    */
+/* Admin reads everything, pending first                                    */
 /* -------------------------------------------------------------------------- */
 
 export async function getAllComments(): Promise<Comment[]> {
