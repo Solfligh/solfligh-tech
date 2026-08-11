@@ -22,13 +22,13 @@ import LeadForm from "@/app/components/LeadForm";
 export const metadata: Metadata = {
   title: "Solfligh Cloud early access",
   description:
-    "Register for early access to Solfligh Cloud. Public developer access is not open yet — join the list and we will get in touch when it is.",
+    "Register for early access to Solfligh Cloud. Public developer access is not open yet join the list and we will get in touch when it is.",
   alternates: { canonical: "/cloud/access" },
   openGraph: {
     type: "website",
     title: "Solfligh Cloud early access | SOLFLIGH TECH",
     description:
-      "Register for early access to Solfligh Cloud. Public developer access is not open yet — join the list and we will get in touch when it is.",
+      "Register for early access to Solfligh Cloud. Public developer access is not open yet join the list and we will get in touch when it is.",
     url: "https://solflightech.org/cloud/access",
   },
 };
@@ -53,7 +53,7 @@ export default function CloudAccessPage() {
 
           <p className="mt-4 text-sm font-semibold text-slate-800">
             Public developer access is still being built. Registering here does not create
-            an account and there is nothing to log into yet — it puts you on the list we
+            an account and there is nothing to log into yet it puts you on the list we
             contact first, and tells us which capabilities to prioritise.
           </p>
 
