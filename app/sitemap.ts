@@ -3,8 +3,8 @@ import { listProjects, type ProjectPayload } from "@/app/lib/projectStore";
 import { getPosts } from "@/app/lib/posts";
 import { getBooks, getChapters } from "@/app/lib/booksStore";
 import { listHubs, listAllPosts } from "@/app/lib/insightsStore";
+import { SITE_URL } from "@/app/lib/site";
 
-const SITE_URL = "https://solflightech.org";
 
 /**
  * The sitemap covers published content, not just landing pages.

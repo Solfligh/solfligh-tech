@@ -86,7 +86,7 @@ function ExtButton({
 
 export default function FxcoPilotAiTradeValidatorArticlePage() {
   const publishedISO = "2026-02-11T00:00:00.000Z";
-  const canonical = "https://solflightech.org/insights/fxco-pilot/ai-trade-validator";
+  const canonical = "https://www.solflightech.org/insights/fxco-pilot/ai-trade-validator";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -99,7 +99,7 @@ export default function FxcoPilotAiTradeValidatorArticlePage() {
     mainEntityOfPage: canonical,
     author: { "@type": "Organization", name: "SolFligh Tech" },
     publisher: { "@type": "Organization", name: "SolFligh Tech" },
-    image: "https://solflightech.org/insights/fxco-pilot/cover.jpg",
+    image: "https://www.solflightech.org/insights/fxco-pilot/cover.jpg",
   };
 
   return (

@@ -4,12 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
 import { getHub, listPostsByHub } from "@/app/lib/insightsStore";
+import { SITE_URL } from "@/app/lib/site";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const SITE_URL = "https://solflightech.org";
 const HUB_SLUG = "fxco-pilot";
 
 // ✅ FIX: use direct external URL so the button never depends on /fxco-pilot route behavior

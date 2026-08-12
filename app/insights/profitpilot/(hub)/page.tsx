@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "ProfitPilot Insights | SOLFLIGH TECH",
     description:
       "Articles on daily profit clarity for SMEs: what to track, why profit is conditional on complete costs, and how ProfitPilot turns the routine into a habit.",
-    url: "https://solflightech.org/insights/profitpilot",
+    url: "https://www.solflightech.org/insights/profitpilot",
   },
 };
 

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: 'eBooks | SOLFLIGH TECH',
     description:
       'Long-form books published by SOLFLIGH TECH, released chapter by chapter and free to read online.',
-    url: 'https://solflightech.org/books',
+    url: 'https://www.solflightech.org/books',
   },
 };
 

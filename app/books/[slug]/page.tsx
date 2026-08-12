@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getBooks, getChapters, type Book, type Chapter } from '@/app/lib/booksStore';
 import BookView from './BookView';
+import { SITE_URL } from "@/app/lib/site";
 
 /**
  * Server wrapper for a book page.
@@ -11,7 +12,6 @@ import BookView from './BookView';
  * chapter book was indistinguishable from the homepage in search results.
  */
 
-const SITE_URL = 'https://solflightech.org';
 const ORG_NAME = 'SOLFLIGH TECH';
 
 export const dynamic = 'force-dynamic';

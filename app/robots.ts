@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
       },
     ],
-    sitemap: "https://solflightech.org/sitemap.xml",
+    sitemap: "https://www.solflightech.org/sitemap.xml",
   };
 }

@@ -6,6 +6,7 @@ import "./globals.css";
 
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
+import { SITE_URL } from "@/app/lib/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,7 +14,6 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-const SITE_URL = "https://solflightech.org";
 const ORG_NAME = "SOLFLIGH TECH";
 
 // If you have Google Analytics enabled, set this in Vercel/Render:

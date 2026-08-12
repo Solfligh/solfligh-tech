@@ -1,9 +1,20 @@
 // app/page.tsx
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import { getHub, getLatestPost } from "@/app/lib/insightsStore";
+
+/**
+ * The homepage had no canonical at all. It is the most linked page on the
+ * site, and the apex redirects to www, so inbound links arrive in both forms.
+ * Declaring it removes the ambiguity. Title and description are inherited from
+ * the root layout, which already describes the homepage.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 import { listProjects, type ProjectPayload } from "@/app/lib/projectStore";
 
 const pillars = [
