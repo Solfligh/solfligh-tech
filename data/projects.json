@@ -15,10 +15,8 @@
       "ctaLabel": "View ProfitPilot",
       "href": "/products/profitpilot",
       "externalUrl": null,
-      "demo": {
-        "status": "coming_soon",
-        "thumbnail": "/projects/video-poster.jpg"
-      },
+      "demoStatus": "none",
+      "featured": false,
       "published": true,
       "media": [
         {
@@ -51,7 +49,7 @@
         "Supabase",
         "PostgreSQL"
       ],
-      "updatedAt": "2026-01-12T00:00:00.000Z"
+      "updatedAt": "2026-08-02T00:24:18.726905+00:00"
     },
     {
       "slug": "fxco-pilot",
@@ -67,9 +65,8 @@
       "ctaLabel": "Open FXCopilot",
       "href": "/products/fxco-pilot",
       "externalUrl": "https://fxco-pilot.solflightech.org",
-      "demo": {
-        "status": "none"
-      },
+      "demoStatus": "none",
+      "featured": false,
       "published": true,
       "media": [
         {
@@ -95,7 +92,7 @@
         "CSS",
         "JavaScript"
       ],
-      "updatedAt": "2026-01-12T00:00:00.000Z"
+      "updatedAt": "2026-08-02T00:24:18.726905+00:00"
     },
     {
       "slug": "rebirthagro",
@@ -111,10 +108,8 @@
       "ctaLabel": "View RebirthAgro",
       "href": "/products/rebirthagro",
       "externalUrl": null,
-      "demo": {
-        "status": "coming_soon",
-        "thumbnail": "/projects/video-poster.jpg"
-      },
+      "demoStatus": "none",
+      "featured": false,
       "published": true,
       "media": [
         {
@@ -145,7 +140,7 @@
         "APIs",
         "Cloud services"
       ],
-      "updatedAt": "2026-01-12T00:00:00.000Z"
+      "updatedAt": "2026-08-02T00:24:18.726905+00:00"
     }
   ]
 }
