@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: "Solfligh Cloud early access | SOLFLIGH TECH",
     description:
       "Register for early access to Solfligh Cloud. Public developer access is not open yet join the list and we will get in touch when it is.",
-    url: "https://solflightech.org/cloud/access",
+    url: "https://www.solflightech.org/cloud/access",
   },
 };
 

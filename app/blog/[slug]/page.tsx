@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getPosts, type BlogPost } from '@/app/lib/posts';
 import ArticleView from './ArticleView';
+import { SITE_URL } from "@/app/lib/site";
 
 /**
  * Server wrapper for a blog article.
@@ -15,7 +16,6 @@ import ArticleView from './ArticleView';
  * view so the article body is server-rendered too.
  */
 
-const SITE_URL = 'https://solflightech.org';
 const ORG_NAME = 'SOLFLIGH TECH';
 
 export const dynamic = 'force-dynamic';

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getBooks, getChapters, type Book, type Chapter } from '@/app/lib/booksStore';
 import ChapterView from './ChapterView';
+import { SITE_URL } from "@/app/lib/site";
 
 /**
  * Server wrapper for a chapter page.
@@ -11,7 +12,6 @@ import ChapterView from './ChapterView';
  * serialised book was invisible as individual chapters in search.
  */
 
-const SITE_URL = 'https://solflightech.org';
 const ORG_NAME = 'SOLFLIGH TECH';
 
 export const dynamic = 'force-dynamic';

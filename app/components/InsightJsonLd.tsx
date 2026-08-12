@@ -1,4 +1,5 @@
 import { getPostByHref, getHub } from "@/app/lib/insightsStore";
+import { SITE_URL } from "@/app/lib/site";
 
 /**
  * Structured data for an insights article.
@@ -12,7 +13,6 @@ import { getPostByHref, getHub } from "@/app/lib/insightsStore";
  * emitting half-populated schema.
  */
 
-const SITE_URL = "https://solflightech.org";
 const ORG_NAME = "SOLFLIGH TECH";
 
 export default function InsightJsonLd({

@@ -6,12 +6,12 @@ import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
 import { listProjects } from "@/app/lib/projectStore";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { SITE_URL } from "@/app/lib/site";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const SITE_URL = "https://solflightech.org";
 
 function ogUrl(params: { title?: string; subtitle?: string; badge?: string }) {
   const u = new URL("/og", SITE_URL);

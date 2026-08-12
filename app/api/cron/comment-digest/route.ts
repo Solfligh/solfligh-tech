@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { Resend } from "resend";
 import { getPendingComments } from "@/app/lib/commentsStore";
 import { requireAdmin } from "@/app/api/admin/_auth";
+import { SITE_URL } from "@/app/lib/site";
 
 /**
  * Daily digest of comments awaiting moderation.
@@ -21,10 +22,6 @@ import { requireAdmin } from "@/app/api/admin/_auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://solflightech.org").replace(
-  /\/$/,
-  ""
-);
 
 function escapeHtml(s: string) {
   return s

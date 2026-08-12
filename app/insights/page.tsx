@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: "Insights | SolFligh Tech",
     description:
       "Practical, plain-language articles about building clearer software for real-world business problems.",
-    url: "https://solflightech.org/insights",
+    url: "https://www.solflightech.org/insights",
   },
 };
 
