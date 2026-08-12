@@ -48,7 +48,14 @@ async function main() {
   const next = JSON.stringify({ projects }, null, 2) + "\n";
   const current = fs.existsSync(TARGET) ? fs.readFileSync(TARGET, "utf8") : "";
 
-  if (current === next) {
+  // Git rewrites line endings on checkout, so on Windows the file is CRLF
+  // while this generates LF. Comparing raw bytes reported drift on a file with
+  // identical content — a checker that cries wolf gets ignored, which defeats
+  // the point of having one.
+  const normalize = (s: string) => s.replace(/\r\n/g, "\n");
+  const sameContent = normalize(current) === normalize(next);
+
+  if (sameContent) {
     console.log(`  data/projects.json is in sync (${projects.length} projects).`);
     return;
   }
@@ -62,9 +69,14 @@ async function main() {
       const currentProjects = JSON.parse(current || "{}").projects ?? [];
       const bySlug = new Map(currentProjects.map((p: { slug: string }) => [p.slug, p]));
 
+      // Distinguishes "the data differs" from "only the formatting differs",
+      // so an empty list below is never left unexplained.
+      let anyFieldDiffers = false;
+
       for (const p of projects) {
         const old = bySlug.get(p.slug) as Record<string, unknown> | undefined;
         if (!old) {
+          anyFieldDiffers = true;
           console.error(`    + ${p.slug} is missing from the file`);
           continue;
         }
@@ -72,12 +84,19 @@ async function main() {
         const differing = [...fields].filter(
           (f) => JSON.stringify(old[f]) !== JSON.stringify((p as Record<string, unknown>)[f])
         );
-        if (differing.length) console.error(`    ~ ${p.slug}: ${differing.join(", ")}`);
+        if (differing.length) {
+          anyFieldDiffers = true;
+          console.error(`    ~ ${p.slug}: ${differing.join(", ")}`);
+        }
       }
       for (const slug of bySlug.keys()) {
         if (!projects.some((p) => p.slug === slug)) {
+          anyFieldDiffers = true;
           console.error(`    - ${slug} is in the file but not in Supabase`);
         }
+      }
+      if (!anyFieldDiffers) {
+        console.error("    (data matches; only formatting differs — rewriting will fix it)");
       }
     } catch {
       console.error("    (could not parse the existing file to compare)");
