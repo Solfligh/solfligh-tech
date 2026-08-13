@@ -19,8 +19,6 @@ export type AdminSession = {
   signedIn: boolean | null;
   /** Who the active token belongs to. */
   name: string;
-  /** True when the deprecated shared ADMIN_TOKEN was used. */
-  legacy: boolean;
   error: string;
   busy: boolean;
   signIn: (token: string) => Promise<boolean>;
@@ -30,7 +28,6 @@ export type AdminSession = {
 export function useAdminSession(): AdminSession {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [name, setName] = useState("");
-  const [legacy, setLegacy] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -44,7 +41,6 @@ export function useAdminSession(): AdminSession {
         if (cancelled) return;
         setSignedIn(Boolean(data?.ok));
         setName(data?.name || "");
-        setLegacy(Boolean(data?.legacy));
       } catch {
         if (!cancelled) setSignedIn(false);
       }
@@ -77,7 +73,6 @@ export function useAdminSession(): AdminSession {
 
       setSignedIn(true);
       setName(data.name || "");
-      setLegacy(Boolean(data.legacy));
       return true;
     } catch {
       setError("Could not reach the server.");
@@ -95,8 +90,7 @@ export function useAdminSession(): AdminSession {
     }
     setSignedIn(false);
     setName("");
-    setLegacy(false);
   }, []);
 
-  return { signedIn, name, legacy, error, busy, signIn, signOut };
+  return { signedIn, name, error, busy, signIn, signOut };
 }

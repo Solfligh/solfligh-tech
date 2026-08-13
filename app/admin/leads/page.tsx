@@ -78,7 +78,7 @@ export default function AdminLeadsPage() {
     setToast(null);
 
     if (!session.signedIn && !adminToken.trim()) {
-      setToast({ type: "err", msg: "Paste your ADMIN_TOKEN first." });
+      setToast({ type: "err", msg: "Paste your admin token first." });
       return;
     }
 
@@ -133,7 +133,7 @@ export default function AdminLeadsPage() {
     setToast(null);
 
     if (!session.signedIn && !adminToken.trim()) {
-      setToast({ type: "err", msg: "Paste your ADMIN_TOKEN first." });
+      setToast({ type: "err", msg: "Paste your admin token first." });
       return;
     }
 
@@ -180,7 +180,7 @@ export default function AdminLeadsPage() {
     setToast(null);
 
     if (!session.signedIn && !adminToken.trim()) {
-      setToast({ type: "err", msg: "Paste your ADMIN_TOKEN first." });
+      setToast({ type: "err", msg: "Paste your admin token first." });
       return;
     }
 
@@ -253,7 +253,7 @@ export default function AdminLeadsPage() {
                   onClick={exportCsv}
                   className="inline-flex items-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
                   disabled={!adminToken.trim()}
-                  title={!adminToken.trim() ? "Paste ADMIN_TOKEN first" : "Export filtered leads to CSV"}
+                  title={!adminToken.trim() ? "Paste your admin token first" : "Export filtered leads to CSV"}
                 >
                   Export CSV
                 </button>
@@ -283,7 +283,6 @@ export default function AdminLeadsPage() {
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <p className="text-xs text-slate-600">
                       Signed in as <span className="font-semibold">{session.name}</span>
-                      {session.legacy ? " (legacy shared token)" : ""}
                     </p>
                     <button
                       type="button"

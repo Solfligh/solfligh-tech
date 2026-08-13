@@ -90,7 +90,6 @@ describe("accepts a valid per-person token", () => {
     expect(auth.ok).toBe(true);
     if (auth.ok) {
       expect(auth.identity.name).toBe("Alice");
-      expect(auth.identity.legacy).toBe(false);
     }
   });
 
@@ -118,25 +117,39 @@ describe("accepts a valid per-person token", () => {
   });
 });
 
-describe("legacy shared token", () => {
-  it("still works during migration, and is marked as legacy", async () => {
+describe("the retired shared ADMIN_TOKEN", () => {
+  // These are the tests that would catch the fallback being reintroduced,
+  // either deliberately or by a bad merge restoring the old branch.
+
+  it("is refused even when it is still set in the environment", async () => {
+    // The exact scenario this guards: the variable is left behind on the host
+    // after the code stopped honouring it. It must not open anything.
     process.env.ADMIN_TOKEN = "old-shared-secret";
+    tokenRow = null;
+
     const auth = await check({ "x-admin-token": "old-shared-secret" });
-
-    expect(auth.ok).toBe(true);
-    if (auth.ok) {
-      expect(auth.identity.legacy).toBe(true);
-    }
-  });
-
-  it("does not accept a near-miss of the legacy token", async () => {
-    process.env.ADMIN_TOKEN = "old-shared-secret";
-    const auth = await check({ "x-admin-token": "old-shared-secre" });
     expect(auth.ok).toBe(false);
   });
 
-  it("is not a way in once removed from the environment", async () => {
-    // ADMIN_TOKEN unset by beforeEach.
+  it("is refused via Authorization: Bearer as well", async () => {
+    process.env.ADMIN_TOKEN = "old-shared-secret";
+    tokenRow = null;
+
+    const auth = await check({ authorization: "Bearer old-shared-secret" });
+    expect(auth.ok).toBe(false);
+  });
+
+  it("is looked up in admin_tokens like any other string, not compared to the env var", async () => {
+    // If the env-var branch came back, the lookup would be short-circuited and
+    // no hash would ever reach the database.
+    process.env.ADMIN_TOKEN = "old-shared-secret";
+    tokenRow = null;
+
+    await check({ "x-admin-token": "old-shared-secret" });
+    expect(String(capturedFilters.token_hash ?? "")).toMatch(/^[a-f0-9]{64}$/);
+  });
+
+  it("still rejects an empty token", async () => {
     tokenRow = null;
     const auth = await check({ "x-admin-token": "" });
     expect(auth.ok).toBe(false);

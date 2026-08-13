@@ -56,7 +56,6 @@ export async function POST(req: Request) {
   const res = NextResponse.json({
     ok: true,
     name: auth.identity.name,
-    legacy: auth.identity.legacy,
   });
   res.cookies.set(ADMIN_COOKIE, token, cookieOptions());
   return res;
@@ -71,7 +70,6 @@ export async function GET(req: Request) {
   return NextResponse.json({
     ok: true,
     name: auth.identity.name,
-    legacy: auth.identity.legacy,
   });
 }
 
