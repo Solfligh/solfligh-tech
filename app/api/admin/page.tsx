@@ -31,7 +31,7 @@ export default function AdminPage() {
           <input
             value={token}
             onChange={(e) => setToken(e.target.value)}
-            placeholder="Paste your ADMIN_TOKEN here (later)"
+            placeholder="Paste your admin token here (later)"
             className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 outline-none ring-sky-200 focus:ring-2"
           />
 

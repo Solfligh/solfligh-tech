@@ -10,7 +10,12 @@ import { describe, it, expect } from "vitest";
  * A 500 here means a route's query no longer matches the schema.
  */
 
-const token = (process.env.ADMIN_TOKEN || "").trim();
+// A real per-person token from admin_tokens, issued with:
+//   node scripts/admin-token.mjs issue "integration tests"
+// Named separately from anything the app reads, so a token that exists only to
+// run tests can be revoked without touching a person's own access. The shared
+// ADMIN_TOKEN this used to read no longer authenticates anything.
+const token = (process.env.ADMIN_TEST_TOKEN || "").trim();
 const hasCredentials =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY && !!token;
 

@@ -18,15 +18,16 @@ import { supabaseAdmin } from "@/app/lib/supabaseAdmin";
  *   Authorization: Bearer <token>
  *   x-admin-token: <token>
  *
- * The legacy ADMIN_TOKEN still works during migration and is reported as such,
- * so its use can be spotted in logs and eventually removed.
+ * The shared ADMIN_TOKEN that this replaced is gone. It is deliberately not
+ * read here at all: leaving the fallback in place meant a single secret, known
+ * to everyone who ever had it, still opened every admin route, and revoking it
+ * required a redeploy. Per-person tokens in admin_tokens are now the only way
+ * in, so setting ADMIN_TOKEN in the environment again has no effect.
  */
 
 export type AdminIdentity = {
-  /** Who the token belongs to, or "legacy shared token". */
+  /** Who the token belongs to. */
   name: string;
-  /** True when the deprecated single ADMIN_TOKEN was used. */
-  legacy: boolean;
 };
 
 export type AdminAuth =
@@ -35,14 +36,6 @@ export type AdminAuth =
 
 function sha256(value: string): string {
   return crypto.createHash("sha256").update(value).digest("hex");
-}
-
-/** Constant-time compare, so a wrong token cannot be found byte by byte. */
-function safeEqual(a: string, b: string): boolean {
-  const ab = Buffer.from(a);
-  const bb = Buffer.from(b);
-  if (ab.length !== bb.length) return false;
-  return crypto.timingSafeEqual(ab, bb);
 }
 
 function unauthorized(message = "Unauthorized"): AdminAuth {
@@ -77,8 +70,8 @@ function extractToken(req: Request): string {
 /**
  * Verify the request carries a valid admin token.
  *
- * Fails closed: if neither per-person tokens nor a legacy token can be checked,
- * the request is rejected rather than allowed.
+ * Fails closed: if the token store cannot be reached, the request is rejected
+ * rather than allowed.
  */
 export async function requireAdmin(req: Request): Promise<AdminAuth> {
   return verifyAdminToken(extractToken(req));
@@ -95,15 +88,8 @@ export async function verifyAdminToken(token: string): Promise<AdminAuth> {
   const provided = (token || "").trim();
   if (!provided) return unauthorized();
 
-  // Legacy shared token, kept working during migration.
-  const legacy = (process.env.ADMIN_TOKEN || "").trim();
-  if (legacy && safeEqual(provided, legacy)) {
-    console.warn(
-      "Admin access used the legacy shared ADMIN_TOKEN. Issue per-person tokens and remove it."
-    );
-    return { ok: true, identity: { name: "legacy shared token", legacy: true } };
-  }
-
+  // Only the hash is ever compared, and only against admin_tokens. There is no
+  // environment-variable path in or out of this function.
   const hash = sha256(provided);
 
   try {
@@ -126,7 +112,7 @@ export async function verifyAdminToken(token: string): Promise<AdminAuth> {
         if (touchErr) console.error("Could not update admin token last_used_at:", touchErr);
       });
 
-    return { ok: true, identity: { name: data.name as string, legacy: false } };
+    return { ok: true, identity: { name: data.name as string } };
   } catch (err) {
     // A lookup failure must not become an open door.
     console.error("Admin token lookup failed:", err);

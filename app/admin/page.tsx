@@ -271,7 +271,7 @@ export default function AdminPage() {
     setToast(null);
 
     if (!session.signedIn && !adminToken.trim()) {
-      setToast({ type: "err", msg: "Paste your ADMIN_TOKEN first." });
+      setToast({ type: "err", msg: "Paste your admin token first." });
       return;
     }
     if (!payload.slug || !payload.name) {
@@ -373,7 +373,6 @@ export default function AdminPage() {
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <p className="text-xs text-slate-600">
                       Signed in as <span className="font-semibold">{session.name}</span>
-                      {session.legacy ? " (legacy shared token)" : ""}
                     </p>
                     <button
                       type="button"
