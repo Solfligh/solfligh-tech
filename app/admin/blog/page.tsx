@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAdminSession } from '../useAdminSession';
 
-// Admin auth uses the server-side ADMIN_TOKEN, sent as an x-admin-token header
+// Admin auth uses a per-person token, sent as an x-admin-token header
 // on every /api/admin/* call. There is deliberately no password constant here:
 // anything hardcoded in a 'use client' file ships to every visitor in the JS
 // bundle and is not protection.

@@ -90,11 +90,21 @@ describe("the endpoint cannot be triggered by anyone", () => {
     expect(status).toBe(200);
   });
 
-  it("accepts a valid admin token, so it can be sent on demand", async () => {
-    process.env.ADMIN_TOKEN = "legacy-admin";
+  it("accepts a valid per-person admin token, so it can be sent on demand", async () => {
+    adminTokenRow = { id: "1", name: "Alice" };
     pendingRows = pending(1);
-    const { status } = await runDigest({ "x-admin-token": "legacy-admin" });
+    const { status } = await runDigest({ "x-admin-token": "slf_alice" });
     expect(status).toBe(200);
+  });
+
+  it("is not triggerable by the retired shared ADMIN_TOKEN", async () => {
+    process.env.ADMIN_TOKEN = "old-shared-secret";
+    adminTokenRow = null;
+    pendingRows = pending(1);
+
+    const { status } = await runDigest({ "x-admin-token": "old-shared-secret" });
+    expect(status).toBe(401);
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it("fails closed when no cron secret is configured", async () => {
