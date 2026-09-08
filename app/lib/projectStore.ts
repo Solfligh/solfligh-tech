@@ -255,14 +255,25 @@ async function upsertProjectToSupabase(
   if (error) throw error;
   const proj = upserted as DbProjectRow;
 
-  // Replace media
+  // Replace media.
+  //
+  // The rows have to be cleared before the new ones go in, so capture what is
+  // there first. Without that, a failed insert leaves the project with no media
+  // at all — losing images that were fine, on top of the edit that failed.
+  const { data: previousMedia } = await supabaseAdmin
+    .from("project_media")
+    .select("project_slug,type,src,thumbnail,alt,sort_order")
+    .eq("project_slug", input.slug);
+
   await supabaseAdmin.from("project_media").delete().eq("project_slug", input.slug);
 
   if (Array.isArray(input.media) && input.media.length > 0) {
     const payload = input.media
       .filter((m) => m && typeof m.src === "string" && (m.type === "image" || m.type === "video"))
       .map((m, idx) => ({
-        project_id: proj.id,
+        // Keyed by slug. There is no project_id column on project_media, and
+        // writing one made every save fail with PGRST204 after the delete had
+        // already run.
         project_slug: input.slug,
         type: m.type,
         src: m.src,
@@ -272,7 +283,21 @@ async function upsertProjectToSupabase(
       }));
 
     const { error: mediaInsertErr } = await supabaseAdmin.from("project_media").insert(payload);
-    if (mediaInsertErr) throw mediaInsertErr;
+    if (mediaInsertErr) {
+      // Best effort restore, so the failure costs nothing beyond the edit.
+      if (previousMedia && previousMedia.length > 0) {
+        const { error: restoreErr } = await supabaseAdmin
+          .from("project_media")
+          .insert(previousMedia);
+        if (restoreErr) {
+          console.error(
+            `Could not restore media for "${input.slug}" after a failed save:`,
+            restoreErr
+          );
+        }
+      }
+      throw mediaInsertErr;
+    }
   }
 
   return toPayload(proj, input.media || []);

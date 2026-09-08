@@ -1,7 +1,7 @@
 // app/admin/page.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAdminSession } from "./useAdminSession";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
@@ -40,6 +40,14 @@ type ProjectPayload = {
   roadmap: string[];
   techStack: string[];
 };
+
+/**
+ * A project as it comes back from GET /api/admin/projects.
+ *
+ * The stored row has no `useExternalLink` — that flag is a form control, and is
+ * reconstructed on load by checking whether the saved href is the external URL.
+ */
+type StoredProject = Omit<ProjectPayload, "useExternalLink"> & { updatedAt?: string };
 
 type DraftAnswers = {
   targetUsers: string;
@@ -115,6 +123,10 @@ export default function AdminPage() {
 
   // ✅ New admin fields
   const [externalUrlText, setExternalUrlText] = useState("");
+  // Blank means "derive from status", which is what it did before this was a
+  // field. Stored labels like "Open FXCopilot" would otherwise be overwritten
+  // with a generic one every time a project was saved.
+  const [ctaLabelText, setCtaLabelText] = useState("");
   const [useExternalLink, setUseExternalLink] = useState(false);
   const [demoStatusValue, setDemoStatusValue] = useState<DemoStatus>("none");
   const [featured, setFeatured] = useState(false);
@@ -147,6 +159,12 @@ export default function AdminPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [toast, setToast] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
 
+  // Existing projects, so one can be loaded into the form instead of retyped.
+  const [existing, setExisting] = useState<StoredProject[]>([]);
+  const [loadingExisting, setLoadingExisting] = useState(false);
+  /** The slug currently open for editing, or "" when creating something new. */
+  const [loadedSlug, setLoadedSlug] = useState("");
+
   const statusPreset = STATUS_PRESETS[status] || STATUS_PRESETS["Upcoming"];
 
   const parsedMedia: MediaItem[] = useMemo(() => {
@@ -170,6 +188,8 @@ export default function AdminPage() {
     let cta = statusPreset.cta;
     if (ext && demo === "live") cta = "Open live demo";
     if (ext && demo === "demo") cta = "Open demo";
+    // An explicit label always wins over the derived one.
+    const ctaFinal = ctaLabelText.trim() || cta;
 
     // What link should the *card* use?
     const href =
@@ -184,7 +204,7 @@ export default function AdminPage() {
       statusColor: statusPreset.color,
       description: description.trim(),
       highlights: clampLines(highlightsText),
-      ctaLabel: cta,
+      ctaLabel: ctaFinal,
       href, // <-- internal or external based on toggle
       externalUrl: ext ? ext : null,
       demoStatus: demo,
@@ -214,6 +234,7 @@ export default function AdminPage() {
     roadmapText,
     techStackText,
     externalUrlText,
+    ctaLabelText,
     demoStatusValue,
     featured,
     useExternalLink,
@@ -267,6 +288,83 @@ export default function AdminPage() {
     }
   }
 
+  const authHeaders = useCallback((): Record<string, string> => {
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    const token = adminToken.trim();
+    // The session cookie covers the signed-in case; the header is for the
+    // paste-a-token path, which still works.
+    if (token) headers["x-admin-token"] = token;
+    return headers;
+  }, [adminToken]);
+
+  const refreshExisting = useCallback(async () => {
+    setLoadingExisting(true);
+    try {
+      const res = await fetch("/api/admin/projects", { headers: authHeaders() });
+      const data = await res.json().catch(() => null);
+      if (res.ok && Array.isArray(data?.projects)) setExisting(data.projects as StoredProject[]);
+    } catch {
+      // Loading the list is a convenience. Failing to fetch it must not stop
+      // someone creating a project, so this stays silent.
+    } finally {
+      setLoadingExisting(false);
+    }
+  }, [authHeaders]);
+
+  useEffect(() => {
+    if (!session.signedIn) {
+      setExisting([]);
+      return;
+    }
+    void refreshExisting();
+  }, [session.signedIn, refreshExisting]);
+
+  const existingSlugs = useMemo(
+    () => new Set(existing.map((p) => (p.slug || "").trim().toLowerCase())),
+    [existing]
+  );
+
+  /** Populate every field from a stored project, so saving edits rather than replaces. */
+  function loadProject(target: string) {
+    const p = existing.find((x) => x.slug === target);
+    if (!p) return;
+
+    setSlug(p.slug || "");
+    setName(p.name || "");
+    setStatus(p.status || "Upcoming");
+    setDescription(p.description || "");
+    setHighlightsText((p.highlights || []).join("\n"));
+    setMediaText((p.media || []).map((m) => m.src).join("\n"));
+    setExternalUrlText(p.externalUrl || "");
+    setCtaLabelText(p.ctaLabel || "");
+    // Reconstructed rather than stored: the form flag is expressed in the saved
+    // href, which is the external URL only when the toggle was on.
+    setUseExternalLink(Boolean(p.externalUrl) && p.href === p.externalUrl);
+    setDemoStatusValue(p.demoStatus || "none");
+    setFeatured(Boolean(p.featured));
+    setPublished(Boolean(p.published));
+    setProblem(p.problem || "");
+    setSolution(p.solution || "");
+    setKeyFeaturesText((p.keyFeatures || []).join("\n"));
+    setRoadmapText((p.roadmap || []).join("\n"));
+    setTechStackText((p.techStack || []).join("\n"));
+
+    setLoadedSlug(p.slug || "");
+    setToast({ type: "ok", msg: `Editing ${p.name}. Saving replaces the stored project.` });
+  }
+
+  /** Leave edit mode without touching what is stored. */
+  function startNewProject() {
+    setLoadedSlug("");
+    setSlug("");
+    setName("");
+    setCtaLabelText("");
+    setToast({
+      type: "ok",
+      msg: "Creating a new project. Give it a slug that is not already taken.",
+    });
+  }
+
   async function saveProject() {
     setToast(null);
 
@@ -293,20 +391,46 @@ export default function AdminPage() {
       return;
     }
 
+    // Saving is an upsert keyed on slug, and it REPLACES the stored row. Typing
+    // the slug of a project that was never loaded would therefore blank every
+    // field not filled in here, silently. Refuse instead.
+    if (payload.slug !== loadedSlug && existingSlugs.has(payload.slug)) {
+      setToast({
+        type: "err",
+        msg: `"${payload.slug}" already exists. Load it above to edit it, or choose a different slug — saving now would overwrite it.`,
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
-      const res = await fetch("/api/admin/products", {
+      const res = await fetch("/api/admin/projects", {
         method: "POST",
-        headers: adminToken.trim()
-          ? { "Content-Type": "application/json", "x-admin-token": adminToken.trim() }
-          : { "Content-Type": "application/json" },
+        headers: authHeaders(),
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Save failed");
+      // Not every failure answers with JSON: a wrong path returns Next's HTML
+      // 404, and parsing that blind surfaced "Unexpected token '<'" instead of
+      // anything about the request.
+      const raw = await res.text();
+      let data: { error?: string } | null = null;
+      try {
+        data = raw ? JSON.parse(raw) : null;
+      } catch {
+        data = null;
+      }
 
-      setToast({ type: "ok", msg: "Saved. (If published=true, it will show on /products)" });
+      if (!res.ok) throw new Error(data?.error || `Save failed (HTTP ${res.status})`);
+
+      setLoadedSlug(payload.slug);
+      void refreshExisting();
+      setToast({
+        type: "ok",
+        msg: published
+          ? `Saved. ${payload.name} is published and will show on /products.`
+          : `Saved as a draft. ${payload.name} stays off /products until published.`,
+      });
     } catch (e: any) {
       setToast({ type: "err", msg: e?.message || "Save failed" });
     } finally {
@@ -415,6 +539,61 @@ export default function AdminPage() {
                 )}
               </div>
 
+              {session.signedIn ? (
+                <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
+                  <div className="flex items-center justify-between gap-3">
+                    <h2 className="text-sm font-semibold text-slate-900">Edit an existing project</h2>
+                    {loadedSlug ? (
+                      <button
+                        type="button"
+                        onClick={startNewProject}
+                        className="shrink-0 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                      >
+                        Start a new one
+                      </button>
+                    ) : null}
+                  </div>
+
+                  <p className="mt-1 text-xs text-slate-600">
+                    Saving replaces the whole project, so load one here before changing it.
+                    Editing the form without loading first would blank the fields you did not
+                    retype.
+                  </p>
+
+                  <select
+                    className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-sky-400"
+                    value={loadedSlug}
+                    disabled={loadingExisting || existing.length === 0}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      if (!next) startNewProject();
+                      else loadProject(next);
+                    }}
+                  >
+                    <option value="">
+                      {loadingExisting
+                        ? "Loading projects…"
+                        : existing.length === 0
+                          ? "No projects found"
+                          : "New project (nothing loaded)"}
+                    </option>
+                    {existing.map((p) => (
+                      <option key={p.slug} value={p.slug}>
+                        {p.name} — {p.status}
+                        {p.published ? "" : " (draft)"}
+                      </option>
+                    ))}
+                  </select>
+
+                  {loadedSlug ? (
+                    <p className="mt-2 text-xs font-semibold text-amber-700">
+                      Editing <span className="font-mono">{loadedSlug}</span>. Changing the slug
+                      field now creates a separate project rather than renaming this one.
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+
               <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
                 <h2 className="text-sm font-semibold text-slate-900">Project Basics</h2>
 
@@ -513,6 +692,20 @@ export default function AdminPage() {
 
                     <p className="mt-2 text-[11px] text-slate-500">
                       If Demo Status is <b>Demo</b> or <b>Live</b>, add an External URL so the button can open it.
+                    </p>
+
+                    <label className="mt-4 block text-xs font-semibold text-slate-700">
+                      Button label (optional)
+                    </label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-sky-400"
+                      value={ctaLabelText}
+                      onChange={(e) => setCtaLabelText(e.target.value)}
+                      placeholder={payload.ctaLabel}
+                    />
+                    <p className="mt-2 text-[11px] text-slate-500">
+                      Leave blank to use <b>{statusPreset.cta}</b>, chosen from the status. An
+                      existing project keeps whatever label it was saved with.
                     </p>
                   </div>
                 </div>
