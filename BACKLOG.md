@@ -14,10 +14,14 @@ Prioritized work queue. Read `CLAUDE.md` first for project rules and constraints
 
 ## Status — 2026-09-08
 
-**Tasks 1–17 are all complete.** What remains from this list is two
-documentation corrections targeting files that do not live in this repo
-(12, 13). Substantial hardening followed the list itself — see
-"After the backlog" below.
+**Tasks 1–17 are all complete**, including 12 and 13, which sat here as blocked
+on files "not in this repo". Both were checked against the actual documents on
+2026-09-08 and were already fixed — see the note under each. Substantial
+hardening followed the list itself; see "After the backlog" below.
+
+The strategy docs now live in the private repo
+**https://github.com/Solfligh/solfligh-docs**, mirrored at `docs/` in this
+working tree (gitignored, because this repo is public).
 
 | # | Task | State |
 |---|---|---|
@@ -32,8 +36,8 @@ documentation corrections targeting files that do not live in this repo
 | 9 | `/projects` → `/products` | Done — PR #14 |
 | 10 | `/waitlist` genericization | Done — PR #13 |
 | 11 | Careers page | Done — PR #18. No openings yet, so it invents none. |
-| 12 | Roadmap doc corrections | **Blocked — file not in this repo.** See note under the task. |
-| 13 | Blueprint naming | **Blocked — file not in this repo.** See note under the task. |
+| 12 | Roadmap doc corrections | Done — verified fixed in the doc itself, 2026-09-08. |
+| 13 | Blueprint naming | Done — verified fixed in the doc itself, 2026-09-08. |
 | 14 | Vercel preview env vars | Done — resolved in Vercel, previews now build |
 | 15 | Books/chapters persistence | Done — PR #12 |
 | 16 | Finish npm audit remediation | Done — PR #11. 14 → 7, and all 7 remaining are dev-only. |
@@ -122,12 +126,22 @@ something else, so it is recorded here rather than as numbered tasks.
 
 **Still open**
 
-- Tasks 12 and 13 — both target files in `docs/`, which is not in this repo.
 - The comment digest has not yet fired with a non-empty queue, so the cron path
   is configured but unproven end to end.
-- `docs/` exists only on the founder's machine. It is gitignored deliberately
-  (it was briefly pushed to this public repo and removed), so no remote holds a
-  copy, and `CLAUDE.md` names it the source of truth.
+- **Four of the six authoritative documents are still missing.** `docs/` holds
+  the Blueprint and the Roadmap; Brand Guidelines, Website Architecture, the
+  Cloud PRD, and Operating System / API Standards are not there, yet
+  `CLAUDE.md` cites them by section as binding rules.
+- `/admin` has not been used by hand since PR #42 changed how saving works.
+
+**Now resolved:** `docs/` is backed up to the private repo
+`Solfligh/solfligh-docs`. It had existed only on the founder's machine, having
+been gitignored after a brief accidental push to this public repo.
+
+Tasks 12 and 13 turned out to be **already fixed in the documents themselves** —
+their premises were stale. That is the third stale premise found in this file
+(task 2 and task 16 were the others). **Check the artefact before acting on a
+task description here.**
 
 ---
 
@@ -340,17 +354,14 @@ env var. It is a capability URL and is already committed in git history (`66ff4f
 
 Both confirmed with the founder. The site is correct; the doc is stale.
 
-> **Blocked: the file is not in this repo.** Searched the repository and the
-> usual local locations; the only markdown here is `BACKLOG.md`, `CLAUDE.md`,
-> and `README.md`. The strategy docs are maintained outside version control.
+> **Resolved.** The doc is now available at `docs/` (mirrored to the private
+> repo `Solfligh/solfligh-docs`), and reading it on 2026-09-08 shows §2 already
+> correct: ProfitPilot reads **"Live / Near Launch"**, and RebirthAgro is not in
+> the "Now — Live Today" table at all. The premise above was stale.
 >
-> **The site side needs no change** — `app/roadmap/page.tsx` already reads
-> "Live / near launch" for ProfitPilot and lists RebirthAgro under *In
-> development — not yet released*. Verified 2026-08-05. This is purely an
-> internal-doc correction.
->
-> To action: add the file to the repo (a `docs/` folder is fine) or paste §2,
-> and the edit is a two-line change.
+> **The site side needed no change either** — `app/roadmap/page.tsx` already
+> reads "Live / near launch" for ProfitPilot and lists RebirthAgro under *In
+> development — not yet released*. Verified 2026-08-05.
 
 ### 13. Blueprint naming inconsistency
 `04-solfligh-tech-master-corporate-blueprint-v2.md` §3 (Core Values, item 5) and
@@ -358,9 +369,11 @@ Both confirmed with the founder. The site is correct; the doc is stale.
 changelog retired. Minor, but the Blueprint is the authoritative naming source,
 so it should not contradict itself.
 
-> **Blocked: the file is not in this repo**, same as task 12. No code change is
-> implied either way — "API Cloud" appears nowhere in the codebase, so this is a
-> documentation-only fix.
+> **Resolved.** Checked against the Blueprint on 2026-09-08: the only remaining
+> "API Cloud" mentions are the changelog and two notes explaining that the name
+> was retired in favour of Developer Platform / API Gateway. Neither §3 nor §4
+> uses it as a current product name, so the document no longer contradicts
+> itself. "API Cloud" appears nowhere in the codebase either.
 
 ---
 
