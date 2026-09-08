@@ -24,6 +24,27 @@ anything currently on the live site:
 Where docs and code conflict, **the docs win** unless the founder says otherwise.
 Ask rather than guess when requirements are unclear.
 
+**Where they live.** `docs/` in this working tree, gitignored because this repo
+is public, and backed up to the private repo
+**https://github.com/Solfligh/solfligh-docs**. Edits there are a normal
+`git add . && git commit && git push` from inside `docs/`.
+
+**Only two of the documents above are actually in `docs/`:**
+
+| Document | Present? |
+|---|---|
+| Master Corporate Blueprint | yes — the file is named `…-v2.md` but its header says **Version: 1.1**, which is the version cited here. The filename is the misleading part. |
+| Roadmap | yes |
+| Brand Guidelines | **no** |
+| Website Architecture Document | **no** |
+| Solfligh Cloud PRD | **no** |
+| Operating System, API Standards | **no** |
+
+Rules below cite the absent ones by section — "Brand Guidelines §4",
+"Website Architecture §3.4". Those citations came from the founder and are
+still binding, but they **cannot be checked from this repo**. Treat them as
+given; ask rather than reasoning about what a section you cannot read says.
+
 ## Non-negotiable rules
 
 1. **Canonical names.** `FXCopilot` — never "FXCO-PILOT", never "ProfitFX".
@@ -104,18 +125,25 @@ Ask rather than guess when requirements are unclear.
 
 ## Known outstanding work
 
-1. **Roadmap doc corrections** — `10-solfligh-tech-roadmap.md` §2 lists
-   ProfitPilot as flatly "Live" and RebirthAgro as live; both are inaccurate.
-   The file lives in `docs/`, which is gitignored (see below), so this cannot be
-   done from the repo alone.
-2. **Blueprint naming inconsistency** — same location, same constraint.
-3. **The comment digest has never fired with a non-empty queue.** The cron is
+1. **Four of the six authoritative documents are not in `docs/`** — Brand
+   Guidelines, Website Architecture, the Cloud PRD, and Operating System / API
+   Standards. Rules in this file cite them by section, so those sections cannot
+   be verified from the repo. Adding them to `solfligh-docs` would make the
+   "single source of truth" claim true.
+2. **The comment digest has never fired with a non-empty queue.** The cron is
    configured in `vercel.json` and unit-tested, but the end-to-end path is
    unproven.
-4. **`docs/` has no backup.** It is gitignored deliberately — it was briefly
-   pushed to this public repo by mistake and removed — so no git remote holds
-   it. It exists only on the founder's machine, and this file names it the
-   source of truth that overrides the site.
+3. **`/admin` has not been exercised by hand since PR #42** changed how saving
+   works. It was verified headlessly and against the database, but not by
+   someone who knows what the panel should feel like.
+
+The two documentation corrections that sat here as "blocked" (BACKLOG 12 and 13)
+were checked against the actual files on 2026-09-08 and **are already fixed**.
+The roadmap's §2 table reads `Live / Near Launch` for ProfitPilot and does not
+list RebirthAgro as live; the Blueprint's only remaining "API Cloud" mentions
+are the notices explaining that the name was retired. Both premises were stale,
+which is the third time that has happened — **check the file before acting on a
+task description here.**
 
 ## Recently completed
 
