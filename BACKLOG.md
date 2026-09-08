@@ -12,11 +12,12 @@ Prioritized work queue. Read `CLAUDE.md` first for project rules and constraints
 
 ---
 
-## Status — 2026-08-05
+## Status — 2026-09-08
 
-**All P0, P1, and P2 build tasks are complete.** What remains is two founder
-decisions (11, 17) and two documentation corrections that target files which do
-not live in this repo (12, 13).
+**Tasks 1–17 are all complete.** What remains from this list is two
+documentation corrections targeting files that do not live in this repo
+(12, 13). Substantial hardening followed the list itself — see
+"After the backlog" below.
 
 | # | Task | State |
 |---|---|---|
@@ -30,13 +31,13 @@ not live in this repo (12, 13).
 | 8 | Contextual CTA routing | Done — PR #16 |
 | 9 | `/projects` → `/products` | Done — PR #14 |
 | 10 | `/waitlist` genericization | Done — PR #13 |
-| 11 | Careers page | **Blocked — needs a founder decision.** Are there real openings? |
+| 11 | Careers page | Done — PR #18. No openings yet, so it invents none. |
 | 12 | Roadmap doc corrections | **Blocked — file not in this repo.** See note under the task. |
 | 13 | Blueprint naming | **Blocked — file not in this repo.** See note under the task. |
 | 14 | Vercel preview env vars | Done — resolved in Vercel, previews now build |
 | 15 | Books/chapters persistence | Done — PR #12 |
 | 16 | Finish npm audit remediation | Done — PR #11. 14 → 7, and all 7 remaining are dev-only. |
-| 17 | Blog comments | **Blocked — needs a founder decision.** Real backend, or delete? |
+| 17 | Blog comments | Done — PR #19. Real backend, approve-first moderation. |
 
 Two issues were found and fixed during this pass that were not on the list:
 
@@ -45,7 +46,8 @@ Two issues were found and fixed during this pass that were not on the list:
   create, edit, or delete blog content on production with a single `curl`.
   `requireAdmin` existed and was simply never called. The blog admin was also
   "protected" by a password hardcoded in a `'use client'` file, so it shipped to
-  every visitor. Fixed; all 8 admin routes now enforce `ADMIN_TOKEN`.
+  every visitor. Fixed; all 8 admin routes now enforce admin auth. (The shared
+  `ADMIN_TOKEN` this originally used has since been retired — PR #41.)
 - **A syntax error in `app/lib/comments.ts`** (PR #8) that made `tsc --noEmit`
   fail on `main`, dormant only because nothing imports the module.
 
@@ -62,6 +64,70 @@ returned data — it was never throwing. The real defect was persistence: writes
 went to `public/data/*.json` via `fs.writeFileSync`, which fails on a read-only
 serverless filesystem, and the public blog read the baked-in static JSON. Both
 now go through Supabase.
+
+---
+
+## After the backlog — Sep 2026
+
+Work that followed tasks 1–17. Most of it came from things found while doing
+something else, so it is recorded here rather than as numbered tasks.
+
+**Correctness and data loss**
+
+- **Admin project saving was completely broken** (PR #42). The form POSTed to
+  `/api/admin/products`, which does not exist — every save hit Next's HTML 404,
+  and calling `res.json()` on it surfaced `Unexpected token '<'` instead. Behind
+  that, `upsertProject` wrote a `project_id` column that is not on
+  `project_media`, and because media rows are deleted *before* the new ones are
+  inserted, a failed save also destroyed the project's existing media. Nothing
+  was damaged only because the 404 stopped requests reaching it. Fixed, with a
+  real edit path: projects can now be loaded into the form, and saving over a
+  slug that was not loaded is refused.
+- **Resend failures were swallowed** (PR #20). The SDK reports API errors on a
+  returned `error` field rather than throwing, so notifications could fail
+  silently.
+- **`supabaseAdmin` threw at module scope** (PR #21), which killed whole builds
+  rather than one route. Now lazy.
+- **`/api/admin/leads` 500'd on `column leads.ip does not exist`** and stayed
+  broken across two merges, because the tests covering it mocked the database
+  away (PR #25). This is what motivated the integration suite.
+
+**Privacy and abuse**
+
+- Lead IPs stored as SHA-256 hashes, user agents coarsened (PRs #23, #24, #25).
+- Rate limiting on comments, leads, and waitlist, DB-backed and failing open
+  (PRs #22, #23).
+
+**Comments**
+
+- Real backend with approve-first moderation (PR #19), replacing localStorage.
+- Per-comment emails replaced by a daily digest cron (PR #36), authenticated by
+  `CRON_SECRET` and failing closed without it.
+
+**SEO**
+
+- Sitemap covers blog, books, chapters, and insights (PR #26).
+- Article, Book, Chapter, and Breadcrumb schema (PRs #27–#29).
+- Canonical URLs point at `www`, which is the host that actually serves (#39).
+
+**Security and process**
+
+- Per-person admin tokens with identity and revocation (PR #33), httpOnly
+  sessions (PR #34), and the shared `ADMIN_TOKEN` retired entirely (PR #41).
+- CI runs tests, typecheck, and build on every PR (PR #31). `main` now requires
+  it to pass.
+- Integration tests against the real schema (PR #35), plus a `projects.json`
+  drift guard (PRs #37, #38).
+- Branded 404 and error boundaries (PR #40).
+
+**Still open**
+
+- Tasks 12 and 13 — both target files in `docs/`, which is not in this repo.
+- The comment digest has not yet fired with a non-empty queue, so the cron path
+  is configured but unproven end to end.
+- `docs/` exists only on the founder's machine. It is gitignored deliberately
+  (it was briefly pushed to this public repo and removed), so no remote holds a
+  copy, and `CLAUDE.md` names it the source of truth.
 
 ---
 
