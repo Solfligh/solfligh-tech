@@ -1,8 +1,32 @@
 import { NextResponse } from "next/server";
-import { upsertProject, asDemoStatus } from "../../../lib/projectStore";
+import { upsertProject, listProjects, asDemoStatus } from "../../../lib/projectStore";
 import { requireAdmin } from "../_auth";
 
 export const runtime = "nodejs";
+
+/**
+ * Lists every project, published or not, so the admin form can load one for
+ * editing.
+ *
+ * This exists because POST is an upsert that REPLACES the row for a slug. With
+ * no way to read a project back into the form, changing one field meant
+ * retyping every other field from memory or silently blanking them.
+ *
+ * Unpublished projects are included deliberately: a draft is exactly the thing
+ * you need to reopen and finish.
+ */
+export async function GET(req: Request) {
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
+
+  try {
+    const projects = await listProjects();
+    return NextResponse.json({ ok: true, projects });
+  } catch (err) {
+    console.error("Could not list projects for the admin editor:", err);
+    return NextResponse.json({ error: "Could not load projects." }, { status: 503 });
+  }
+}
 
 
 function bad(msg: string, status = 400) {
