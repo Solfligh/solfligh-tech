@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",
-    "next": "16.2.12",
+    "next": "16.3.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.18.1"
@@ -27,7 +27,7 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.23",
     "eslint": "^9",
-    "eslint-config-next": "16.2.12",
+    "eslint-config-next": "16.3.4",
     "postcss": "^8.5.25",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.23.12",
@@ -35,7 +35,7 @@
     "vitest": "^4.1.10"
   },
   "overrides": {
-    "sharp": "^0.35.0",
+    "sharp": "^0.35.4",
     "postcss": "^8.5.25",
     "nanoid": "^3.3.18"
   }
