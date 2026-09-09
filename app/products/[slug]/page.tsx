@@ -197,7 +197,7 @@ export async function generateMetadata({
   const safeDescription =
     description.length > 0
       ? description
-      : "Explore SOLFLIGH TECH projects focused on automation, clarity, and real business impact.";
+      : "Explore SOLFLIGH TECH products focused on automation, clarity, and real business impact.";
 
   // ✅ Always keep canonical INTERNAL to avoid redirect/canonical conflicts
   const canonical = `${SITE_URL}/products/${slug}`;
@@ -463,11 +463,11 @@ export default async function ProjectDetailPage({
             </section>
           )}
 
-          {/* Other Projects */}
+          {/* Other products */}
           {otherProjects.length > 0 && (
             <section className="mt-16">
               <div className="flex items-center justify-between gap-4">
-                <h3 className="text-lg font-semibold text-slate-900">Other Projects</h3>
+                <h3 className="text-lg font-semibold text-slate-900">Other products</h3>
                 <Link href="/products" className="text-sm font-semibold text-sky-700 hover:underline">
                   View all →
                 </Link>
