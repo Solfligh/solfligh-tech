@@ -618,7 +618,7 @@ export default async function HomePage() {
                   href="/products"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
-                  Projects
+                  Products
                 </Link>
               </>
             }
@@ -787,7 +787,7 @@ export default async function HomePage() {
                   href="/products"
                   className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white sm:backdrop-blur"
                 >
-                  Projects
+                  Products
                 </Link>
                 <Link
                   href="/contact"
