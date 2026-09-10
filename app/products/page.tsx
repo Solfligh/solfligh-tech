@@ -22,30 +22,32 @@ function ogUrl(params: { title?: string; subtitle?: string; badge?: string }) {
 }
 
 export const metadata: Metadata = {
-  title: "Projects – SOLFLIGH TECH Products & Platforms",
+  // Short, like every sibling page. The root layout appends the brand via
+  // template: "%s SOLFLIGH TECH", so spelling it out here repeated it.
+  title: "Products",
   description:
-    "Explore SOLFLIGH TECH projects including ProfitPilot and RebirthAgro platforms built to solve real operational problems.",
+    "Explore SOLFLIGH TECH products including ProfitPilot, FXCopilot, and RebirthAgro, built to solve real operational problems.",
   alternates: { canonical: `${SITE_URL}/products` },
   openGraph: {
-    title: "Projects – SOLFLIGH TECH",
+    title: "Products – SOLFLIGH TECH",
     description: "A selection of platforms designed to solve real operational and business problems.",
     url: `${SITE_URL}/products`,
     type: "website",
     siteName: "SOLFLIGH TECH",
     images: [
       {
-        url: ogUrl({ title: "Projects", subtitle: "Products we are building", badge: "SOLFLIGH TECH" }),
+        url: ogUrl({ title: "Products", subtitle: "Products we are building", badge: "SOLFLIGH TECH" }),
         width: 1200,
         height: 630,
-        alt: "SOLFLIGH TECH Projects",
+        alt: "SOLFLIGH TECH Products",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Projects – SOLFLIGH TECH",
+    title: "Products – SOLFLIGH TECH",
     description: "A selection of platforms designed to solve real operational and business problems.",
-    images: [ogUrl({ title: "Projects", subtitle: "Products we are building", badge: "SOLFLIGH TECH" })],
+    images: [ogUrl({ title: "Products", subtitle: "Products we are building", badge: "SOLFLIGH TECH" })],
   },
 };
 
@@ -150,7 +152,7 @@ export default async function ProjectsPage() {
         <Container>
           <PageHeader
             level={1}
-            badge="Projects"
+            badge="Products"
             title="Products we are building"
             subtitle="A selection of platforms designed to solve real operational and business problems."
           />
