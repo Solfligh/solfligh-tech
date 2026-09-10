@@ -1,7 +1,10 @@
 // app/og/route.tsx
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+// Node, not edge. The Edge Runtime is deprecated as of Next 16.3, and nothing
+// here needs it: ImageResponse runs on Node, and this route uses only system
+// fonts with no external fetches.
+export const runtime = "nodejs";
 
 function safeText(v: string | null, fallback: string) {
   const s = (v ?? "").trim();
