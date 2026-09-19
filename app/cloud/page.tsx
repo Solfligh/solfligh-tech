@@ -122,12 +122,20 @@ export default function CloudPage() {
               on the roadmap see current status for specifics.
             </p>
           </div>
-          <Link
-            href="/roadmap"
-            className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
-          >
-            View Roadmap
-          </Link>
+          <div className="flex shrink-0 gap-3">
+            <Link
+              href="/cloud/pricing"
+              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
+            >
+              Pricing
+            </Link>
+            <Link
+              href="/roadmap"
+              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
+            >
+              View Roadmap
+            </Link>
+          </div>
         </div>
       </div>
     </Container>
