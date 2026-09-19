@@ -35,8 +35,8 @@ export const metadata: Metadata = {
 const model = [
   {
     name: "Free tier",
-    who: "Startups and individual developers",
-    desc: "A free starting point so you can build and test on Solfligh Cloud before paying anything.",
+    who: "Startups",
+    desc: "A free way for startups to start building on Solfligh Cloud.",
   },
   {
     name: "Usage-based",
