@@ -48,7 +48,7 @@ export default function CloudAccessPage() {
 
           <p className="mt-4 text-sm font-semibold text-slate-800">
             Solfligh Cloud is the platform layer underneath our products, not a product
-            itself. It powers ProfitPilot, FXCopilot, and RebirthAgro today.
+            itself. It powers ProfitPilot and FXCopilot today.
           </p>
 
           <p className="mt-4 text-sm font-semibold text-slate-800">

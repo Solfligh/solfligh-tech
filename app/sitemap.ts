@@ -43,6 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}`, priority: 1.0 },
     { url: `${SITE_URL}/cloud`, priority: 0.9 },
     { url: `${SITE_URL}/cloud/access`, priority: 0.7 },
+    { url: `${SITE_URL}/cloud/pricing`, priority: 0.6 },
     { url: `${SITE_URL}/products`, priority: 0.9 },
     { url: `${SITE_URL}/services`, priority: 0.8 },
     { url: `${SITE_URL}/ai`, priority: 0.7 },
