@@ -10,7 +10,8 @@ import PageHeader from "@/app/components/PageHeader";
  * this page must not invent any (Brand Guidelines 3). What it states instead is
  * only what the docs already commit to about how Cloud will be charged for:
  *
- *  - a free tier for startups (Blueprint 8.4, citing Cloud PRD 17)
+ *  - a free tier for startups (Blueprint 8.4; the Cloud PRD 17 it cites is
+ *    lost, so this rests on the founder's direct confirmation, 2026-09-20)
  *  - usage-based platform fees (Blueprint 7.4)
  *  - enterprise contracts with dedicated SLAs and support (Blueprint 8.3)
  *
