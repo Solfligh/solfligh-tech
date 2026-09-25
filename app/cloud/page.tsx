@@ -6,7 +6,7 @@ import PageHeader from "@/app/components/PageHeader";
 export const metadata: Metadata = {
   title: "Solfligh Cloud",
   description:
-    "Solfligh Cloud is the shared infrastructure layer SOLFLIGH TECH's products are built on auth, billing, data, and AI, available to our own products today and to external developers as it matures.",
+    "Solfligh Cloud is SOLFLIGH TECH's platform and infrastructure layer: identity, API keys, usage metering, and quotas. It runs in production today. Access is by invitation, and public developer access is not open yet.",
   alternates: { canonical: "/cloud" },
 };
 
@@ -34,12 +34,14 @@ const coreServices = [
 ];
 
 const availableToday = [
-  "Core Platform services power ProfitPilot and FXCopilot in production today.",
-  "Data infrastructure is live internally, feeding the products already shipping on it.",
+  "The platform is deployed and running in production.",
+  "Identity, organizations, API keys, usage metering, and quotas are live on it.",
+  "Access is by invitation. There is no public sign-up yet.",
 ];
 
 const planned = [
-  "Public developer access to Solfligh Cloud (API keys, dashboard, docs) not yet available.",
+  "Our own products moving onto the platform. None of them run on it today.",
+  "Public developer access to Solfligh Cloud (self-serve API keys, dashboard, docs) not yet available.",
   "Marketplace for third-party APIs, models, and data curated launch planned, not yet started.",
   "Standalone Identity, AI, and Data Cloud services future unbundling of Core Platform capabilities.",
 ];
@@ -49,21 +51,21 @@ export default function CloudPage() {
     <Container className="py-14 md:py-20">
       <PageHeader
         badge="Solfligh Cloud • Platform"
-        title="The infrastructure layer our products are built on"
-        subtitle="Solfligh Cloud is shared infrastructure identity, billing, data, and AI built once and reused across every product we ship. It isn't a fourth product; it's the foundation the others stand on."
+        title="Our shared platform and infrastructure layer"
+        subtitle="Solfligh Cloud is identity, API keys, usage metering, and quotas, built once so that everything we ship can reuse it instead of rebuilding it. It is not a fourth product. It runs in production today, and our own products have not moved onto it yet."
         actions={
           <>
             <Link
-              href="/products"
-              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
+              href="/cloud/access"
+              className="inline-flex items-center justify-center rounded-full bg-sky-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-sky-500 no-underline"
             >
-              See it in production
+              Register for early access
             </Link>
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center rounded-full bg-sky-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-sky-500 no-underline"
+              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
             >
-              Talk to us about early access
+              Talk to us
             </Link>
           </>
         }
@@ -118,8 +120,8 @@ export default function CloudPage() {
               Public developer access isn&apos;t open yet
             </div>
             <p className="mt-2 text-sm font-semibold text-slate-800">
-              Today, Solfligh Cloud powers our own products. External API access, SDKs, and docs are
-              on the roadmap see current status for specifics.
+              Solfligh Cloud runs in production, but access is by invitation. Our own products have
+              not moved onto it yet, and self-serve API keys, SDKs, and docs are still being built.
             </p>
           </div>
           <Link
