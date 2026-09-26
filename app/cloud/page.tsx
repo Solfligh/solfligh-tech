@@ -124,12 +124,14 @@ export default function CloudPage() {
               not moved onto it yet, and self-serve API keys, SDKs, and docs are still being built.
             </p>
           </div>
-          <Link
-            href="/roadmap"
-            className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
-          >
-            View Roadmap
-          </Link>
+          <div className="flex shrink-0 gap-3">
+            <Link
+              href="/roadmap"
+              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
+            >
+              View Roadmap
+            </Link>
+          </div>
         </div>
       </div>
     </Container>
