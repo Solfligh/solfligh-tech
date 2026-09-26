@@ -24,6 +24,12 @@ export const metadata: Metadata = {
   description:
     "Solfligh Cloud pricing is not set yet because public developer access is not open. Here is how it is planned to work, and how to hear first when it is.",
   alternates: { canonical: "/cloud/pricing" },
+  // Not published yet. The free-tier card is a public commitment and the
+  // founder wants it live only after testing and confirming, so the page ships
+  // but stays out of search and out of the navigation. To publish: drop this
+  // robots block, restore the sitemap entry, and restore the Pricing link on
+  // /cloud. Nothing else needs to change.
+  robots: { index: false, follow: false },
   openGraph: {
     type: "website",
     title: "Solfligh Cloud pricing | SOLFLIGH TECH",
