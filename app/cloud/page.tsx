@@ -125,6 +125,20 @@ export default function CloudPage() {
             </p>
           </div>
           <div className="flex shrink-0 gap-3">
+            {/*
+              Points at the early-access list, not /cloud/pricing, while that
+              page is unpublished. Labelled for where it goes rather than
+              "Pricing": a button called Pricing that opens a sign-up form
+              instead of showing prices is the kind of thing Brand Guidelines 3
+              rules out. Swap it back to /cloud/pricing when that page is
+              published.
+            */}
+            <Link
+              href="/cloud/access"
+              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
+            >
+              Ask about pricing
+            </Link>
             <Link
               href="/roadmap"
               className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
