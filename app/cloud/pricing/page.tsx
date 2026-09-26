@@ -57,7 +57,7 @@ export default function CloudPricingPage() {
       <PageHeader
         badge="Solfligh Cloud • Pricing"
         title="Pricing isn't set yet"
-        subtitle="Public developer access to Solfligh Cloud is still being built, so there are no prices to publish. This is how pricing is planned to work. Actual prices will be published when access opens."
+        subtitle="Solfligh Cloud runs in production, but access is by invitation and self-serve sign-up is still being built, so there are no prices to publish. This is how pricing is planned to work. Actual prices will be published when access opens."
         actions={
           <>
             <Link
@@ -94,8 +94,8 @@ export default function CloudPricingPage() {
         <div className="card-premium p-6">
           <div className="text-base font-bold text-slate-950">What you can buy today</div>
           <p className="mt-3 text-sm font-semibold text-slate-800">
-            Nothing on Solfligh Cloud directly. There is no account to sign up for and no bill to
-            receive yet. ProfitPilot and FXCopilot already run on it in production.
+            Nothing on Solfligh Cloud directly. The platform runs in production, but access is by
+            invitation and there is no bill to receive yet. Our own products have not moved onto it.
           </p>
           <Link
             href="/products"
