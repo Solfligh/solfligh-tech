@@ -42,7 +42,7 @@ export default function AboutPage() {
               href="/products"
               className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100 no-underline"
             >
-              View Projects
+              View Products
             </Link>
             <Link
               href="/contact"
