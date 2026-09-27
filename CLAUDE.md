@@ -18,7 +18,8 @@ anything currently on the live site:
 - Master Corporate Blueprint v1.1
 - Brand Guidelines v1.0
 - Website Architecture Document v1.0
-- Solfligh Cloud PRD v2.1
+- Solfligh Cloud PRD — v2.1 is **lost**; the working document is the
+  reconstructed **v3.0** (see below)
 - Operating System, API Standards, Roadmap
 
 Where docs and code conflict, **the docs win** unless the founder says otherwise.
@@ -29,18 +30,32 @@ is public, and backed up to the private repo
 **https://github.com/Solfligh/solfligh-docs**. Edits there are a normal
 `git add . && git commit && git push` from inside `docs/`.
 
-**Only two of the documents above are actually in `docs/`:**
+**Only three of the documents above are in `docs/`, and one of those is a
+reconstruction:**
 
 | Document | Present? |
 |---|---|
 | Master Corporate Blueprint | yes — the file is named `…-v2.md` but its header says **Version: 1.1**, which is the version cited here. The filename is the misleading part. |
-| Roadmap | yes |
+| Roadmap | yes — `10-solfligh-tech-roadmap.md` |
+| Solfligh Cloud PRD | **v2.1 is lost.** A reconstructed **v3.0** is in `08-…-prd-v3.0.md` and `09-…-part2.md` |
 | Brand Guidelines | **no** |
 | Website Architecture Document | **no** |
-| Solfligh Cloud PRD | **no** |
 | Operating System, API Standards | **no** |
 
-Rules below cite the absent ones by section — "Brand Guidelines §4",
+**Cloud PRD citations.** Older docs and code comments cite "Cloud PRD v2.1 §N"
+(or just "Cloud PRD §N"). Those are legacy section numbers from the lost
+document. Resolve them through `06-lost-cloud-prd-citation-map.md`, not by
+looking up §N in v3.0; v3.0 has its own numbering and marks corresponding
+sections `[legacy §N]`. Keep writing "v2.1" only when you mean the lost
+original, and never label v3.0 as v2.1. The old "Solfligh API Cloud" name is
+retired; it now lives as the Developer Platform inside Solfligh Cloud.
+
+The other Cloud docs in `docs/` are companions to v3.0:
+`05-…-architecture-recovery-summary.md` (how the reconstruction was done),
+`07-…-v1-mvp-boundary.md` (the V1 scope v3.0 is anchored to), and
+`11-…-v1-launch-path.md`.
+
+Rules below cite the absent documents by section — "Brand Guidelines §4",
 "Website Architecture §3.4". Those citations came from the founder and are
 still binding, but they **cannot be checked from this repo**. Treat them as
 given; ask rather than reasoning about what a section you cannot read says.
@@ -125,11 +140,13 @@ given; ask rather than reasoning about what a section you cannot read says.
 
 ## Known outstanding work
 
-1. **Four of the six authoritative documents are not in `docs/`** — Brand
-   Guidelines, Website Architecture, the Cloud PRD, and Operating System / API
-   Standards. Rules in this file cite them by section, so those sections cannot
-   be verified from the repo. Adding them to `solfligh-docs` would make the
-   "single source of truth" claim true.
+1. **Three of the six authoritative documents are not in `docs/`** — Brand
+   Guidelines, Website Architecture, and Operating System / API Standards.
+   Rules in this file cite them by section, so those sections cannot be
+   verified from the repo. Adding them to `solfligh-docs` would make the
+   "single source of truth" claim true. The Cloud PRD v2.1 original is lost
+   too; v3.0 is a reconstruction. If a copy of v2.1 turns up (email, Drive,
+   backups), add it and check v3.0 and the citation map against it.
 2. **The comment digest has never fired with a non-empty queue.** The cron is
    configured in `vercel.json` and unit-tested, but the end-to-end path is
    unproven.
