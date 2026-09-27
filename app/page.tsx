@@ -345,12 +345,12 @@ export default async function HomePage() {
                     </div>
 
                     <div className="mt-6 space-y-3">
-                      {[
-                        { label: "Solfligh Cloud", value: "Live, by invitation", tone: "sky" as const },
-                        { label: "Products", value: "2 live, 1 in development", tone: "emerald" as const },
-                        { label: "Services", value: "Live", tone: "emerald" as const },
-                        { label: "AI", value: "In products & platform", tone: "sky" as const },
-                      ].map((row) => (
+                      {([
+                        { label: "Solfligh Cloud", value: "Live, by invitation", tone: "sky" },
+                        { label: "Products", value: "2 live, 1 in development", tone: "emerald" },
+                        { label: "Services", value: "Live", tone: "emerald" },
+                        { label: "AI", value: "In products & platform", tone: "sky" },
+                      ] as { label: string; value: string; tone: "emerald" | "amber" | "sky" }[]).map((row) => (
                         <div
                           key={row.label}
                           className="flex items-center justify-between rounded-xl border border-slate-200/60 bg-white/80 px-3 py-2.5 sm:backdrop-blur"
