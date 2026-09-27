@@ -346,7 +346,7 @@ export default async function HomePage() {
 
                     <div className="mt-6 space-y-3">
                       {[
-                        { label: "Solfligh Cloud", value: "In development", tone: "amber" as const },
+                        { label: "Solfligh Cloud", value: "Live, by invitation", tone: "sky" as const },
                         { label: "Products", value: "2 live, 1 in development", tone: "emerald" as const },
                         { label: "Services", value: "Live", tone: "emerald" as const },
                         { label: "AI", value: "In products & platform", tone: "sky" as const },
