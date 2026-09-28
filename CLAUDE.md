@@ -153,6 +153,12 @@ given; ask rather than reasoning about what a section you cannot read says.
 3. **`/admin` has not been exercised by hand since PR #42** changed how saving
    works. It was verified headlessly and against the database, but not by
    someone who knows what the panel should feel like.
+4. **Lint does not run in CI and `main` does not pass it** — 76 problems as of
+   2026-09-28. Queued as BACKLOG task 18, deliberately parked until after the
+   Solfligh Cloud launch. Read that entry before starting: most of it is
+   churn, the `react-hooks` findings are the only ones that may be real bugs,
+   and one violation in `app/global-error.tsx` is correct and must not be
+   "fixed".
 
 The two documentation corrections that sat here as "blocked" (BACKLOG 12 and 13)
 were checked against the actual files on 2026-09-08 and **are already fixed**.
