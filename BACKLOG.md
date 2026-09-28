@@ -377,6 +377,66 @@ so it should not contradict itself.
 
 ---
 
+## Queued — after the Solfligh Cloud launch
+
+Not started. Parked deliberately: the website is on hold behind Solfligh Cloud
+(founder's decision, 2026-09-19), and none of this is user-visible breakage.
+
+### 18. Lint does not run in CI, and `main` does not pass it
+
+`npm run lint` is never executed. CI runs `npm test`, `tsc --noEmit` and
+`npm run build` only, so the rule set is decorative. On `main` as of
+2026-09-28 it reports **76 problems (55 errors, 21 warnings)**:
+
+| Count | Rule |
+|---|---|
+| 43 | `@typescript-eslint/no-explicit-any` |
+| 10 | `@next/next/no-img-element` |
+| 5 | `react/no-unescaped-entities` |
+| 5 | `@typescript-eslint/no-unused-vars` |
+| 3 | `react-hooks/immutability` |
+| 2 | `react-hooks/set-state-in-effect` |
+| 1 | `react-hooks/purity` |
+| 1 | `react-hooks/exhaustive-deps` |
+| 1 | `@next/next/no-html-link-for-pages` |
+
+**Triage before fixing. This is not one job, it is three.**
+
+1. **The `react-hooks` findings are the only ones that may be real bugs.**
+   Most sit in `app/admin/blog/page.tsx` (immutability x3, purity, and a
+   `useEffect` missing `loadData`, `loadComments`, `loadBooksAndChapters`).
+   Two more are `set-state-in-effect` in `app/components/Navbar.tsx:45` and
+   `app/components/ProjectGallery.tsx:77`, which cause an extra render pass at
+   best and a loop at worst. Read these; do not bulk-fix them.
+
+2. **`no-img-element` (10) is a real but cosmetic performance item** — plain
+   `<img>` instead of `next/image`, so no automatic sizing or lazy loading.
+   Worth doing, no correctness risk.
+
+3. **`no-explicit-any` (43) is churn.** Mostly `app/lib/projectStore.ts`,
+   `app/products/[slug]/page.tsx` and `app/api/leads/route.ts`. Typing these
+   properly is worthwhile but touches a lot of surface for no user-visible
+   gain, so it should not block turning lint on.
+
+**One violation is correct and must NOT be "fixed":**
+`app/global-error.tsx:83` trips `@next/next/no-html-link-for-pages` for using
+`<a href="/">` instead of `next/link`. That is deliberate and documented in the
+file: `global-error.tsx` replaces the root layout, so there is no guarantee
+React, the stylesheet or the router are working when it renders. Using
+`next/link` there would bet on the very thing that just failed. Suppress it
+with an inline disable and a comment, never by swapping in `Link`.
+
+Four `Unused eslint-disable directive` warnings are stale suppressions in
+`ArticleView.tsx`, `BookView.tsx`, `ChapterView.tsx` and `ReadingSlider.tsx`;
+deleting those lines is free.
+
+**Done when:** `npm run lint` passes, it runs in CI alongside the existing
+checks, and each remaining suppression carries a comment saying why. Consider
+landing it as three PRs in the order above rather than one, so the hooks
+findings get read rather than skimmed.
+
+---
+
 ## Known constraints — do not "fix" these
 
 - **RLS is enabled with no policies on all Supabase tables. This is deliberate.**
