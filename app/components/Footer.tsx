@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CookieSettings from "@/app/components/CookieSettings";
 import Image from "next/image";
 
 export default function Footer() {
@@ -97,6 +98,7 @@ export default function Footer() {
             >
               Terms of Service
             </Link>
+            <CookieSettings />
           </div>
         </div>
       </div>
