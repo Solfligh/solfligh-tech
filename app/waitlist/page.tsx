@@ -289,6 +289,19 @@ function WaitlistContent() {
                     >
                       {status === "loading" ? "Sending…" : "Request an access code"}
                     </button>
+                    {info?.appUrl && (
+                      <p className="text-sm text-slate-600">
+                        Already have a code?{" "}
+                        <a
+                          href={info.appUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-sky-700 underline"
+                        >
+                          Open ProfitPilot
+                        </a>
+                      </p>
+                    )}
                   </form>
                 ) : (
                   <form onSubmit={onSubmit} className="space-y-4">

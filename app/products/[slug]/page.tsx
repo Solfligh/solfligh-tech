@@ -7,6 +7,7 @@ import { listProjects } from "@/app/lib/projectStore";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/app/lib/site";
+import { getProduct } from "@/app/lib/products";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -363,6 +364,29 @@ export default async function ProjectDetailPage({
                   </a>
                   <p className="mt-2 text-xs text-slate-500">
                     This project opens on a separate site.
+                  </p>
+                </div>
+              ) : null}
+
+              {/* Live by access code: request a code, or open the app with one. */}
+              {slug === "profitpilot" && getProduct(slug)?.appUrl ? (
+                <div className="mt-6 grid gap-2">
+                  <Link
+                    href="/waitlist?product=profitpilot&source=product_page"
+                    className="inline-flex w-full items-center justify-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                  >
+                    Request an access code
+                  </Link>
+                  <a
+                    href={getProduct(slug)?.appUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                  >
+                    I have a code: open the app ↗
+                  </a>
+                  <p className="text-xs text-slate-500">
+                    ProfitPilot is live in early access. You need an access code to create an account.
                   </p>
                 </div>
               ) : null}
