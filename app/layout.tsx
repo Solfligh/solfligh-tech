@@ -1,11 +1,11 @@
 // app/layout.tsx
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
+import Analytics from "@/app/components/Analytics";
 import { SITE_URL } from "@/app/lib/site";
 
 const inter = Inter({
@@ -15,10 +15,6 @@ const inter = Inter({
 });
 
 const ORG_NAME = "SOLFLIGH TECH";
-
-// If you have Google Analytics enabled, set this in Vercel/Render:
-// NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
 
 // ✅ Organization Schema (JSON-LD) - Updated with Books
 const organizationJsonLd = {
@@ -110,19 +106,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const hasGA = Boolean(GA_ID);
-
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        {/* ✅ Optional preconnects (only if GA is enabled) */}
-        {hasGA ? (
-          <>
-            <link rel="preconnect" href="https://www.googletagmanager.com" />
-            <link rel="preconnect" href="https://www.google-analytics.com" />
-          </>
-        ) : null}
-
         {/* ✅ Organization schema injected site-wide (in head is ideal) */}
         <script
           type="application/ld+json"
@@ -132,23 +118,8 @@ export default function RootLayout({
       </head>
 
       <body className="min-h-screen bg-white font-sans text-slate-900 antialiased">
-        {/* ✅ Google Analytics lazy loaded to protect performance */}
-        {hasGA ? (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-              strategy="lazyOnload"
-            />
-            <Script id="ga-init" strategy="lazyOnload">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_ID}', { send_page_view: true });
-              `}
-            </Script>
-          </>
-        ) : null}
+        {/* Google Analytics loads only after the visitor accepts (see Analytics) */}
+        <Analytics />
 
         <Navbar />
         {children}

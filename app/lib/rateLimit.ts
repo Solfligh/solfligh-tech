@@ -25,12 +25,26 @@ export function clientIp(headers: Headers): string {
  * Salted SHA-256 of an IP, for tables that should not store the raw value.
  * Rate limiting only needs a key that is stable per submitter, not a
  * reversible one.
+ *
+ * Returns '' when there is no real salt in production. The IPv4 space is small
+ * enough that a hash under a known salt can be reversed, so a hash made with
+ * the checked-in development salt is not worth storing. Every caller already
+ * treats '' as "no key": the submission goes through, unrated and unrecorded.
  */
+let warnedNoSalt = false;
+
 export function hashIp(ip: string): string {
   const salt =
     process.env.COMMENT_IP_SALT ||
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    'solfligh-local-dev-salt';
+    (process.env.NODE_ENV === 'production' ? '' : 'solfligh-local-dev-salt');
+  if (!salt) {
+    if (!warnedNoSalt) {
+      warnedNoSalt = true;
+      console.error('hashIp: no salt configured in production; IP hashes are being skipped.');
+    }
+    return '';
+  }
   return crypto.createHash('sha256').update(`${salt}:${ip}`).digest('hex');
 }
 
