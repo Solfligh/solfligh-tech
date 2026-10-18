@@ -103,7 +103,7 @@ export default function ProfitUnknownArticlePage() {
                 href={waitlistHref}
                 className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
               >
-                Join waitlist
+                Request an access code
               </Link>
             </div>
 
@@ -234,9 +234,9 @@ export default function ProfitUnknownArticlePage() {
 
                 {/* ✅ Final CTA (this is the right article for it) */}
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
-                  <p className="text-sm font-semibold text-slate-900">Want to follow ProfitPilot as we build it?</p>
+                  <p className="text-sm font-semibold text-slate-900">Want to try ProfitPilot?</p>
                   <p className="text-sm text-slate-700">
-                    Join the waitlist for updates and early access. ProfitPilot is built around one daily promise:
+                    ProfitPilot is live in early access. Request an access code to try it. It is built around one daily promise:
                     show profit only when it’s proven but always help you close the day with truth.
                   </p>
 
@@ -245,7 +245,7 @@ export default function ProfitUnknownArticlePage() {
                       href={waitlistHref}
                       className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                     >
-                      Join waitlist
+                      Request an access code
                     </Link>
 
                     <Link

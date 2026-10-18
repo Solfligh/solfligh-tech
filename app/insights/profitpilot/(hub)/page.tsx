@@ -107,7 +107,7 @@ function StartHere({ firstHref, total }: { firstHref: string; total: number }) {
             href={waitlistHref}
             className="inline-flex items-center justify-center rounded-xl border border-sky-600 bg-white px-4 py-2.5 text-sm font-semibold text-sky-700 shadow-sm transition hover:bg-sky-50"
           >
-            Join waitlist
+            Request an access code
           </Link>
 
           <Link
@@ -257,7 +257,7 @@ export default function ProfitPilotInsightsHubPage() {
               href="/waitlist?product=profitpilot&source=profitpilot_hub_footer"
               className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
             >
-              Join waitlist
+              Request an access code
             </Link>
           </div>
         </div>

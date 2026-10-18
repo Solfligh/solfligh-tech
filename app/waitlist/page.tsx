@@ -48,6 +48,12 @@ function WaitlistContent() {
   const productLabel = useMemo(() => canonicalProductLabel(product), [product]);
   const hasKnownProduct = !!info;
 
+  // ProfitPilot is live by access code, so it gets a request form rather than a
+  // waitlist. Other products keep the waitlist.
+  const accessCode = product === "profitpilot";
+
+  const [businessType, setBusinessType] = useState("");
+  const [consent, setConsent] = useState(false);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [company, setCompany] = useState("");
@@ -76,6 +82,7 @@ function WaitlistContent() {
           phone,
           company,
           note,
+          ...(accessCode ? { businessType, consent } : {}),
         }),
       });
 
@@ -88,7 +95,12 @@ function WaitlistContent() {
       }
 
       setStatus("success");
-      setMessage(data.message || "You’re in. We’ll notify you when early access opens.");
+      setMessage(
+        data.message ||
+          (accessCode
+            ? "Thanks, we have your request. We’ll email you an access code if there is a place for your business. Check your spam folder too."
+            : "You’re in. We’ll notify you when early access opens.")
+      );
     } catch {
       setStatus("error");
       setMessage("Network error. Please try again.");
@@ -155,21 +167,29 @@ function WaitlistContent() {
               <div className="flex flex-wrap items-center gap-2">
                 <Pill>Early access</Pill>
                 {hasKnownProduct && <Pill>{productLabel}</Pill>}
-                <Pill>Waitlist</Pill>
+                {!accessCode && <Pill>Waitlist</Pill>}
               </div>
 
               <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-                {hasKnownProduct ? `Join the ${productLabel} waitlist` : "Join the waitlist"}
+                {accessCode
+                  ? "Request your ProfitPilot access code"
+                  : hasKnownProduct
+                    ? `Join the ${productLabel} waitlist`
+                    : "Join the waitlist"}
               </h1>
 
               <p className="mt-3 text-base leading-relaxed text-slate-600">
-                Get notified when early access opens. No spam just product updates and your invite.
+                {accessCode
+                  ? "ProfitPilot is in early access. Tell us about your business and we’ll email you an access code to create your account."
+                  : "Get notified when early access opens. No spam just product updates and your invite."}
               </p>
 
               <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 {status === "success" ? (
                   <div className="space-y-3">
-                    <p className="text-sm font-semibold text-slate-950">You’re on the list ✅</p>
+                    <p className="text-sm font-semibold text-slate-950">
+                      {accessCode ? "Request received" : "You’re on the list ✅"}
+                    </p>
                     <p className="text-sm text-slate-700">{message}</p>
 
                     <div className="pt-2 flex flex-wrap gap-3">
@@ -189,6 +209,87 @@ function WaitlistContent() {
                       </Link>
                     </div>
                   </div>
+                ) : accessCode ? (
+                  <form onSubmit={onSubmit} className="space-y-4">
+                    <input
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
+                      aria-label="Your name"
+                      placeholder="Your name"
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    />
+                    <input
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                      type="tel"
+                      aria-label="Phone or WhatsApp number"
+                      placeholder="Phone or WhatsApp number"
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    />
+                    <input
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      type="email"
+                      aria-label="Email address"
+                      placeholder="Email address"
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    />
+                    <select
+                      value={businessType}
+                      onChange={(e) => setBusinessType(e.target.value)}
+                      required
+                      aria-label="What kind of business do you run?"
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    >
+                      <option value="">What kind of business do you run?</option>
+                      <option value="Shop">Shop</option>
+                      <option value="Trader">Trader</option>
+                      <option value="Food">Food</option>
+                      <option value="Services">Services</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <textarea
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      rows={3}
+                      aria-label="What is your biggest challenge managing your business? (optional)"
+                      placeholder="What is your biggest challenge managing your business? (optional)"
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    />
+                    <label className="flex items-start gap-2 text-sm text-slate-700">
+                      <input
+                        type="checkbox"
+                        checked={consent}
+                        onChange={(e) => setConsent(e.target.checked)}
+                        required
+                        className="mt-1"
+                      />
+                      <span>
+                        I agree to be contacted about ProfitPilot (see our{" "}
+                        <Link href="/privacy" className="underline">
+                          privacy page
+                        </Link>
+                        ).
+                      </span>
+                    </label>
+
+                    {status === "error" && (
+                      <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+                        {message}
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={status === "loading"}
+                      className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-700"
+                    >
+                      {status === "loading" ? "Sending…" : "Request an access code"}
+                    </button>
+                  </form>
                 ) : (
                   <form onSubmit={onSubmit} className="space-y-4">
                     <div className="grid gap-4 sm:grid-cols-2">

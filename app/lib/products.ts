@@ -39,9 +39,9 @@ const PRODUCTS: Record<string, ProductInfo> = {
     label: 'ProfitPilot',
     backHref: '/insights/profitpilot',
     backLabel: 'Back to ProfitPilot hub',
-    // Live / Near Launch: signup goes through the waitlist.
+    // Live by access code: visitors request a code through the form.
     ctaHref: '/waitlist?product=profitpilot&source=header_cta',
-    ctaLabel: 'Join the waitlist',
+    ctaLabel: 'Request an access code',
   },
   rebirthagro: {
     slug: 'rebirthagro',
