@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { normalizeProductSlug, productLabel } from "@/app/lib/products";
 import { checkRateLimit, clientIp, hashIp } from "@/app/lib/rateLimit";
+import { buildAccessRequestNote } from "@/app/lib/accessRequests";
 
 /**
  * Rate limiting. This table stores no IP, so a salted hash is used rather than
@@ -87,11 +88,7 @@ export async function POST(req: Request) {
     // waitlist_signups has no business-type or consent columns, so these ride in
     // `note` rather than needing a migration on the production table.
     const note = accessCode
-      ? [
-          `Business type: ${businessType}`,
-          `Biggest challenge: ${rawNote || "—"}`,
-          "Consent to be contacted: yes",
-        ].join("\n")
+      ? buildAccessRequestNote({ businessType, challenge: rawNote })
       : rawNote;
 
     // Rate limit before writing anything.

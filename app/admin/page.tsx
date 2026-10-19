@@ -459,6 +459,13 @@ export default function AdminPage() {
                 </Link>
 
                 <Link
+                  href="/admin/access-requests"
+                  className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
+                >
+                  Access requests
+                </Link>
+
+                <Link
                   href="/maintenance"
                   className="inline-flex items-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                 >
