@@ -117,3 +117,11 @@ describeDb("rate limit counters query real tables", () => {
     expect(error).not.toBeNull();
   });
 });
+
+describeDb("access requests admin view", () => {
+  it("waitlist_signups has the code_sent_at column the admin view reads", async () => {
+    const { supabaseAdmin } = await import("@/app/lib/supabaseAdmin");
+    const { error } = await supabaseAdmin.from("waitlist_signups").select("code_sent_at").limit(1);
+    expect(error, "run scripts/sql/2026-10-19-waitlist-code-sent-at.sql").toBeNull();
+  });
+});
