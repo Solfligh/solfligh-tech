@@ -28,6 +28,8 @@ type Props = {
   autoPlay?: boolean; // autoplay SLIDES only (NOT video)
   intervalMs?: number;
   showDots?: boolean;
+  /** How still images fill the frame. "contain" keeps tall phone screenshots whole. */
+  imageFit?: "cover" | "contain";
 
   index?: number;
   onIndexChange?: (nextIndex: number) => void;
@@ -64,6 +66,7 @@ export default function ProjectMediaCarousel({
   autoPlay = true,
   intervalMs = 3500,
   showDots = true,
+  imageFit = "cover",
   index: controlledIndex,
   onIndexChange,
 }: Props) {
@@ -290,7 +293,7 @@ export default function ProjectMediaCarousel({
             <img
               src={normalizeSrc(current.src) || FALLBACK_POSTER}
               alt={current.alt ?? "Project image"}
-              className="h-full w-full object-cover"
+              className={`h-full w-full ${imageFit === "contain" ? "object-contain" : "object-cover"}`}
               draggable={false}
               onError={(e) => {
                 e.currentTarget.src = FALLBACK_POSTER;
