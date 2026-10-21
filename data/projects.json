@@ -21,13 +21,23 @@
       "media": [
         {
           "type": "image",
-          "src": "/projects/profitpilot/1.jpg",
-          "alt": "ProfitPilot dashboard"
+          "src": "/projects/profitpilot/today.jpg",
+          "alt": "ProfitPilot Today screen showing estimated profit for the month (practice business, made-up figures)"
         },
         {
           "type": "image",
-          "src": "/projects/profitpilot/2.jpg",
-          "alt": "ProfitPilot transactions"
+          "src": "/projects/profitpilot/sales.jpg",
+          "alt": "ProfitPilot sales list with WhatsApp receipts (practice business, made-up figures)"
+        },
+        {
+          "type": "image",
+          "src": "/projects/profitpilot/stock.jpg",
+          "alt": "ProfitPilot stock list with low-stock flags (practice business, made-up figures)"
+        },
+        {
+          "type": "image",
+          "src": "/projects/profitpilot/team.jpg",
+          "alt": "ProfitPilot team access, choosing what a cashier can see (practice business, made-up figures)"
         }
       ],
       "problem": "Sales come in as cash, transfers and POS payments. Money goes out for transport, electricity, rent and stock, and customers take goods on credit. By night it is spread across a notebook, WhatsApp and memory, so many owners cannot say what they actually made.",

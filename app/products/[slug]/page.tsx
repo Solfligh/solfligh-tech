@@ -311,6 +311,11 @@ export default async function ProjectDetailPage({
                 roundedClassName="rounded-none"
                 autoPlay={false}
               />
+              {slug === "profitpilot" ? (
+                <p className="border-t border-slate-200/70 px-4 py-2 text-xs text-slate-500">
+                  Screens show a practice business with made-up figures, not real customer data.
+                </p>
+              ) : null}
             </div>
 
             {/* Summary card */}
