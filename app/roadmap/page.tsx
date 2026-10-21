@@ -26,7 +26,7 @@ const inDevelopment = [
   },
   {
     name: "Solfligh Cloud public developer access",
-    note: "In development the platform runs in production and access is by invitation; self-serve API keys, SDKs, and docs are not yet available.",
+    note: "In development the platform runs in production and access is by invitation; invited developers manage their own keys from a dashboard. Public sign-up, SDKs, and pricing are not yet available.",
   },
   {
     name: "Payroll, Compliance, Business & Document APIs",

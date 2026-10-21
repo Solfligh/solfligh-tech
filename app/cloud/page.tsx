@@ -10,38 +10,53 @@ export const metadata: Metadata = {
   alternates: { canonical: "/cloud" },
 };
 
+// Each service carries its real status, so a planned capability never reads
+// as a live one (Brand Guidelines 3). Update these when the status changes.
 const coreServices = [
   {
     name: "Core Platform",
     desc: "Authentication, identity, authorization, multi-tenancy, API gateway, billing, and usage metering the shared foundation every product and future API sits on.",
+    live: true,
+    status: "Live, except billing, which is not built yet",
   },
   {
     name: "Data Infrastructure",
     desc: "A managed pipeline for reference and compliance-grade data, versioned and effective-dated so it stays queryable and correct over time.",
+    live: false,
+    status: "Planned, not built yet",
   },
   {
     name: "AI",
     desc: "Multi-provider AI routing and orchestration, used both inside our own products and, in time, as a directly consumable capability.",
+    live: false,
+    status: "Planned, not built yet",
   },
   {
     name: "Developer Platform / API Gateway",
     desc: "Documentation, SDKs, and a developer dashboard the entry point for anyone building on Solfligh Cloud directly.",
+    live: true,
+    status: "Dashboard and quickstart live for invited developers; SDKs planned",
   },
   {
     name: "Marketplace",
     desc: "A future home for third-party APIs, models, and data curated and invite-only at launch, opening up as trust and tooling mature.",
+    live: false,
+    status: "Planned, not started",
   },
 ];
 
 const availableToday = [
   "The platform is deployed and running in production.",
   "Identity, organizations, API keys, usage metering, and quotas are live on it.",
+  "Invited developers manage their own API keys, test a key, and see their usage from a dashboard, with a quickstart guide.",
+  "One API is live: businesses, part of the Business API.",
   "Access is by invitation. There is no public sign-up yet.",
 ];
 
 const planned = [
+  "Public sign-up, so developers can get access without an invitation.",
+  "SDKs, billing, and published pricing. Access is free during the invitation-only pilot.",
   "Our own products moving onto the platform. None of them run on it today.",
-  "Public developer access to Solfligh Cloud (self-serve API keys, dashboard, docs) not yet available.",
   "Marketplace for third-party APIs, models, and data curated launch planned, not yet started.",
   "Standalone Identity, AI, and Data Cloud services future unbundling of Core Platform capabilities.",
 ];
@@ -76,6 +91,18 @@ export default function CloudPage() {
           <div key={s.name} className="card-premium p-6">
             <div className="text-base font-bold text-slate-950">{s.name}</div>
             <p className="mt-3 text-sm font-semibold text-slate-800">{s.desc}</p>
+            <div
+              className={`mt-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold ${
+                s.live
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  : "border-amber-200 bg-amber-50 text-amber-700"
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${s.live ? "bg-emerald-600" : "bg-amber-600"}`}
+              />
+              {s.status}
+            </div>
           </div>
         ))}
       </div>
@@ -120,8 +147,9 @@ export default function CloudPage() {
               Public developer access isn&apos;t open yet
             </div>
             <p className="mt-2 text-sm font-semibold text-slate-800">
-              Solfligh Cloud runs in production, but access is by invitation. Our own products have
-              not moved onto it yet, and self-serve API keys, SDKs, and docs are still being built.
+              Solfligh Cloud runs in production, but access is by invitation. Invited developers
+              already manage their own keys and usage from a dashboard; public sign-up, SDKs, and
+              pricing are still to come. Our own products have not moved onto it yet.
             </p>
           </div>
           <div className="flex shrink-0 gap-3">

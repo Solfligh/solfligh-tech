@@ -154,7 +154,7 @@ export async function POST(req: Request) {
 
     // ---- Resend email notifications ----
     const resendKey = process.env.RESEND_API_KEY;
-    const resendFrom = process.env.RESEND_FROM; // e.g. "Solfligh Tech <no-reply@solflightech.com>"
+    const resendFrom = process.env.RESEND_FROM; // e.g. "Solfligh Tech <no-reply@solflightech.org>"
     const adminTo = process.env.RESEND_TO; // your inbox
 
     // Admin notification (best effort — never block signup)
