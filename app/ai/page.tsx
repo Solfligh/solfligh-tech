@@ -6,7 +6,7 @@ import PageHeader from "@/app/components/PageHeader";
 export const metadata: Metadata = {
   title: "AI",
   description:
-    "AI at SOLFLIGH TECH is infrastructure, not a feature flag used inside Solfligh Cloud and inside every product we build, built to be usable by people and by autonomous agents.",
+    "Where SOLFLIGH TECH uses AI today, and what is planned: AI inside FXCopilot now, and a shared multi-provider AI layer planned for Solfligh Cloud but not built yet.",
   alternates: { canonical: "/ai" },
 };
 
@@ -31,7 +31,7 @@ export default function AIPage() {
       <PageHeader
         badge="AI • Capability"
         title="AI as infrastructure, not a feature flag"
-        subtitle="We use AI in two places: as a platform capability inside Solfligh Cloud, and inside each product's own automation. Both are built multi-provider by design no single foundation-model dependency."
+        subtitle="Today, AI runs inside FXCopilot. A shared AI layer inside Solfligh Cloud is planned but not built yet, so for now any product that uses AI calls its provider directly."
         actions={
           <>
             <Link
@@ -51,13 +51,18 @@ export default function AIPage() {
       />
 
       <div className="mt-10 card-premium p-8">
-        <div className="text-base font-bold text-slate-950">AI as a platform capability</div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="text-base font-bold text-slate-950">AI as a platform capability</div>
+          <span className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-600" />
+            Planned, not built yet
+          </span>
+        </div>
         <p className="mt-3 text-sm font-semibold text-slate-800">
-          Inside Solfligh Cloud, AI is a routing and orchestration layer not a single foundation
-          model bolted on. That means resilience (no single point of AI-provider failure) and the
-          ability to route to whichever model fits a given job on cost, quality, or latency. This
-          layer is also being built to be callable by autonomous agents, not just people through a
-          UI.
+          The plan for Solfligh Cloud is a routing and orchestration layer rather than a single
+          foundation model bolted on: no single point of AI-provider failure, and each job routed
+          to whichever model fits it on cost, quality, or latency, callable by autonomous agents as
+          well as people. None of this exists yet: Solfligh Cloud has no AI endpoint today.
         </p>
       </div>
 
