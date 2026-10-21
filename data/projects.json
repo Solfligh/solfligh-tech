@@ -5,12 +5,12 @@
       "name": "ProfitPilot",
       "status": "Live / Near Launch",
       "statusColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
-      "description": "A modern business management platform for SMEs to track income, expenses, inventory, and insights in one clean dashboard.",
+      "description": "Business management software for small businesses in Nigeria. Record sales, expenses, stock and the money customers owe you, and see your estimated profit. Live in early access, by access code.",
       "highlights": [
-        "Multi-tenant SaaS architecture",
-        "Roles & permissions",
-        "Inventory & transactions",
-        "Smart insights dashboard"
+        "Sales, stock, expenses and customer debts in one place",
+        "Estimated profit by day, week, month, quarter and year",
+        "Cashiers record sales and never see costs or profit",
+        "Download your records or delete your account yourself"
       ],
       "ctaLabel": "View ProfitPilot",
       "href": "/products/profitpilot",
@@ -21,27 +21,46 @@
       "media": [
         {
           "type": "image",
-          "src": "/projects/profitpilot/1.jpg",
-          "alt": "ProfitPilot dashboard"
+          "src": "/projects/profitpilot/today.jpg",
+          "alt": "ProfitPilot Today screen showing estimated profit for the month (practice business, made-up figures)"
         },
         {
           "type": "image",
-          "src": "/projects/profitpilot/2.jpg",
-          "alt": "ProfitPilot transactions"
+          "src": "/projects/profitpilot/sales.jpg",
+          "alt": "ProfitPilot sales list with WhatsApp receipts (practice business, made-up figures)"
+        },
+        {
+          "type": "image",
+          "src": "/projects/profitpilot/stock.jpg",
+          "alt": "ProfitPilot stock list with low-stock flags (practice business, made-up figures)"
+        },
+        {
+          "type": "image",
+          "src": "/projects/profitpilot/team.jpg",
+          "alt": "ProfitPilot team access, choosing what a cashier can see (practice business, made-up figures)"
         }
       ],
-      "problem": "Small and medium businesses struggle with fragmented tools, manual tracking, and poor visibility into finances.",
-      "solution": "ProfitPilot unifies income, expenses, inventory, and insights into a single, easy-to-use dashboard that provides clarity and control.",
+      "problem": "Sales come in as cash, transfers and POS payments. Money goes out for transport, electricity, rent and stock, and customers take goods on credit. By night it is spread across a notebook, WhatsApp and memory, so many owners cannot say what they actually made.",
+      "solution": "ProfitPilot takes the cost of the goods you sold and your expenses away from your sales, so you see estimated profit and not just money collected. Sales, stock, expenses and debts sit in one place, and you decide what each team member can see.",
       "keyFeatures": [
-        "Unified financial dashboard",
-        "Role-based access control",
-        "Inventory and transaction tracking",
-        "Smart business insights"
+        "Record sales paid by cash, transfer, POS or on credit, including part-payments",
+        "Stock list with restocking and low-stock flags",
+        "Daily expenses by category",
+        "Customers who owe you, with payments and WhatsApp reminders you send yourself",
+        "WhatsApp receipts after a sale",
+        "Estimated profit for a day, week, month, quarter or year, compared with the period before",
+        "Which products make you the most money, and which sell below cost",
+        "Business capital kept apart from sales and profit",
+        "Money you owe suppliers, tracked separately from profit",
+        "Team access: invite a cashier by code and choose what they can see",
+        "Download your records or delete your account yourself",
+        "Add it to your phone's home screen"
       ],
       "roadmap": [
-        "Finalize core flows",
-        "Public demo launch",
-        "Advanced automation features"
+        "Early-access pilot with a small group of Nigerian businesses (in progress)",
+        "Legal review of the privacy page and terms",
+        "Pricing announced before the free period ends",
+        "Working without internet (planned, not started)"
       ],
       "techStack": [
         "Next.js",
@@ -49,7 +68,7 @@
         "Supabase",
         "PostgreSQL"
       ],
-      "updatedAt": "2026-08-02T00:24:18.726905+00:00"
+      "updatedAt": "2026-10-20T17:54:04.998+00:00"
     },
     {
       "slug": "fxco-pilot",

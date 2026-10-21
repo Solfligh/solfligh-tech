@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 const liveToday = [
-  { name: "ProfitPilot", note: "Live / near launch payroll & business automation." },
+  { name: "ProfitPilot", note: "Live / near launch: sales, stock, customer debts and estimated profit for small businesses, by access code." },
   { name: "FXCopilot", note: "Live FX decision support." },
   {
     name: "Services (all lines)",
