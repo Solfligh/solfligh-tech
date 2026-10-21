@@ -3,7 +3,7 @@ import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 
 /** Where privacy requests go. One constant so the page and any future form agree. */
-const PRIVACY_EMAIL = "support@solflightech.com";
+const PRIVACY_EMAIL = "support@solflightech.org";
 
 const LAST_UPDATED = "21 October 2026";
 
