@@ -304,12 +304,18 @@ export default async function ProjectDetailPage({
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
             {/* Media */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
+              {/* ProfitPilot's screens are tall phone screenshots: show them whole and larger. */}
               <ProjectMediaCarousel
                 items={mediaItems}
                 ariaLabel={`${name} media`}
-                className="h-[280px] sm:h-[420px]"
+                className={
+                  slug === "profitpilot"
+                    ? "h-[560px] !bg-[#eef0fb] sm:h-[720px]"
+                    : "h-[280px] sm:h-[420px]"
+                }
                 roundedClassName="rounded-none"
                 autoPlay={false}
+                imageFit={slug === "profitpilot" ? "contain" : "cover"}
               />
               {slug === "profitpilot" ? (
                 <p className="border-t border-slate-200/70 px-4 py-2 text-xs text-slate-500">
