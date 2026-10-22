@@ -63,11 +63,13 @@ given; ask rather than reasoning about what a section you cannot read says.
 ## Non-negotiable rules
 
 1. **Canonical names.** `FXCopilot` — never "FXCO-PILOT", never "ProfitFX".
-   Products are `jèrè`, `RebirthAgro`, `FXCopilot`. **jèrè was ProfitPilot until
-   2026-10-22, when the founder renamed it** (WhatsApp posts and the app use
-   jèrè). Never write "ProfitPilot" in customer-facing copy. The slug, URLs,
+   Products are `Jèrè`, `RebirthAgro`, `FXCopilot`. **Jèrè was ProfitPilot until
+   2026-10-22, when the founder renamed it.** Write it "Jèrè" (capital J, both
+   accents) in sentences; lowercase "jèrè" is the wordmark, used when the name
+   stands alone as a title or label (see the app repo's `brand/README.md`). Never
+   write "ProfitPilot" in customer-facing copy. The slug, URLs,
    table keys and the `/insights/profitpilot` hub path are unchanged on purpose.
-   Older docs and the backlog still say ProfitPilot; read that as jèrè.
+   Older docs and the backlog still say ProfitPilot; read that as Jèrè.
 2. **Solfligh Cloud is NOT a product.** It is the platform/infrastructure layer
    (Blueprint §11.1). Never frame it as a product, never route it through a
    product waitlist flow.
@@ -82,7 +84,7 @@ given; ask rather than reasoning about what a section you cannot read says.
 
 | Product | Status |
 |---|---|
-| jèrè (was ProfitPilot) | `Live / Near Launch` — deliberately hedged, do not change to plain "Live" |
+| Jèrè (was ProfitPilot) | `Live / Near Launch` — deliberately hedged, do not change to plain "Live" |
 | FXCopilot | `Live` — external app at https://fxco-pilot.solflightech.org |
 | RebirthAgro | `In Development` — not released |
 

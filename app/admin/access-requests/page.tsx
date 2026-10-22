@@ -122,7 +122,7 @@ export default function AccessRequestsPage() {
           <PageHeader
             level={1}
             badge="Admin"
-            title="jèrè access requests"
+            title="Jèrè access requests"
             subtitle="People who asked for an access code. Send the code yourself, then mark it sent."
             actions={
               <Link
@@ -257,7 +257,7 @@ export default function AccessRequestsPage() {
                           )}
                           {r.email && (
                             <a
-                              href={`mailto:${r.email}?subject=${encodeURIComponent("Your jèrè access code")}`}
+                              href={`mailto:${r.email}?subject=${encodeURIComponent("Your Jèrè access code")}`}
                               className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-900 hover:bg-slate-50"
                             >
                               Email
