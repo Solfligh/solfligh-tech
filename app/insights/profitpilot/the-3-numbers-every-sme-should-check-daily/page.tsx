@@ -5,7 +5,7 @@ import Container from "@/app/components/Container";
 import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
-  title: "The 3 Numbers Every SME Should Check Before Closing for the Day | ProfitPilot | SolFligh Tech",
+  title: "The 3 Numbers Every SME Should Check Before Closing for the Day | jèrè | SolFligh Tech",
   description:
     "A simple end-of-day routine for SMEs. Three numbers to check before closing so you know what moved, what was recorded, and whether today likely helped or hurt your business.",
   alternates: {
@@ -61,7 +61,7 @@ function NumberCard({
 
 export default function ArticlePage() {
   const meta = {
-    hubTitle: "ProfitPilot",
+    hubTitle: "jèrè",
     hubHref: "/insights/profitpilot",
     insightsHref: "/insights",
     tag: "Daily Routine",

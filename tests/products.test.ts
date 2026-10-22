@@ -18,7 +18,7 @@ import {
 
 describe("canonical product labels", () => {
   it("uses the exact canonical spelling for every product", () => {
-    expect(productLabel("profitpilot")).toBe("ProfitPilot");
+    expect(productLabel("profitpilot")).toBe("jèrè");
     expect(productLabel("rebirthagro")).toBe("RebirthAgro");
     expect(productLabel("fxco-pilot")).toBe("FXCopilot");
   });
@@ -52,7 +52,7 @@ describe("slug aliases", () => {
     expect(normalizeProductSlug("rebirth-agro")).toBe("rebirthagro");
   });
 
-  it("defaults to ProfitPilot when no product is given", () => {
+  it("defaults to jèrè when no product is given", () => {
     expect(normalizeProductSlug("")).toBe("profitpilot");
     expect(normalizeProductSlug(undefined)).toBe("profitpilot");
   });

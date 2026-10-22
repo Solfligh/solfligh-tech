@@ -5,7 +5,7 @@ import Container from "@/app/components/Container";
 import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
-  title: "Why Most SMEs Don’t Actually Know If Today Helped or Hurt Their Business | ProfitPilot | SolFligh Tech",
+  title: "Why Most SMEs Don’t Actually Know If Today Helped or Hurt Their Business | jèrè | SolFligh Tech",
   description:
     "Many small business owners end the day with activity, sales alerts, and a bank balance but still can’t confidently answer one question: did today move the business forward or backward?",
   alternates: {
@@ -86,7 +86,7 @@ function Card({
 
 export default function ProfitPilotArticlePage() {
   const meta = {
-    hubTitle: "ProfitPilot",
+    hubTitle: "jèrè",
     hubHref: "/insights/profitpilot",
     insightsHref: "/insights",
     tag: "Problem Awareness",
@@ -402,7 +402,7 @@ export default function ProfitPilotArticlePage() {
                         href={meta.hubHref}
                         className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
                       >
-                        Back to ProfitPilot hub
+                        Back to jèrè hub
                       </Link>
                     </div>
                   </div>

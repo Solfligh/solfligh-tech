@@ -2,7 +2,7 @@
   "projects": [
     {
       "slug": "profitpilot",
-      "name": "ProfitPilot",
+      "name": "jèrè",
       "status": "Live / Near Launch",
       "statusColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
       "description": "Business management software for small businesses in Nigeria. Record sales, expenses, stock and the money customers owe you, and see your estimated profit. Live in early access, by access code.",
@@ -12,7 +12,7 @@
         "Cashiers record sales and never see costs or profit",
         "Download your records or delete your account yourself"
       ],
-      "ctaLabel": "View ProfitPilot",
+      "ctaLabel": "View jèrè",
       "href": "/products/profitpilot",
       "externalUrl": null,
       "demoStatus": "none",
@@ -22,26 +22,26 @@
         {
           "type": "image",
           "src": "/projects/profitpilot/today.jpg",
-          "alt": "ProfitPilot Today screen showing estimated profit for the month (practice business, made-up figures)"
+          "alt": "jèrè Today screen showing estimated profit for the month (practice business, made-up figures)"
         },
         {
           "type": "image",
           "src": "/projects/profitpilot/sales.jpg",
-          "alt": "ProfitPilot sales list with WhatsApp receipts (practice business, made-up figures)"
+          "alt": "jèrè sales list with WhatsApp receipts (practice business, made-up figures)"
         },
         {
           "type": "image",
           "src": "/projects/profitpilot/stock.jpg",
-          "alt": "ProfitPilot stock list with low-stock flags (practice business, made-up figures)"
+          "alt": "jèrè stock list with low-stock flags (practice business, made-up figures)"
         },
         {
           "type": "image",
           "src": "/projects/profitpilot/team.jpg",
-          "alt": "ProfitPilot team access, choosing what a cashier can see (practice business, made-up figures)"
+          "alt": "jèrè team access, choosing what a cashier can see (practice business, made-up figures)"
         }
       ],
       "problem": "Sales come in as cash, transfers and POS payments. Money goes out for transport, electricity, rent and stock, and customers take goods on credit. By night it is spread across a notebook, WhatsApp and memory, so many owners cannot say what they actually made.",
-      "solution": "ProfitPilot takes the cost of the goods you sold and your expenses away from your sales, so you see estimated profit and not just money collected. Sales, stock, expenses and debts sit in one place, and you decide what each team member can see.",
+      "solution": "jèrè takes the cost of the goods you sold and your expenses away from your sales, so you see estimated profit and not just money collected. Sales, stock, expenses and debts sit in one place, and you decide what each team member can see.",
       "keyFeatures": [
         "Record sales paid by cash, transfer, POS or on credit, including part-payments",
         "Stock list with restocking and low-stock flags",

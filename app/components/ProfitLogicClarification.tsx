@@ -5,7 +5,7 @@ type Size = "sm" | "md";
 
 type Props = {
   /**
-   * Optional custom heading. Defaults to "ProfitPilot clarification".
+   * Optional custom heading. Defaults to "jèrè clarification".
    */
   title?: string;
 
@@ -44,7 +44,7 @@ type Props = {
 };
 
 export default function ProfitLogicClarification({
-  title = "ProfitPilot clarification",
+  title = "jèrè clarification",
   children,
   tone = "neutral",
   size = "md",
@@ -131,11 +131,11 @@ export default function ProfitLogicClarification({
             {children ?? (
               <>
                 <p className="m-0">
-                  ProfitPilot treats profit as a <strong>conditional</strong> number. Profit is only shown when all
+                  jèrè treats profit as a <strong>conditional</strong> number. Profit is only shown when all
                   required costs (such as Cost of Goods Sold) are fully recorded.
                 </p>
                 <p className="mt-3 mb-0">
-                  If any required cost is missing, ProfitPilot does not estimate or guess it will show{" "}
+                  If any required cost is missing, jèrè does not estimate or guess it will show{" "}
                   <strong>“— —”</strong> and clearly explain why profit is unavailable.
                 </p>
               </>
