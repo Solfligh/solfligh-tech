@@ -48,7 +48,7 @@ function WaitlistContent() {
   const productLabel = useMemo(() => canonicalProductLabel(product), [product]);
   const hasKnownProduct = !!info;
 
-  // jèrè is live by access code, so it gets a request form rather than a
+  // Jèrè is live by access code, so it gets a request form rather than a
   // waitlist. Other products keep the waitlist.
   const accessCode = product === "profitpilot";
 

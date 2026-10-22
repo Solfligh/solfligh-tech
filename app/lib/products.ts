@@ -9,7 +9,7 @@
  * "rebirthagro" becomes "Rebirthagro" and "fxco-pilot" becomes "Fxco Pilot",
  * both of which break the canonical naming rule.
  *
- * Products are jèrè, RebirthAgro, FXCopilot.
+ * Products are Jèrè, RebirthAgro, FXCopilot.
  * Solfligh Cloud is deliberately absent it is the platform/infrastructure
  * layer, not a product (Blueprint 11.1), and must never be routed through a
  * product waitlist.
@@ -38,9 +38,9 @@ export type ProductInfo = {
 const PRODUCTS: Record<string, ProductInfo> = {
   profitpilot: {
     slug: 'profitpilot',
-    label: 'jèrè',
+    label: 'Jèrè',
     backHref: '/insights/profitpilot',
-    backLabel: 'Back to jèrè hub',
+    backLabel: 'Back to Jèrè hub',
     // Live by access code: visitors request a code through the form.
     ctaHref: '/waitlist?product=profitpilot&source=header_cta',
     ctaLabel: 'Request an access code',

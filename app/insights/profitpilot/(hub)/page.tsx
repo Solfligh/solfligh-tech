@@ -11,15 +11,15 @@ import { getHub, listPostsByHub, type InsightPost } from "@/app/lib/insightsStor
  * competing under one name.
  */
 export const metadata: Metadata = {
-  title: "jèrè Insights",
+  title: "Jèrè Insights",
   description:
-    "Articles on daily profit clarity for SMEs: what to track, why profit is conditional on complete costs, and how jèrè turns the routine into a habit.",
+    "Articles on daily profit clarity for SMEs: what to track, why profit is conditional on complete costs, and how Jèrè turns the routine into a habit.",
   alternates: { canonical: "/insights/profitpilot" },
   openGraph: {
     type: "website",
-    title: "jèrè Insights | SOLFLIGH TECH",
+    title: "Jèrè Insights | SOLFLIGH TECH",
     description:
-      "Articles on daily profit clarity for SMEs: what to track, why profit is conditional on complete costs, and how jèrè turns the routine into a habit.",
+      "Articles on daily profit clarity for SMEs: what to track, why profit is conditional on complete costs, and how Jèrè turns the routine into a habit.",
     url: "https://www.solflightech.org/insights/profitpilot",
   },
 };
@@ -38,7 +38,7 @@ function MiniHero({ title }: { title: string }) {
           </p>
 
           <p className="text-sm text-slate-600">
-            jèrè doesn’t ask how complex your business is it asks whether{" "}
+            Jèrè doesn’t ask how complex your business is it asks whether{" "}
             <span className="font-semibold text-slate-900">today moved it forward</span>.
           </p>
         </div>
@@ -90,7 +90,7 @@ function StartHere({ firstHref, total }: { firstHref: string; total: number }) {
         <div>
           <p className="text-sm font-semibold text-slate-900">Start here</p>
           <p className="mt-1 text-sm text-slate-600">
-            Read the series in order. It’s designed to move from daily confusion → daily clarity → the jèrè habit.
+            Read the series in order. It’s designed to move from daily confusion → daily clarity → the Jèrè habit.
           </p>
           <p className="mt-2 text-xs font-semibold text-slate-500">{total} articles • ~25 minutes total</p>
         </div>
@@ -233,7 +233,7 @@ export default function ProfitPilotInsightsHubPage() {
 
         {posts.length === 0 ? (
           <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 text-sm text-slate-600 shadow-sm backdrop-blur">
-            No posts yet. Add your first jèrè article and it will show here automatically.
+            No posts yet. Add your first Jèrè article and it will show here automatically.
           </div>
         ) : null}
       </section>
@@ -243,7 +243,7 @@ export default function ProfitPilotInsightsHubPage() {
           <div>
             <p className="text-sm font-semibold text-slate-900">Want the product version?</p>
             <p className="mt-1 text-sm text-slate-600">
-              jèrè turns these ideas into a daily verdict workflow SMEs can use without guessing profit.
+              Jèrè turns these ideas into a daily verdict workflow SMEs can use without guessing profit.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -251,7 +251,7 @@ export default function ProfitPilotInsightsHubPage() {
               href="/products/profitpilot"
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
             >
-              jèrè project
+              Jèrè project
             </Link>
             <Link
               href="/waitlist?product=profitpilot&source=profitpilot_hub_footer"

@@ -5,16 +5,16 @@ import ProfitLogicClarification from "@/app/components/ProfitLogicClarification"
 import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
-  title: "When Profit Is Unknown, That’s Still an Answer | jèrè | SolFligh Tech",
+  title: "When Profit Is Unknown, That’s Still an Answer | Jèrè | SolFligh Tech",
   description:
-    "jèrè won’t guess profit when costs are incomplete. If profit can’t be proven, it shows “— —”, explains what’s missing, and still helps you close the day with a truthful direction signal.",
+    "Jèrè won’t guess profit when costs are incomplete. If profit can’t be proven, it shows “— —”, explains what’s missing, and still helps you close the day with a truthful direction signal.",
   alternates: {
     canonical: "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer",
   },
   openGraph: {
     title: "When Profit Is Unknown, That’s Still an Answer",
     description:
-      "jèrè refuses to guess profit. If costs are incomplete, it shows “— —”, explains what’s missing, and still gives a truthful daily direction signal.",
+      "Jèrè refuses to guess profit. If costs are incomplete, it shows “— —”, explains what’s missing, and still gives a truthful daily direction signal.",
     url: "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer",
     type: "article",
   },
@@ -52,7 +52,7 @@ export default function ProfitUnknownArticlePage() {
     accent: "from-sky-200 to-blue-200",
     title: "When Profit Is Unknown, That’s Still an Answer",
     subtitle:
-      "Sometimes the most honest number is: “we don’t know yet.” jèrè treats profit as a proven number not a guess.",
+      "Sometimes the most honest number is: “we don’t know yet.” Jèrè treats profit as a proven number not a guess.",
   };
 
   // ✅ Correct chain: final article follows the “habit” article
@@ -161,7 +161,7 @@ export default function ProfitUnknownArticlePage() {
                   </h2>
 
                   <p>
-                    When jèrè shows <strong>“— —”</strong>, it’s not failing to calculate. It’s refusing to
+                    When Jèrè shows <strong>“— —”</strong>, it’s not failing to calculate. It’s refusing to
                     mislead you.
                   </p>
 
@@ -212,11 +212,11 @@ export default function ProfitUnknownArticlePage() {
                 <section className="space-y-4">
                   <SectionLabel>The standard we keep</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    If it can’t be proven, jèrè won’t show it
+                    If it can’t be proven, Jèrè won’t show it
                   </h2>
 
                   <p>
-                    jèrè treats profit as conditional: when costs are complete, profit is shown. When they aren’t,
+                    Jèrè treats profit as conditional: when costs are complete, profit is shown. When they aren’t,
                     the UI explains what’s missing.
                   </p>
 
@@ -234,9 +234,9 @@ export default function ProfitUnknownArticlePage() {
 
                 {/* ✅ Final CTA (this is the right article for it) */}
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
-                  <p className="text-sm font-semibold text-slate-900">Want to try jèrè?</p>
+                  <p className="text-sm font-semibold text-slate-900">Want to try Jèrè?</p>
                   <p className="text-sm text-slate-700">
-                    jèrè is live in early access. Request an access code to try it. It is built around one daily promise:
+                    Jèrè is live in early access. Request an access code to try it. It is built around one daily promise:
                     show profit only when it’s proven but always help you close the day with truth.
                   </p>
 
@@ -270,7 +270,7 @@ export default function ProfitUnknownArticlePage() {
                     href={meta.hubHref}
                     className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
                   >
-                    Back to jèrè hub
+                    Back to Jèrè hub
                   </Link>
                 </div>
               </article>

@@ -7,17 +7,17 @@ import ProfitLogicClarification from "@/app/components/ProfitLogicClarification"
 import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
-  title: "From Daily Numbers to Daily Clarity: How jèrè Turns Insight Into Habit | SolFligh Tech",
+  title: "From Daily Numbers to Daily Clarity: How Jèrè Turns Insight Into Habit | SolFligh Tech",
   description:
-    "Knowing what to track is one thing. Doing it consistently is another. jèrè turns daily clarity into a habit without guessing profit when costs are incomplete. It answers the one daily question SMEs actually need: did today help or hurt?",
+    "Knowing what to track is one thing. Doing it consistently is another. Jèrè turns daily clarity into a habit without guessing profit when costs are incomplete. It answers the one daily question SMEs actually need: did today help or hurt?",
   alternates: {
     canonical:
       "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
   },
   openGraph: {
-    title: "From Daily Numbers to Daily Clarity: How jèrè Turns Insight Into Habit",
+    title: "From Daily Numbers to Daily Clarity: How Jèrè Turns Insight Into Habit",
     description:
-      "jèrè turns daily clarity into a habit and refuses to guess profit when costs are incomplete. Daily verdict first. Profit only when proven.",
+      "Jèrè turns daily clarity into a habit and refuses to guess profit when costs are incomplete. Daily verdict first. Profit only when proven.",
     url: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
     type: "article",
   },
@@ -91,7 +91,7 @@ export default function ProfitPilotSolutionArticlePage() {
     readingTime: "5–7 min",
     dateLabel: "Jan 2026",
     coverImage: "/insights/profitpilot/posts/daily-clarity-system.jpg",
-    title: "From Daily Numbers to Daily Clarity: How jèrè Turns Insight Into Habit",
+    title: "From Daily Numbers to Daily Clarity: How Jèrè Turns Insight Into Habit",
     subtitle:
       "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how daily clarity becomes automatic without forcing fake profit.",
   };
@@ -194,7 +194,7 @@ export default function ProfitPilotSolutionArticlePage() {
                   </p>
                 </section>
 
-                <Callout title="What jèrè is actually solving">
+                <Callout title="What Jèrè is actually solving">
                   <>
                     <p className="m-0">
                       Not “teach accounting.”
@@ -241,7 +241,7 @@ export default function ProfitPilotSolutionArticlePage() {
                 <section className="space-y-4">
                   <SectionLabel>The system</SectionLabel>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                    jèrè turns the routine into a “daily close” workflow
+                    Jèrè turns the routine into a “daily close” workflow
                   </h2>
 
                   <p>
@@ -297,9 +297,9 @@ export default function ProfitPilotSolutionArticlePage() {
 
                 {/* Product CTA (keep the access code request here ✅) */}
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
-                  <p className="text-sm font-semibold text-slate-900">Want to try jèrè?</p>
+                  <p className="text-sm font-semibold text-slate-900">Want to try Jèrè?</p>
                   <p className="text-sm text-slate-700">
-                    jèrè is live in early access. Request an access code to try it. It is built around a simple standard:
+                    Jèrè is live in early access. Request an access code to try it. It is built around a simple standard:
                     daily clarity first profit only when proven.
                   </p>
 
@@ -334,7 +334,7 @@ export default function ProfitPilotSolutionArticlePage() {
                     Profit is shown only when it’s provable
                   </h2>
                   <p>
-                    This is the trust boundary jèrè won’t cross. If required costs aren’t recorded, profit stays
+                    This is the trust boundary Jèrè won’t cross. If required costs aren’t recorded, profit stays
                     unknown and the UI tells you what’s missing instead of guessing.
                   </p>
 

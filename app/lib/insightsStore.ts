@@ -121,7 +121,7 @@ const POSTS: InsightPost[] = [
   {
     hubSlug: "profitpilot",
     slug: "from-daily-numbers-to-daily-clarity",
-    title: "From Daily Number to Daily Clarity: jèrè’s Conditional Profit Logic",
+    title: "From Daily Number to Daily Clarity: Jèrè’s Conditional Profit Logic",
     description:
       "Profit is conditional: if costs are incomplete, profit cannot be proven. Here’s how Revenue, COGS, Gross Profit, and Operating Profit really work.",
     href: "/insights/profitpilot/from-daily-numbers-to-daily-clarity",
@@ -137,9 +137,9 @@ const POSTS: InsightPost[] = [
   {
     hubSlug: "profitpilot",
     slug: "from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
-    title: "From Daily Numbers to Daily Clarity: How jèrè Turns Insight Into Habit",
+    title: "From Daily Numbers to Daily Clarity: How Jèrè Turns Insight Into Habit",
     description:
-      "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how jèrè turns daily clarity into a reliable habit without guessing profit.",
+      "Knowing what to track is easy. Doing it consistently is the real challenge. Here’s how Jèrè turns daily clarity into a reliable habit without guessing profit.",
     href: "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit",
     tag: "Product Solution",
     readingTime: "5–7 min",

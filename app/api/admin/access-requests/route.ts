@@ -6,7 +6,7 @@ import { parseAccessRequestNote } from "@/app/lib/accessRequests";
 
 export const runtime = "nodejs";
 
-// jèrè is live by access code; its waitlist_signups rows are requests
+// Jèrè is live by access code; its waitlist_signups rows are requests
 // for a code. Codes are sent by hand, and `code_sent_at` records that.
 const PRODUCT = "profitpilot";
 

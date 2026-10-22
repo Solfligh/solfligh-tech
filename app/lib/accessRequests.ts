@@ -1,7 +1,7 @@
 // app/lib/accessRequests.ts
 
 /**
- * jèrè access requests are stored in waitlist_signups. That table has no
+ * Jèrè access requests are stored in waitlist_signups. That table has no
  * business-type or consent columns, so /api/waitlist writes them into `note` as
  * three labelled lines. This reads them back out, and tolerates older plain
  * waitlist notes by treating them as the challenge text.
