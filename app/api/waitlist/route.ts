@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     const rawNote = (body.note || "").trim();
     const source = (body.source || "waitlist_page").trim();
 
-    // ProfitPilot is live by access code: it takes a request, not a waitlist
+    // jèrè is live by access code: it takes a request, not a waitlist
     // signup, and needs a phone number, business type and consent.
     const accessCode = product === "profitpilot";
     const businessType = (body.businessType || "").trim();
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
       }
       if (body.consent !== true) {
         return NextResponse.json(
-          { ok: false, error: "Please agree to be contacted about ProfitPilot." },
+          { ok: false, error: "Please agree to be contacted about jèrè." },
           { status: 400 }
         );
       }
@@ -205,7 +205,7 @@ export async function POST(req: Request) {
           from: resendFrom,
           to: email,
           subject: accessCode
-            ? "Your ProfitPilot access code request"
+            ? `Your ${productName} access code request`
             : "You're on the waitlist ✅",
           html: accessCode
             ? `

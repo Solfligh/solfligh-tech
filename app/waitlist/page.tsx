@@ -48,7 +48,7 @@ function WaitlistContent() {
   const productLabel = useMemo(() => canonicalProductLabel(product), [product]);
   const hasKnownProduct = !!info;
 
-  // ProfitPilot is live by access code, so it gets a request form rather than a
+  // jèrè is live by access code, so it gets a request form rather than a
   // waitlist. Other products keep the waitlist.
   const accessCode = product === "profitpilot";
 
@@ -172,7 +172,7 @@ function WaitlistContent() {
 
               <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
                 {accessCode
-                  ? "Request your ProfitPilot access code"
+                  ? `Request your ${productLabel} access code`
                   : hasKnownProduct
                     ? `Join the ${productLabel} waitlist`
                     : "Join the waitlist"}
@@ -180,7 +180,7 @@ function WaitlistContent() {
 
               <p className="mt-3 text-base leading-relaxed text-slate-600">
                 {accessCode
-                  ? "ProfitPilot is in early access. Tell us about your business and we’ll email you an access code to create your account."
+                  ? `${productLabel} is in early access. Tell us about your business and we’ll email you an access code to create your account.`
                   : "Get notified when early access opens. No spam just product updates and your invite."}
               </p>
 
@@ -268,7 +268,7 @@ function WaitlistContent() {
                         className="mt-1"
                       />
                       <span>
-                        I agree to be contacted about ProfitPilot (see our{" "}
+                        I agree to be contacted about {productLabel} (see our{" "}
                         <Link href="/privacy" className="underline">
                           privacy page
                         </Link>
@@ -298,7 +298,7 @@ function WaitlistContent() {
                           rel="noopener noreferrer"
                           className="font-semibold text-sky-700 underline"
                         >
-                          Open ProfitPilot
+                          Open {productLabel}
                         </a>
                       </p>
                     )}

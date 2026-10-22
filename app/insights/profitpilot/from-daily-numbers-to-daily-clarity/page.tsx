@@ -5,16 +5,16 @@ import Container from "@/app/components/Container";
 import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
-  title: "From Daily Number to Daily Clarity: ProfitPilot’s Conditional Profit Logic | SolFligh Tech",
+  title: "From Daily Number to Daily Clarity: jèrè’s Conditional Profit Logic | SolFligh Tech",
   description:
-    "ProfitPilot treats profit as a conditional number: if required costs are incomplete, it refuses to guess. Learn how Revenue, COGS, Gross Profit, and Operating Profit work and what you see instead when data is missing.",
+    "jèrè treats profit as a conditional number: if required costs are incomplete, it refuses to guess. Learn how Revenue, COGS, Gross Profit, and Operating Profit work and what you see instead when data is missing.",
   alternates: {
     canonical: "/insights/profitpilot/from-daily-number-to-daily-clarity",
   },
   openGraph: {
-    title: "From Daily Number to Daily Clarity: ProfitPilot’s Conditional Profit Logic",
+    title: "From Daily Number to Daily Clarity: jèrè’s Conditional Profit Logic",
     description:
-      "ProfitPilot refuses to guess profit. If required costs aren’t recorded, it shows “— —” and explains what’s missing.",
+      "jèrè refuses to guess profit. If required costs aren’t recorded, it shows “— —” and explains what’s missing.",
     url: "/insights/profitpilot/from-daily-number-to-daily-clarity",
     type: "article",
   },
@@ -112,7 +112,7 @@ export default function Page() {
               </Link>
               <span className="text-slate-400">/</span>
               <Link href={hubHref} className="font-semibold text-slate-600 hover:text-slate-900">
-                ProfitPilot
+                jèrè
               </Link>
               <span className="text-slate-400">/</span>
               <span className="font-semibold text-slate-900">Article</span>
@@ -260,10 +260,10 @@ export default function Page() {
               </section>
 
               <section className="space-y-3">
-                <SmallLabel>What ProfitPilot shows</SmallLabel>
+                <SmallLabel>What jèrè shows</SmallLabel>
                 <h2 className="text-xl font-bold text-slate-900">3 states: proven, unknown, and “here’s what’s missing”</h2>
                 <p className="leading-7 text-slate-700">
-                  ProfitPilot doesn’t fill blanks. Instead, it makes the state of the number explicit.
+                  jèrè doesn’t fill blanks. Instead, it makes the state of the number explicit.
                 </p>
 
                 <div className="grid gap-4 sm:grid-cols-3">
@@ -357,7 +357,7 @@ export default function Page() {
                   href="/contact"
                   className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
                 >
-                  Talk to us about ProfitPilot
+                  Talk to us about jèrè
                 </Link>
               </div>
             </section>

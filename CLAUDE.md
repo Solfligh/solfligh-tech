@@ -63,7 +63,11 @@ given; ask rather than reasoning about what a section you cannot read says.
 ## Non-negotiable rules
 
 1. **Canonical names.** `FXCopilot` — never "FXCO-PILOT", never "ProfitFX".
-   Products are `ProfitPilot`, `RebirthAgro`, `FXCopilot`.
+   Products are `jèrè`, `RebirthAgro`, `FXCopilot`. **jèrè was ProfitPilot until
+   2026-10-22, when the founder renamed it** (WhatsApp posts and the app use
+   jèrè). Never write "ProfitPilot" in customer-facing copy. The slug, URLs,
+   table keys and the `/insights/profitpilot` hub path are unchanged on purpose.
+   Older docs and the backlog still say ProfitPilot; read that as jèrè.
 2. **Solfligh Cloud is NOT a product.** It is the platform/infrastructure layer
    (Blueprint §11.1). Never frame it as a product, never route it through a
    product waitlist flow.
@@ -78,7 +82,7 @@ given; ask rather than reasoning about what a section you cannot read says.
 
 | Product | Status |
 |---|---|
-| ProfitPilot | `Live / Near Launch` — deliberately hedged, do not change to plain "Live" |
+| jèrè (was ProfitPilot) | `Live / Near Launch` — deliberately hedged, do not change to plain "Live" |
 | FXCopilot | `Live` — external app at https://fxco-pilot.solflightech.org |
 | RebirthAgro | `In Development` — not released |
 

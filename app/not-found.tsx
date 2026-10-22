@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 const DESTINATIONS = [
-  { href: "/products", label: "Products", desc: "ProfitPilot, FXCopilot, and RebirthAgro." },
+  { href: "/products", label: "Products", desc: "jèrè, FXCopilot, and RebirthAgro." },
   { href: "/services", label: "Services", desc: "What we build for clients." },
   { href: "/blog", label: "Blog", desc: "Essays and analysis." },
   { href: "/insights", label: "Insights", desc: "Deeper writing on our products." },

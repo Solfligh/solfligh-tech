@@ -304,7 +304,7 @@ export default async function ProjectDetailPage({
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
             {/* Media */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
-              {/* ProfitPilot's screens are tall phone screenshots: show them whole and larger. */}
+              {/* jèrè's screens are tall phone screenshots: show them whole and larger. */}
               <ProjectMediaCarousel
                 items={mediaItems}
                 ariaLabel={`${name} media`}
@@ -397,7 +397,7 @@ export default async function ProjectDetailPage({
                     I have a code: open the app ↗
                   </a>
                   <p className="text-xs text-slate-500">
-                    ProfitPilot is live in early access. You need an access code to create an account.
+                    {name} is live in early access. You need an access code to create an account.
                   </p>
                 </div>
               ) : null}

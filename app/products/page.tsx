@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   // template: "%s SOLFLIGH TECH", so spelling it out here repeated it.
   title: "Products",
   description:
-    "Explore SOLFLIGH TECH products including ProfitPilot, FXCopilot, and RebirthAgro, built to solve real operational problems.",
+    "Explore SOLFLIGH TECH products including jèrè, FXCopilot, and RebirthAgro, built to solve real operational problems.",
   alternates: { canonical: `${SITE_URL}/products` },
   openGraph: {
     title: "Products – SOLFLIGH TECH",

@@ -53,7 +53,7 @@ export default function CareersPage() {
             <li>
               • Products we are building, including{" "}
               <Link href="/products" className="text-sky-700 hover:underline">
-                ProfitPilot, FXCopilot, and RebirthAgro
+                jèrè, FXCopilot, and RebirthAgro
               </Link>
             </li>
             <li>

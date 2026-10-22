@@ -5,7 +5,7 @@ import Container from "@/app/components/Container";
 import InsightJsonLd from "@/app/components/InsightJsonLd";
 
 export const metadata: Metadata = {
-  title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity | ProfitPilot | SolFligh Tech",
+  title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity | jèrè | SolFligh Tech",
   description:
     "Cashflow answers “did money move?” Profit answers “did we create value after costs?” Mixing them creates false confidence and late surprises even when sales look strong.",
   alternates: {
@@ -99,7 +99,7 @@ export default function Page() {
               </Link>
               <span className="text-slate-400">/</span>
               <Link href={hubHref} className="font-semibold text-slate-600 hover:text-slate-900">
-                ProfitPilot
+                jèrè
               </Link>
               <span className="text-slate-400">/</span>
               <span className="font-semibold text-slate-900">Cashflow vs Profit</span>
