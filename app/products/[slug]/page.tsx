@@ -379,25 +379,27 @@ export default async function ProjectDetailPage({
                 </div>
               ) : null}
 
-              {/* Live by access code: request a code, or open the app with one. */}
+              {/* Open for sign-up: go straight to the app. */}
               {slug === "profitpilot" && getProduct(slug)?.appUrl ? (
                 <div className="mt-6 grid gap-2">
-                  <Link
-                    href="/waitlist?product=profitpilot&source=product_page"
+                  <a
+                    href={getProduct(slug)?.ctaHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex w-full items-center justify-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                   >
-                    Request an access code
-                  </Link>
+                    {getProduct(slug)?.ctaLabel} ↗
+                  </a>
                   <a
-                    href={getProduct(slug)?.appUrl}
+                    href={`${getProduct(slug)?.appUrl}sign-in`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                   >
-                    I have a code: open the app ↗
+                    I have an account: sign in ↗
                   </a>
                   <p className="text-xs text-slate-500">
-                    {name} is live in early access. You need an access code to create an account.
+                    {name} is live in early access. No access code is needed.
                   </p>
                 </div>
               ) : null}

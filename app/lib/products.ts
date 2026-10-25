@@ -41,9 +41,10 @@ const PRODUCTS: Record<string, ProductInfo> = {
     label: 'Jèrè',
     backHref: '/insights/profitpilot',
     backLabel: 'Back to Jèrè hub',
-    // Live by access code: visitors request a code through the form.
-    ctaHref: '/waitlist?product=profitpilot&source=header_cta',
-    ctaLabel: 'Request an access code',
+    // Open for sign-up: the app itself is the destination, no code or waitlist.
+    ctaHref: 'https://app.solflightech.org/sign-up',
+    ctaLabel: 'Create your account',
+    ctaExternal: true,
     appUrl: 'https://app.solflightech.org/',
   },
   rebirthagro: {

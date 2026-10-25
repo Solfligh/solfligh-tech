@@ -4,7 +4,6 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { normalizeProductSlug, productLabel } from "@/app/lib/products";
 import { checkRateLimit, clientIp, hashIp } from "@/app/lib/rateLimit";
-import { buildAccessRequestNote } from "@/app/lib/accessRequests";
 
 /**
  * Rate limiting. This table stores no IP, so a salted hash is used rather than
@@ -23,11 +22,8 @@ type Payload = {
   company?: string;
   note?: string;
   source?: string;
-  businessType?: string;
-  consent?: boolean;
 };
 
-const BUSINESS_TYPES = ["Shop", "Trader", "Food", "Services", "Other"];
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -52,10 +48,16 @@ export async function POST(req: Request) {
     const rawNote = (body.note || "").trim();
     const source = (body.source || "waitlist_page").trim();
 
-    // Jèrè is live by access code: it takes a request, not a waitlist
-    // signup, and needs a phone number, business type and consent.
-    const accessCode = product === "profitpilot";
-    const businessType = (body.businessType || "").trim();
+    // Jèrè is open for sign-up, so there is nothing to wait for or request.
+    if (product === "profitpilot") {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `${productName} is open now. Create your account at https://app.solflightech.org/sign-up`,
+        },
+        { status: 400 }
+      );
+    }
 
     if (!email || !isValidEmail(email)) {
       return NextResponse.json(
@@ -64,32 +66,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if (accessCode) {
-      if (!fullName || !phone) {
-        return NextResponse.json(
-          { ok: false, error: "Please enter your name and phone or WhatsApp number." },
-          { status: 400 }
-        );
-      }
-      if (!BUSINESS_TYPES.includes(businessType)) {
-        return NextResponse.json(
-          { ok: false, error: "Please choose the kind of business you run." },
-          { status: 400 }
-        );
-      }
-      if (body.consent !== true) {
-        return NextResponse.json(
-          { ok: false, error: "Please agree to be contacted about Jèrè." },
-          { status: 400 }
-        );
-      }
-    }
-
-    // waitlist_signups has no business-type or consent columns, so these ride in
-    // `note` rather than needing a migration on the production table.
-    const note = accessCode
-      ? buildAccessRequestNote({ businessType, challenge: rawNote })
-      : rawNote;
+    const note = rawNote;
 
     // Rate limit before writing anything.
     const ip = clientIp(req.headers);
@@ -161,7 +138,7 @@ export async function POST(req: Request) {
     if (resendKey && resendFrom && adminTo) {
       const resend = new Resend(resendKey);
 
-      const heading = accessCode ? "New access code request" : "New waitlist signup";
+      const heading = "New waitlist signup";
       const subject = `${heading}: ${productName}`;
       const html = `
         <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;">
@@ -204,18 +181,8 @@ export async function POST(req: Request) {
         const { error: confirmErr } = await resend.emails.send({
           from: resendFrom,
           to: email,
-          subject: accessCode
-            ? `Your ${productName} access code request`
-            : "You're on the waitlist ✅",
-          html: accessCode
-            ? `
-            <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;">
-              <p>Thanks${fullName ? `, ${safe(fullName)}` : ""} — we have your request for a <b>${safe(productName)}</b> access code.</p>
-              <p>We’ll email you a code if there is a place for your business.</p>
-              <p style="margin-top:20px;">— Solfligh Tech</p>
-            </div>
-          `
-            : `
+          subject: "You're on the waitlist ✅",
+          html: `
             <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;">
               <p>Thanks${fullName ? `, ${safe(fullName)}` : ""} — you’re on the waitlist for <b>${safe(productName)}</b>.</p>
               <p>We’ll notify you as soon as early access opens.</p>
@@ -239,9 +206,8 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           ok: false,
-          error: accessCode
-            ? "We could not record your request. Please try again."
-            : "We could not record your signup. Please try again, or reach us through the contact page.",
+          error:
+            "We could not record your signup. Please try again, or reach us through the contact page.",
         },
         { status: 500 }
       );
@@ -251,9 +217,7 @@ export async function POST(req: Request) {
       ok: true,
       stored,
       notified,
-      message: accessCode
-        ? "Thanks, we have your request. We’ll email you an access code if there is a place for your business. Check your spam folder too."
-        : "You’re in. We’ll notify you as soon as early access opens.",
+      message: "You’re in. We’ll notify you as soon as early access opens.",
     });
   } catch {
     return NextResponse.json(

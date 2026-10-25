@@ -81,7 +81,7 @@ function MiniHero({ title }: { title: string }) {
 }
 
 function StartHere({ firstHref, total }: { firstHref: string; total: number }) {
-  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_hub";
+  const signUpHref = "https://app.solflightech.org/sign-up";
   const projectHref = "/products/profitpilot";
 
   return (
@@ -104,10 +104,10 @@ function StartHere({ firstHref, total }: { firstHref: string; total: number }) {
           </Link>
 
           <Link
-            href={waitlistHref}
+            href={signUpHref}
             className="inline-flex items-center justify-center rounded-xl border border-sky-600 bg-white px-4 py-2.5 text-sm font-semibold text-sky-700 shadow-sm transition hover:bg-sky-50"
           >
-            Request an access code
+            Create your account
           </Link>
 
           <Link
@@ -254,10 +254,10 @@ export default function ProfitPilotInsightsHubPage() {
               Jèrè project
             </Link>
             <Link
-              href="/waitlist?product=profitpilot&source=profitpilot_hub_footer"
+              href="https://app.solflightech.org/sign-up"
               className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
             >
-              Request an access code
+              Create your account
             </Link>
           </div>
         </div>

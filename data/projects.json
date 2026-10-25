@@ -5,12 +5,12 @@
       "name": "jèrè",
       "status": "Live / Near Launch",
       "statusColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
-      "description": "Business management software for small businesses in Nigeria. Record sales, expenses, stock and the money customers owe you, and see your estimated profit. Live in early access, by access code.",
+      "description": "Business management software for small businesses in Nigeria. Record sales, expenses, stock and the money customers owe you, and see your estimated profit. Live in early access: create an account and start.",
       "highlights": [
         "Sales, stock, expenses and customer debts in one place",
         "Estimated profit by day, week, month, quarter and year",
-        "Cashiers record sales and never see costs or profit",
-        "Download your records or delete your account yourself"
+        "Record sales, payments and expenses even when the internet is down",
+        "Cashiers record sales and never see costs or profit"
       ],
       "ctaLabel": "View Jèrè",
       "href": "/products/profitpilot",
@@ -44,23 +44,27 @@
       "solution": "Jèrè takes the cost of the goods you sold and your expenses away from your sales, so you see estimated profit and not just money collected. Sales, stock, expenses and debts sit in one place, and you decide what each team member can see.",
       "keyFeatures": [
         "Record sales paid by cash, transfer, POS or on credit, including part-payments",
+        "Sell, take payments, add expenses and new products without internet; they are sent when you are back online",
         "Stock list with restocking and low-stock flags",
-        "Daily expenses by category",
-        "Customers who owe you, with payments and WhatsApp reminders you send yourself",
-        "WhatsApp receipts after a sale",
+        "Daily expenses by category, with reminders for regular ones such as rent",
+        "Customers who owe you, with payments and reminders you send yourself",
+        "Receipts you can send by WhatsApp, Telegram, Text or any app you choose",
         "Estimated profit for a day, week, month, quarter or year, compared with the period before",
         "Which products make you the most money, and which sell below cost",
+        "A Business check-up of what is going well and what needs attention, with an optional Monday email",
+        "Count your cash at the end of the day and see if it matches your records",
         "Business capital kept apart from sales and profit",
         "Money you owe suppliers, tracked separately from profit",
+        "A simple staff pay list that adds pay to your expenses when you record it",
         "Team access: invite a cashier by code and choose what they can see",
+        "A 4-digit PIN lock for the app",
         "Download your records or delete your account yourself",
         "Add it to your phone's home screen"
       ],
       "roadmap": [
-        "Early-access pilot with a small group of Nigerian businesses (in progress)",
-        "Legal review of the privacy page and terms",
-        "Pricing announced before the free period ends",
-        "Working without internet (planned, not started)"
+        "Early access: open for sign-up now",
+        "Lawyer review of the privacy page and terms",
+        "We will tell you before we start to charge"
       ],
       "techStack": [
         "Next.js",
@@ -68,7 +72,7 @@
         "Supabase",
         "PostgreSQL"
       ],
-      "updatedAt": "2026-10-20T17:54:04.998+00:00"
+      "updatedAt": "2026-10-25T08:17:24.300Z"
     },
     {
       "slug": "fxco-pilot",

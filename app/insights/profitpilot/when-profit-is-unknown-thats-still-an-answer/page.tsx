@@ -59,7 +59,7 @@ export default function ProfitUnknownArticlePage() {
   const prevArticleHref =
     "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit";
 
-  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_article_6";
+  const signUpHref = "https://app.solflightech.org/sign-up";
   const projectHref = "/products/profitpilot";
 
   return (
@@ -100,10 +100,10 @@ export default function ProfitUnknownArticlePage() {
               <div className="flex-1" />
 
               <Link
-                href={waitlistHref}
+                href={signUpHref}
                 className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
               >
-                Request an access code
+                Create your account
               </Link>
             </div>
 
@@ -236,16 +236,16 @@ export default function ProfitUnknownArticlePage() {
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
                   <p className="text-sm font-semibold text-slate-900">Want to try Jèrè?</p>
                   <p className="text-sm text-slate-700">
-                    Jèrè is live in early access. Request an access code to try it. It is built around one daily promise:
+                    Jèrè is live in early access. Create your account to try it. It is built around one daily promise:
                     show profit only when it’s proven but always help you close the day with truth.
                   </p>
 
                   <div className="flex flex-wrap gap-3">
                     <Link
-                      href={waitlistHref}
+                      href={signUpHref}
                       className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                     >
-                      Request an access code
+                      Create your account
                     </Link>
 
                     <Link
