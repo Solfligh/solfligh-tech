@@ -7,12 +7,18 @@ import { listPostsByHub } from "@/app/lib/insightsStore";
 import { SITE_URL } from "@/app/lib/site";
 
 const features = [
+  { title: "Keep trading without internet", text: "With Plus, record sales, customer payments, expenses and new products offline. Entries wait on your phone and send automatically when the connection returns.", label: "Offline with Plus" },
   { title: "Record every sale", text: "Cash, transfer, POS or credit. Record part-payments and share a receipt through WhatsApp or another app you choose.", label: "Sales & receipts" },
   { title: "Know what is on the shelf", text: "Keep a stock list, record restocking and spot products running low before the next customer asks for them.", label: "Stock" },
   { title: "Keep expenses in the picture", text: "Record transport, electricity, rent and other business costs. Set reminders for expenses that come round regularly.", label: "Expenses" },
   { title: "Remember who owes you", text: "Keep customer debts and payments together. See what is still owed and send a reminder yourself.", label: "Customer debts" },
   { title: "Give your team the right access", text: "Invite a cashier by code and choose what they can see. Cashiers can record sales without seeing your costs or profit.", label: "Team access" },
-  { title: "Keep recording when the internet drops", text: "Record sales, payments, expenses and new products offline. Your entries are sent when you are back online.", label: "Offline entry" },
+  { title: "Track what you owe suppliers", text: "Keep supplier credit and payments together. See who you still need to pay and how much is outstanding.", label: "Supplier debts" },
+  { title: "Check the cash before you close", text: "Enter the cash you counted and compare it with what your records say you should have. See the amount that matches, is short or is extra.", label: "Cash checks" },
+  { title: "See which products make you money", text: "Find your best earners, products sold below cost and stock that has not sold. Compare your business figures by day, week, month or year.", label: "Profit & reports" },
+  { title: "Find what needs attention", text: "A business check-up uses your records to show what is going well and what needs a look. You can also choose to receive a weekly email summary.", label: "Business check-up" },
+  { title: "Keep track of staff pay", text: "List who you pay, how much and when it is due. Record a payment as a staff expense when you pay them.", label: "Staff pay" },
+  { title: "Keep capital separate from earnings", text: "Record money you put into the business, loans, repayments and money taken out. Keep those movements separate from sales and estimated profit.", label: "Business capital" },
 ];
 
 const screens = [
@@ -24,7 +30,9 @@ const screens = [
 const questions = [
   { question: "What is Jèrè?", answer: "Jèrè (Jere) is business management software for small businesses in Nigeria. It brings sales, stock, expenses and customer debts together so you can see your estimated profit. It is built by SOLFLIGH TECH with an Africa-first focus." },
   { question: "Can I sign up now?", answer: "Yes. Jèrè is open for sign-up in early access. Choose Create your account to get started, or sign in if you already have an account. We will tell you before we start to charge." },
-  { question: "Does Jèrè work without internet?", answer: "You can record sales, payments, expenses and new products when the internet is down. Those entries are sent when you are back online." },
+  { question: "Does Jèrè work without internet?", answer: "Yes. Plus lets you record sales, customer payments, expenses and new products offline, check saved stock, and read saved Today and Owing figures with your PIN. Open Jèrè online first so it can save a copy on your phone. Entries send automatically when you reconnect and only then count in your business records. Saved figures show when they were last updated. Basic needs an internet connection." },
+  { question: "What still needs internet?", answer: "Adding a new customer, changing an existing product’s price or stock, cancelling a sale, and changing your PIN or account need internet. Offline credit sales use customers already saved on your phone. Keep entries waiting to send on that phone until they have been sent; clearing browser storage can remove them." },
+  { question: "Can I download my records?", answer: "Yes. Open My data and account in Jèrè to download your business records." },
   { question: "Is money collected the same as profit?", answer: "Money collected and profit answer different questions. Jèrè estimates profit by taking the cost of the goods sold and your recorded expenses away from sales. That can include credit sales customers have not paid for yet. Your estimate depends on the records you enter." },
   { question: "Can my cashier use Jèrè without seeing my profit?", answer: "Yes. You can invite a cashier by code and choose their access. Cashiers can record sales without seeing your costs or profit." },
   { question: "Do I need to download an app?", answer: "Jèrè runs in your browser. You can also add it to your phone’s home screen." },
@@ -55,7 +63,8 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
     alternateName: "Jere",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
-    description: "Business management software for small businesses in Nigeria. Record sales, stock, expenses and customer debts, and see your estimated profit.",
+    description: "Business management software for small businesses in Nigeria. Manage sales, stock, expenses, customer and supplier debts, and estimated profit. Plus adds offline recording.",
+    featureList: features.map((feature) => `${feature.label}: ${feature.title}`),
     url: canonical,
     image: `${SITE_URL}/projects/profitpilot/today.jpg`,
     publisher: { "@type": "Organization", name: "SOLFLIGH TECH", url: SITE_URL },
@@ -73,7 +82,8 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
                 <span className="rounded-full border border-[#d4dccc] bg-[#f0f4ea] px-3 py-1.5 text-xs font-semibold text-[#456039]">{status}</span>
               </div>
               <h1 className="mt-7 text-4xl font-semibold leading-[1.12] tracking-tight sm:text-5xl lg:text-[3.5rem]">Know what you sold.<br /><span className="text-[#5546e8]">See your estimated profit.</span></h1>
-              <p className="mt-6 max-w-lg text-base leading-relaxed text-[#625c70] sm:text-lg">Jèrè (Jere) is business management software for small businesses in Nigeria. Record sales, stock, expenses and customer debts in one place.</p>
+              <p className="mt-6 max-w-lg text-base leading-relaxed text-[#625c70] sm:text-lg">Run your business with Jèrè (Jere). Track sales, stock, expenses and debts, check your cash and see estimated profit. Built for small businesses in Nigeria, with offline recording on Plus.</p>
+              <a href="#offline" className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#ccd9c2] bg-[#f0f4ea] px-4 py-2 text-sm font-semibold text-[#456039]"><span aria-hidden="true">↻</span> Works offline with Plus <span aria-hidden="true">↓</span></a>
               <div className="mt-8"><SignupLinks /></div>
               <p className="mt-4 text-sm text-[#70697e]">Open for sign-up in early access.</p>
               <a href="#how-it-works" className="mt-8 inline-flex gap-2 text-sm font-medium text-[#5546e8]">See how Jèrè fits your day <span aria-hidden="true">↓</span></a>
@@ -90,15 +100,45 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
 
       <section className="border-b border-[#e5e0ef] bg-white py-6" aria-label="Built for your working day">
         <Container className="grid gap-4 text-center text-sm font-medium text-[#625c70] sm:grid-cols-3">
-          <p>Cash, transfer, POS and credit sales</p><p>Record entries when the internet drops</p><p>Choose what each team member sees</p>
+          <p>Cash, transfer, POS and credit sales</p><a href="#offline" className="font-semibold text-[#5546e8]">Offline recording with Plus</a><p>Choose what each team member sees</p>
+        </Container>
+      </section>
+
+      <section id="offline" className="scroll-mt-36 border-b border-[#e5e0ef] bg-[#f1eef8] py-16 sm:py-20">
+        <Container>
+          <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Offline with Jèrè Plus</p>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight sm:text-4xl">Internet down?<br />Keep recording your business.</h2>
+              <p className="mt-5 text-base leading-relaxed text-[#625c70]">A lost connection should not leave your next sale on a scrap of paper. Jèrè keeps entries on your phone and sends them automatically when you are back online.</p>
+              <a href={`${getProduct("profitpilot")!.appUrl}help#offline`} className="mt-6 inline-block text-sm font-semibold text-[#5546e8] underline underline-offset-4">Read the offline guide →</a>
+            </div>
+            <div className="rounded-2xl border border-[#d8d1ed] bg-white p-6 sm:p-8">
+              <h3 className="text-lg font-semibold">What you can do offline</h3>
+              <ul className="mt-5 space-y-4 text-sm leading-relaxed text-[#625c70]">
+                <li><strong className="text-[#201c33]">Record sales and customer payments.</strong> Keep the time each entry happened, including credit sales for customers already saved.</li>
+                <li><strong className="text-[#201c33]">Add expenses and products.</strong> Owners can add a new product and start selling it on that phone.</li>
+                <li><strong className="text-[#201c33]">Check saved stock.</strong> See the last saved product list and counts, adjusted for sales waiting on that phone.</li>
+                <li><strong className="text-[#201c33]">Read saved figures with your PIN.</strong> Owners can open saved Today and Owing figures, clearly marked with their age.</li>
+              </ul>
+            </div>
+          </div>
+          <ol className="mt-10 grid gap-4 md:grid-cols-3">
+            {[
+              ["Open online first", "Sign in and let Sell load to save your products and customer names. Open Today and Owing online with your PIN set to keep those figures too."],
+              ["Save on your phone", "When the connection drops, use the offline tabs. The waiting list shows what has been saved and what still needs to be sent."],
+              ["Reconnect and send", "Jèrè sends waiting entries automatically. They count in your business records once sent. Entries that need attention stay visible with a reason."],
+            ].map(([title, text], index) => <li key={title} className="rounded-2xl border border-[#d8d1ed] p-5"><p className="text-xs font-semibold text-[#7765be]">0{index + 1}</p><h3 className="mt-3 text-lg font-semibold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-[#625c70]">{text}</p></li>)}
+          </ol>
+          <p className="mt-6 max-w-4xl text-sm leading-relaxed text-[#625c70]">Offline use is part of Plus; Basic works online. Saved views are the last copy on that phone. Adding customers, changing existing prices or stock, cancelling sales and account changes need internet. Keep the phone’s browser data until all waiting entries have been sent.</p>
         </Container>
       </section>
 
       <section id="features" className="scroll-mt-28 py-16 sm:py-24">
         <Container>
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-16">
-            <div><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Your working day, in one place</p><h2 className="mt-4 max-w-lg text-3xl font-semibold leading-tight sm:text-4xl">The sale. The stock.<br />The money still owed.</h2></div>
-            <p className="self-end text-base text-[#625c70]">Sales come in as cash, transfers and POS payments. Stock needs replacing. Some customers pay later. Jèrè keeps those records together, so you can check what happened and what needs attention.</p>
+            <div><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Your working day, in one place</p><h2 className="mt-4 max-w-lg text-3xl font-semibold leading-tight sm:text-4xl">From the first sale<br />to closing your books.</h2></div>
+            <p className="self-end text-base text-[#625c70]">Keep the records behind your business together: what you sold, what you spent, who owes you and who you need to pay. Check cash, staff pay and product performance without losing sight of estimated profit.</p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
@@ -108,6 +148,10 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
                 <p className="mt-3 text-sm leading-relaxed text-[#625c70]">{feature.text}</p>
               </article>
             ))}
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-[#e5e0ef] p-6"><h3 className="text-lg font-semibold">Keep private figures behind a PIN</h3><p className="mt-3 text-sm leading-relaxed text-[#625c70]">Set the app lock to cover your figures when you leave Jèrè. Use your PIN to unlock it when you return.</p></div>
+            <div className="rounded-2xl border border-[#e5e0ef] p-6"><h3 className="text-lg font-semibold">Download your business records</h3><p className="mt-3 text-sm leading-relaxed text-[#625c70]">Download your records from My data and account whenever you need a copy outside Jèrè.</p></div>
           </div>
         </Container>
       </section>

@@ -27,6 +27,7 @@ export function SiteHeader({ children }: { children: ReactNode }) {
         </a>
         <nav aria-label="Jèrè navigation" className="hidden items-center gap-6 text-sm font-medium text-[#625c70] md:flex">
           <a href="#features" className="hover:text-[#5546e8]">Features</a>
+          <a href="#offline" className="hover:text-[#5546e8]">Offline</a>
           <a href="#screens" className="hover:text-[#5546e8]">Inside Jèrè</a>
           <a href="#questions" className="hover:text-[#5546e8]">FAQs</a>
         </nav>
@@ -35,8 +36,9 @@ export function SiteHeader({ children }: { children: ReactNode }) {
           <a href={product.ctaHref} className="rounded-xl bg-[#5546e8] px-4 py-3 text-sm font-semibold text-white no-underline hover:bg-[#4335cc]">Get started</a>
         </div>
       </div>
-      <nav aria-label="Jèrè sections" className="flex justify-center gap-7 border-t border-[#e5e0ef] px-4 py-3 text-sm font-medium text-[#625c70] md:hidden">
+      <nav aria-label="Jèrè sections" className="flex justify-center gap-5 border-t border-[#e5e0ef] px-4 py-3 text-sm font-medium text-[#625c70] md:hidden">
         <a href="#features">Features</a>
+        <a href="#offline">Offline</a>
         <a href="#screens">Inside Jèrè</a>
         <a href="#questions">FAQs</a>
       </nav>
