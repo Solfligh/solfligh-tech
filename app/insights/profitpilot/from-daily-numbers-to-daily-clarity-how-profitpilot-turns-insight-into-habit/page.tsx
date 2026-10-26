@@ -100,7 +100,7 @@ export default function ProfitPilotSolutionArticlePage() {
   const prevArticleHref = "/insights/profitpilot/from-daily-number-to-daily-clarity";
   const nextArticleHref = "/insights/profitpilot/when-profit-is-unknown-thats-still-an-answer";
 
-  const waitlistHref = "/waitlist?product=profitpilot&source=profitpilot_solution_article";
+  const signUpHref = "https://app.solflightech.org/sign-up";
   const projectHref = "/products/profitpilot";
 
   return (
@@ -295,20 +295,20 @@ export default function ProfitPilotSolutionArticlePage() {
                   </p>
                 </section>
 
-                {/* Product CTA (keep the access code request here ✅) */}
+                {/* Product CTA (keep the sign-up link here ✅) */}
                 <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-4">
                   <p className="text-sm font-semibold text-slate-900">Want to try Jèrè?</p>
                   <p className="text-sm text-slate-700">
-                    Jèrè is live in early access. Request an access code to try it. It is built around a simple standard:
+                    Jèrè is live in early access. Create your account to try it. It is built around a simple standard:
                     daily clarity first profit only when proven.
                   </p>
 
                   <div className="flex flex-wrap gap-3">
                     <Link
-                      href={waitlistHref}
+                      href={signUpHref}
                       className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                     >
-                      Request an access code
+                      Create your account
                     </Link>
 
                     <Link

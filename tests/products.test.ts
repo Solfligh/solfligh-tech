@@ -82,8 +82,14 @@ describe("Solfligh Cloud is not a product", () => {
 
 describe("product CTA destinations follow real status", () => {
   it("sends unreleased products to their waitlist", () => {
-    expect(getProduct("profitpilot")?.ctaHref).toContain("/waitlist?product=profitpilot");
     expect(getProduct("rebirthagro")?.ctaHref).toContain("/waitlist?product=rebirthagro");
+  });
+
+  it("sends Jèrè, which is open for sign-up, to the app's sign-up page", () => {
+    const jere = getProduct("profitpilot");
+    expect(jere?.ctaHref).toBe("https://app.solflightech.org/sign-up");
+    expect(jere?.ctaExternal).toBe(true);
+    expect(jere?.ctaHref).not.toContain("/waitlist");
   });
 
   it("sends the live product to its app, externally", () => {

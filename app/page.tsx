@@ -712,7 +712,7 @@ export default async function HomePage() {
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { title: "jèrè", desc: "Sales, stock, customer debts and estimated daily profit. Live / near launch, by access code." },
+              { title: "jèrè", desc: "Sales, stock, customer debts and estimated daily profit. Live in early access." },
               { title: "FXCopilot", desc: "FX decision support live today." },
               { title: "RebirthAgro", desc: "Agriculture technology in active development." },
               { title: "Services", desc: "Build, AI & automation, infrastructure, design, and run live today." },

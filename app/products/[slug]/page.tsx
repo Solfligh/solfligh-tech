@@ -172,9 +172,9 @@ function getProjectLink(project: AnyProject) {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
-  const slug = params?.slug || "";
+  const slug = (await params)?.slug || "";
 
   let projects: AnyProject[] = [];
   try {
@@ -234,9 +234,9 @@ export async function generateMetadata({
 export default async function ProjectDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const slug = params?.slug;
+  const slug = (await params)?.slug;
 
   let projects: AnyProject[] = [];
   try {
@@ -295,11 +295,38 @@ export default async function ProjectDetailPage({
         ]
       : [];
 
+  // Tells search engines plainly what Jèrè is, so a search for it can show the right page.
+  const jereJsonLd =
+    slug === "profitpilot"
+      ? {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "Jèrè",
+          alternateName: "Jere",
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web, Android, iOS (installable from the browser)",
+          description:
+            "Business management software for small businesses in Nigeria: record sales, expenses, stock and the money customers owe you, and see your estimated profit.",
+          url: `${SITE_URL}/products/profitpilot`,
+          publisher: { "@type": "Organization", name: "SOLFLIGH TECH", url: SITE_URL },
+        }
+      : null;
+
   return (
     <main className="bg-white text-slate-900">
+      {jereJsonLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jereJsonLd) }} />
+      ) : null}
       <section className="py-16 sm:py-20">
         <Container>
           <PageHeader level={1} badge="Project" title={name} subtitle={description} />
+          {slug === "profitpilot" ? (
+            <p className="mt-4 max-w-3xl text-sm text-slate-600">
+              Jèrè (Jere) is built by SOLFLIGH TECH for small businesses in
+              Nigeria, with an Africa-first focus. Keep sales, expenses, stock and customer debts
+              together, and see your estimated profit.
+            </p>
+          ) : null}
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
             {/* Media */}
@@ -379,25 +406,27 @@ export default async function ProjectDetailPage({
                 </div>
               ) : null}
 
-              {/* Live by access code: request a code, or open the app with one. */}
+              {/* Open for sign-up: go straight to the app. */}
               {slug === "profitpilot" && getProduct(slug)?.appUrl ? (
                 <div className="mt-6 grid gap-2">
-                  <Link
-                    href="/waitlist?product=profitpilot&source=product_page"
+                  <a
+                    href={getProduct(slug)?.ctaHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex w-full items-center justify-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
                   >
-                    Request an access code
-                  </Link>
+                    {getProduct(slug)?.ctaLabel} ↗
+                  </a>
                   <a
-                    href={getProduct(slug)?.appUrl}
+                    href={`${getProduct(slug)?.appUrl}sign-in`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
                   >
-                    I have a code: open the app ↗
+                    I have an account: sign in ↗
                   </a>
                   <p className="text-xs text-slate-500">
-                    {name} is live in early access. You need an access code to create an account.
+                    {name} is live in early access. No access code is needed.
                   </p>
                 </div>
               ) : null}
