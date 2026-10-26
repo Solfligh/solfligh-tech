@@ -11,12 +11,14 @@ export async function generateMetadata() {
   if (metadata.robots && typeof metadata.robots === "object" && metadata.robots.index === false) {
     return metadata;
   }
-  const title = "Jèrè (Jere) — Business management software for small businesses in Nigeria";
+  const title = "Jèrè (Jere) | Business Software for Nigerian SMEs";
+  const description = "Track sales, stock, expenses and customer debts with Jèrè. Business management software for small businesses in Nigeria, with offline entry and estimated profit.";
   return {
     ...metadata,
-    title: { absolute: `${title} | SOLFLIGH TECH` },
-    openGraph: { ...metadata.openGraph, title },
-    twitter: { ...metadata.twitter, title },
+    title: { absolute: title },
+    description,
+    openGraph: { ...metadata.openGraph, title, description },
+    twitter: { ...metadata.twitter, title, description },
   };
 }
 
