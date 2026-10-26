@@ -20,7 +20,7 @@ describe("contextual header CTA", () => {
   it("routes a product page to that product's own signup", () => {
     // Jèrè is open, so its CTA goes straight to the app's sign-up page.
     const jere = getHeaderCta("/products/profitpilot");
-    expect(jere.href).toBe("https://app.solflightech.org/sign-up");
+    expect(jere.href).toBe("https://app.xn--jr-7iab.com/sign-up");
     expect(jere.external).toBe(true);
     expect(getHeaderCta("/products/rebirthagro").href).toContain(
       "/waitlist?product=rebirthagro"

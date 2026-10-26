@@ -66,14 +66,6 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
       <section className="overflow-hidden border-b border-[#e5e0ef] bg-[radial-gradient(ellipse_at_top_right,#e9e5ff,transparent_65%)]">
         <Container>
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#ddd7ec] py-6">
-            <Link href={`${SITE_URL}/products`} className="text-xs font-semibold uppercase tracking-[.16em] text-[#645c78]">SOLFLIGH TECH / Products</Link>
-            <nav aria-label="On this page" className="flex gap-5 text-sm font-medium text-[#645c78]">
-              <a href="#features" className="hover:text-[#5546e8]">Features</a>
-              <a href="#screens" className="hover:text-[#5546e8]">Screens</a>
-              <a href="#questions" className="hover:text-[#5546e8]">FAQs</a>
-            </nav>
-          </div>
           <div className="grid items-start gap-12 py-12 sm:py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-16">
             <div className="max-w-xl">
               <div className="flex flex-wrap items-center gap-4">

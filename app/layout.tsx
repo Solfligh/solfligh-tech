@@ -6,6 +6,7 @@ import "./globals.css";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import Analytics from "@/app/components/Analytics";
+import { SiteHeader, SiteFooter } from "@/app/components/SiteChrome";
 import { SITE_URL } from "@/app/lib/site";
 
 const inter = Inter({
@@ -121,9 +122,9 @@ export default function RootLayout({
         {/* Google Analytics loads only after the visitor accepts (see Analytics) */}
         <Analytics />
 
-        <Navbar />
+        <SiteHeader><Navbar /></SiteHeader>
         {children}
-        <Footer />
+        <SiteFooter><Footer /></SiteFooter>
       </body>
     </html>
   );

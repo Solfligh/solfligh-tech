@@ -42,10 +42,10 @@ const PRODUCTS: Record<string, ProductInfo> = {
     backHref: '/insights/profitpilot',
     backLabel: 'Back to Jèrè hub',
     // Open for sign-up: the app itself is the destination, no code or waitlist.
-    ctaHref: 'https://app.solflightech.org/sign-up',
+    ctaHref: 'https://app.xn--jr-7iab.com/sign-up',
     ctaLabel: 'Create your account',
     ctaExternal: true,
-    appUrl: 'https://app.solflightech.org/',
+    appUrl: 'https://app.xn--jr-7iab.com/',
   },
   rebirthagro: {
     slug: 'rebirthagro',
