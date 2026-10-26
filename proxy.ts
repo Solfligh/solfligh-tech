@@ -1,5 +1,7 @@
 // proxy.ts
 import { NextRequest, NextResponse } from "next/server";
+import { SITE_URL } from "@/app/lib/site";
+import { JERE_DOMAIN_HOST, JERE_APEX_HOST, JERE_DOMAIN_ORIGIN, JERE_LEGACY_PATH, isJereHost, jereDomainEnabled } from "@/app/lib/jereDomain";
 
 /**
  * SOLFLIGH TECH  Maintenance Mode Proxy (SEO-safe)
@@ -41,6 +43,33 @@ function isStaticAsset(pathname: string) {
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const hostname = (req.headers.get("host") || req.nextUrl.hostname).replace(/:\d+$/, "").toLowerCase();
+  const brandedHost = isJereHost(hostname);
+  const toJereHome = () => {
+    const target = new URL(JERE_DOMAIN_ORIGIN);
+    target.search = req.nextUrl.search;
+    return NextResponse.redirect(target, 308);
+  };
+
+  if (hostname === JERE_APEX_HOST) {
+    const target = req.nextUrl.clone();
+    target.protocol = "https:";
+    target.host = JERE_DOMAIN_HOST;
+    target.port = "";
+    return NextResponse.redirect(target, 308);
+  }
+
+  // A separate sitemap keeps corporate URLs off the product domain.
+  if (brandedHost && pathname === "/robots.txt") {
+    return new NextResponse(`User-agent: *\nAllow: /\nSitemap: ${JERE_DOMAIN_ORIGIN}/sitemap.xml\n`, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  }
+  if (brandedHost && pathname === "/sitemap.xml") {
+    return new NextResponse(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${JERE_DOMAIN_ORIGIN}/</loc></url></urlset>`, {
+      headers: { "Content-Type": "application/xml; charset=utf-8" },
+    });
+  }
 
   // Always allow Next internals, admin, maintenance page, and static assets
   if (
@@ -54,6 +83,21 @@ export function proxy(req: NextRequest) {
   const isMaintenanceOn = process.env.MAINTENANCE_MODE === "true";
 
   if (!isMaintenanceOn) {
+    if (brandedHost) {
+      if (pathname === "/") {
+        const target = req.nextUrl.clone();
+        target.pathname = JERE_LEGACY_PATH;
+        return NextResponse.rewrite(target);
+      }
+      if ([JERE_LEGACY_PATH, "/products/jere", "/jere"].includes(pathname)) return toJereHome();
+      if (pathname === "/og") return NextResponse.next();
+      // Company navigation and articles continue to live on the company site.
+      const target = new URL(SITE_URL);
+      target.pathname = pathname;
+      target.search = req.nextUrl.search;
+      return NextResponse.redirect(target, 308);
+    }
+    if (jereDomainEnabled() && [JERE_LEGACY_PATH, "/products/jere", "/jere"].includes(pathname)) return toJereHome();
     return NextResponse.next();
   }
 

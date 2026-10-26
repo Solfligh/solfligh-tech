@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getJereUrl } from "@/app/lib/jereDomain";
 import Link from "next/link";
 import Container from "@/app/components/Container";
 import { getProduct } from "@/app/lib/products";
@@ -44,7 +45,7 @@ function SignupLinks({ dark = false }: { dark?: boolean }) {
 }
 
 export default function JereProductLanding({ status = "Live / Near Launch" }: { status?: string }) {
-  const canonical = `${SITE_URL}/products/profitpilot`;
+  const canonical = getJereUrl();
   const articles = listPostsByHub("profitpilot").slice(0, 3);
   const schema = {
     "@context": "https://schema.org",
@@ -66,7 +67,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
       <section className="overflow-hidden border-b border-[#e5e0ef] bg-[radial-gradient(ellipse_at_top_right,#e9e5ff,transparent_65%)]">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#ddd7ec] py-6">
-            <Link href="/products" className="text-xs font-semibold uppercase tracking-[.16em] text-[#645c78]">SOLFLIGH TECH / Products</Link>
+            <Link href={`${SITE_URL}/products`} className="text-xs font-semibold uppercase tracking-[.16em] text-[#645c78]">SOLFLIGH TECH / Products</Link>
             <nav aria-label="On this page" className="flex gap-5 text-sm font-medium text-[#645c78]">
               <a href="#features" className="hover:text-[#5546e8]">Features</a>
               <a href="#screens" className="hover:text-[#5546e8]">Screens</a>
@@ -126,7 +127,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
             <p className="text-sm text-[#d1c8e1]">How the estimate works</p>
             <div className="mt-5 space-y-3 text-lg"><p>Sales</p><p className="text-[#d1c8e1]">− Cost of the items sold</p><p className="text-[#d1c8e1]">− Recorded expenses</p><p className="border-t border-white/20 pt-4 text-xl font-semibold text-[#ded6ff]">= Estimated profit</p></div>
             <p className="mt-5 text-sm text-[#d1c8e1]">The estimate depends on the records you enter. Credit sales can count towards profit before customers have paid you.</p>
-            <Link href="/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity" className="mt-5 inline-block text-sm font-semibold text-[#ded6ff] underline underline-offset-4">Understand cashflow and profit →</Link>
+            <Link href={`${SITE_URL}/insights/profitpilot/cashflow-vs-profit-why-mixing-them-up-costs-clarity`} className="mt-5 inline-block text-sm font-semibold text-[#ded6ff] underline underline-offset-4">Understand cashflow and profit →</Link>
           </div>
         </Container>
       </section>
@@ -163,7 +164,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
 
       <section id="questions" className="scroll-mt-28 py-16 sm:py-24">
         <Container className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
-          <div><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Before you get started</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">A few useful answers.</h2><p className="mt-5 text-sm text-[#625c70]">Have another question? <Link href="/contact" className="font-semibold text-[#5546e8] underline underline-offset-4">Talk to SOLFLIGH TECH.</Link></p></div>
+          <div><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Before you get started</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">A few useful answers.</h2><p className="mt-5 text-sm text-[#625c70]">Have another question? <Link href={`${SITE_URL}/contact`} className="font-semibold text-[#5546e8] underline underline-offset-4">Talk to SOLFLIGH TECH.</Link></p></div>
           <div className="divide-y divide-[#e5e0ef] border-y border-[#e5e0ef]">
             {questions.map((item) => (
               <details key={item.question} className="group py-5">
@@ -179,7 +180,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
         <Container><div className="rounded-3xl bg-[#211a3a] px-6 py-12 text-white sm:px-12 sm:py-16"><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#beb0fa]">Jèrè by SOLFLIGH TECH</p><h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl">Give your next business day a clearer record.</h2><p className="mt-5 max-w-xl text-base text-[#d1c8e1]">Start recording your sales, stock, expenses and customer debts with Jèrè. Open for sign-up in early access.</p><div className="mt-8"><SignupLinks dark /></div></div></Container>
       </section>
 
-      {articles.length > 0 ? <section className="border-t border-[#e5e0ef] bg-white py-14"><Container><div className="flex flex-wrap items-center justify-between gap-4"><h2 className="text-2xl font-semibold">Make sense of your business numbers.</h2><Link href="/insights/profitpilot" className="text-sm font-semibold text-[#5546e8] underline underline-offset-4">Jèrè insights →</Link></div><div className="mt-8 grid gap-6 md:grid-cols-3">{articles.map((article) => <Link key={article.href} href={article.href} className="rounded-2xl border border-[#e5e0ef] p-6 transition hover:border-[#a99ce0]"><p className="text-xs font-medium text-[#7765be]">{article.tag}</p><h3 className="mt-3 text-lg font-semibold">{article.title}</h3><p className="mt-3 text-sm text-[#625c70]">{article.description}</p><span className="mt-5 inline-block text-sm font-semibold text-[#5546e8]">Read article →</span></Link>)}</div></Container></section> : null}
+      {articles.length > 0 ? <section className="border-t border-[#e5e0ef] bg-white py-14"><Container><div className="flex flex-wrap items-center justify-between gap-4"><h2 className="text-2xl font-semibold">Make sense of your business numbers.</h2><Link href={`${SITE_URL}/insights/profitpilot`} className="text-sm font-semibold text-[#5546e8] underline underline-offset-4">Jèrè insights →</Link></div><div className="mt-8 grid gap-6 md:grid-cols-3">{articles.map((article) => <Link key={article.href} href={`${SITE_URL}${article.href}`} className="rounded-2xl border border-[#e5e0ef] p-6 transition hover:border-[#a99ce0]"><p className="text-xs font-medium text-[#7765be]">{article.tag}</p><h3 className="mt-3 text-lg font-semibold">{article.title}</h3><p className="mt-3 text-sm text-[#625c70]">{article.description}</p><span className="mt-5 inline-block text-sm font-semibold text-[#5546e8]">Read article →</span></Link>)}</div></Container></section> : null}
     </main>
   );
 }

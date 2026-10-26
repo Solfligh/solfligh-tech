@@ -1,4 +1,5 @@
 // app/page.tsx
+import { getJereUrl } from "@/app/lib/jereDomain";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -570,7 +571,7 @@ export default async function HomePage() {
               {products.map((p) => {
                 const isExternal =
                   typeof p.externalUrl === "string" && p.externalUrl.startsWith("http");
-                const href = isExternal ? (p.externalUrl as string) : p.href || `/products/${p.slug}`;
+                const href = p.slug === "profitpilot" ? getJereUrl() : isExternal ? (p.externalUrl as string) : p.href || `/products/${p.slug}`;
                 return (
                   <Link
                     key={p.slug}

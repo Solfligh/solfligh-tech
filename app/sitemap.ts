@@ -1,3 +1,4 @@
+import { jereDomainEnabled } from "@/app/lib/jereDomain";
 import type { MetadataRoute } from "next";
 import { listProjects, type ProjectPayload } from "@/app/lib/projectStore";
 import { getPosts } from "@/app/lib/posts";
@@ -67,6 +68,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     projectRoutes = (Array.isArray(all) ? all : [])
       // only published
       .filter((p) => p?.published)
+      // The branded domain publishes its own sitemap when activated.
+      .filter((p) => !(jereDomainEnabled() && p.slug === "profitpilot"))
       // must have a valid slug
       .filter((p) => typeof p.slug === "string" && p.slug.trim().length > 0)
       // exclude external redirect projects (your [slug] page redirects away)

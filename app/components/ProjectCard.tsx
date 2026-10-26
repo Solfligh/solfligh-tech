@@ -1,5 +1,6 @@
 "use client";
 
+import { getJereUrl } from "@/app/lib/jereDomain";
 import Link from "next/link";
 import { useMemo } from "react";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
@@ -62,7 +63,7 @@ export default function ProjectCard({ project }: { project: AnyProject }) {
   const isFxcoPilot = slug === "fxco-pilot";
   const externalFxcoUrl = "https://fxco-pilot.solflightech.org";
 
-  const href = isFxcoPilot ? externalFxcoUrl : project.href || `/products/${slug}`;
+  const href = slug === "profitpilot" ? getJereUrl() : isFxcoPilot ? externalFxcoUrl : project.href || `/products/${slug}`;
 
   const status = isFxcoPilot ? "Live" : project.status || "Upcoming";
   const statusColor = isFxcoPilot
