@@ -68,6 +68,20 @@ describe("Jèrè custom domain", () => {
     expect(proxy(request("/")).status).toBe(503);
   });
 
+  it("gives the branded host its own favicon and bookmark identity without replacing corporate files", async () => {
+    setMode(true);
+    vi.stubEnv("MAINTENANCE_MODE", "true");
+    const imagePath = "/projects/profitpilot/logo.png";
+    for (const path of ["/favicon.ico", "/favicon.png", "/favicon-32.png", "/favicon-192.png", "/favicon-512.png", "/apple-touch-icon.png"]) {
+      expect(proxy(request(path)).headers.get("x-middleware-rewrite")).toBe(`${JERE_DOMAIN_ORIGIN}${imagePath}`);
+    }
+    expect(proxy(request("/favicon.png", SITE_URL)).headers.get("x-middleware-next")).toBe("1");
+    const manifest = proxy(request("/manifest.webmanifest"));
+    expect(manifest.headers.get("content-type")).toContain("application/manifest+json");
+    expect(await manifest.json()).toMatchObject({ name: "Jèrè", icons: [{ src: imagePath }] });
+    expect(proxy(request("/manifest.webmanifest", SITE_URL)).headers.get("x-middleware-next")).toBe("1");
+  });
+
   it("publishes the branded domain's own crawl files", async () => {
     setMode(true);
     const robots = proxy(request("/robots.txt"));
@@ -87,6 +101,10 @@ describe("Jèrè custom domain", () => {
     const metadata = await generateMetadata();
     expect(metadata.alternates?.canonical).toBe(`${JERE_DOMAIN_ORIGIN}/`);
     expect(metadata.openGraph).toMatchObject({ url: `${JERE_DOMAIN_ORIGIN}/` });
+    expect(metadata.icons).toMatchObject({
+      icon: [{ url: `${JERE_DOMAIN_ORIGIN}/projects/profitpilot/logo.png`, sizes: "512x512" }],
+      apple: [{ url: `${JERE_DOMAIN_ORIGIN}/projects/profitpilot/logo.png` }],
+    });
     const urls = (await sitemap()).map(entry => entry.url);
     expect(urls).not.toContain(`${SITE_URL}/products/profitpilot`);
     expect(urls).toContain(`${SITE_URL}/products/rebirthagro`);

@@ -1,7 +1,7 @@
 // proxy.ts
 import { NextRequest, NextResponse } from "next/server";
 import { SITE_URL } from "@/app/lib/site";
-import { JERE_DOMAIN_HOST, JERE_APEX_HOST, JERE_DOMAIN_ORIGIN, JERE_LEGACY_PATH, isJereHost, jereDomainEnabled } from "@/app/lib/jereDomain";
+import { JERE_DOMAIN_HOST, JERE_APEX_HOST, JERE_DOMAIN_ORIGIN, JERE_LEGACY_PATH, JERE_ICON_PATH, isJereHost, jereDomainEnabled } from "@/app/lib/jereDomain";
 
 /**
  * SOLFLIGH TECH  Maintenance Mode Proxy (SEO-safe)
@@ -57,6 +57,28 @@ export function proxy(req: NextRequest) {
     target.host = JERE_DOMAIN_HOST;
     target.port = "";
     return NextResponse.redirect(target, 308);
+  }
+
+  // Browser defaults and saved-home-screen icons must match this hostname,
+  // including during maintenance. The corporate site's files stay untouched.
+  if (brandedHost && ["/favicon.ico", "/favicon.png", "/favicon-32.png", "/favicon-192.png", "/favicon-512.png", "/apple-touch-icon.png"].includes(pathname)) {
+    const target = req.nextUrl.clone();
+    target.pathname = JERE_ICON_PATH;
+    target.search = "";
+    return NextResponse.rewrite(target);
+  }
+  if (brandedHost && ["/manifest.webmanifest", "/site.webmanifest"].includes(pathname)) {
+    return NextResponse.json({
+      name: "Jèrè",
+      short_name: "Jèrè",
+      description: "Sales, stock, expenses and debts with Jèrè.",
+      start_url: "/",
+      scope: "/",
+      display: "browser",
+      background_color: "#fbf9f4",
+      theme_color: "#121a38",
+      icons: [{ src: JERE_ICON_PATH, sizes: "512x512", type: "image/png", purpose: "any" }],
+    }, { headers: { "Content-Type": "application/manifest+json; charset=utf-8" } });
   }
 
   // A separate sitemap keeps corporate URLs off the product domain.
