@@ -5,6 +5,7 @@ export const JERE_DOMAIN_HOST = "www.xn--jr-7iab.com";
 export const JERE_APEX_HOST = "xn--jr-7iab.com";
 export const JERE_DOMAIN_ORIGIN = `https://${JERE_DOMAIN_HOST}`;
 export const JERE_LEGACY_PATH = "/products/profitpilot";
+export const JERE_ICON_PATH = "/projects/profitpilot/logo.png";
 
 /** Enable only after DNS and HTTPS have been verified, then rebuild/redeploy. */
 export function jereDomainEnabled(): boolean {
