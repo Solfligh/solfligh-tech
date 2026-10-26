@@ -50,7 +50,7 @@ describe("Jèrè search visibility", () => {
       url: `${SITE_URL}/products/profitpilot`,
     });
     expect(html).toContain("Live / Near Launch");
-    expect(html).toContain("https://app.solflightech.org/sign-up");
+    expect(html).toContain("https://app.xn--jr-7iab.com/sign-up");
     expect(html.match(/<h1[ >]/g)).toHaveLength(1);
     expect(html).toContain("Practice business with made-up figures");
     expect(html).toContain("Credit sales can count towards profit before customers have paid you");

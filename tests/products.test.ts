@@ -87,7 +87,7 @@ describe("product CTA destinations follow real status", () => {
 
   it("sends Jèrè, which is open for sign-up, to the app's sign-up page", () => {
     const jere = getProduct("profitpilot");
-    expect(jere?.ctaHref).toBe("https://app.solflightech.org/sign-up");
+    expect(jere?.ctaHref).toBe("https://app.xn--jr-7iab.com/sign-up");
     expect(jere?.ctaExternal).toBe(true);
     expect(jere?.ctaHref).not.toContain("/waitlist");
   });
