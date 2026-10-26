@@ -13,7 +13,7 @@ export async function generateMetadata() {
     return metadata;
   }
   const title = "Jèrè (Jere) | Business Software for Nigerian SMEs";
-  const description = "Track sales, stock, expenses and customer debts with Jèrè. Business management software for small businesses in Nigeria, with offline entry and estimated profit.";
+  const description = "Track sales, stock, expenses and debts with Jèrè for small businesses in Nigeria. Plus adds offline entry and automatic sending when your internet returns.";
   return {
     ...metadata,
     title: { absolute: title },
