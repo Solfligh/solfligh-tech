@@ -302,7 +302,7 @@ export default async function ProjectDetailPage({
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
           name: "Jèrè",
-          alternateName: ["Jere", "ProfitPilot"],
+          alternateName: "Jere",
           applicationCategory: "BusinessApplication",
           operatingSystem: "Web, Android, iOS (installable from the browser)",
           description:
@@ -322,7 +322,7 @@ export default async function ProjectDetailPage({
           <PageHeader level={1} badge="Project" title={name} subtitle={description} />
           {slug === "profitpilot" ? (
             <p className="mt-4 max-w-3xl text-sm text-slate-600">
-              Jèrè (Jere), formerly ProfitPilot, is built by SOLFLIGH TECH for small businesses in
+              Jèrè (Jere) is built by SOLFLIGH TECH for small businesses in
               Nigeria, with an Africa-first focus. Keep sales, expenses, stock and customer debts
               together, and see your estimated profit.
             </p>

@@ -40,7 +40,14 @@ describe("Jèrè search visibility", () => {
     expect(metadata.description).toBe(project.description);
     const page = await ProjectDetailPage({ params: Promise.resolve({ slug: "profitpilot" }) });
     const html = renderToStaticMarkup(createElement(() => page));
-    expect(html).toContain("Jèrè (Jere), formerly ProfitPilot");
+    expect(html).toContain("Jèrè (Jere) is built by SOLFLIGH TECH");
+    expect(html).not.toContain("ProfitPilot");
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)![1]);
+    expect(schema).toMatchObject({
+      "@type": "SoftwareApplication",
+      name: "Jèrè", alternateName: "Jere",
+      url: `${SITE_URL}/products/profitpilot`,
+    });
     expect(html).toContain("Live / Near Launch");
     expect(html).toContain("https://app.solflightech.org/sign-up");
   });
