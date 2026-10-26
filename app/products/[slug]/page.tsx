@@ -1,5 +1,6 @@
 // app/products/[slug]/page.tsx
 import type { Metadata } from "next";
+import JereProductLanding from "@/app/components/JereProductLanding";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
 import ProjectMediaCarousel from "@/app/components/ProjectMediaCarousel";
@@ -7,7 +8,6 @@ import { listProjects } from "@/app/lib/projectStore";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/app/lib/site";
-import { getProduct } from "@/app/lib/products";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -249,6 +249,8 @@ export default async function ProjectDetailPage({
   const project = projects.find((p) => p?.published && p?.slug === slug);
   if (!project) notFound();
 
+  if (slug === "profitpilot") return <JereProductLanding status={project.status} />;
+
   // ✅ IMPORTANT SEO FIX:
   // Do NOT redirect to external URLs here.
   // Redirects are what triggers GSC "Redirect error" if the chain loops/blocks/changes.
@@ -275,80 +277,21 @@ export default async function ProjectDetailPage({
     .filter((p) => p?.published && p?.slug && p.slug !== slug)
     .slice(0, 6);
 
-  const relatedInsights =
-    slug === "profitpilot"
-      ? [
-          {
-            title: "Why Most Business Owners Don’t Actually Know How Much They Made Today",
-            description:
-              "A plain-language explanation of why “today’s profit” feels so hard to pin down and why it isn’t your fault.",
-            href: "/insights/profitpilot/why-most-business-owners-dont-know-how-much-they-made-today",
-            tag: "Problem Awareness",
-          },
-          {
-            title: "Cashflow vs Profit: Why Mixing Them Up Is Costing You Clarity",
-            description:
-              "A simple explanation of cash movement vs real performance and how to stop confusing the two.",
-            href: "/insights/profitpilot",
-            tag: "Solution Awareness",
-          },
-        ]
-      : [];
-
-  // Tells search engines plainly what Jèrè is, so a search for it can show the right page.
-  const jereJsonLd =
-    slug === "profitpilot"
-      ? {
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: "Jèrè",
-          alternateName: "Jere",
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Web, Android, iOS (installable from the browser)",
-          description:
-            "Business management software for small businesses in Nigeria: record sales, expenses, stock and the money customers owe you, and see your estimated profit.",
-          url: `${SITE_URL}/products/profitpilot`,
-          publisher: { "@type": "Organization", name: "SOLFLIGH TECH", url: SITE_URL },
-        }
-      : null;
-
   return (
     <main className="bg-white text-slate-900">
-      {jereJsonLd ? (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jereJsonLd) }} />
-      ) : null}
       <section className="py-16 sm:py-20">
         <Container>
           <PageHeader level={1} badge="Project" title={name} subtitle={description} />
-          {slug === "profitpilot" ? (
-            <p className="mt-4 max-w-3xl text-sm text-slate-600">
-              Jèrè (Jere) is built by SOLFLIGH TECH for small businesses in
-              Nigeria, with an Africa-first focus. Keep sales, expenses, stock and customer debts
-              together, and see your estimated profit.
-            </p>
-          ) : null}
-
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
             {/* Media */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 shadow-sm backdrop-blur">
-              {/* Jèrè's screens are tall phone screenshots: show them whole and larger. */}
               <ProjectMediaCarousel
                 items={mediaItems}
                 ariaLabel={`${name} media`}
-                className={
-                  slug === "profitpilot"
-                    ? "h-[560px] !bg-[#eef0fb] sm:h-[720px]"
-                    : "h-[280px] sm:h-[420px]"
-                }
+                className="h-[280px] sm:h-[420px]"
                 roundedClassName="rounded-none"
                 autoPlay={false}
-                imageFit={slug === "profitpilot" ? "contain" : "cover"}
               />
-              {slug === "profitpilot" ? (
-                <p className="border-t border-slate-200/70 px-4 py-2 text-xs text-slate-500">
-                  Screens show a practice business with made-up figures, not real customer data.
-                </p>
-              ) : null}
             </div>
 
             {/* Summary card */}
@@ -406,30 +349,6 @@ export default async function ProjectDetailPage({
                 </div>
               ) : null}
 
-              {/* Open for sign-up: go straight to the app. */}
-              {slug === "profitpilot" && getProduct(slug)?.appUrl ? (
-                <div className="mt-6 grid gap-2">
-                  <a
-                    href={getProduct(slug)?.ctaHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
-                  >
-                    {getProduct(slug)?.ctaLabel} ↗
-                  </a>
-                  <a
-                    href={`${getProduct(slug)?.appUrl}sign-in`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
-                  >
-                    I have an account: sign in ↗
-                  </a>
-                  <p className="text-xs text-slate-500">
-                    {name} is live in early access. No access code is needed.
-                  </p>
-                </div>
-              ) : null}
             </aside>
           </div>
 
@@ -485,47 +404,6 @@ export default async function ProjectDetailPage({
               )}
             </section>
           </div>
-
-          {/* Related Insights */}
-          {relatedInsights.length > 0 && (
-            <section className="mt-16">
-              <div className="flex items-center justify-between gap-4">
-                <h3 className="text-lg font-semibold text-slate-900">Related Insights</h3>
-                <Link
-                  href="/insights/profitpilot"
-                  className="text-sm font-semibold text-sky-700 hover:underline"
-                >
-                  View all →
-                </Link>
-              </div>
-
-              <p className="mt-2 max-w-2xl text-sm text-slate-600">
-                Thought pieces explaining the problem this project was built to solve.
-              </p>
-
-              <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                {relatedInsights.map((i) => (
-                  <Link
-                    key={i.href}
-                    href={i.href}
-                    className="group rounded-3xl border border-slate-200/70 bg-white/70 p-5 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
-                  >
-                    <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
-                      {i.tag}
-                    </span>
-
-                    <p className="mt-3 text-base font-semibold text-slate-900 group-hover:underline">
-                      {i.title}
-                    </p>
-
-                    <p className="mt-2 text-sm text-slate-600">{i.description}</p>
-
-                    <div className="mt-3 text-sm font-semibold text-sky-700">Read →</div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
 
           {/* Other products */}
           {otherProjects.length > 0 && (
