@@ -19,3 +19,7 @@ export function getJereUrl(): string {
 export function isJereHost(hostname: string): boolean {
   return hostname === JERE_DOMAIN_HOST || hostname === JERE_APEX_HOST;
 }
+
+export function getJereGuideUrl(): string {
+  return `${getJereUrl().replace(/\/$/, "")}/guide`;
+}

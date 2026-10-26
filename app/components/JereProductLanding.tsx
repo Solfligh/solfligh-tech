@@ -1,25 +1,12 @@
+import { jereFeatures as features, jereQuestions as questions, jereApplicationSchema, getJereGuideUrl } from "@/app/lib/jereKnowledge";
 import Image from "next/image";
-import { getJereUrl } from "@/app/lib/jereDomain";
 import Link from "next/link";
 import Container from "@/app/components/Container";
 import { getProduct } from "@/app/lib/products";
 import { listPostsByHub } from "@/app/lib/insightsStore";
 import { SITE_URL } from "@/app/lib/site";
 
-const features = [
-  { title: "Keep trading without internet", text: "With Plus, record sales, customer payments, expenses and new products offline. Entries wait on your phone and send automatically when the connection returns.", label: "Offline with Plus" },
-  { title: "Record every sale", text: "Cash, transfer, POS or credit. Record part-payments and share a receipt through WhatsApp or another app you choose.", label: "Sales & receipts" },
-  { title: "Know what is on the shelf", text: "Keep a stock list, record restocking and spot products running low before the next customer asks for them.", label: "Stock" },
-  { title: "Keep expenses in the picture", text: "Record transport, electricity, rent and other business costs. Set reminders for expenses that come round regularly.", label: "Expenses" },
-  { title: "Remember who owes you", text: "Keep customer debts and payments together. See what is still owed and send a reminder yourself.", label: "Customer debts" },
-  { title: "Give your team the right access", text: "Invite a cashier by code and choose what they can see. Cashiers can record sales without seeing your costs or profit.", label: "Team access" },
-  { title: "Track what you owe suppliers", text: "Keep supplier credit and payments together. See who you still need to pay and how much is outstanding.", label: "Supplier debts" },
-  { title: "Check the cash before you close", text: "Enter the cash you counted and compare it with what your records say you should have. See the amount that matches, is short or is extra.", label: "Cash checks" },
-  { title: "See which products make you money", text: "Find your best earners, products sold below cost and stock that has not sold. Compare your business figures by day, week, month or year.", label: "Profit & reports" },
-  { title: "Find what needs attention", text: "A business check-up uses your records to show what is going well and what needs a look. You can also choose to receive a weekly email summary.", label: "Business check-up" },
-  { title: "Keep track of staff pay", text: "List who you pay, how much and when it is due. Record a payment as a staff expense when you pay them.", label: "Staff pay" },
-  { title: "Keep capital separate from earnings", text: "Record money you put into the business, loans, repayments and money taken out. Keep those movements separate from sales and estimated profit.", label: "Business capital" },
-];
+
 
 const screens = [
   { src: "/projects/profitpilot/sales.jpg", title: "Keep a record of each sale", text: "See sales and share receipts with customers.", alt: "Jèrè sales screen with a list of sales and receipt sharing, using a practice business" },
@@ -27,16 +14,7 @@ const screens = [
   { src: "/projects/profitpilot/team.jpg", title: "Choose what your team sees", text: "Give each team member the access their work needs.", alt: "Jèrè team screen showing cashier access permissions, using a practice business" },
 ];
 
-const questions = [
-  { question: "What is Jèrè?", answer: "Jèrè (Jere) is business management software for small businesses in Nigeria. It brings sales, stock, expenses and customer debts together so you can see your estimated profit. It is built by SOLFLIGH TECH with an Africa-first focus." },
-  { question: "Can I sign up now?", answer: "Yes. Jèrè is open for sign-up in early access. Choose Create your account to get started, or sign in if you already have an account. We will tell you before we start to charge." },
-  { question: "Does Jèrè work without internet?", answer: "Yes. Plus lets you record sales, customer payments, expenses and new products offline, check saved stock, and read saved Today and Owing figures with your PIN. Open Jèrè online first so it can save a copy on your phone. Entries send automatically when you reconnect and only then count in your business records. Saved figures show when they were last updated. Basic needs an internet connection." },
-  { question: "What still needs internet?", answer: "Adding a new customer, changing an existing product’s price or stock, cancelling a sale, and changing your PIN or account need internet. Offline credit sales use customers already saved on your phone. Keep entries waiting to send on that phone until they have been sent; clearing browser storage can remove them." },
-  { question: "Can I download my records?", answer: "Yes. Open My data and account in Jèrè to download your business records." },
-  { question: "Is money collected the same as profit?", answer: "Money collected and profit answer different questions. Jèrè estimates profit by taking the cost of the goods sold and your recorded expenses away from sales. That can include credit sales customers have not paid for yet. Your estimate depends on the records you enter." },
-  { question: "Can my cashier use Jèrè without seeing my profit?", answer: "Yes. You can invite a cashier by code and choose their access. Cashiers can record sales without seeing your costs or profit." },
-  { question: "Do I need to download an app?", answer: "Jèrè runs in your browser. You can also add it to your phone’s home screen." },
-];
+
 
 function SignupLinks({ dark = false }: { dark?: boolean }) {
   const product = getProduct("profitpilot")!;
@@ -53,25 +31,12 @@ function SignupLinks({ dark = false }: { dark?: boolean }) {
 }
 
 export default function JereProductLanding({ status = "Live / Near Launch" }: { status?: string }) {
-  const canonical = getJereUrl();
   const articles = listPostsByHub("profitpilot").slice(0, 3);
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "@id": `${canonical}#application`,
-    name: "Jèrè",
-    alternateName: "Jere",
-    applicationCategory: "BusinessApplication",
-    operatingSystem: "Web",
-    description: "Business management software for small businesses in Nigeria. Manage sales, stock, expenses, customer and supplier debts, and estimated profit. Plus adds offline recording.",
-    featureList: features.map((feature) => `${feature.label}: ${feature.title}`),
-    url: canonical,
-    image: `${SITE_URL}/projects/profitpilot/today.jpg`,
-    publisher: { "@type": "Organization", name: "SOLFLIGH TECH", url: SITE_URL },
-  };
+  const schema = jereApplicationSchema();
 
   return (
     <main className="bg-[#fbfaf7] text-[#201c33]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "WebSite", "@id": `${schema.url}#website`, name: "Jèrè", alternateName: "Jere", url: schema.url, description: schema.description }).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
       <section className="overflow-hidden border-b border-[#e5e0ef] bg-[radial-gradient(ellipse_at_top_right,#e9e5ff,transparent_65%)]">
         <Container>
@@ -86,6 +51,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
               <a href="#offline" className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#ccd9c2] bg-[#f0f4ea] px-4 py-2 text-sm font-semibold text-[#456039]"><span aria-hidden="true">↻</span> Works offline with Plus <span aria-hidden="true">↓</span></a>
               <div className="mt-8"><SignupLinks /></div>
               <p className="mt-4 text-sm text-[#70697e]">Open for sign-up in early access.</p>
+              <Link href={getJereGuideUrl()} className="mt-4 inline-block text-sm font-semibold text-[#5546e8] underline underline-offset-4">Read the Jèrè product guide →</Link>
               <a href="#how-it-works" className="mt-8 inline-flex gap-2 text-sm font-medium text-[#5546e8]">See how Jèrè fits your day <span aria-hidden="true">↓</span></a>
             </div>
             <figure className="mx-auto w-full max-w-[310px] lg:max-w-[330px]">
