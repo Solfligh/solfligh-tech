@@ -1,6 +1,7 @@
 // proxy.ts
 import { NextRequest, NextResponse } from "next/server";
 import { SITE_URL } from "@/app/lib/site";
+import { jereFactsMarkdown } from "@/app/lib/jereKnowledge";
 import { JERE_DOMAIN_HOST, JERE_APEX_HOST, JERE_DOMAIN_ORIGIN, JERE_LEGACY_PATH, JERE_ICON_PATH, isJereHost, jereDomainEnabled } from "@/app/lib/jereDomain";
 
 /**
@@ -82,13 +83,18 @@ export function proxy(req: NextRequest) {
   }
 
   // A separate sitemap keeps corporate URLs off the product domain.
+  if (brandedHost && ["/llms.txt", "/llms-full.txt"].includes(pathname)) {
+    return new NextResponse(jereFactsMarkdown(pathname === "/llms-full.txt"), {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  }
   if (brandedHost && pathname === "/robots.txt") {
     return new NextResponse(`User-agent: *\nAllow: /\nSitemap: ${JERE_DOMAIN_ORIGIN}/sitemap.xml\n`, {
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   }
   if (brandedHost && pathname === "/sitemap.xml") {
-    return new NextResponse(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${JERE_DOMAIN_ORIGIN}/</loc></url></urlset>`, {
+    return new NextResponse(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${JERE_DOMAIN_ORIGIN}/</loc></url><url><loc>${JERE_DOMAIN_ORIGIN}/guide</loc></url></urlset>`, {
       headers: { "Content-Type": "application/xml; charset=utf-8" },
     });
   }
@@ -105,7 +111,17 @@ export function proxy(req: NextRequest) {
   const isMaintenanceOn = process.env.MAINTENANCE_MODE === "true";
 
   if (!isMaintenanceOn) {
+    if (pathname === `${JERE_LEGACY_PATH}/guide` && (brandedHost || jereDomainEnabled())) {
+      const target = new URL(`${JERE_DOMAIN_ORIGIN}/guide`);
+      target.search = req.nextUrl.search;
+      return NextResponse.redirect(target, 308);
+    }
     if (brandedHost) {
+      if (pathname === "/guide") {
+        const target = req.nextUrl.clone();
+        target.pathname = `${JERE_LEGACY_PATH}/guide`;
+        return NextResponse.rewrite(target);
+      }
       if (pathname === "/") {
         const target = req.nextUrl.clone();
         target.pathname = JERE_LEGACY_PATH;

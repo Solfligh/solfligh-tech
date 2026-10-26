@@ -43,7 +43,9 @@ describe("Jèrè search visibility", () => {
     const html = renderToStaticMarkup(createElement(() => page));
     expect(html).toContain("Jèrè (Jere) is business management software for small businesses in Nigeria");
     expect(html).not.toContain("ProfitPilot");
-    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)![1]);
+    const schemas = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+    const schema = schemas.find(item => item["@type"] === "SoftwareApplication");
+    expect(schemas.find(item => item["@type"] === "WebSite")).toMatchObject({ name: "Jèrè", alternateName: "Jere" });
     expect(schema).toMatchObject({
       "@type": "SoftwareApplication",
       name: "Jèrè", alternateName: "Jere",
