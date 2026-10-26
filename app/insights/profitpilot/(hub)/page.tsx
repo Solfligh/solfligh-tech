@@ -1,3 +1,4 @@
+import { getJereUrl } from "@/app/lib/jereDomain";
 // app/insights/profitpilot/(hub)/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -82,7 +83,7 @@ function MiniHero({ title }: { title: string }) {
 
 function StartHere({ firstHref, total }: { firstHref: string; total: number }) {
   const signUpHref = "https://app.solflightech.org/sign-up";
-  const projectHref = "/products/profitpilot";
+  const projectHref = getJereUrl();
 
   return (
     <div className="rounded-3xl border border-slate-200/70 bg-white/70 p-6 shadow-sm backdrop-blur">
@@ -153,7 +154,7 @@ export default function ProfitPilotInsightsHubPage() {
         subtitle={hubDescription}
         actions={
           <Link
-            href="/products/profitpilot"
+            href={getJereUrl()}
             className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
           >
             View project
@@ -248,7 +249,7 @@ export default function ProfitPilotInsightsHubPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/products/profitpilot"
+              href={getJereUrl()}
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition hover:bg-white"
             >
               Jèrè project

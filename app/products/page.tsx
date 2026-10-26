@@ -1,4 +1,5 @@
 // app/products/page.tsx
+import { getJereUrl } from "@/app/lib/jereDomain";
 import type { Metadata } from "next";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
@@ -103,7 +104,7 @@ function getProjectLink(project: AnyProject) {
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   const isExternal = !!externalUrl;
 
-  const href = isExternal ? externalUrl : project.href || `/products/${slug}`;
+  const href = slug === "profitpilot" ? getJereUrl() : isExternal ? externalUrl : project.href || `/products/${slug}`;
   const linkProps = isExternal
     ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
     : ({} as const);

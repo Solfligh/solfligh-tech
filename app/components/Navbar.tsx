@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getHeaderCta } from "@/app/lib/headerCta";
 
@@ -37,6 +37,9 @@ function isActive(pathname: string, href: string) {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const segments = useSelectedLayoutSegments();
+  // A branded root rewrites to the product route; keep its signup CTA.
+  const ctaPath = segments[0] === "products" && segments[1] === "profitpilot" ? "/products/profitpilot" : pathname;
   const [openMobile, setOpenMobile] = useState(false);
   const [openMore, setOpenMore] = useState(false);
   const moreRef = useRef<HTMLDivElement | null>(null);
@@ -63,7 +66,7 @@ export default function Navbar() {
   );
 
   // Website Architecture §10: the CTA destination follows page context.
-  const cta = useMemo(() => getHeaderCta(pathname), [pathname]);
+  const cta = useMemo(() => getHeaderCta(ctaPath), [ctaPath]);
   const ctaExternalProps = cta.external
     ? { target: "_blank" as const, rel: "noopener noreferrer" }
     : {};

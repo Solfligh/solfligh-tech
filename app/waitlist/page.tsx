@@ -1,6 +1,7 @@
 // app/waitlist/page.tsx
 "use client";
 
+import { getJereUrl } from "@/app/lib/jereDomain";
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -183,7 +184,7 @@ function WaitlistContent() {
                     Sign in
                   </a>
                   <Link
-                    href={info.backHref === "/insights/profitpilot" ? "/products/profitpilot" : info.backHref}
+                    href={info.backHref === "/insights/profitpilot" ? getJereUrl() : info.backHref}
                     className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
                   >
                     About {productLabel}

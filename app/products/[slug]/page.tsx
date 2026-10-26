@@ -1,4 +1,5 @@
 // app/products/[slug]/page.tsx
+import { getJereUrl } from "@/app/lib/jereDomain";
 import type { Metadata } from "next";
 import JereProductLanding from "@/app/components/JereProductLanding";
 import Container from "@/app/components/Container";
@@ -161,7 +162,7 @@ function getProjectLink(project: AnyProject) {
   const externalUrl = isValidExternalUrl(project.externalUrl) ? project.externalUrl.trim() : "";
   const isExternal = !!externalUrl;
 
-  const href = isExternal ? externalUrl : `/products/${slug}`;
+  const href = slug === "profitpilot" ? getJereUrl() : isExternal ? externalUrl : `/products/${slug}`;
   const linkProps = isExternal
     ? ({ target: "_blank", rel: "noopener noreferrer" } as const)
     : ({} as const);
@@ -201,7 +202,7 @@ export async function generateMetadata({
       : "Explore SOLFLIGH TECH products focused on automation, clarity, and real business impact.";
 
   // ✅ Always keep canonical INTERNAL to avoid redirect/canonical conflicts
-  const canonical = `${SITE_URL}/products/${slug}`;
+  const canonical = slug === "profitpilot" ? getJereUrl() : `${SITE_URL}/products/${slug}`;
 
   const ogImage = ogUrl({
     title: name,

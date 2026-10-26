@@ -1,3 +1,4 @@
+import { getJereUrl } from "@/app/lib/jereDomain";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/app/components/Container";
@@ -60,7 +61,7 @@ export default function ProfitUnknownArticlePage() {
     "/insights/profitpilot/from-daily-numbers-to-daily-clarity-how-profitpilot-turns-insight-into-habit";
 
   const signUpHref = "https://app.solflightech.org/sign-up";
-  const projectHref = "/products/profitpilot";
+  const projectHref = getJereUrl();
 
   return (
     <main className="bg-white text-slate-900">

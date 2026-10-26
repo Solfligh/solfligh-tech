@@ -1,4 +1,5 @@
 // app/products/profitpilot/page.tsx
+import { getJereUrl } from "@/app/lib/jereDomain";
 import ProjectDetailPage, { generateMetadata as projectMetadata } from "../[slug]/page";
 
 export const runtime = "nodejs";
@@ -17,7 +18,8 @@ export async function generateMetadata() {
     ...metadata,
     title: { absolute: title },
     description,
-    openGraph: { ...metadata.openGraph, title, description },
+    alternates: { canonical: getJereUrl() },
+    openGraph: { ...metadata.openGraph, title, description, url: getJereUrl() },
     twitter: { ...metadata.twitter, title, description },
   };
 }
