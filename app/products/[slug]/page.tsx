@@ -172,9 +172,9 @@ function getProjectLink(project: AnyProject) {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
-  const slug = params?.slug || "";
+  const slug = (await params)?.slug || "";
 
   let projects: AnyProject[] = [];
   try {
@@ -234,9 +234,9 @@ export async function generateMetadata({
 export default async function ProjectDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const slug = params?.slug;
+  const slug = (await params)?.slug;
 
   let projects: AnyProject[] = [];
   try {
@@ -295,11 +295,38 @@ export default async function ProjectDetailPage({
         ]
       : [];
 
+  // Tells search engines plainly what Jèrè is, so a search for it can show the right page.
+  const jereJsonLd =
+    slug === "profitpilot"
+      ? {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "Jèrè",
+          alternateName: ["Jere", "ProfitPilot"],
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web, Android, iOS (installable from the browser)",
+          description:
+            "Business management software for small businesses in Nigeria: record sales, expenses, stock and the money customers owe you, and see your estimated profit.",
+          url: `${SITE_URL}/products/profitpilot`,
+          publisher: { "@type": "Organization", name: "SOLFLIGH TECH", url: SITE_URL },
+        }
+      : null;
+
   return (
     <main className="bg-white text-slate-900">
+      {jereJsonLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jereJsonLd) }} />
+      ) : null}
       <section className="py-16 sm:py-20">
         <Container>
           <PageHeader level={1} badge="Project" title={name} subtitle={description} />
+          {slug === "profitpilot" ? (
+            <p className="mt-4 max-w-3xl text-sm text-slate-600">
+              Jèrè (Jere), formerly ProfitPilot, is built by SOLFLIGH TECH for small businesses in
+              Nigeria, with an Africa-first focus. Keep sales, expenses, stock and customer debts
+              together, and see your estimated profit.
+            </p>
+          ) : null}
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_.7fr]">
             {/* Media */}
