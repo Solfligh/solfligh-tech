@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
 import { proxy } from "@/proxy";
 import { JERE_DOMAIN_ORIGIN, getJereGuideUrl } from "@/app/lib/jereDomain";
-import { JERE_OFFLINE_ANSWER, JERE_REVIEWED, jereFeatures, jereQuestions, jereOfflineSteps } from "@/app/lib/jereKnowledge";
+import { JERE_OFFLINE_ANSWER, JERE_DESCRIPTION, JERE_REVIEWED, jereBusinessModes, jereWorkflowGuides, jereFeatures, jereQuestions, jereOfflineSteps } from "@/app/lib/jereKnowledge";
 import { SITE_URL } from "@/app/lib/site";
 vi.mock("@/app/lib/projectStore", () => ({ listProjects: vi.fn() }));
 import { listProjects } from "@/app/lib/projectStore";
@@ -42,6 +42,10 @@ describe("Jèrè public discovery resources", () => {
       expect(guide).toContain(renderToStaticMarkup(createElement("p", null, item.text)).slice(3, -4));
     }
     for (const q of jereQuestions) expect(facts).toContain(q.answer);
+    for(const mode of jereBusinessModes){expect(facts).toContain(mode.title);expect(guide).toContain(mode.title);}
+    for(const workflow of jereWorkflowGuides){expect(guide).toContain(`id="${workflow.id}"`);for(const step of workflow.steps)expect(facts).toContain(step);}
+    expect(facts).toContain("Jèrè does not send money or trigger a payment-provider refund");
+    expect(facts).toContain("Service Business");
     expect(facts).toContain("Basic needs an internet connection");
     expect(facts).toContain("clearing browser storage can remove them");
     expect(facts).toContain("Live / Near Launch");
@@ -77,8 +81,8 @@ describe("Jèrè public discovery resources", () => {
     expect(guide).toContain("Waiting entries count after they have been sent");
     const schema = JSON.parse(guide.match(/<script type="application\/ld\+json">(.*?)<\/script>/)![1]);
     expect(schema.dateModified).toBe(JERE_REVIEWED);
-    expect(schema.description).toBe(JERE_OFFLINE_ANSWER);
-    expect((await generateMetadata()).title).toEqual({ absolute: expect.stringContaining("Record Sales Offline in Nigeria") });
+    expect(schema.description).toBe(JERE_DESCRIPTION);
+    expect((await generateMetadata()).title).toEqual({ absolute: expect.stringContaining("Offline Sales, Orders & Service Jobs") });
     expect(await proxy(request("/sitemap.xml")).text()).toContain(`<lastmod>${JERE_REVIEWED}</lastmod>`);
   });
 });

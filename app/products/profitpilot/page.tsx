@@ -13,8 +13,8 @@ export async function generateMetadata() {
   if (metadata.robots && typeof metadata.robots === "object" && metadata.robots.index === false) {
     return metadata;
   }
-  const title = "Jèrè (Jere) | Business Software for Nigerian SMEs";
-  const description = "Track sales, stock, expenses and debts with Jèrè for small businesses in Nigeria. Plus adds offline entry and automatic sending when your internet returns.";
+  const title = "Jèrè (Jere) | Sales, Online Orders & Service Jobs";
+  const description = "Manage product sales, online orders, service jobs, invoices and returns with Jèrè for small businesses in Nigeria and across Africa. Plus adds offline entry.";
   const icon = `${jereDomainEnabled() ? JERE_DOMAIN_ORIGIN : SITE_URL}${JERE_ICON_PATH}`;
   return {
     ...metadata,
