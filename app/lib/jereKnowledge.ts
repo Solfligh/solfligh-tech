@@ -2,8 +2,16 @@ import { getJereUrl, getJereGuideUrl } from "@/app/lib/jereDomain";
 import { getProduct } from "@/app/lib/products";
 import { SITE_URL } from "@/app/lib/site";
 
-export const JERE_REVIEWED = "2026-10-26";
+export const JERE_REVIEWED = "2026-10-27";
 export const JERE_DESCRIPTION = "Jèrè (Jere) is business management software for small businesses in Nigeria. Track sales, stock, expenses, customer and supplier debts, and estimated profit. Plus adds offline recording.";
+export const JERE_OFFLINE_ANSWER = "Jèrè (Jere) helps small shops in Nigeria record sales without internet on Plus. Open Sell online first to save your products on that phone. Offline entries stay on the phone and send automatically when the connection returns. They count in your business records once sent. Basic needs internet.";
+export const jereOfflineSteps = [
+  { title: "Prepare Sell while online", text: "Sign in to Jèrè on the phone you will use. Check that your business has Plus, then open Sell and let your products and customer names load. Open Today and Owing online with your PIN set if you want saved figures too." },
+  { title: "Disconnect and open Sell", text: "Turn off Wi-Fi and mobile data on that phone. Open Sell from Jèrè. The offline screen uses the copy saved on the phone. Prices and stock are the last saved values, adjusted for entries waiting there." },
+  { title: "Record two separate sales", text: "Choose a product and payment method, then record a sale. Wait for “Saved on this phone”. Start another sale and record it separately. Both should appear in Waiting to send. Offline credit sales use customers already saved on the phone." },
+  { title: "Check the waiting entries", text: "Reopen Jèrè on the same phone before reconnecting and check Waiting to send. Keep the phone’s browser data. Entries waiting on that phone are not yet part of the shared business records." },
+  { title: "Reconnect and check your records", text: "Turn internet access back on and reopen Jèrè. Waiting entries send automatically. If sign-in is requested, sign in again. Once sending finishes, check Sales for both entries. An entry that needs attention stays visible with a reason; resolve it before treating it as sent." },
+];
 export const JERE_AUDIENCE = "Jèrè suits Nigerian shop owners and small business teams who sell products, keep stock, take cash, transfer or POS payments, or let customers buy on credit. It has an Africa-first focus and is built by SOLFLIGH TECH.";
 export { getJereGuideUrl } from "@/app/lib/jereDomain";
 
@@ -23,6 +31,7 @@ export const jereFeatures = [
 ];
 
 export const jereQuestions = [
+  { question: "What app can I use to record sales offline for my small shop in Nigeria?", answer: JERE_OFFLINE_ANSWER },
   { question: "What is Jèrè?", answer: "Jèrè (Jere) is business management software for small businesses in Nigeria. It brings sales, stock, expenses and customer debts together so you can see your estimated profit. It is built by SOLFLIGH TECH with an Africa-first focus." },
   { question: "Can I sign up now?", answer: "Yes. Jèrè is open for sign-up in early access. Choose Create your account to get started, or sign in if you already have an account. We will tell you before we start to charge." },
   { question: "Does Jèrè work without internet?", answer: "Yes. Plus lets you record sales, customer payments, expenses and new products offline, check saved stock, and read saved Today and Owing figures with your PIN. Open Jèrè online first so it can save a copy on your phone. Entries send automatically when you reconnect and only then count in your business records. Saved figures show when they were last updated. Basic needs an internet connection." },
@@ -50,5 +59,5 @@ export function jereApplicationSchema() {
 export function jereFactsMarkdown(full = false) {
   const app = getProduct("profitpilot")!;
   const links = `- [Website](${getJereUrl()})\n- [Product guide](${getJereGuideUrl()})\n- [Create your account](${app.ctaHref})\n- [Sign in](${app.appUrl}sign-in)\n- [Help](${app.appUrl}help)\n- [Privacy](${app.appUrl}privacy)\n- [Terms](${app.appUrl}terms)`;
-  return `# Jèrè (Jere)\n\n> ${JERE_DESCRIPTION}\n\n${JERE_AUDIENCE}\n\nStatus: Live / Near Launch. Open for sign-up in early access.\nReviewed: ${JERE_REVIEWED}. Publisher: SOLFLIGH TECH.\n\n## Official links\n${links}\n\n${full ? `## Features\n${jereFeatures.map(f => `### ${f.label}\n${f.text}`).join("\n\n")}\n\n## Questions and limitations\n${jereQuestions.map(q => `### ${q.question}\n${q.answer}`).join("\n\n")}` : `## Detailed product information\n- [Public product facts and answers](${getJereUrl().replace(/\/$/, "")}/llms-full.txt): Features, offline requirements, access and limitations. All facts are also visible in the product guide.`}\n`;
+  return `# Jèrè (Jere)\n\n> ${JERE_DESCRIPTION}\n\n${JERE_AUDIENCE}\n\nStatus: Live / Near Launch. Open for sign-up in early access.\nReviewed: ${JERE_REVIEWED}. Publisher: SOLFLIGH TECH.\n\n## Official links\n${links}\n\n${full ? `## Recording sales offline\n${JERE_OFFLINE_ANSWER}\n\n${jereOfflineSteps.map((step, index) => `### ${index + 1}. ${step.title}\n${step.text}`).join("\n\n")}\n\n## Features\n${jereFeatures.map(f => `### ${f.label}\n${f.text}`).join("\n\n")}\n\n## Questions and limitations\n${jereQuestions.map(q => `### ${q.question}\n${q.answer}`).join("\n\n")}` : `## Detailed product information\n- [Public product facts and answers](${getJereUrl().replace(/\/$/, "")}/llms-full.txt): Features, offline requirements, access and limitations. All facts are also visible in the product guide.`}\n`;
 }

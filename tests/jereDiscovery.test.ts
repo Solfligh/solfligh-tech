@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
 import { proxy } from "@/proxy";
 import { JERE_DOMAIN_ORIGIN, getJereGuideUrl } from "@/app/lib/jereDomain";
-import { jereFeatures, jereQuestions } from "@/app/lib/jereKnowledge";
+import { JERE_OFFLINE_ANSWER, JERE_REVIEWED, jereFeatures, jereQuestions, jereOfflineSteps } from "@/app/lib/jereKnowledge";
 import { SITE_URL } from "@/app/lib/site";
 vi.mock("@/app/lib/projectStore", () => ({ listProjects: vi.fn() }));
 import { listProjects } from "@/app/lib/projectStore";
@@ -58,5 +58,27 @@ describe("Jèrè public discovery resources", () => {
     vi.mocked(listProjects).mockResolvedValue([]);
     expect((await generateMetadata()).robots).toEqual({ index: false, follow: true });
     await expect(JereGuide()).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
+  });
+
+  it("explains the real offline workflow consistently and labels the illustration as simulated", async () => {
+    const page = await JereGuide();
+    const guide = renderToStaticMarkup(createElement(() => page));
+    const textInHtml = (text: string) => renderToStaticMarkup(createElement("p", null, text)).slice(3, -4);
+    const facts = await proxy(request("/llms-full.txt")).text();
+    expect(guide).toContain(textInHtml(JERE_OFFLINE_ANSWER));
+    expect(facts).toContain(JERE_OFFLINE_ANSWER);
+    for (const step of jereOfflineSteps) {
+      expect(guide).toContain(textInHtml(step.text));
+      expect(facts).toContain(step.text);
+    }
+    expect(guide).toContain("does not record or send anything to a Jèrè account");
+    expect(guide).toContain("use a separate practice account");
+    expect(guide).toContain("Simulate lost connection");
+    expect(guide).toContain("Waiting entries count after they have been sent");
+    const schema = JSON.parse(guide.match(/<script type="application\/ld\+json">(.*?)<\/script>/)![1]);
+    expect(schema.dateModified).toBe(JERE_REVIEWED);
+    expect(schema.description).toBe(JERE_OFFLINE_ANSWER);
+    expect((await generateMetadata()).title).toEqual({ absolute: expect.stringContaining("Record Sales Offline in Nigeria") });
+    expect(await proxy(request("/sitemap.xml")).text()).toContain(`<lastmod>${JERE_REVIEWED}</lastmod>`);
   });
 });

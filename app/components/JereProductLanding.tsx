@@ -77,7 +77,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
               <p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Offline with Jèrè Plus</p>
               <h2 className="mt-4 text-3xl font-semibold leading-tight sm:text-4xl">Internet down?<br />Keep recording your business.</h2>
               <p className="mt-5 text-base leading-relaxed text-[#625c70]">A lost connection should not leave your next sale on a scrap of paper. Jèrè keeps entries on your phone and sends them automatically when you are back online.</p>
-              <a href={`${getProduct("profitpilot")!.appUrl}help#offline`} className="mt-6 inline-block text-sm font-semibold text-[#5546e8] underline underline-offset-4">Read the offline guide →</a>
+              <Link href={`${getJereGuideUrl()}#offline-walkthrough`} className="mt-6 inline-block text-sm font-semibold text-[#5546e8] underline underline-offset-4">Follow the offline sales walkthrough →</Link>
             </div>
             <div className="rounded-2xl border border-[#d8d1ed] bg-white p-6 sm:p-8">
               <h3 className="text-lg font-semibold">What you can do offline</h3>

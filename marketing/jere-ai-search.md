@@ -40,3 +40,9 @@ Accurate third-party listings, independent reviews and real customer experience 
 - Google AI search guidance: https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
 
 Search crawler access remains allowed. Training preferences and firewall settings are unchanged. The optional llms files are not a Google ranking requirement.
+
+## Offline guide update on 27 October 2026
+
+The existing guide now leads with a direct answer about offline sales for Nigerian shops, includes a five-step phone walkthrough and compares Basic/Plus offline availability. The homepage links directly to the walkthrough. Shared facts and sitemap modification dates reflect the update. An interactive illustration is explicitly simulated and has no connection to an app account.
+
+See `jere-offline-demonstration.md` for the real-phone recording script, indexing checks and evidence status. No new physical-phone recording, verified search-crawler visit, owner Search Console result or AI recommendation has been established by this content change.

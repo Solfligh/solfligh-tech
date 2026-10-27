@@ -1,7 +1,7 @@
 // proxy.ts
 import { NextRequest, NextResponse } from "next/server";
 import { SITE_URL } from "@/app/lib/site";
-import { jereFactsMarkdown } from "@/app/lib/jereKnowledge";
+import { JERE_REVIEWED, jereFactsMarkdown } from "@/app/lib/jereKnowledge";
 import { JERE_DOMAIN_HOST, JERE_APEX_HOST, JERE_DOMAIN_ORIGIN, JERE_LEGACY_PATH, JERE_ICON_PATH, isJereHost, jereDomainEnabled } from "@/app/lib/jereDomain";
 
 /**
@@ -94,7 +94,7 @@ export function proxy(req: NextRequest) {
     });
   }
   if (brandedHost && pathname === "/sitemap.xml") {
-    return new NextResponse(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${JERE_DOMAIN_ORIGIN}/</loc></url><url><loc>${JERE_DOMAIN_ORIGIN}/guide</loc></url></urlset>`, {
+    return new NextResponse(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${JERE_DOMAIN_ORIGIN}/</loc><lastmod>${JERE_REVIEWED}</lastmod></url><url><loc>${JERE_DOMAIN_ORIGIN}/guide</loc><lastmod>${JERE_REVIEWED}</lastmod></url></urlset>`, {
       headers: { "Content-Type": "application/xml; charset=utf-8" },
     });
   }
