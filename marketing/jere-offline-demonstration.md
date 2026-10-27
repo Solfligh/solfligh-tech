@@ -33,6 +33,8 @@ Inspect these exact canonical URLs in the owner's search account:
 
 In Google Search Console, record the indexing state, last crawl, declared canonical and Google-selected canonical. Run Test live URL; request indexing if eligible. The submitted sitemap remains https://www.xn--jr-7iab.com/sitemap.xml. A sitemap marked Success only confirms processing, not that each page is indexed.
 
+On 27 October 2026, the owner reported that Search Console shows “URL is on Google” for the guide. This confirms the owner's observed indexing status; crawl date, canonical selection and the homepage status were not supplied. After this update is deployed, inspecting the updated guide and requesting a recrawl is optional.
+
 Where Bing Webmaster Tools is already configured, inspect the same canonical URLs there. Do not change DNS, create ownership credentials or claim verification without completing the ownership flow.
 
 Direct HTTP checks and user-agent tests confirm public responses only. For OAI-SearchBot, inspect verified crawler traffic and firewall outcomes using OpenAI's published IP information; a matching user-agent string alone does not verify the caller. Do not weaken firewall protections based only on a name match.
@@ -42,7 +44,7 @@ Direct HTTP checks and user-agent tests confirm public responses only. For OAI-S
 - Website content and shared facts: implemented, subject to pull-request checks and merge.
 - Real-device video: recording script prepared; no new video recorded or published.
 - Physical-iPhone issue: fixes deployed in app PR #19; no new device result confirmed by the owner.
-- Search Console: Windows browser control stopped because URL-policy enforcement is unsupported for the current browser. Indexing status and submission are unverified.
+- Search Console: the owner reports “URL is on Google” for the guide. Windows browser control stopped because URL-policy enforcement is unsupported for the current browser, so the report was not independently inspected and no indexing request was submitted by the assistant.
 - Google Play: preparation merged; account verification, signing and publication still require completion. No published listing claimed.
 
 ## Recommendation measurement

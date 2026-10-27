@@ -45,4 +45,4 @@ Search crawler access remains allowed. Training preferences and firewall setting
 
 The existing guide now leads with a direct answer about offline sales for Nigerian shops, includes a five-step phone walkthrough and compares Basic/Plus offline availability. The homepage links directly to the walkthrough. Shared facts and sitemap modification dates reflect the update. An interactive illustration is explicitly simulated and has no connection to an app account.
 
-See `jere-offline-demonstration.md` for the real-phone recording script, indexing checks and evidence status. No new physical-phone recording, verified search-crawler visit, owner Search Console result or AI recommendation has been established by this content change.
+See `jere-offline-demonstration.md` for the real-phone recording script, indexing checks and evidence status. On 27 October the owner confirmed that Search Console shows “URL is on Google” for the guide. A new physical-phone recording, verified OpenAI search-crawler visit and AI recommendation remain unverified.
