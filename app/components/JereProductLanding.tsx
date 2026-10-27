@@ -1,4 +1,4 @@
-import { jereFeatures as features, jereQuestions as questions, jereApplicationSchema, getJereGuideUrl } from "@/app/lib/jereKnowledge";
+import { jereFeatures as features, jereQuestions as questions, jereApplicationSchema, getJereGuideUrl, jereBusinessModes } from "@/app/lib/jereKnowledge";
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/app/components/Container";
@@ -46,9 +46,9 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
                 <p className="text-4xl font-bold tracking-tight">jèrè</p>
                 <span className="rounded-full border border-[#d4dccc] bg-[#f0f4ea] px-3 py-1.5 text-xs font-semibold text-[#456039]">{status}</span>
               </div>
-              <h1 className="mt-7 text-4xl font-semibold leading-[1.12] tracking-tight sm:text-5xl lg:text-[3.5rem]">Know what you sold.<br /><span className="text-[#5546e8]">See your estimated profit.</span></h1>
-              <p className="mt-6 max-w-lg text-base leading-relaxed text-[#625c70] sm:text-lg">Run your business with Jèrè (Jere). Track sales, stock, expenses and debts, check your cash and see estimated profit. Built for small businesses in Nigeria, with offline recording on Plus.</p>
-              <a href="#offline" className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#ccd9c2] bg-[#f0f4ea] px-4 py-2 text-sm font-semibold text-[#456039]"><span aria-hidden="true">↻</span> Works offline with Plus <span aria-hidden="true">↓</span></a>
+              <h1 className="mt-7 text-4xl font-semibold leading-[1.12] tracking-tight sm:text-5xl lg:text-[3.5rem]">Sales, online orders and service jobs.<br /><span className="text-[#5546e8]">Together in Jèrè.</span></h1>
+              <p className="mt-6 max-w-lg text-base leading-relaxed text-[#625c70] sm:text-lg">Run your shop, online sales or service work with Jèrè (Jere). Combine three business modes to manage stock, orders, jobs, invoices and payments alongside expenses and estimated profit. Built for small businesses in Nigeria and across Africa. Product sales can be recorded offline with Plus.</p>
+              <a href="#offline" className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#ccd9c2] bg-[#f0f4ea] px-4 py-2 text-sm font-semibold text-[#456039]"><span aria-hidden="true">↻</span> Product sales offline with Plus <span aria-hidden="true">↓</span></a>
               <div className="mt-8"><SignupLinks /></div>
               <p className="mt-4 text-sm text-[#70697e]">Open for sign-up in early access.</p>
               <Link href={getJereGuideUrl()} className="mt-4 inline-block text-sm font-semibold text-[#5546e8] underline underline-offset-4">Read the Jèrè product guide →</Link>
@@ -66,8 +66,12 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
 
       <section className="border-b border-[#e5e0ef] bg-white py-6" aria-label="Built for your working day">
         <Container className="grid gap-4 text-center text-sm font-medium text-[#625c70] sm:grid-cols-3">
-          <p>Cash, transfer, POS and credit sales</p><a href="#offline" className="font-semibold text-[#5546e8]">Offline recording with Plus</a><p>Choose what each team member sees</p>
+          <a href="#business-modes">Product, online and service modes</a><a href="#offline" className="font-semibold text-[#5546e8]">Offline recording with Plus</a><p>Choose what each team member sees</p>
         </Container>
+      </section>
+
+      <section id="business-modes" className="scroll-mt-28 border-b border-[#e5e0ef] py-16 sm:py-20">
+        <Container><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Choose how you work</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Three business modes. Combine what you need.</h2><p className="mt-5 max-w-3xl leading-relaxed text-[#625c70]">A shop can take WhatsApp orders and offer services too. Keep the same business and customer records, then choose the shortcuts that fit your day.</p><div className="mt-8 grid gap-5 md:grid-cols-3">{jereBusinessModes.map(mode=><article key={mode.id} className="rounded-2xl border border-[#e5e0ef] bg-white p-6"><h3 className="text-xl font-semibold">{mode.title}</h3><p className="mt-4 leading-relaxed text-[#625c70]">{mode.text}</p></article>)}</div><p className="mt-6 text-sm text-[#625c70]">Already using Jèrè? Open More → Business modes. Choosing a mode changes your shortcuts and keeps your existing records accessible in More. Service and online-order changes need internet.</p><Link href={`${getJereGuideUrl()}#business-modes`} className="mt-5 inline-block font-semibold text-[#5546e8] underline underline-offset-4">See mode setup and workflow steps →</Link></Container>
       </section>
 
       <section id="offline" className="scroll-mt-36 border-b border-[#e5e0ef] bg-[#f1eef8] py-16 sm:py-20">
@@ -96,15 +100,15 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
               ["Reconnect and send", "Jèrè sends waiting entries automatically. They count in your business records once sent. Entries that need attention stay visible with a reason."],
             ].map(([title, text], index) => <li key={title} className="rounded-2xl border border-[#d8d1ed] p-5"><p className="text-xs font-semibold text-[#7765be]">0{index + 1}</p><h3 className="mt-3 text-lg font-semibold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-[#625c70]">{text}</p></li>)}
           </ol>
-          <p className="mt-6 max-w-4xl text-sm leading-relaxed text-[#625c70]">Offline use is part of Plus; Basic works online. Saved views are the last copy on that phone. Adding customers, changing existing prices or stock, cancelling sales and account changes need internet. Keep the phone’s browser data until all waiting entries have been sent.</p>
+          <p className="mt-6 max-w-4xl text-sm leading-relaxed text-[#625c70]">Offline use is part of Plus; Basic works online. Saved views are the last copy on that phone. Mode changes, service jobs and invoices, online orders, delivery, returns and refunds need internet on both plans. Adding customers, changing existing prices or stock, cancelling sales and account changes also need internet. Keep the phone’s browser data until all waiting entries have been sent.</p>
         </Container>
       </section>
 
       <section id="features" className="scroll-mt-28 py-16 sm:py-24">
         <Container>
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-16">
-            <div><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Your working day, in one place</p><h2 className="mt-4 max-w-lg text-3xl font-semibold leading-tight sm:text-4xl">From the first sale<br />to closing your books.</h2></div>
-            <p className="self-end text-base text-[#625c70]">Keep the records behind your business together: what you sold, what you spent, who owes you and who you need to pay. Check cash, staff pay and product performance without losing sight of estimated profit.</p>
+            <div><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Your working day, in one place</p><h2 className="mt-4 max-w-lg text-3xl font-semibold leading-tight sm:text-4xl">From the first order or job<br />to money received.</h2></div>
+            <p className="self-end text-base text-[#625c70]">Keep your sales, customer jobs, invoices and online orders together with stock, expenses and customer balances. Track service deposits, delivery and refunds without counting the same payment as another sale.</p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
@@ -154,9 +158,9 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
           <h2 className="text-3xl font-semibold sm:text-4xl">Build it into your daily routine.</h2>
           <ol className="mt-10 grid gap-8 md:grid-cols-3">
             {[
-              ["Record as you trade", "Enter sales and payments, keep stock up to date and record business expenses as they happen."],
-              ["Check before you close", "Review estimated profit, see outstanding customer debts and count your cash against your records."],
-              ["Look back and plan", "Compare a day, week, month or year with the period before. See which products make you the most money."],
+              ["Choose your modes", "Select Product Business, Online Business, Service Business or a combination. Choose one main workflow for your shortcuts."],
+              ["Record the work and the money", "Record product sales, confirm orders or invoice service jobs. Track payments, deposits, costs and delivery as they happen."],
+              ["Review what is earned and owed", "Check estimated profit, outstanding customer balances and refunds due. Compare product results and earned service income with assigned job costs."],
             ].map(([title, text], index) => (
               <li key={title}><span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#cfc5e9] text-sm font-semibold text-[#67559e]">0{index + 1}</span><h3 className="mt-5 text-xl font-semibold">{title}</h3><p className="mt-3 text-sm text-[#625c70]">{text}</p></li>
             ))}
@@ -166,7 +170,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
 
       <section id="questions" className="scroll-mt-28 py-16 sm:py-24">
         <Container className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
-          <div><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Before you get started</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">A few useful answers.</h2><p className="mt-5 text-sm text-[#625c70]">Have another question? <Link href={`${SITE_URL}/contact`} className="font-semibold text-[#5546e8] underline underline-offset-4">Talk to SOLFLIGH TECH.</Link></p></div>
+          <div><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Before you get started</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">A few useful answers.</h2><p className="mt-5 text-sm text-[#625c70]"><a href={`${getProduct("profitpilot")!.appUrl}help`} className="font-semibold text-[#5546e8] underline underline-offset-4">Read app help</a>. Have another question? <Link href={`${SITE_URL}/contact`} className="font-semibold text-[#5546e8] underline underline-offset-4">Talk to SOLFLIGH TECH.</Link></p></div>
           <div className="divide-y divide-[#e5e0ef] border-y border-[#e5e0ef]">
             {questions.map((item) => (
               <details key={item.question} className="group py-5">
@@ -179,7 +183,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
       </section>
 
       <section className="pb-16 sm:pb-24">
-        <Container><div className="rounded-3xl bg-[#211a3a] px-6 py-12 text-white sm:px-12 sm:py-16"><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#beb0fa]">Jèrè by SOLFLIGH TECH</p><h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl">Give your next business day a clearer record.</h2><p className="mt-5 max-w-xl text-base text-[#d1c8e1]">Start recording your sales, stock, expenses and customer debts with Jèrè. Open for sign-up in early access.</p><div className="mt-8"><SignupLinks dark /></div></div></Container>
+        <Container><div className="rounded-3xl bg-[#211a3a] px-6 py-12 text-white sm:px-12 sm:py-16"><p className="text-xs font-semibold uppercase tracking-[.18em] text-[#beb0fa]">Jèrè by SOLFLIGH TECH</p><h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl">Give your next business day a clearer record.</h2><p className="mt-5 max-w-xl text-base text-[#d1c8e1]">Choose your business modes and start recording your sales, online orders or service jobs. Open for sign-up in early access.</p><div className="mt-8"><SignupLinks dark /></div></div></Container>
       </section>
 
       {articles.length > 0 ? <section className="border-t border-[#e5e0ef] bg-white py-14"><Container><div className="flex flex-wrap items-center justify-between gap-4"><h2 className="text-2xl font-semibold">Make sense of your business numbers.</h2><Link href={`${SITE_URL}/insights/profitpilot`} className="text-sm font-semibold text-[#5546e8] underline underline-offset-4">Jèrè insights →</Link></div><div className="mt-8 grid gap-6 md:grid-cols-3">{articles.map((article) => <Link key={article.href} href={`${SITE_URL}${article.href}`} className="rounded-2xl border border-[#e5e0ef] p-6 transition hover:border-[#a99ce0]"><p className="text-xs font-medium text-[#7765be]">{article.tag}</p><h3 className="mt-3 text-lg font-semibold">{article.title}</h3><p className="mt-3 text-sm text-[#625c70]">{article.description}</p><span className="mt-5 inline-block text-sm font-semibold text-[#5546e8]">Read article →</span></Link>)}</div></Container></section> : null}
