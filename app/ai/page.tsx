@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const productAI = [
   {
     name: "jèrè",
-    desc: "Automation that turns daily transaction data into clear, same-day profit clarity no manual reconciliation.",
+    desc: "Works out your estimated profit from the sales, costs and expenses you record, and builds its Business check-up from fixed rules, so it never guesses a number.",
   },
   {
     name: "FXCopilot",
