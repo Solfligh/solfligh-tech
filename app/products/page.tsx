@@ -1,5 +1,6 @@
 // app/products/page.tsx
-import { getJereUrl } from "@/app/lib/jereDomain";
+import { getJereGuideUrl, getJereUrl } from "@/app/lib/jereDomain";
+import { getProduct } from "@/app/lib/products";
 import type { Metadata } from "next";
 import Container from "@/app/components/Container";
 import PageHeader from "@/app/components/PageHeader";
@@ -59,6 +60,7 @@ type AnyProject = {
   statusColor?: string;
   description?: string;
   highlights?: string[];
+  keyFeatures?: string[];
   ctaLabel?: string;
   href?: string;
   externalUrl?: string;
@@ -285,6 +287,60 @@ export default async function ProjectsPage() {
               })}
             </div>
           )}
+
+          {/* Jèrè in full: its product page now lives on its own domain, so the company site keeps the whole list here. */}
+          {(() => {
+            const jere = projects.find((p) => p.slug === "profitpilot");
+            const info = getProduct("profitpilot");
+            const features = Array.isArray(jere?.keyFeatures) ? jere.keyFeatures : [];
+            if (!jere || !info || features.length === 0) return null;
+            return (
+              <section className="mt-14 rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm sm:p-8">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="max-w-2xl">
+                    <h2 className="text-xl font-semibold tracking-tight text-slate-900">
+                      What {info.label} does
+                    </h2>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                      {info.label} is business software for small businesses in Nigeria. It is live in early
+                      access and open for sign-up, with no access code.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <a
+                      href={info.ctaHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+                    >
+                      {info.ctaLabel} ↗
+                    </a>
+                    <a
+                      href={getJereUrl()}
+                      className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Visit {info.label}’s site
+                    </a>
+                    <a
+                      href={getJereGuideUrl()}
+                      className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Read the guide
+                    </a>
+                  </div>
+                </div>
+
+                <ul className="mt-6 grid gap-x-8 gap-y-3 text-sm text-slate-700 sm:grid-cols-2">
+                  {features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })()}
 
           {/* ✅ NEW: Bottom CTA (for people who scroll) */}
           <div className="mt-14 rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
