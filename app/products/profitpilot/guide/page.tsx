@@ -6,6 +6,7 @@ import { generateMetadata as landingMetadata } from "../page";
 import { listProjects } from "@/app/lib/projectStore";
 import { getProduct } from "@/app/lib/products";
 import { getJereUrl } from "@/app/lib/jereDomain";
+import { jereSearchPages, getJereSearchUrl } from "@/app/lib/jereSearchPages";
 import { JERE_AUDIENCE, JERE_DESCRIPTION, JERE_OFFLINE_ANSWER, JERE_REVIEWED, getJereGuideUrl, jereFeatures, jereQuestions, jereOfflineSteps, jereBusinessModes, jereModeSteps, jereWorkflowGuides } from "@/app/lib/jereKnowledge";
 
 export const dynamic = "force-dynamic";
@@ -92,6 +93,10 @@ export default async function JereGuide() {
         <div className="mt-8 space-y-8">{jereQuestions.map(q => <article key={q.question}><h3 className="text-xl font-semibold">{q.question}</h3><p className="mt-3 leading-relaxed text-[#625c70]">{q.answer}</p></article>)}</div>
         <a href={`${product.appUrl}help#offline`} className="mt-6 inline-block font-semibold text-[#5546e8] underline underline-offset-4">Read the offline setup guide →</a>
       </section>
+      <nav aria-label="Short answers" className="mt-12 border-t border-[#e5e0ef] pt-8">
+        <h2 className="text-2xl font-semibold">Short answers</h2>
+        <ul className="mt-4 space-y-2 font-semibold text-[#5546e8]">{jereSearchPages.map(p => <li key={p.slug}><a href={getJereSearchUrl(p.slug)} className="underline underline-offset-4">{p.h1}</a></li>)}</ul>
+      </nav>
       <section className="mt-12 rounded-2xl bg-[#211a3a] p-7 text-white">
         <h2 className="text-2xl font-semibold">Try Jèrè with your business</h2>
         <p className="mt-4 leading-relaxed">Open for sign-up in early access. We will tell you before we start to charge.</p>

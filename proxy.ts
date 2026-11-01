@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SITE_URL } from "@/app/lib/site";
 import { JERE_REVIEWED, jereFactsMarkdown } from "@/app/lib/jereKnowledge";
+import { JERE_SEARCH_PAGES_REVIEWED, jereSearchSlugs } from "@/app/lib/jereSearchPages";
 import { JERE_DOMAIN_HOST, JERE_APEX_HOST, JERE_DOMAIN_ORIGIN, JERE_LEGACY_PATH, JERE_ICON_PATH, isJereHost, jereDomainEnabled } from "@/app/lib/jereDomain";
 
 /**
@@ -94,7 +95,7 @@ export function proxy(req: NextRequest) {
     });
   }
   if (brandedHost && pathname === "/sitemap.xml") {
-    return new NextResponse(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${JERE_DOMAIN_ORIGIN}/</loc><lastmod>${JERE_REVIEWED}</lastmod></url><url><loc>${JERE_DOMAIN_ORIGIN}/guide</loc><lastmod>${JERE_REVIEWED}</lastmod></url></urlset>`, {
+    return new NextResponse(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${JERE_DOMAIN_ORIGIN}/</loc><lastmod>${JERE_REVIEWED}</lastmod></url><url><loc>${JERE_DOMAIN_ORIGIN}/guide</loc><lastmod>${JERE_REVIEWED}</lastmod></url>${jereSearchSlugs.map((slug) => `<url><loc>${JERE_DOMAIN_ORIGIN}/learn/${slug}</loc><lastmod>${JERE_SEARCH_PAGES_REVIEWED}</lastmod></url>`).join("")}</urlset>`, {
       headers: { "Content-Type": "application/xml; charset=utf-8" },
     });
   }
@@ -116,7 +117,19 @@ export function proxy(req: NextRequest) {
       target.search = req.nextUrl.search;
       return NextResponse.redirect(target, 308);
     }
+    const legacyLearn = pathname.startsWith(`${JERE_LEGACY_PATH}/learn/`) ? pathname.slice(`${JERE_LEGACY_PATH}/learn/`.length) : "";
+    if (legacyLearn && jereSearchSlugs.includes(legacyLearn) && (brandedHost || jereDomainEnabled())) {
+      const target = new URL(`${JERE_DOMAIN_ORIGIN}/learn/${legacyLearn}`);
+      target.search = req.nextUrl.search;
+      return NextResponse.redirect(target, 308);
+    }
     if (brandedHost) {
+      const learn = pathname.startsWith("/learn/") ? pathname.slice("/learn/".length) : "";
+      if (learn && jereSearchSlugs.includes(learn)) {
+        const target = req.nextUrl.clone();
+        target.pathname = `${JERE_LEGACY_PATH}/learn/${learn}`;
+        return NextResponse.rewrite(target);
+      }
       if (pathname === "/guide") {
         const target = req.nextUrl.clone();
         target.pathname = `${JERE_LEGACY_PATH}/guide`;
