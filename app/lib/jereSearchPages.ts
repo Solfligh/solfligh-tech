@@ -39,6 +39,7 @@ export const jereSearchPages: JereSearchPage[] = [
       "Jèrè records what you tell it. It does not take money from your customer. For transfers and POS payments, check the money through your bank or POS provider.",
       "You can share a receipt through any app you choose on your phone, such as WhatsApp, Telegram or a text message, or copy it.",
       "Cashiers can record sales without seeing your costs or profit.",
+      "Jèrè keeps working when the internet drops. On Plus, you can record sales, customer payments, expenses and new products offline. They are saved on your phone and sent when the connection returns. Open Sell online first so your products are saved on the phone. Basic needs internet.",
     ],
     faqs: [
       { question: "Which payment methods can I record?", answer: "Cash, transfer, POS or customer credit. For credit sales you can also record any amount paid now." },
@@ -66,6 +67,7 @@ export const jereSearchPages: JereSearchPage[] = [
       "The profit figure is an estimate. It is only as good as the prices, costs and expenses that you or your team record. If something is missing or wrong, the estimate will be wrong too.",
       "Sales on credit count when you record them, before the customer pays, so profit can be ahead of the cash you have in hand.",
       "Money you put into the business, loans and money you take out are kept separate from sales and estimated profit.",
+      "You can keep recording without internet. On Plus, sales and expenses recorded offline are saved on your phone and sent when you reconnect. They count in your profit once they have been sent.",
     ],
     faqs: [
       { question: "Is money collected the same as profit?", answer: "No. Money collected and profit answer different questions. Costs, expenses and returns you record all affect your estimated profit." },
@@ -90,7 +92,7 @@ export const jereSearchPages: JereSearchPage[] = [
     ],
     notes: [
       "A customer’s debt is shared across all their credit sales. A single order shows what was paid when it was recorded, not what is still owed on that order alone.",
-      "A new customer needs internet to be added. Offline credit sales use customers already saved on your phone.",
+      "Jèrè keeps working without internet on Plus: you can record credit sales to customers already saved on your phone, and customer payments, and they send when you reconnect. A new customer needs internet to be added. Saved Owing figures open offline with your PIN, with their age shown.",
       "Cashiers see customer balances only if you allow it.",
     ],
     faqs: [
