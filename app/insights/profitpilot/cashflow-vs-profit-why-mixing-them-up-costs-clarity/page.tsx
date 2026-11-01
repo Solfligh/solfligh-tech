@@ -1,3 +1,4 @@
+import JereArticleNote from "@/app/components/JereArticleNote";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -322,6 +323,7 @@ export default function Page() {
           </article>
         </Container>
       </section>
+    <JereArticleNote slug="know-your-profit" />
     </main>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import CookieSettings from "@/app/components/CookieSettings";
 import Image from "next/image";
+import { getJereUrl } from "@/app/lib/jereDomain";
 
 export default function Footer() {
   return (
@@ -39,6 +40,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm font-semibold text-slate-700">
             <li><Link href="/cloud">Solfligh Cloud</Link></li>
             <li><Link href="/products">Products</Link></li>
+            <li><a href={getJereUrl()}>Jèrè</a></li>
             <li><Link href="/services">Services</Link></li>
             <li><Link href="/ai">AI</Link></li>
             <li><Link href="/roadmap">Roadmap</Link></li>

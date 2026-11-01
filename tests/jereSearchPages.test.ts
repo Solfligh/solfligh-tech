@@ -72,3 +72,22 @@ describe("Jèrè short search pages", () => {
     await expect(JereLearnPage({ params: { slug: "nope" } })).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
   });
 });
+
+describe("links from the company site", () => {
+  it("each article note points at its short page and the product, and an unknown page shows nothing", async () => {
+    const { default: Note } = await import("@/app/components/JereArticleNote");
+    const html = renderToStaticMarkup(createElement(Note, { slug: "know-your-profit" }));
+    expect(html).toContain(`href="${JERE_DOMAIN_ORIGIN}/learn/know-your-profit"`);
+    expect(html).toContain(`href="${JERE_DOMAIN_ORIGIN}/"`);
+    expect(renderToStaticMarkup(createElement(Note, { slug: "nope" }))).toBe("");
+  });
+
+  it("the four articles about running a small business end with the note", async () => {
+    const { readFileSync } = await import("node:fs");
+    for (const dir of ["the-3-numbers-every-sme-should-check-daily", "cashflow-vs-profit-why-mixing-them-up-costs-clarity", "why-most-smes-dont-actually-know-how-much-they-made-today", "from-daily-numbers-to-daily-clarity"]) {
+      const source = readFileSync(`app/insights/profitpilot/${dir}/page.tsx`, "utf8");
+      const slug = /<JereArticleNote slug="([^"]+)"/.exec(source)?.[1];
+      expect(jereSearchSlugs, dir).toContain(slug);
+    }
+  });
+});
