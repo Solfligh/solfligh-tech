@@ -37,7 +37,7 @@ export const jereSearchPages: JereSearchPage[] = [
     steps: productSteps,
     notes: [
       "Jèrè records what you tell it. It does not take money from your customer. For transfers and POS payments, check the money through your bank or POS provider.",
-      "You can share a receipt through WhatsApp or another app you choose.",
+      "You can share a receipt through any app you choose on your phone, such as WhatsApp, Telegram or a text message, or copy it.",
       "Cashiers can record sales without seeing your costs or profit.",
     ],
     faqs: [
@@ -86,7 +86,7 @@ export const jereSearchPages: JereSearchPage[] = [
       "When a customer buys on credit, open Sell, choose the goods and the payment method On credit. Choose the customer, and enter any amount they paid now.",
       "Open Owing to see every customer who still owes you, with the amount for each.",
       "When a customer pays something later, open their page and record the payment. The amount owed comes down.",
-      "To remind a customer, use Remind. Jèrè opens WhatsApp with the message ready, and you press send. Nothing is sent until you do.",
+      "To remind a customer, use Remind. Jèrè opens your phone’s list of apps with the message ready, so you choose WhatsApp, WhatsApp Business, Telegram, Messages or any other app, and press send. Nothing is sent until you do.",
     ],
     notes: [
       "A customer’s debt is shared across all their credit sales. A single order shows what was paid when it was recorded, not what is still owed on that order alone.",
@@ -95,7 +95,7 @@ export const jereSearchPages: JereSearchPage[] = [
     ],
     faqs: [
       { question: "Can I record part-payments?", answer: "Yes. Enter any amount paid now when you record the sale, and record later payments on the customer’s page." },
-      { question: "Does Jèrè send reminders to my customers?", answer: "Not by itself. Remind opens WhatsApp with the message ready, and you press send." },
+      { question: "Does Jèrè send reminders to my customers?", answer: "Not by itself. Remind opens your phone’s list of apps with the message ready. You choose the app, such as WhatsApp, Telegram or a text message, and press send. You can also copy the message." },
       { question: "Can I download my records?", answer: "Yes. Open My data and account in Jèrè to download your business records." },
     ],
     related: ["record-daily-sales", "know-your-profit"],
@@ -117,6 +117,7 @@ export const jereSearchPages: JereSearchPage[] = [
     faqs: [
       { question: "Does Jèrè work without internet?", answer: "On Plus, yes. You can record product sales, customer payments, expenses and new products offline. Open Jèrè online first so it can save a copy on your phone. Entries send automatically when you reconnect." },
       { question: "What still needs internet?", answer: "Business modes, service jobs, invoices, online orders, returns and refunds need internet. So do adding a new customer, cancelling a sale and changing your PIN or account." },
+      { question: "Can I see my figures without internet?", answer: "On Plus, yes. Today and Owing figures are saved on the phone and open with your PIN, and their age is shown. Stock is saved too, adjusted for entries waiting to send. Open those screens online first." },
       { question: "When do offline sales count in my records?", answer: "After they have been sent. Entries waiting on the phone are not yet part of your shared business records." },
     ],
     related: ["record-daily-sales", "track-customer-debts"],
