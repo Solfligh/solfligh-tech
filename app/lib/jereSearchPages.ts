@@ -118,7 +118,7 @@ export const jereSearchPages: JereSearchPage[] = [
     ],
     faqs: [
       { question: "Does Jèrè work without internet?", answer: "On Plus, yes. You can record product sales, customer payments, expenses and new products offline. Open Jèrè online first so it can save a copy on your phone. Entries send automatically when you reconnect." },
-      { question: "What still needs internet?", answer: "Business modes, service jobs, invoices, online orders, returns and refunds need internet. So do adding a new customer, cancelling a sale and changing your PIN or account." },
+      { question: "What still needs internet?", answer: "Business modes, deals, service jobs, invoices, online orders, returns and refunds need internet. So do adding a new customer, cancelling a sale and changing your PIN or account." },
       { question: "Can I see my figures without internet?", answer: "On Plus, yes. Today and Owing figures are saved on the phone and open with your PIN, and their age is shown. Stock is saved too, adjusted for entries waiting to send. Open those screens online first." },
       { question: "When do offline sales count in my records?", answer: "After they have been sent. Entries waiting on the phone are not yet part of your shared business records." },
     ],
