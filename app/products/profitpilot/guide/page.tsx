@@ -15,7 +15,7 @@ export async function generateMetadata() {
   const base = await landingMetadata();
   if (base.robots && typeof base.robots === "object" && base.robots.index === false) return base;
   const title = "Jèrè Guide | Business Modes, Offline Sales, Orders & Service Jobs";
-  const description = "Learn Jèrè’s product, online and service modes: sales, orders, delivery, jobs, invoices, deposits and returns, plus offline sales setup and limits.";
+  const description = "Learn Jèrè’s five business modes (product, online, service, deals and production): sales, orders, delivery, jobs, invoices, deposits, returns, deals and ingredients, plus offline sales setup and limits.";
   return { ...base, title: { absolute: title }, description,
     alternates: { canonical: getJereGuideUrl() },
     openGraph: { ...base.openGraph, title, description, url: getJereGuideUrl() },
@@ -42,7 +42,7 @@ export default async function JereGuide() {
       <p className="mt-8 text-sm font-semibold text-[#7765be]">Live / Near Launch · Product guide</p>
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Your guide to sales, online orders and service jobs.</h1>
       <p className="mt-6 text-lg leading-relaxed">{JERE_DESCRIPTION}</p>
-      <p className="mt-4 text-sm text-[#625c70]">Product information reviewed <time dateTime={JERE_REVIEWED}>27 October 2026</time> by SOLFLIGH TECH.</p>
+      <p className="mt-4 text-sm text-[#625c70]">Product information reviewed <time dateTime={JERE_REVIEWED}>22 November 2026</time> by SOLFLIGH TECH.</p>
       <nav aria-label="Guide contents" className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-[#5546e8]">
         <a href="#business-modes" className="underline underline-offset-4">Choose your modes</a>
         {jereWorkflowGuides.map(w=><a key={w.id} href={`#${w.id}`} className="underline underline-offset-4">{w.title}</a>)}
@@ -51,10 +51,10 @@ export default async function JereGuide() {
         <a href="#guide-features" className="underline underline-offset-4">All Jèrè features</a>
       </nav>
       <section id="business-modes" className="mt-12 scroll-mt-36 border-t border-[#e5e0ef] pt-8">
-        <h2 className="text-2xl font-semibold">Choose or combine your business modes</h2><p className="mt-4 leading-relaxed text-[#625c70]">{JERE_AUDIENCE}</p><div className="mt-6 grid gap-4 sm:grid-cols-3">{jereBusinessModes.map(mode=><article key={mode.id} className="rounded-xl border border-[#e5e0ef] bg-white p-5"><h3 className="text-lg font-semibold">{mode.title}</h3><p className="mt-3 leading-relaxed text-[#625c70]">{mode.text}</p></article>)}</div><ol className="mt-6 list-decimal space-y-3 pl-6 leading-relaxed text-[#625c70]">{jereModeSteps.map(step=><li key={step}>{step}</li>)}</ol>
+        <h2 className="text-2xl font-semibold">Choose or combine your business modes</h2><p className="mt-4 leading-relaxed text-[#625c70]">{JERE_AUDIENCE}</p><div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{jereBusinessModes.map(mode=><article key={mode.id} className="rounded-xl border border-[#e5e0ef] bg-white p-5"><h3 className="text-lg font-semibold">{mode.title}</h3><p className="mt-3 leading-relaxed text-[#625c70]">{mode.text}</p></article>)}</div><ol className="mt-6 list-decimal space-y-3 pl-6 leading-relaxed text-[#625c70]">{jereModeSteps.map(step=><li key={step}>{step}</li>)}</ol>
       </section>
       {jereWorkflowGuides.map(workflow=><section key={workflow.id} id={workflow.id} className="mt-12 scroll-mt-36 border-t border-[#e5e0ef] pt-8"><h2 className="text-2xl font-semibold">{workflow.title}</h2><p className="mt-4 leading-relaxed text-[#625c70]">{workflow.intro}</p><ol className="mt-6 list-decimal space-y-4 pl-6 leading-relaxed text-[#625c70]">{workflow.steps.map(step=><li key={step}>{step}</li>)}</ol><a href={`${product.appUrl}help#${workflow.help}`} className="mt-5 inline-block font-semibold text-[#5546e8] underline underline-offset-4">Read this topic in app help →</a></section>)}
-      <p className="mt-8 rounded-xl border border-[#d8d1ed] bg-[#f1eef8] p-5 leading-relaxed text-[#625c70]">Business modes, service jobs, invoices, deposits, job costs and time, online orders, delivery changes, returns and refunds are owner-only workflows that need internet. Forms keep entered values on screen after a connection failure but are not saved across closing or reloading the page. Supported offline product entries on Plus are explained below.</p>
+      <p className="mt-8 rounded-xl border border-[#d8d1ed] bg-[#f1eef8] p-5 leading-relaxed text-[#625c70]">Business modes, deals, service jobs, invoices, deposits, job costs and time, online orders, delivery changes, returns and refunds are owner-only workflows that need internet. Forms keep entered values on screen after a connection failure but are not saved across closing or reloading the page. Supported offline product entries on Plus are explained below.</p>
       <section id="offline-walkthrough" className="mt-12 scroll-mt-36 border-t border-[#e5e0ef] pt-8">
         <h2 className="text-2xl font-semibold">How to record sales when the internet goes down</h2>
         <p className="mt-4 leading-relaxed text-[#625c70]">{JERE_OFFLINE_ANSWER}</p>
@@ -70,7 +70,7 @@ export default async function JereGuide() {
           ["Check stock", "Needs internet", "Last saved stock, adjusted for entries waiting on this phone"],
           ["Read Today and Owing figures", "Needs internet", "Saved views with your PIN; their age is shown"],
           ["Add customers, change existing prices or stock, cancel sales", "Needs internet", "Needs internet"],
-          ["Business modes, service jobs, invoices, online orders, returns and refunds", "Needs internet", "Needs internet"],
+          ["Business modes, deals, service jobs, invoices, online orders, returns and refunds", "Needs internet", "Needs internet"],
           ["Update shared records and business figures", "Needs internet", "Waiting entries count after they have been sent"],
         ].map(row => <tr key={row[0]} className="border-b border-[#e5e0ef]"><th scope="row" className="p-3 align-top font-medium">{row[0]}</th><td className="p-3 align-top text-[#625c70]">{row[1]}</td><td className="p-3 align-top text-[#625c70]">{row[2]}</td></tr>)}</tbody></table></div>
         <p className="mt-5 rounded-xl border border-[#d8d1ed] bg-[#f1eef8] p-5 text-sm leading-relaxed">Keep entries waiting to send on the same phone. Clearing browser storage, resetting the phone or removing its saved app data can remove unsent entries. If an entry needs attention, check its message before recording it again.</p>
