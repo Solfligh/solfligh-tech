@@ -15,7 +15,7 @@ export async function generateMetadata() {
   const base = await landingMetadata();
   if (base.robots && typeof base.robots === "object" && base.robots.index === false) return base;
   const title = "Jèrè Guide | Business Modes, Offline Sales, Orders & Service Jobs";
-  const description = "Learn Jèrè’s product, online and service modes: sales, orders, delivery, jobs, invoices, deposits and returns, plus offline sales setup and limits.";
+  const description = "Learn Jèrè’s five business modes (product, online, service, deals and production): sales, orders, delivery, jobs, invoices, deposits, returns, deals and ingredients, plus offline sales setup and limits.";
   return { ...base, title: { absolute: title }, description,
     alternates: { canonical: getJereGuideUrl() },
     openGraph: { ...base.openGraph, title, description, url: getJereGuideUrl() },
@@ -51,7 +51,7 @@ export default async function JereGuide() {
         <a href="#guide-features" className="underline underline-offset-4">All Jèrè features</a>
       </nav>
       <section id="business-modes" className="mt-12 scroll-mt-36 border-t border-[#e5e0ef] pt-8">
-        <h2 className="text-2xl font-semibold">Choose or combine your business modes</h2><p className="mt-4 leading-relaxed text-[#625c70]">{JERE_AUDIENCE}</p><div className="mt-6 grid gap-4 sm:grid-cols-3">{jereBusinessModes.map(mode=><article key={mode.id} className="rounded-xl border border-[#e5e0ef] bg-white p-5"><h3 className="text-lg font-semibold">{mode.title}</h3><p className="mt-3 leading-relaxed text-[#625c70]">{mode.text}</p></article>)}</div><ol className="mt-6 list-decimal space-y-3 pl-6 leading-relaxed text-[#625c70]">{jereModeSteps.map(step=><li key={step}>{step}</li>)}</ol>
+        <h2 className="text-2xl font-semibold">Choose or combine your business modes</h2><p className="mt-4 leading-relaxed text-[#625c70]">{JERE_AUDIENCE}</p><div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{jereBusinessModes.map(mode=><article key={mode.id} className="rounded-xl border border-[#e5e0ef] bg-white p-5"><h3 className="text-lg font-semibold">{mode.title}</h3><p className="mt-3 leading-relaxed text-[#625c70]">{mode.text}</p></article>)}</div><ol className="mt-6 list-decimal space-y-3 pl-6 leading-relaxed text-[#625c70]">{jereModeSteps.map(step=><li key={step}>{step}</li>)}</ol>
       </section>
       {jereWorkflowGuides.map(workflow=><section key={workflow.id} id={workflow.id} className="mt-12 scroll-mt-36 border-t border-[#e5e0ef] pt-8"><h2 className="text-2xl font-semibold">{workflow.title}</h2><p className="mt-4 leading-relaxed text-[#625c70]">{workflow.intro}</p><ol className="mt-6 list-decimal space-y-4 pl-6 leading-relaxed text-[#625c70]">{workflow.steps.map(step=><li key={step}>{step}</li>)}</ol><a href={`${product.appUrl}help#${workflow.help}`} className="mt-5 inline-block font-semibold text-[#5546e8] underline underline-offset-4">Read this topic in app help →</a></section>)}
       <p className="mt-8 rounded-xl border border-[#d8d1ed] bg-[#f1eef8] p-5 leading-relaxed text-[#625c70]">Business modes, service jobs, invoices, deposits, job costs and time, online orders, delivery changes, returns and refunds are owner-only workflows that need internet. Forms keep entered values on screen after a connection failure but are not saved across closing or reloading the page. Supported offline product entries on Plus are explained below.</p>
