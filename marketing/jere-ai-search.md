@@ -4,7 +4,7 @@ Reviewed 26 October 2026. These changes improve public discovery and factual und
 
 ## Search needs covered by the product guide
 
-- Offline sales recording for small businesses in Nigeria (Plus, with initial online setup).
+- Offline sales recording for small businesses in Nigeria (with initial online setup).
 - Shop stock/inventory tracking and low-stock visibility.
 - Customer credit, debts and part-payments.
 - Sales, item costs, expenses and estimated profit.
@@ -43,6 +43,6 @@ Search crawler access remains allowed. Training preferences and firewall setting
 
 ## Offline guide update on 27 October 2026
 
-The existing guide now leads with a direct answer about offline sales for Nigerian shops, includes a five-step phone walkthrough and compares Basic/Plus offline availability. The homepage links directly to the walkthrough. Shared facts and sitemap modification dates reflect the update. An interactive illustration is explicitly simulated and has no connection to an app account.
+The existing guide now leads with a direct answer about offline sales for Nigerian shops, includes a five-step phone walkthrough and lists what works offline. (On 25 November 2026 Jèrè moved to one plan with offline included and no price shown, so the Basic/Plus comparison was removed.) The homepage links directly to the walkthrough. Shared facts and sitemap modification dates reflect the update. An interactive illustration is explicitly simulated and has no connection to an app account.
 
 See `jere-offline-demonstration.md` for the real-phone recording script, indexing checks and evidence status. On 27 October the owner confirmed that Search Console shows “URL is on Google” for the guide. A new physical-phone recording, verified OpenAI search-crawler visit and AI recommendation remain unverified.

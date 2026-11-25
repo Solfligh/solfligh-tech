@@ -39,7 +39,7 @@ export const jereSearchPages: JereSearchPage[] = [
       "Jèrè records what you tell it. It does not take money from your customer. For transfers and POS payments, check the money through your bank or POS provider.",
       "You can share a receipt through any app you choose on your phone, such as WhatsApp, Telegram or a text message, or copy it.",
       "Cashiers can record sales without seeing your costs or profit.",
-      "Jèrè keeps working when the internet drops. On Plus, you can record sales, customer payments, expenses and new products offline. They are saved on your phone and sent when the connection returns. Open Sell online first so your products are saved on the phone. Basic needs internet.",
+      "Jèrè keeps working when the internet drops. You can record sales, customer payments, expenses and new products offline. They are saved on your phone and sent when the connection returns. Open Sell online first so your products are saved on the phone.",
     ],
     faqs: [
       { question: "Which payment methods can I record?", answer: "Cash, transfer, POS or customer credit. For credit sales you can also record any amount paid now." },
@@ -67,7 +67,7 @@ export const jereSearchPages: JereSearchPage[] = [
       "The profit figure is an estimate. It is only as good as the prices, costs and expenses that you or your team record. If something is missing or wrong, the estimate will be wrong too.",
       "Sales on credit count when you record them, before the customer pays, so profit can be ahead of the cash you have in hand.",
       "Money you put into the business, loans and money you take out are kept separate from sales and estimated profit.",
-      "You can keep recording without internet. On Plus, sales and expenses recorded offline are saved on your phone and sent when you reconnect. They count in your profit once they have been sent.",
+      "You can keep recording without internet. Sales and expenses recorded offline are saved on your phone and sent when you reconnect. They count in your profit once they have been sent.",
     ],
     faqs: [
       { question: "Is money collected the same as profit?", answer: "No. Money collected and profit answer different questions. Costs, expenses and returns you record all affect your estimated profit." },
@@ -92,7 +92,7 @@ export const jereSearchPages: JereSearchPage[] = [
     ],
     notes: [
       "A customer’s debt is shared across all their credit sales. A single order shows what was paid when it was recorded, not what is still owed on that order alone.",
-      "Jèrè keeps working without internet on Plus: you can record credit sales to customers already saved on your phone, and customer payments, and they send when you reconnect. A new customer needs internet to be added. Saved Owing figures open offline with your PIN, with their age shown.",
+      "Jèrè keeps working without internet: you can record credit sales to customers already saved on your phone, and customer payments, and they send when you reconnect. A new customer needs internet to be added. Saved Owing figures open offline with your PIN, with their age shown.",
       "Cashiers see customer balances only if you allow it.",
     ],
     faqs: [
@@ -105,21 +105,20 @@ export const jereSearchPages: JereSearchPage[] = [
   {
     slug: "sell-without-internet-nigeria",
     title: "Record sales without internet: a sales app for small shops | Jèrè",
-    description: "What to use to record sales when the network drops. Jèrè Plus saves your sales on the phone and sends them when the connection returns. What works, and what does not.",
+    description: "What to use to record sales when the network drops. Jèrè saves your sales on the phone and sends them when the connection returns. What works, and what does not.",
     h1: "How to record sales when the internet goes down",
     answer: JERE_OFFLINE_ANSWER,
     stepsTitle: "Set up and use offline recording",
     steps: jereOfflineSteps.map((s) => `${s.title}. ${s.text}`),
     notes: [
-      "Offline recording is part of Plus. Basic needs internet.",
       "Keep entries waiting to send on the same phone. Clearing browser storage, resetting the phone or removing its saved app data can remove unsent entries.",
       "Adding a new customer, changing an existing product’s price or stock, cancelling a sale and changing your PIN need internet.",
       "Offline recording saves the sale’s details. Confirm bank transfers and card payments through your usual bank or POS provider.",
     ],
     faqs: [
-      { question: "Does Jèrè work without internet?", answer: "On Plus, yes. You can record product sales, customer payments, expenses and new products offline. Open Jèrè online first so it can save a copy on your phone. Entries send automatically when you reconnect." },
+      { question: "Does Jèrè work without internet?", answer: "Yes. You can record product sales, customer payments, expenses and new products offline. Open Jèrè online first so it can save a copy on your phone. Entries send automatically when you reconnect." },
       { question: "What still needs internet?", answer: "Business modes, service jobs, invoices, online orders, returns and refunds need internet. So do adding a new customer, cancelling a sale and changing your PIN or account." },
-      { question: "Can I see my figures without internet?", answer: "On Plus, yes. Today and Owing figures are saved on the phone and open with your PIN, and their age is shown. Stock is saved too, adjusted for entries waiting to send. Open those screens online first." },
+      { question: "Can I see my figures without internet?", answer: "Yes. Today and Owing figures are saved on the phone and open with your PIN, and their age is shown. Stock is saved too, adjusted for entries waiting to send. Open those screens online first." },
       { question: "When do offline sales count in my records?", answer: "After they have been sent. Entries waiting on the phone are not yet part of your shared business records." },
     ],
     related: ["record-daily-sales", "track-customer-debts"],

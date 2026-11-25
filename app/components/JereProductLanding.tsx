@@ -47,8 +47,8 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
                 <span className="rounded-full border border-[#d4dccc] bg-[#f0f4ea] px-3 py-1.5 text-xs font-semibold text-[#456039]">{status}</span>
               </div>
               <h1 className="mt-7 text-4xl font-semibold leading-[1.12] tracking-tight sm:text-5xl lg:text-[3.5rem]">Sales, online orders and service jobs.<br /><span className="text-[#5546e8]">Together in Jèrè.</span></h1>
-              <p className="mt-6 max-w-lg text-base leading-relaxed text-[#625c70] sm:text-lg">Run your shop, online sales or service work with Jèrè (Jere). Combine five business modes (Product, Online, Service, Deals and Production) to manage stock, orders, jobs, invoices, deals and payments alongside expenses and estimated profit. Built for small businesses in Nigeria and across Africa. Product sales can be recorded offline with Plus.</p>
-              <a href="#offline" className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#ccd9c2] bg-[#f0f4ea] px-4 py-2 text-sm font-semibold text-[#456039]"><span aria-hidden="true">↻</span> Product sales offline with Plus <span aria-hidden="true">↓</span></a>
+              <p className="mt-6 max-w-lg text-base leading-relaxed text-[#625c70] sm:text-lg">Run your shop, online sales or service work with Jèrè (Jere). Combine five business modes (Product, Online, Service, Deals and Production) to manage stock, orders, jobs, invoices, deals and payments alongside expenses and estimated profit. Built for small businesses in Nigeria and across Africa. Product sales can be recorded offline.</p>
+              <a href="#offline" className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#ccd9c2] bg-[#f0f4ea] px-4 py-2 text-sm font-semibold text-[#456039]"><span aria-hidden="true">↻</span> Product sales offline <span aria-hidden="true">↓</span></a>
               <div className="mt-8"><SignupLinks /></div>
               <p className="mt-4 text-sm text-[#70697e]">Open for sign-up in early access.</p>
               <Link href={getJereGuideUrl()} className="mt-4 inline-block text-sm font-semibold text-[#5546e8] underline underline-offset-4">Read the Jèrè product guide →</Link>
@@ -66,7 +66,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
 
       <section className="border-b border-[#e5e0ef] bg-white py-6" aria-label="Built for your working day">
         <Container className="grid gap-4 text-center text-sm font-medium text-[#625c70] sm:grid-cols-3">
-          <a href="#business-modes">Five business modes</a><a href="#offline" className="font-semibold text-[#5546e8]">Offline recording with Plus</a><p>Choose what each team member sees</p>
+          <a href="#business-modes">Five business modes</a><a href="#offline" className="font-semibold text-[#5546e8]">Offline recording</a><p>Choose what each team member sees</p>
         </Container>
       </section>
 
@@ -78,7 +78,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
         <Container>
           <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Offline with Jèrè Plus</p>
+              <p className="text-xs font-semibold uppercase tracking-[.18em] text-[#7765be]">Works offline</p>
               <h2 className="mt-4 text-3xl font-semibold leading-tight sm:text-4xl">Internet down?<br />Keep recording your business.</h2>
               <p className="mt-5 text-base leading-relaxed text-[#625c70]">A lost connection should not leave your next sale on a scrap of paper. Jèrè keeps entries on your phone and sends them automatically when you are back online.</p>
               <Link href={`${getJereGuideUrl()}#offline-walkthrough`} className="mt-6 inline-block text-sm font-semibold text-[#5546e8] underline underline-offset-4">Follow the offline sales walkthrough →</Link>
@@ -100,7 +100,7 @@ export default function JereProductLanding({ status = "Live / Near Launch" }: { 
               ["Reconnect and send", "Jèrè sends waiting entries automatically. They count in your business records once sent. Entries that need attention stay visible with a reason."],
             ].map(([title, text], index) => <li key={title} className="rounded-2xl border border-[#d8d1ed] p-5"><p className="text-xs font-semibold text-[#7765be]">0{index + 1}</p><h3 className="mt-3 text-lg font-semibold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-[#625c70]">{text}</p></li>)}
           </ol>
-          <p className="mt-6 max-w-4xl text-sm leading-relaxed text-[#625c70]">Offline use is part of Plus; Basic works online. Saved views are the last copy on that phone. Mode changes, service jobs and invoices, online orders, delivery, returns and refunds need internet on both plans. Adding customers, changing existing prices or stock, cancelling sales and account changes also need internet. Keep the phone’s browser data until all waiting entries have been sent.</p>
+          <p className="mt-6 max-w-4xl text-sm leading-relaxed text-[#625c70]">Saved views are the last copy on that phone. Mode changes, service jobs and invoices, online orders, delivery, returns and refunds need internet. Adding customers, changing existing prices or stock, cancelling sales and account changes also need internet. Keep the phone’s browser data until all waiting entries have been sent.</p>
         </Container>
       </section>
 
