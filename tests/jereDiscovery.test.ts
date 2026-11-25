@@ -46,7 +46,8 @@ describe("Jèrè public discovery resources", () => {
     for(const workflow of jereWorkflowGuides){expect(guide).toContain(`id="${workflow.id}"`);for(const step of workflow.steps)expect(facts).toContain(step);}
     expect(facts).toContain("Jèrè does not send money or trigger a payment-provider refund");
     expect(facts).toContain("Service Business");
-    expect(facts).toContain("Basic needs an internet connection");
+    // One plan, no charging yet: no plan tiers or prices on Jèrè pages.
+    for (const text of [facts, guide]) expect(text).not.toMatch(/\bPlus\b|\bBasic\b|a month/);
     expect(facts).toContain("clearing browser storage can remove them");
     expect(facts).toContain("Live / Near Launch");
     expect(guide.match(/<h1[ >]/g)).toHaveLength(1);

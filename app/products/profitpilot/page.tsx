@@ -14,7 +14,7 @@ export async function generateMetadata() {
     return metadata;
   }
   const title = "Jèrè (Jere) | Sales, Online Orders & Service Jobs";
-  const description = "Manage product sales, online orders, service jobs, invoices and returns with Jèrè for small businesses in Nigeria and across Africa. Plus adds offline entry.";
+  const description = "Manage product sales, online orders, service jobs, invoices and returns with Jèrè for small businesses in Nigeria and across Africa. Includes offline entry for product sales.";
   const icon = `${jereDomainEnabled() ? JERE_DOMAIN_ORIGIN : SITE_URL}${JERE_ICON_PATH}`;
   return {
     ...metadata,

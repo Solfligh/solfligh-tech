@@ -54,7 +54,7 @@ export default async function JereGuide() {
         <h2 className="text-2xl font-semibold">Choose or combine your business modes</h2><p className="mt-4 leading-relaxed text-[#625c70]">{JERE_AUDIENCE}</p><div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{jereBusinessModes.map(mode=><article key={mode.id} className="rounded-xl border border-[#e5e0ef] bg-white p-5"><h3 className="text-lg font-semibold">{mode.title}</h3><p className="mt-3 leading-relaxed text-[#625c70]">{mode.text}</p></article>)}</div><ol className="mt-6 list-decimal space-y-3 pl-6 leading-relaxed text-[#625c70]">{jereModeSteps.map(step=><li key={step}>{step}</li>)}</ol>
       </section>
       {jereWorkflowGuides.map(workflow=><section key={workflow.id} id={workflow.id} className="mt-12 scroll-mt-36 border-t border-[#e5e0ef] pt-8"><h2 className="text-2xl font-semibold">{workflow.title}</h2><p className="mt-4 leading-relaxed text-[#625c70]">{workflow.intro}</p><ol className="mt-6 list-decimal space-y-4 pl-6 leading-relaxed text-[#625c70]">{workflow.steps.map(step=><li key={step}>{step}</li>)}</ol><a href={`${product.appUrl}help#${workflow.help}`} className="mt-5 inline-block font-semibold text-[#5546e8] underline underline-offset-4">Read this topic in app help →</a></section>)}
-      <p className="mt-8 rounded-xl border border-[#d8d1ed] bg-[#f1eef8] p-5 leading-relaxed text-[#625c70]">Business modes, service jobs, invoices, deposits, job costs and time, online orders, delivery changes, returns and refunds are owner-only workflows that need internet. Forms keep entered values on screen after a connection failure but are not saved across closing or reloading the page. Supported offline product entries on Plus are explained below.</p>
+      <p className="mt-8 rounded-xl border border-[#d8d1ed] bg-[#f1eef8] p-5 leading-relaxed text-[#625c70]">Business modes, service jobs, invoices, deposits, job costs and time, online orders, delivery changes, returns and refunds are owner-only workflows that need internet. Forms keep entered values on screen after a connection failure but are not saved across closing or reloading the page. Supported offline product entries are explained below.</p>
       <section id="offline-walkthrough" className="mt-12 scroll-mt-36 border-t border-[#e5e0ef] pt-8">
         <h2 className="text-2xl font-semibold">How to record sales when the internet goes down</h2>
         <p className="mt-4 leading-relaxed text-[#625c70]">{JERE_OFFLINE_ANSWER}</p>
@@ -64,15 +64,15 @@ export default async function JereGuide() {
         <a href={`${product.appUrl}help#offline`} className="mt-6 inline-block font-semibold text-[#5546e8] underline underline-offset-4">Open Jèrè’s offline help →</a>
       </section>
       <section id="offline-limits" className="mt-12 scroll-mt-36 border-t border-[#e5e0ef] pt-8">
-        <h2 className="text-2xl font-semibold">What works offline on Basic and Plus?</h2>
-        <div className="mt-6 overflow-x-auto"><table className="w-full min-w-[480px] border-collapse text-left text-sm"><caption className="mb-3 text-left text-[#625c70]">Offline availability after the phone has been prepared online</caption><thead><tr className="border-b border-[#d8d1ed]"><th scope="col" className="p-3">Task</th><th scope="col" className="p-3">Basic</th><th scope="col" className="p-3">Plus</th></tr></thead><tbody>{[
-          ["Record sales, customer payments, expenses and new products", "Needs internet", "Save entries on this phone; send on reconnection"],
-          ["Check stock", "Needs internet", "Last saved stock, adjusted for entries waiting on this phone"],
-          ["Read Today and Owing figures", "Needs internet", "Saved views with your PIN; their age is shown"],
-          ["Add customers, change existing prices or stock, cancel sales", "Needs internet", "Needs internet"],
-          ["Business modes, service jobs, invoices, online orders, returns and refunds", "Needs internet", "Needs internet"],
-          ["Update shared records and business figures", "Needs internet", "Waiting entries count after they have been sent"],
-        ].map(row => <tr key={row[0]} className="border-b border-[#e5e0ef]"><th scope="row" className="p-3 align-top font-medium">{row[0]}</th><td className="p-3 align-top text-[#625c70]">{row[1]}</td><td className="p-3 align-top text-[#625c70]">{row[2]}</td></tr>)}</tbody></table></div>
+        <h2 className="text-2xl font-semibold">What works offline?</h2>
+        <div className="mt-6 overflow-x-auto"><table className="w-full min-w-[480px] border-collapse text-left text-sm"><caption className="mb-3 text-left text-[#625c70]">Offline availability after the phone has been prepared online</caption><thead><tr className="border-b border-[#d8d1ed]"><th scope="col" className="p-3">Task</th><th scope="col" className="p-3">Without internet</th></tr></thead><tbody>{[
+          ["Record sales, customer payments, expenses and new products", "Save entries on this phone; send on reconnection"],
+          ["Check stock", "Last saved stock, adjusted for entries waiting on this phone"],
+          ["Read Today and Owing figures", "Saved views with your PIN; their age is shown"],
+          ["Add customers, change existing prices or stock, cancel sales", "Needs internet"],
+          ["Business modes, service jobs, invoices, online orders, returns and refunds", "Needs internet"],
+          ["Update shared records and business figures", "Waiting entries count after they have been sent"],
+        ].map(row => <tr key={row[0]} className="border-b border-[#e5e0ef]"><th scope="row" className="p-3 align-top font-medium">{row[0]}</th><td className="p-3 align-top text-[#625c70]">{row[1]}</td></tr>)}</tbody></table></div>
         <p className="mt-5 rounded-xl border border-[#d8d1ed] bg-[#f1eef8] p-5 text-sm leading-relaxed">Keep entries waiting to send on the same phone. Clearing browser storage, resetting the phone or removing its saved app data can remove unsent entries. If an entry needs attention, check its message before recording it again.</p>
         <p className="mt-4 text-sm leading-relaxed text-[#625c70]">Offline recording saves the sale’s details. Confirm bank transfers and card payments through your usual bank or POS provider.</p>
       </section>
@@ -89,7 +89,7 @@ export default async function JereGuide() {
       </section>
       <section className="mt-12 border-t border-[#e5e0ef] pt-8">
         <h2 className="text-2xl font-semibold">Business modes, money, offline use and common questions</h2>
-        <p className="mt-4 leading-relaxed text-[#625c70]">Check the offline requirements before relying on Jèrè without a connection. Plus supports offline entry; Basic works online.</p>
+        <p className="mt-4 leading-relaxed text-[#625c70]">Check the offline requirements before relying on Jèrè without a connection.</p>
         <div className="mt-8 space-y-8">{jereQuestions.map(q => <article key={q.question}><h3 className="text-xl font-semibold">{q.question}</h3><p className="mt-3 leading-relaxed text-[#625c70]">{q.answer}</p></article>)}</div>
         <a href={`${product.appUrl}help#offline`} className="mt-6 inline-block font-semibold text-[#5546e8] underline underline-offset-4">Read the offline setup guide →</a>
       </section>

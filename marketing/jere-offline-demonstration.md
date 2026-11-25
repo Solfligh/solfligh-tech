@@ -1,18 +1,18 @@
 # Jèrè offline selling demonstration and indexing checks
 
-Prepared 27 October 2026. The guide now leads with offline sales for Nigerian shops, provides the preparation and reconnection steps, and distinguishes Basic from Plus. Shared facts feed the public FAQ and text resource.
+Prepared 27 October 2026. The guide now leads with offline sales for Nigerian shops, provides the preparation and reconnection steps, and lists what works offline (one plan since 25 November 2026; offline is included). Shared facts feed the public FAQ and text resource.
 
 ## Published illustration and real-device evidence
 
 The guide's interactive example is a simulation with made-up sales. It has no app-account connection, network request or access to business data. It explains the workflow; it is not a recording of a real connection loss or proof of production syncing.
 
-Before publishing a real demonstration, capture the following on an actual phone using a separate practice account with Plus. Never mix the made-up transactions into a real business or expose a PIN, customer details, email address or session data.
+Before publishing a real demonstration, capture the following on an actual phone using a separate practice account. Never mix the made-up transactions into a real business or expose a PIN, customer details, email address or session data.
 
 ## Recording script
 
 Suggested length: 60–90 seconds. Keep the connection indicator, waiting list and final records visible long enough to read. Narration must describe what the recording shows.
 
-1. **Preparation.** Open Sell online and show the prepared product list. Say: “This is a practice business. Offline recording needs Jèrè Plus and this phone must load Sell online first.”
+1. **Preparation.** Open Sell online and show the prepared product list. Say: “This is a practice business. This phone must load Sell online first.”
 2. **Connection loss.** Show Wi-Fi and mobile data being turned off, then return to Jèrè. Say: “The phone is disconnected. Jèrè uses the products saved on this phone.”
 3. **First sale.** Record one made-up cash sale and show “Saved on this phone”. Say: “This sale is waiting on the phone. It has not reached the shared business records.”
 4. **Second sale.** Tap Sell again or Record another sale, enter a different practice sale, and show two separate entries waiting. Avoid a sped-up cut that hides whether both entries exist.
@@ -20,7 +20,7 @@ Suggested length: 60–90 seconds. Keep the connection indicator, waiting list a
 6. **Reconnect.** Restore internet, reopen Jèrè and let sending finish. If sign-in or an error is required, include that step or explain it honestly; do not present it as uninterrupted automatic success.
 7. **Verification.** Show both entries in Sales and confirm the amounts and references match the two recorded entries, with no duplicate. Use timestamps/references to distinguish them from prior transactions.
 
-Caption template after a successful capture: “Practice business with made-up sales. Recorded on [device and OS], [date]. Jèrè Plus was prepared online before disconnecting. Internet was restored before the entries appeared in shared records.” Fill in only observed details.
+Caption template after a successful capture: “Practice business with made-up sales. Recorded on [device and OS], [date]. Jèrè was prepared online before disconnecting. Internet was restored before the entries appeared in shared records.” Fill in only observed details.
 
 For an iPhone capture, additionally check fresh home-screen installation, leaving/returning, the in-app Back control and Home → Sell after a completed sale. Record any blank screen rather than claiming a clean pass. A desktop browser simulation does not establish physical-iPhone reliability.
 
