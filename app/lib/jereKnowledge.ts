@@ -2,8 +2,8 @@ import { getJereUrl, getJereGuideUrl } from "@/app/lib/jereDomain";
 import { getProduct } from "@/app/lib/products";
 import { SITE_URL } from "@/app/lib/site";
 
-export const JERE_REVIEWED = "2026-10-27";
-export const JERE_DESCRIPTION = "Jèrè (Jere) is business management software for small businesses in Nigeria and across Africa. Combine Product Business, Online Business and Service Business modes to manage sales, stock, orders, delivery, jobs, invoices, deposits, costs and estimated profit. Plus adds offline product sales and other supported entries.";
+export const JERE_REVIEWED = "2026-11-25";
+export const JERE_DESCRIPTION = "Jèrè (Jere) is business management software for small businesses in Nigeria and across Africa. Combine five business modes (Product, Online, Service, Deals and Production) to manage sales, stock, orders, delivery, jobs, invoices, deposits, deals, ingredients, costs and estimated profit. Plus adds offline product sales and other supported entries.";
 export const JERE_OFFLINE_ANSWER = "Jèrè (Jere) helps small shops in Nigeria record sales without internet on Plus. Open Sell online first to save your products on that phone. Offline entries stay on the phone and send automatically when the connection returns. They count in your business records once sent. Basic needs internet.";
 export const jereOfflineSteps = [
   { title: "Prepare Sell while online", text: "Sign in to Jèrè on the phone you will use. Check that your business has Plus, then open Sell and let your products and customer names load. Open Today and Owing online with your PIN set if you want saved figures too." },
@@ -12,17 +12,19 @@ export const jereOfflineSteps = [
   { title: "Check the waiting entries", text: "Reopen Jèrè on the same phone before reconnecting and check Waiting to send. Keep the phone’s browser data. Entries waiting on that phone are not yet part of the shared business records." },
   { title: "Reconnect and check your records", text: "Turn internet access back on and reopen Jèrè. Waiting entries send automatically. If sign-in is requested, sign in again. Once sending finishes, check Sales for both entries. An entry that needs attention stays visible with a reason; resolve it before treating it as sent." },
 ];
-export const JERE_AUDIENCE = "Jèrè is built for shop owners, online sellers and service businesses, with an Africa-first focus. A shop can take WhatsApp orders and offer services in the same business. It is built by SOLFLIGH TECH.";
+export const JERE_AUDIENCE = "Jèrè is built for shop owners, online sellers, service businesses, dealers who sell for other people, and makers who produce what they sell, with an Africa-first focus. A shop can take WhatsApp orders and offer services in the same business. It is built by SOLFLIGH TECH.";
 export { getJereGuideUrl } from "@/app/lib/jereDomain";
 
 export const jereBusinessModes = [
   { id: "product", title: "Product Business", text: "Record sales, manage stock, keep product costs and see estimated profit. Use cash, transfer, POS or customer credit." },
   { id: "online", title: "Online Business", text: "Record orders from WhatsApp, social media, a website or phone. Track confirmation, packing, delivery, returns and customer refunds." },
   { id: "service", title: "Service Business", text: "Manage customer jobs, quotes, invoices, deposits, payments, job costs and recorded work time. Compare results for your jobs." },
+  { id: "deals", title: "Deals", text: "Sell an item for someone else, such as a car or a plot of land. Keep the difference between the buyer's price and the seller's price, or take a fixed fee, and see what each deal kept after its costs." },
+  { id: "production", title: "Production Business", text: "Buy ingredients or materials and make what you sell. Record what you bought, track what is used or left, and see sales less the ingredients used and your expenses." },
 ];
 export const jereModeSteps = [
   "After creating your business, choose the modes that fit your work. Existing owners can open More, then Business modes.",
-  "Select Product Business, Online Business, Service Business or a combination. Online selling shares your existing products and stock.",
+  "Select any of Product Business, Online Business, Service Business, Deals and Production Business, or a combination. Online selling shares your existing products and stock.",
   "Choose your main workflow and save. It sets the shortcuts on your home screen and navigation.",
   "Change modes later without deleting records. All your existing workflows remain accessible in More. Mode selection does not change your plan or team permissions.",
 ];
@@ -32,6 +34,19 @@ export const jereWorkflowGuides = [
     "Open Sell and choose the goods, quantity and payment method. For a credit sale, choose the customer and enter any amount paid now.",
     "Collect later product payments from Owing on the customer’s page. Share receipts yourself using the app you choose.",
     "Review Today and product results. Estimated profit depends on the costs and expenses you record. Prepare Sell online first for supported offline recording on Plus.",
+  ] },
+  { id: "deals", title: "Sell something for someone else with Deals", help: "deals", intro: "A deal is one item you sell for a seller. The buyer's money is held for the seller until you close the deal; only your earning counts. Deals need internet and are for the owner only.", steps: [
+    "Open More, then Business modes, and turn on Deals. Then open Deals from More or the bottom bar and add the item, the seller and the buyer.",
+    "Choose how you earn on that deal: set your selling price and give the seller their own price, then keep the difference, or take a fixed fee.",
+    "Record what the buyer pays and what you pay the seller. What the buyer pays is held for the seller. It is not a sale, income or profit.",
+    "Record costs of the deal, such as repairs, or link an expense you already recorded. It counts once in Expenses and shows what the deal really earned.",
+    "Close the deal. Your earning is the buyer's price minus the seller's price, or your fixed fee, less its costs. A deal that sells for less than the seller's price shows as a loss. If the buyer has not finished paying, you must write why, and the seller must already be paid in full.",
+  ] },
+  { id: "production", title: "Make what you sell with Production", help: "production", intro: "Production is for businesses that buy ingredients or materials and make what they sell, such as food, baking, soap or clothes. You do not need exact recipes.", steps: [
+    "Open More, then Business modes, and turn on Production business. Ingredients and materials then appear in More. Your products stay on the Sell screen.",
+    "Open Ingredients and materials, then Record what I bought. Add a line for each item with how much you bought and what you paid in all, and add transport at the bottom. Transport is saved as an expense.",
+    "Bring your ingredient stock down in one of two ways: record that you used some, or count what is left and let Jèrè work out what was used. Counting once a week is enough for most businesses.",
+    "Open See my results to compare sales with the ingredients used and your expenses. Buying an ingredient is not a cost until it is used, so spending and what is left are shown apart. The figures are only as fresh as your last count.",
   ] },
   { id: "online-orders", title: "Take an online order through to delivery", help: "orders", intro: "Orders are entered by the owner. This workflow does not automatically import messages or orders from other platforms.", steps: [
     "Open More, then Online orders, and choose New online order. Add the customer, order channel, products, agreed prices and pickup or delivery details. Include any delivery charge paid by the customer.",
@@ -57,7 +72,9 @@ export const jereWorkflowGuides = [
 ];
 
 export const jereFeatures = [
-  { title: "Choose how your business works", text: "Combine Product Business, Online Business and Service Business. Choose a main workflow for your shortcuts and change it later without deleting records.", label: "Business modes" },
+  { title: "Choose how your business works", text: "Combine Product, Online, Service, Deals and Production business modes. Choose a main workflow for your shortcuts and change it later without deleting records.", label: "Business modes" },
+  { title: "Sell for someone else", text: "Record a deal for a seller, hold the buyer's money for them, add the deal's costs and see what you kept when you close it.", label: "Deals" },
+  { title: "Make what you sell", text: "Record the ingredients you buy, note what is used or count what is left, and see your results after the ingredients used.", label: "Production" },
   { title: "Follow orders from confirmation to delivery", text: "Save drafts without changing stock or money. Confirm once to record the sale, then track packing, dispatch and delivery or pickup separately.", label: "Online orders" },
   { title: "Keep customer jobs and invoices together", text: "Record jobs, quotes, invoices, deposits and part-payments. An active invoice becomes earned service income when its job is completed.", label: "Service jobs & invoices" },
   { title: "See the costs behind each job", text: "Assign existing expenses or record a new job expense once, log time worked and compare earned invoice income with assigned costs. Unrecorded costs and unassigned overhead are excluded.", label: "Job costs & time" },
@@ -67,7 +84,7 @@ export const jereFeatures = [
   { title: "Know what is on the shelf", text: "Keep a stock list, record restocking and spot products running low before the next customer asks for them.", label: "Stock" },
   { title: "Keep expenses in the picture", text: "Record transport, electricity, rent and other business costs. Set reminders for expenses that come round regularly.", label: "Expenses" },
   { title: "Remember who owes you", text: "Keep customer debts and payments together. See what is still owed and send a reminder yourself.", label: "Customer debts" },
-  { title: "Give your team the right access", text: "Invite a cashier by code and choose what they can see. Cashiers can record sales without seeing your costs or profit.", label: "Team access" },
+  { title: "Give your team the right access", text: "Invite a cashier or manager by code and choose what they can see. Cashiers can record sales without seeing your costs or profit.", label: "Team access" },
   { title: "Track what you owe suppliers", text: "Keep supplier credit and payments together. See who you still need to pay and how much is outstanding.", label: "Supplier debts" },
   { title: "Check the cash before you close", text: "Enter the cash you counted and compare it with what your records say you should have. See the amount that matches, is short or is extra.", label: "Cash checks" },
   { title: "See which products make you money", text: "Find your best earners, products sold below cost and stock that has not sold. Compare your business figures by day, week, month or year.", label: "Profit & reports" },
@@ -77,13 +94,13 @@ export const jereFeatures = [
 ];
 
 export const jereQuestions = [
-  { question: "Can I combine product, online and service business modes?", answer: "Yes. Open More, then Business modes, select the modes you use and choose your main workflow. It changes shortcuts, not records, your plan or team permissions. Existing records remain accessible in More." },
+  { question: "Can I combine product, online, service, deals and production modes?", answer: "Yes. Open More, then Business modes, select the modes you use and choose your main workflow. It changes shortcuts, not records, your plan or team permissions. Existing records remain accessible in More." },
   { question: "When does an online order become a sale?", answer: "When the owner confirms it. Saving a draft does not reserve stock or record money. Confirmation records one sale and deducts stock. Packing and delivery updates do not record a second sale or collect payment." },
   { question: "Can a customer pay a deposit before a service job is completed?", answer: "Yes. Issue the agreed service invoice and record the deposit on it. The deposit is money received. The invoice becomes earned service income when the job is completed; later payments reduce its balance without becoming another sale." },
   { question: "Does Jèrè automatically send customer refunds?", answer: "No. Jèrè records money you have already returned by cash, transfer or POS reversal. Record the goods or delivery credit first, then record full or partial refunds against the amount still due. Any eligible unpaid product debt is reduced before a cash refund becomes due." },
-  { question: "Can cashiers manage service jobs, online orders or refunds?", answer: "These workflows and business mode settings are owner-only. Cashiers retain their existing product sales and permitted customer-payment access. Choosing a mode does not grant new permissions." },
+  { question: "Can cashiers manage service jobs, online orders or refunds?", answer: "Business mode settings and Deals are owner-only, and so are the service job, online order and refund workflows. Cashiers retain their existing product sales and permitted customer-payment access. Choosing a mode does not grant new permissions." },
   { question: "What app can I use to record sales offline for my small shop in Nigeria?", answer: JERE_OFFLINE_ANSWER },
-  { question: "What is Jèrè?", answer: "Jèrè (Jere) brings product sales, online orders and service jobs into one business, alongside stock, expenses, customer balances and estimated profit. Choose or combine three business modes. It is built by SOLFLIGH TECH with an Africa-first focus." },
+  { question: "What is Jèrè?", answer: "Jèrè (Jere) brings product sales, online orders, service jobs, deals and production into one business, alongside stock, expenses, customer balances and estimated profit. Choose or combine five business modes: Product, Online, Service, Deals and Production. It is built by SOLFLIGH TECH with an Africa-first focus." },
   { question: "Can I sign up now?", answer: "Yes. Jèrè is open for sign-up in early access. Choose Create your account to get started, or sign in if you already have an account. We will tell you before we start to charge." },
   { question: "Does Jèrè work without internet?", answer: "Yes. Plus lets you record product sales, product customer payments, expenses and new products offline, check saved stock, and read saved Today and Owing figures with your PIN. Open Jèrè online first so it can save a copy on your phone. Entries send automatically when you reconnect and only then count in your business records. Saved figures show when they were last updated. Basic needs an internet connection." },
   { question: "What still needs internet?", answer: "Business mode changes, service jobs, invoices, deposits, job costs and time, online orders, delivery updates, returns and refunds need internet on both Basic and Plus. Adding a new customer, changing an existing product’s price or stock, cancelling a sale, and changing your PIN or account also need internet. Offline credit sales use customers already saved on your phone. Keep entries waiting to send on that phone until they have been sent; clearing browser storage can remove them." },
